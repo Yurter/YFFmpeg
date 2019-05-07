@@ -11,26 +11,39 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
     switch (preset) {
     case Auto:
         break;
+    case Silence:
+        break;
     case YouTube:
         _video_required = true;
         _audio_required = true;
         setWidth(1920);
         setHeight(1080);
+        setAspectRatio({16,9});
         setFrameRate(30);
-        setVideoCodecName("h264");
-        setAudioCodecName("aac");
+        setVideoCodecName("h264");//flv1//h264
+        setAudioCodecName("aac");//pcm_mulaw//aac
         break;
     case Timelapse:
         break;
     }
+
+    //
+    if (!createOutputContext()) {
+        std::cerr << "[YMediaDestination] Failed to create output context." << std::endl;
+        return;
+    }
 }
 
-bool YMediaDestination::addStream(AVCodec *stream_codec)
+bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
 {
-    std::cout << "[YMediaDestination] Adding new " << stream_codec->name << " stream" << std::endl;
-    AVStream* out_stream = avformat_new_stream(_media_format_context, stream_codec);
+    std::cout << "[YMediaDestination] Adding new " << stream_codec_context->codec->name << " stream" << std::endl;
+    AVStream* out_stream = avformat_new_stream(_media_format_context, stream_codec_context->codec);
     if (out_stream == nullptr) {
         std::cerr << "[YMediaDestination] Failed allocating output stream" << std::endl;
+        return false;
+    }
+    if (avcodec_parameters_from_context(out_stream->codecpar, stream_codec_context) < 0) {
+        std::cerr << "[YMediaDestination] Failed to copy context input to output stream codec context" << std::endl;
         return false;
     }
     return true;
@@ -40,25 +53,23 @@ bool YMediaDestination::open()
 {
     std::cout << "[YMediaDestination] Opening" << std::endl;
 
-    if (!createOutputContext()) {
-        std::cerr << "Failed to create output context." << std::endl;
-        return false;
-    }
+//    if (!createOutputContext()) {
+//        std::cerr << "[YMediaDestination] Failed to create output context." << std::endl;
+//        return false;
+//    }
 //    if (!copyInputContext(_media_format_context, _video_required, _audio_required)) {
 //        std::cerr << "Failed to copy input context." << std::endl;
 //        return false;
 //    }
     if (!openOutputContext()) {
-        std::cerr << "Failed to open output context." << std::endl;
+        std::cerr << "[YMediaDestination] Failed to open output context." << std::endl;
         return false;
     }
     getInfo();
-
-    std::cout << "[YMediaDestination] Initialized" << std::endl;
     return true;
 }
 
-bool YMediaDestination::writePacket(AVPacket &&packet)
+bool YMediaDestination::writePacket(AVPacket packet)
 {
 	if (!_is_opened) { return false; }
 
@@ -85,7 +96,7 @@ bool YMediaDestination::writePacket(AVPacket &&packet)
 	}
 
 	if (av_interleaved_write_frame(_media_format_context, &packet) < 0) {
-		std::cerr << "Error muxing packet" << std::endl;
+        std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
 		return false;
 	}
 
@@ -110,7 +121,7 @@ bool YMediaDestination::createOutputContext()
 	std::string output_format_name = guessFormatName();
 	const char *format_name = output_format_name.empty() ? nullptr : output_format_name.c_str();
 	if (avformat_alloc_output_context2(&_media_format_context, nullptr, format_name, _media_resource_locator.c_str()) < 0) {
-		std::cerr << "Failed to alloc output context." << std::endl;
+        std::cerr << "[YMediaDestination] Failed to alloc output context." << std::endl;
 		return false;
     }
 	return true;
@@ -128,19 +139,19 @@ bool YMediaDestination::copyInputContext(const AVFormatContext *input_format_con
 			AVStream* in_stream = input_format_context->streams[i];
 			AVCodec *decoder = avcodec_find_decoder(in_stream->codecpar->codec_id);
 			if (decoder == nullptr) {
-				std::cerr << "Could not find decoder" << std::endl;
+                std::cerr << "[YMediaDestination] Could not find decoder" << std::endl;
 				return false;
 			}
 			AVStream* out_stream = avformat_new_stream(_media_format_context, decoder);
 			if (out_stream == nullptr) {
-				std::cerr << "Failed allocating output stream" << std::endl;
+                std::cerr << "[YMediaDestination] Failed allocating output stream" << std::endl;
 				return false;
 			}
 			AVCodecContext* avCodecContext = avcodec_alloc_context3(decoder);
 			if (avcodec_parameters_to_context(avCodecContext, in_stream->codecpar) < 0) {
 				avcodec_free_context(&avCodecContext);
 				avCodecContext = nullptr;
-				std::cerr << "Can not fill codec context" << std::endl;
+                std::cerr << "[YMediaDestination] Can not fill codec context" << std::endl;
 				return false;
 			}
 			if (codec_type == AVMEDIA_TYPE_VIDEO) {
@@ -158,7 +169,7 @@ bool YMediaDestination::copyInputContext(const AVFormatContext *input_format_con
 				avCodecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 			}
 			if (avcodec_parameters_from_context(out_stream->codecpar, avCodecContext) < 0) {
-				std::cerr << "Failed to copy context input to output stream codec context" << std::endl;
+                std::cerr << "[YMediaDestination] Failed to copy context input to output stream codec context" << std::endl;
 				return false;
 			}
 		}
@@ -180,18 +191,18 @@ bool YMediaDestination::openOutputContext()
 {
 	if (!(_media_format_context->flags & AVFMT_NOFILE)) {
 		if (avio_open(&_media_format_context->pb, _media_resource_locator.c_str(), AVIO_FLAG_WRITE) < 0) {
-			std::cerr << "Could not open output: " << _media_resource_locator << std::endl;
+            std::cerr << "[YMediaDestination] Could not open output: " << _media_resource_locator << std::endl;
 			return false;
 		}
 	}
 	if (avformat_write_header(_media_format_context, nullptr) < 0) {
-		std::cerr << "Error occurred when opening output" << std::endl;
+        std::cerr << "[YMediaDestination] Error occurred when opening output" << std::endl;
 		return false;
 	}
 	{
 		_is_opened = true;
 		av_dump_format(_media_format_context, 0, _media_resource_locator.c_str(), 1);
-		std::cout << "Destination opened: \"" << _media_resource_locator << "\"" << std::endl;
+        std::cout << "[YMediaDestination] Destination opened: \"" << _media_resource_locator << "\"" << std::endl;
 	}
 	return true;
 }
@@ -216,10 +227,11 @@ bool YMediaDestination::muxAudioPacket()
 	if ((_frame_index % frame_rate_int) == 0) {
 		AVPacket audio_packet = readVirtualAudioPacket();
 		if (av_interleaved_write_frame(_media_format_context, &audio_packet) < 0) {
-			std::cerr << "Error muxing virtual audio packet" << std::endl;
+            std::cerr << "[YMediaDestination] Error muxing virtual audio packet" << std::endl;
 			return false;
 		}
 	}
+    return true;
 }
 
 void YMediaDestination::openVirtualAudioInput()
@@ -227,29 +239,29 @@ void YMediaDestination::openVirtualAudioInput()
     AVInputFormat *lavfi_format = av_find_input_format("lavfi");
 
     if (lavfi_format == nullptr) {
-        throw std::exception("FFmpeg lavfi format not found");
+        throw std::exception("[YMediaDestination] FFmpeg lavfi format not found");
     }
 
 	_lavfi_audio_format_context = avformat_alloc_context();
 	//aevalsrc=0:s=44100 //anullsrc=channel_layout=stereo:sample_rate=44100 //nb_samples=5500
     if (avformat_open_input(&_lavfi_audio_format_context, "aevalsrc=0", lavfi_format, nullptr)) {
-        std::cout << "Failed to open virtual input context" << std::endl;
+        std::cout << "[YMediaDestination] Failed to open virtual input context" << std::endl;
         return;
     }
 
     if (avformat_find_stream_info(_lavfi_audio_format_context, nullptr) < 0) {
-        std::cerr << "Failed to retrieve input video stream information" << std::endl;
+        std::cerr << "[YMediaDestination] Failed to retrieve input video stream information" << std::endl;
         return;
     }
 
     AVCodec *decoder = avcodec_find_decoder(AV_CODEC_ID_PCM_MULAW);
     if (decoder == nullptr) {
-        std::cerr << "Could not find decoder" << std::endl;
+        std::cerr << "[YMediaDestination] Could not find decoder" << std::endl;
         return;
     }
     AVStream* out_stream = avformat_new_stream(_media_format_context, decoder);
     if (out_stream == nullptr) {
-        std::cerr << "Failed allocating output stream" << std::endl;
+        std::cerr << "[YMediaDestination] Failed allocating output stream" << std::endl;
         return;
     }
 
@@ -268,7 +280,7 @@ void YMediaDestination::openVirtualAudioInput()
         avCodecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
     }
     if (avcodec_parameters_from_context(out_stream->codecpar, avCodecContext) < 0) {
-        std::cerr << "Failed to copy context input to output stream codec context" << std::endl;
+        std::cerr << "[YMediaDestination] Failed to copy context input to output stream codec context" << std::endl;
         return;
     }
 
@@ -289,7 +301,7 @@ AVPacket YMediaDestination::readVirtualAudioPacket()
 {
 	AVPacket packet;
 	if (av_read_frame(_lavfi_audio_format_context, &packet) < 0) {
-		std::cerr << "Failed to read lavfi audio" << std::endl;
+        std::cerr << "[YMediaDestination] Failed to read lavfi audio" << std::endl;
 		return AVPacket();
 	}
 	packet.stream_index = AVMEDIA_TYPE_AUDIO;

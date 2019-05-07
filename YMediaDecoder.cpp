@@ -18,7 +18,6 @@ bool YMediaDecoder::init()
         std::cerr << "[YMediaDecoder] Failed to init audio codec" << std::endl;
         return false;
     }
-    std::cout << "[YMediaDecoder] Initialized" << std::endl;
     return true;
 }
 
@@ -44,9 +43,7 @@ bool YMediaDecoder::initVideoCodec()
 {
     std::cout << "[YMediaDecoder] Copying video codec" << std::endl;
     bool copied = copyCodecPar(_source->mediaFormatContext(), AVMEDIA_TYPE_VIDEO, _video_codec, _video_codec_context);
-    if (copied) {
-        std::cout << "[YMediaDecoder] Video codec copied" << std::endl;
-    } else {
+    if (!copied) {
         std::cerr << "[YMediaDecoder] Video codec copy error" << std::endl;
     }
     return copied;
@@ -56,9 +53,7 @@ bool YMediaDecoder::initAudioCodec()
 {
     std::cout << "[YMediaDecoder] Copying audio codec" << std::endl;
     bool copied = copyCodecPar(_source->mediaFormatContext(), AVMEDIA_TYPE_AUDIO, _audio_codec, _audio_codec_context);
-    if (copied) {
-        std::cout << "[YMediaDecoder] Audio codec copied" << std::endl;
-    } else {
+    if (!copied) {
         std::cerr << "[YMediaDecoder] Audio codec copy error" << std::endl;
     }
     return copied;

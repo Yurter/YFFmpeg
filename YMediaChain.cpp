@@ -58,8 +58,12 @@ bool YMediaChain::start()
         _active = true;
         _thread = std::thread([this](){
             while (_active) {
-                bool written = true;//_destination->writePacket(_encoder->encodeFrames(_filter->filterFrames(_decoder->decodePacket(_source->readPacket()))));
-                if (!written) { stop(); }
+                AVPacket packet;
+                if (_source->readPacket(packet)) {
+                    _destination->writePacket(packet);
+                }
+//                bool written = _destination->writePacket(_encoder->encodeFrames(_filter->filterFrames(_decoder->decodePacket(_source->readPacket()))));
+//                if (!written) { stop(); }
             }
         });
         std::cout << "[YMediaChain] Started" << std::endl;

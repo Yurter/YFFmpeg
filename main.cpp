@@ -9,8 +9,11 @@ int main()
     cout << "Program started..." << endl;
 
     //YMediaSource source("rtsp://192.168.0.13:8080/video/h264");
-    YMediaSource source("F:\\Downloads_uTorrent\\Grinch.2018.MVO.BDRip.1400Mb_ExKinoRay_by_Twi7ter.avi");
-    YMediaDestination destination("rtmp://a.rtmp.youtube.com/live2/jky1-6yv3-t2h3-dyx2", YMediaDestination::YMediaPreset::YouTube);
+//    YMediaSource source("F:\\Downloads_uTorrent\\Grinch.2018.MVO.BDRip.1400Mb_ExKinoRay_by_Twi7ter.avi");
+//    YMediaSource source("rtsp://admin:Admin2019@192.168.10.12");
+    YMediaSource source("rtsp://admin:admin@192.168.10.3");
+    YMediaDestination destination("rtmp://a.rtmp.youtube.com/live2/v866-ux5w-zurk-abqs", YMediaDestination::YMediaPreset::YouTube);
+//    YMediaDestination destination("findme.flv", YMediaDestination::YMediaPreset::YouTube);
 
     YMediaChain chain(&source, &destination);
     chain.start();

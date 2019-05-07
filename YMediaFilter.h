@@ -17,16 +17,17 @@ extern "C" {
 
 class YMediaFilter
 {
+
 public:
 
 	YMediaFilter();
+    ~YMediaFilter();
 
     bool init();
 
     std::list<AVFrame> filterFrames(std::list<AVFrame> &&frames);
 	bool apply(AVPacket packet);
 
-	~YMediaFilter();
 
 //private:
 

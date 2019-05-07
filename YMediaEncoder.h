@@ -14,17 +14,20 @@ class YMediaEncoder : public YAbstractCoder
 public:
 
     YMediaEncoder() = delete;
-    YMediaEncoder(const YMediaDestination *destination);
+    YMediaEncoder(YMediaDestination *destination);
+    ~YMediaEncoder();
 
     bool init();
 
     AVPacket encodeFrames(std::list<AVFrame> &&frames);
 
-	~YMediaEncoder();
-
 private:
 
     bool initVideoCodec();
     bool initAudioCodec();
+
+private:
+
+    YMediaDestination       *_destination;
 
 };

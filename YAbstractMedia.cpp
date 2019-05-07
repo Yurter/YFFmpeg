@@ -4,11 +4,14 @@ YAbstractMedia::YAbstractMedia(const std::string & mrl) :
 	_media_resource_locator(mrl),
     _is_active(false),
     _is_opened(false),
+    _reopening_after_failure(false),
+//    _reopening_timeout(0),
 	_media_format_context(nullptr),
 	_lavfi_video_format_context(nullptr),
     _lavfi_audio_format_context(nullptr),
 	_width(0),
 	_height(0),
+    _aspect_ratio({-1,-1}),
 	_duration(0),
 	_frame_rate(0.0f),
     _video_codec_id(AV_CODEC_ID_NONE),
@@ -31,10 +34,10 @@ void YAbstractMedia::getInfo()
     if (_media_format_context == nullptr) { return; }
 
 	if (_media_format_context->iformat != nullptr) {
-		_format = _media_format_context->iformat->name;
+        setFormat(_media_format_context->iformat->name);
 	}
 	if (_media_format_context->oformat != nullptr) {
-		_format = _media_format_context->oformat->name;
+        setFormat(_media_format_context->oformat->name);
 	}
 
 	for (uint64_t i = 0; i < _media_format_context->nb_streams; i++) {
@@ -42,22 +45,22 @@ void YAbstractMedia::getInfo()
 		auto codec_type = in_stream->codecpar->codec_type;
 
 		if (codec_type == AVMEDIA_TYPE_VIDEO) {
-            _width = static_cast<uint64_t>(in_stream->codecpar->width);
-            _height = static_cast<uint64_t>(in_stream->codecpar->height);
+            setWidth(static_cast<uint64_t>(in_stream->codecpar->width));
+            setHeight(static_cast<uint64_t>(in_stream->codecpar->height));
             _duration = static_cast<uint64_t>(in_stream->duration);
             if (in_stream->avg_frame_rate.den == 0) {
-                _frame_rate = -1.f;
+                setFrameRate(-1.f);
             } else {
-                _frame_rate = in_stream->avg_frame_rate.num / in_stream->avg_frame_rate.den;
+                setFrameRate(in_stream->avg_frame_rate.num / in_stream->avg_frame_rate.den);
             }
 			AVCodec *decoder = avcodec_find_decoder(in_stream->codecpar->codec_id);
-			_video_codec_name = decoder ? decoder->name : "undefined";
+            setVideoCodecName(decoder ? decoder->name : "undefined");
 			_video_available = true;
 		}
 
 		if (codec_type == AVMEDIA_TYPE_AUDIO) {
 			AVCodec *decoder = avcodec_find_decoder(in_stream->codecpar->codec_id);
-			_audio_codec_name = decoder ? decoder->name : "undefined";
+            setAudioCodecName(decoder ? decoder->name : "undefined");
 			_audio_available = true;
         }
 	}
@@ -93,10 +96,15 @@ uint64_t YAbstractMedia::width() const
 
 uint64_t YAbstractMedia::height() const
 {
-	return _height;
+    return _height;
 }
 
-float YAbstractMedia::frameRate() const
+AVRational YAbstractMedia::aspectRatio() const
+{
+    return _aspect_ratio;
+}
+
+uint64_t YAbstractMedia::frameRate() const
 {
 	return _frame_rate;
 }
@@ -111,12 +119,12 @@ std::string YAbstractMedia::format() const
 	return _format;
 }
 
-std::string YAbstractMedia::videoCodec() const
+std::string YAbstractMedia::videoCodecName() const
 {
 	return _video_codec_name;
 }
 
-std::string YAbstractMedia::audioCodec() const
+std::string YAbstractMedia::audioCodecName() const
 {
 	return _audio_codec_name;
 }
@@ -138,10 +146,15 @@ void YAbstractMedia::setWidth(uint64_t width)
 
 void YAbstractMedia::setHeight(uint64_t height)
 {
-	_height = height;
+    _height = height;
 }
 
-void YAbstractMedia::setFrameRate(float frame_rate)
+void YAbstractMedia::setAspectRatio(AVRational aspect_ratio)
+{
+    _aspect_ratio = aspect_ratio;
+}
+
+void YAbstractMedia::setFrameRate(uint64_t frame_rate)
 {
     _frame_rate = frame_rate;
 }

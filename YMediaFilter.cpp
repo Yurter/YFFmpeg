@@ -9,7 +9,6 @@ YMediaFilter::YMediaFilter()
 bool YMediaFilter::init()
 {
     std::cout << "[YMediaFilter] Initializing" << std::endl;
-    std::cout << "[YMediaFilter] Initialized" << std::endl;
     return true;
 }
 

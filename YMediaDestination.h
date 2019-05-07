@@ -9,11 +9,11 @@ public:
     YMediaDestination(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);		// mrl - media resource locator
     virtual ~YMediaDestination();
 
-    bool addStream(AVCodec *stream_codec);
+    bool addStream(AVCodecContext *stream_codec_context);
     bool open();
     bool close();
 
-    bool writePacket(AVPacket &&packet);
+    bool writePacket(AVPacket packet);
 
 private:
 
