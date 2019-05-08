@@ -34,6 +34,11 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
     }
 }
 
+YMediaDestination::~YMediaDestination()
+{
+    close(); //TODO падает на строке: _is_opened = false;
+}
+
 bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
 {
     std::cout << "[YMediaDestination] Adding new " << stream_codec_context->codec->name << " stream" << std::endl;
@@ -42,6 +47,12 @@ bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
         std::cerr << "[YMediaDestination] Failed allocating output stream" << std::endl;
         return false;
     }
+
+    //
+    out_stream->codecpar->width = 1920;
+    out_stream->codecpar->height = 1080;
+    //
+
     if (avcodec_parameters_from_context(out_stream->codecpar, stream_codec_context) < 0) {
         std::cerr << "[YMediaDestination] Failed to copy context input to output stream codec context" << std::endl;
         return false;
@@ -109,11 +120,6 @@ bool YMediaDestination::close()
 	av_write_trailer(_media_format_context);
 	_is_opened = false;
     return true;
-}
-
-YMediaDestination::~YMediaDestination()
-{
-    //close(); //TODO падает на строке: _is_opened = false;
 }
 
 bool YMediaDestination::createOutputContext()
