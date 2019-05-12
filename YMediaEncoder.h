@@ -19,7 +19,7 @@ public:
 
     bool init();
 
-    AVPacket encodeFrames(std::list<AVFrame> &&frames);
+    bool encodeFrames(AVPacket *encoded_packet, std::list<AVFrame> &decoded_frames);
 
 private:
 

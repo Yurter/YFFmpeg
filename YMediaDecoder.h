@@ -1,5 +1,7 @@
 #pragma once
 
+#include <list>
+
 #include "YAbstractCoder.h"
 #include "YMediaSource.h"
 
@@ -13,13 +15,13 @@ public:
 
     bool init();
 
-    std::list<AVFrame> decodePacket(AVPacket &&packet);
+    bool decodePacket(AVPacket *packet, std::list<AVFrame> &decoded_frames);
 
 private:
 
     bool initVideoCodec();
     bool initAudioCodec();
-    bool copyCodecPar(AVFormatContext *input_format_context, AVMediaType media_tipe, AVCodec *codec, AVCodecContext *codec_context);
+    bool copyCodecPar(AVFormatContext *input_format_context, AVMediaType media_tipe, AVCodec **codec, AVCodecContext **codec_context);
 
 private:
 

@@ -12,10 +12,9 @@ bool YMediaFilter::init()
     return true;
 }
 
-std::list<AVFrame> YMediaFilter::filterFrames(std::list<AVFrame> &&frames)
+bool YMediaFilter::filterFrames(std::list<AVFrame> &frames)
 {
-    std::list<AVFrame> frame_list;
-    return frame_list;
+    return true;
 }
 
 bool YMediaFilter::apply(AVPacket packet)

@@ -58,12 +58,32 @@ bool YMediaChain::start()
         _active = true;
         _thread = std::thread([this](){
             while (_active) {
-                AVPacket packet;
-                if (_source->readPacket(packet)) {
-                    _destination->writePacket(packet);
+                AVPacket source_packet;
+                if (!_source->readPacket(source_packet)) {
+                    std::cerr << "[YMediaChain] Read failed" << std::endl;
+                    stop();
                 }
-//                bool written = _destination->writePacket(_encoder->encodeFrames(_filter->filterFrames(_decoder->decodePacket(_source->readPacket()))));
-//                if (!written) { stop(); }
+                if (source_packet.stream_index == 1) continue;
+                std::list<AVFrame> decoded_frames;
+                if (!_decoder->decodePacket(&source_packet, decoded_frames)) {
+                    std::cerr << "[YMediaChain] Decode failed" << std::endl;
+                    stop();
+                }
+//                if (!_filter->filterFrames(decoded_frames)) {
+//                    std::cerr << "[YMediaChain] Filter failed" << std::endl;
+//                    stop();
+//                }
+                AVPacket *encoded_packet = av_packet_alloc();
+                encoded_packet->stream_index = source_packet.stream_index;
+                if (!_encoder->encodeFrames(encoded_packet, decoded_frames)) {
+                    std::cerr << "[YMediaChain] Encode failed" << std::endl;
+                    stop();
+                }
+                std::cerr << "[DEBUG] #############" << std::endl;
+                if (!_destination->writePacket(*encoded_packet)) {
+                    std::cerr << "[YMediaChain] Write failed" << std::endl;
+                    stop();
+                }
             }
         });
         std::cout << "[YMediaChain] Started" << std::endl;

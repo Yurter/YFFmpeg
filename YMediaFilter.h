@@ -25,7 +25,7 @@ public:
 
     bool init();
 
-    std::list<AVFrame> filterFrames(std::list<AVFrame> &&frames);
+    bool filterFrames(std::list<AVFrame> &frames);
 	bool apply(AVPacket packet);
 
 

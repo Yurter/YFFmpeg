@@ -20,7 +20,7 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         setHeight(1080);
         setAspectRatio({16,9});
         setFrameRate(30);
-        setVideoCodecName("h264");//flv1//h264
+        setVideoCodecName("h264");
         setAudioCodecName("aac");//pcm_mulaw//aac
         break;
     case Timelapse:
@@ -83,6 +83,8 @@ bool YMediaDestination::open()
 bool YMediaDestination::writePacket(AVPacket packet)
 {
 	if (!_is_opened) { return false; }
+
+    if (packet.stream_index == 2) { return true; }
 
 	if (_lavfi_video_format_context != nullptr) {
 		if (!muxVideoPacket()) {
