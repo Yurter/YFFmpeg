@@ -63,6 +63,7 @@ bool YMediaChain::start()
                     std::cerr << "[YMediaChain] Read failed" << std::endl;
                     break;
                 }
+                if (source_packet.stream_index == 1) continue;
                 std::list<AVFrame> decoded_frames;
                 if (!_decoder->decodePacket(&source_packet, decoded_frames)) {
                     std::cerr << "[YMediaChain] Decode failed" << std::endl;
@@ -82,6 +83,7 @@ bool YMediaChain::start()
                     std::cerr << "[YMediaChain] Write failed" << std::endl;
                     break;
                 }
+                 std::cout << "[YMediaChain] LOOP" << std::endl;
             }
             stop();
         });

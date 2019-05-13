@@ -20,7 +20,7 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         setHeight(1080);
         setAspectRatio({16,9});
         setFrameRate(30);
-        setVideoCodecName("h264");
+        setVideoCodecName("libx264");//h264
         setAudioCodecName("aac");//pcm_mulaw//aac
         break;
     case Timelapse:

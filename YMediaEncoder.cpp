@@ -14,7 +14,7 @@ bool YMediaEncoder::init()
     return encoder_inited;
 }
 
-bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame*> &decoded_frames)
+bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame> &decoded_frames)
 {
     AVCodecContext *codec_context = nullptr;
     if (encoded_packet->stream_index == AVMEDIA_TYPE_VIDEO) {
@@ -31,6 +31,8 @@ bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame*> &
 //            decoded_frame->channel_layout = 2;//_audio_codec_context->channel_layout;
 //            decoded_frame->channels = 2;
 //        }
+//        decoded_frame.pts = 0;
+//        decoded_frame.pkt_dts = 0;
         int ret;
         if ((ret = avcodec_send_frame(codec_context, &decoded_frame)) != 0) {
             std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
@@ -52,7 +54,7 @@ YMediaEncoder::~YMediaEncoder()
 
 bool YMediaEncoder::initVideoCodec()
 {
-    AVCodec *decoder = avcodec_find_decoder_by_name(_destination->videoCodecName().c_str());
+    AVCodec *decoder = avcodec_find_encoder_by_name(_destination->videoCodecName().c_str());
     if (decoder == nullptr) {
         std::cerr << "[YMediaEncoder] Could not find video decoder " << _destination->videoCodecName() << std::endl;
         return false;
@@ -68,19 +70,24 @@ bool YMediaEncoder::initVideoCodec()
     _video_codec_context->height = static_cast<int>(_destination->height());
     _video_codec_context->pix_fmt = AV_PIX_FMT_YUV420P;
     _video_codec_context->sample_aspect_ratio = {1,1};//_destination->aspectRatio();
-    _video_codec_context->gop_size = frames_per_second * 2;
+    _video_codec_context->gop_size = 10;//frames_per_second * 2;
     _video_codec_context->framerate = { frames_per_second, 1 };
     _video_codec_context->time_base = { 1, frames_per_second };
-    _video_codec_context->max_b_frames = 2;
+    _video_codec_context->max_b_frames = 1;//2;
 
-    _video_codec_context->bit_rate = static_cast<int64_t>(_destination->width() * _destination->height() * 3);
-    _video_codec_context->time_base = { 1, frames_per_second };
+    _video_codec_context->bit_rate = 400000;// = static_cast<int64_t>(_destination->width() * _destination->height() * 3);
     _video_codec_context->global_quality = 1;
     _video_codec_context->compression_level = FF_COMPRESSION_DEFAULT;
 
     _video_codec_context->ticks_per_frame = 2;
 
     _video_codec_context->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+
+
+    if (decoder->id == AV_CODEC_ID_H264) {
+        av_opt_set(_video_codec_context->priv_data, "preset", "slow", 0);
+    }
+
 
 
 //    av_opt_set(avCodecContext, "size", "1920:1080", 0);
@@ -92,6 +99,12 @@ bool YMediaEncoder::initVideoCodec()
 //    av_opt_set_int(avCodecContext, "coder", 1, 0);
 //    av_opt_set(avCodecContext, "crf", "18", 0);
 
+
+    if (avcodec_open2(_video_codec_context, decoder, nullptr) < 0) {
+        std::cerr << "[YMediaEncoder] Could not open video encoder" << std::endl;
+        return false;
+    }
+
     _destination->addStream(_video_codec_context);
 
     return true;
@@ -99,7 +112,7 @@ bool YMediaEncoder::initVideoCodec()
 
 bool YMediaEncoder::initAudioCodec()
 {
-    AVCodec *decoder = avcodec_find_decoder_by_name(_destination->audioCodecName().c_str());
+    AVCodec *decoder = avcodec_find_encoder_by_name(_destination->audioCodecName().c_str());
     if (decoder == nullptr) {
         std::cerr << "[YMediaEncoder] Could not find audio decoder " << _destination->audioCodecName() << std::endl;
         return false;
@@ -124,6 +137,11 @@ bool YMediaEncoder::initAudioCodec()
 
     // Audio: pcm_mulaw, 16000 Hz, mono, s16, 128 kb/s
     // Audio: aac (LC) ([10][0][0][0] / 0x000A), 16000 Hz, mono, fltp, 69 kb/s
+
+    if (avcodec_open2(_audio_codec_context, decoder, nullptr) < 0) {
+        std::cerr << "[YMediaEncoder] Could not open audio encoder" << std::endl;
+        return false;
+    }
 
     _destination->addStream(_audio_codec_context);
 
