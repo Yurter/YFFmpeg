@@ -15,7 +15,7 @@ public:
 
     bool init();
 
-    bool decodePacket(AVPacket *packet, std::list<AVFrame> &decoded_frames);
+    bool decodePacket(AVPacket *packet, std::list<AVFrame*> &decoded_frames);
 
 private:
 

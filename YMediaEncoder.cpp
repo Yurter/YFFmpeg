@@ -14,7 +14,7 @@ bool YMediaEncoder::init()
     return encoder_inited;
 }
 
-bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame> &decoded_frames)
+bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame*> &decoded_frames)
 {
     AVCodecContext *codec_context = nullptr;
     if (encoded_packet->stream_index == AVMEDIA_TYPE_VIDEO) {
@@ -23,6 +23,7 @@ bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame> &d
     if (encoded_packet->stream_index == AVMEDIA_TYPE_AUDIO) {
         codec_context = _audio_codec_context;
     }
+    int ret;
     for (auto decoded_frame : decoded_frames) {
 //        if (encoded_packet->stream_index == AVMEDIA_TYPE_AUDIO) {
 //            decoded_frame->sample_rate = codec_context->sample_rate;
@@ -33,15 +34,14 @@ bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame> &d
 //        }
 //        decoded_frame.pts = 0;
 //        decoded_frame.pkt_dts = 0;
-        int ret;
-        if ((ret = avcodec_send_frame(codec_context, &decoded_frame)) != 0) {
+        if ((ret = avcodec_send_frame(codec_context, decoded_frame)) != 0) {
             std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
             return false;
         }
     }
     std::cerr << "[DEBUG] " << codec_context << " | " << encoded_packet<< std::endl;
-    if (avcodec_receive_packet(codec_context, encoded_packet) != 0) {
-        std::cerr << "[YMediaEncoder] Could not receive frame" << std::endl;
+    if ((ret = avcodec_receive_packet(codec_context, encoded_packet)) != 0) {
+        std::cerr << "[YMediaEncoder] Could not receive packet " << ret << " " << AVERROR(EAGAIN) << std::endl;
         return false;
     }
     return true;

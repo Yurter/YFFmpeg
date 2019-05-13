@@ -21,7 +21,7 @@ bool YMediaDecoder::init()
     return true;
 }
 
-bool YMediaDecoder::decodePacket(AVPacket *packet, std::list<AVFrame> &decoded_frames)
+bool YMediaDecoder::decodePacket(AVPacket *packet, std::list<AVFrame*> &decoded_frames)
 {
     AVCodecContext *codec_context = nullptr;
     if (packet->stream_index == AVMEDIA_TYPE_VIDEO) {
@@ -37,7 +37,8 @@ bool YMediaDecoder::decodePacket(AVPacket *packet, std::list<AVFrame> &decoded_f
     //decoded_frames.clear();
     AVFrame *decoded_frame = av_frame_alloc();
     while (avcodec_receive_frame(codec_context, decoded_frame) >= 0) {
-        decoded_frames.push_back(AVFrame(*decoded_frame));
+        decoded_frames.push_back(decoded_frame);
+        decoded_frame = av_frame_alloc();
     }
     return true;
 }
