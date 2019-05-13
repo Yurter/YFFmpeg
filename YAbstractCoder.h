@@ -31,8 +31,8 @@ protected:
     // General parameters
 
     // FFmpeg
-    AVCodec				*_video_codec;
-    AVCodec				*_audio_codec;
+//    AVCodec				*_video_codec;
+//    AVCodec				*_audio_codec;
     AVCodecContext		*_video_codec_context;
     AVCodecContext		*_audio_codec_context;
 

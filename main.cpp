@@ -8,11 +8,12 @@ int main()
     av_log_set_level(AV_LOG_VERBOSE);
     cout << "Program started..." << endl;
 
-    YMediaSource source("rtsp://192.168.0.13:8080/video/h264");
+//    YMediaSource source("rtsp://192.168.0.13:8080/video/h264");
+    YMediaSource source("rtsp://admin:admin@192.168.10.3");
 //    YMediaSource source("G:\\dev\\video\\The Simpsons Movie - 1080p Trailer.mp4");
 //    YMediaSource source("rtsp://admin:Admin2019@192.168.10.12");
 //    YMediaSource source("rtsp://admin:admin@192.168.10.3");
-    YMediaDestination destination("rtmp://a.rtmp.youtube.com/live2/5frf-zuec-3ewr-d4fm", YMediaDestination::YMediaPreset::YouTube);
+    YMediaDestination destination("rtmp://a.rtmp.youtube.com/live2/t7fv-q960-za3b-d1dr", YMediaDestination::YMediaPreset::YouTube);
 //    YMediaDestination destination("findme.flv", YMediaDestination::YMediaPreset::YouTube);
 
     YMediaChain chain(&source, &destination);

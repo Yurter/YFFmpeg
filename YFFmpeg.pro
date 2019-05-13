@@ -34,7 +34,7 @@ INCLUDEPATH += G:\dev\FFmpeg\ffmpeg-4.1.1-win64-dev\include
 LIBS += -LG:\dev\FFmpeg\ffmpeg-4.1.1-win64-dev\lib
 
 #--Office--
-#INCLUDEPATH += D:\dev\00_ffmpeg\ffmpeg-4.1.1-win64-dev\include
-#LIBS += -LD:\dev\00_ffmpeg\ffmpeg-4.1.1-win64-dev\lib
+INCLUDEPATH += D:\dev\00_ffmpeg\ffmpeg-4.1.1-win64-dev\include
+LIBS += -LD:\dev\00_ffmpeg\ffmpeg-4.1.1-win64-dev\lib
 
 LIBS += -lavcodec -lavformat -lavutil -lswscale -lavdevice -lavfilter -lpostproc -lswresample

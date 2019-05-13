@@ -45,7 +45,7 @@ bool YMediaDecoder::decodePacket(AVPacket *packet, std::list<AVFrame> &decoded_f
 bool YMediaDecoder::initVideoCodec()
 {
     std::cout << "[YMediaDecoder] Copying video codec" << std::endl;
-    bool copied = copyCodecPar(_source->mediaFormatContext(), AVMEDIA_TYPE_VIDEO, &_video_codec, &_video_codec_context);
+    bool copied = copyCodecPar(_source->mediaFormatContext(), AVMEDIA_TYPE_VIDEO, &_video_codec_context);
     if (!copied) {
         std::cerr << "[YMediaDecoder] Video codec copy error" << std::endl;
     }
@@ -55,26 +55,27 @@ bool YMediaDecoder::initVideoCodec()
 bool YMediaDecoder::initAudioCodec()
 {
     std::cout << "[YMediaDecoder] Copying audio codec" << std::endl;
-    bool copied = copyCodecPar(_source->mediaFormatContext(), AVMEDIA_TYPE_AUDIO, &_audio_codec, &_audio_codec_context);
+    bool copied = copyCodecPar(_source->mediaFormatContext(), AVMEDIA_TYPE_AUDIO, &_audio_codec_context);
     if (!copied) {
         std::cerr << "[YMediaDecoder] Audio codec copy error" << std::endl;
     }
     return copied;
 }
 
-bool YMediaDecoder::copyCodecPar(AVFormatContext *input_format_context, AVMediaType media_tipe, AVCodec **codec, AVCodecContext **codec_context)
+bool YMediaDecoder::copyCodecPar(AVFormatContext *input_format_context, AVMediaType media_tipe, AVCodecContext **codec_context)
 {
-    if (av_find_best_stream(input_format_context, media_tipe, -1, -1, codec, 0) < 0) {
+    AVCodec *codec;
+    if (av_find_best_stream(input_format_context, media_tipe, -1, -1, &codec, 0) < 0) {
         std::cerr << "Cannot find an av stream in the input file" << std::endl;
         return false;
     }
-    *codec_context = avcodec_alloc_context3(*codec);
+    *codec_context = avcodec_alloc_context3(codec);
     if (!codec_context) {
         std::cerr << "Failed to alloc context" << std::endl;
         return false;
     }
     avcodec_parameters_to_context(*codec_context, input_format_context->streams[media_tipe]->codecpar);
-    if (avcodec_open2(*codec_context, *codec, nullptr) < 0) {
+    if (avcodec_open2(*codec_context, codec, nullptr) < 0) {
         std::cerr << "Cannot open av decoder" << std::endl;
         return false;
     }

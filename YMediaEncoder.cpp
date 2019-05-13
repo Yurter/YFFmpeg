@@ -14,7 +14,7 @@ bool YMediaEncoder::init()
     return encoder_inited;
 }
 
-bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame> &decoded_frames)
+bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame*> &decoded_frames)
 {
     AVCodecContext *codec_context = nullptr;
     if (encoded_packet->stream_index == AVMEDIA_TYPE_VIDEO) {
@@ -24,16 +24,16 @@ bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame> &d
         codec_context = _audio_codec_context;
     }
     for (auto decoded_frame : decoded_frames) {
-        if (encoded_packet->stream_index == AVMEDIA_TYPE_AUDIO) {
-            decoded_frame.sample_rate = codec_context->sample_rate;
-            decoded_frame.format = codec_context->sample_fmt;
-            decoded_frame.nb_samples = codec_context->frame_size;
-            decoded_frame.channel_layout = 2;//_audio_codec_context->channel_layout;
-            decoded_frame.channels = 2;
-        }
+//        if (encoded_packet->stream_index == AVMEDIA_TYPE_AUDIO) {
+//            decoded_frame->sample_rate = codec_context->sample_rate;
+//            decoded_frame->format = codec_context->sample_fmt;
+//            decoded_frame->nb_samples = codec_context->frame_size;
+//            decoded_frame->channel_layout = 2;//_audio_codec_context->channel_layout;
+//            decoded_frame->channels = 2;
+//        }
         int ret;
         if ((ret = avcodec_send_frame(codec_context, &decoded_frame)) != 0) {
-            std::cerr << "[YMediaEncoder] Could not send frame "  << ret << std::endl;
+            std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
             return false;
         }
     }
@@ -72,7 +72,15 @@ bool YMediaEncoder::initVideoCodec()
     _video_codec_context->framerate = { frames_per_second, 1 };
     _video_codec_context->time_base = { 1, frames_per_second };
     _video_codec_context->max_b_frames = 2;
-    _video_codec_context->bit_rate = 192 * 1024;
+
+    _video_codec_context->bit_rate = static_cast<int64_t>(_destination->width() * _destination->height() * 3);
+    _video_codec_context->time_base = { 1, frames_per_second };
+    _video_codec_context->global_quality = 1;
+    _video_codec_context->compression_level = FF_COMPRESSION_DEFAULT;
+
+    _video_codec_context->ticks_per_frame = 2;
+
+    _video_codec_context->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 
 //    av_opt_set(avCodecContext, "size", "1920:1080", 0);
