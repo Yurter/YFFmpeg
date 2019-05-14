@@ -111,8 +111,6 @@ bool YMediaDestination::writePacket(AVPacket packet)
 	if (av_interleaved_write_frame(_media_format_context, &packet) < 0) {
         std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
 		return false;
-    } else {
-        std::cerr << "[YMediaDestination : Debug] Packet writed" << std::endl;
     }
 
     return true;

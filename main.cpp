@@ -12,12 +12,16 @@ int main()
 //    YMediaSource source("G:\\dev\\video\\The Simpsons Movie - 1080p Trailer.mp4");
 //    YMediaSource source("rtsp://admin:Admin2019@192.168.10.12");
 //    YMediaSource source("rtsp://admin:admin@192.168.10.3");
-//    YMediaDestination destination("rtmp://a.rtmp.youtube.com/live2/t7fv-q960-za3b-d1dr", YMediaDestination::YMediaPreset::YouTube);
-    YMediaSource source("rtsp://admin:admin@192.168.10.3");
-    YMediaFilter filter("scale=140:-1");
-    YMediaDestination destination("findme.flv", YMediaDestination::YMediaPreset::YouTube);
+//    YMediaDestination destination("rtmp://a.rtmp.youtube.com/live2/sem2-ctw6-1ms9-41dp", YMediaDestination::YMediaPreset::YouTube);
 
-    YMediaChain chain(&source, &filter, &destination);
+
+    std::string mrl_dst = "findme.flv";
+//    std:string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/sem2-ctw6-1ms9-41dp";
+
+    YMediaSource source("rtsp://admin:admin@192.168.10.3");
+    YMediaDestination destination(mrl_dst, YMediaDestination::YMediaPreset::YouTube);
+
+    YMediaChain chain(&source, &destination);
     chain.start();
     while (chain.active()) {}
 
