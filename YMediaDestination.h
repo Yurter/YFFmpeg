@@ -4,6 +4,7 @@
 
 class YMediaDestination : public YAbstractMedia
 {
+
 public:
 
     YMediaDestination(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);		// mrl - media resource locator

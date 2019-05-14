@@ -1,12 +1,11 @@
 #pragma once
 
-#include <list>
-
 #include "YAbstractCoder.h"
 #include "YMediaSource.h"
 
 class YMediaDecoder : public YAbstractCoder
 {
+
 public:
 
     YMediaDecoder() = delete;

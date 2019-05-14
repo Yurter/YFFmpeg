@@ -1,7 +1,7 @@
 #include "YMediaChain.h"
 
 YMediaChain::YMediaChain(YMediaSource *source, YMediaDestination *destination) :
-    YMediaChain(source, new YMediaFilter, destination)
+    YMediaChain(source, new YMediaFilter(""), destination)
 {
     //
 }
@@ -39,7 +39,7 @@ bool YMediaChain::start()
         start_failed = true;
     } else if (!_decoder->init()) {
         start_failed = true;
-    } else if (!_filter->init()) {
+    } else if (!_filter->init(_source, _decoder)) {
         start_failed = true;
     } else if (!_encoder->init()) {
         start_failed = true;
@@ -69,10 +69,12 @@ bool YMediaChain::start()
                     std::cerr << "[YMediaChain] Decode failed" << std::endl;
                     break;
                 }
-//                if (!_filter->filterFrames(decoded_frames)) {
-//                    std::cerr << "[YMediaChain] Filter failed" << std::endl;
-//                    break;
-//                }
+                if (source_packet.stream_index == 0) {
+                    if (!_filter->filterFrames(decoded_frames)) {
+                        std::cerr << "[YMediaChain] Filter failed" << std::endl;
+                        break;
+                    }
+                }
                 AVPacket *encoded_packet = av_packet_alloc();
                 encoded_packet->stream_index = source_packet.stream_index;
                 if (!_encoder->encodeFrames(encoded_packet, decoded_frames)) {

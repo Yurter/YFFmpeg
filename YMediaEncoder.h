@@ -1,16 +1,11 @@
 #pragma once
 
-extern "C" {
-#include <libavformat/avformat.h>
-}
-
-#include <list>
-
 #include "YMediaDestination.h"
 #include "YAbstractCoder.h"
 
 class YMediaEncoder : public YAbstractCoder
 {
+
 public:
 
     YMediaEncoder() = delete;

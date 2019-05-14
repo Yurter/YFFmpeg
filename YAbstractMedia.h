@@ -1,12 +1,10 @@
 #pragma once
 
-extern "C" {
-#include <libavformat/avformat.h>
-#include <libavutil/opt.h>
-}
+#include "ffmpeg.h"
 
 #include <string>
 #include <thread>
+#include <mutex>
 
 class YAbstractMedia
 {

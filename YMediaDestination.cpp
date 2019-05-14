@@ -84,7 +84,7 @@ bool YMediaDestination::writePacket(AVPacket packet)
 {
 	if (!_is_opened) { return false; }
 
-    if (packet.stream_index == 2) { return true; }
+    if (packet.stream_index == 2) { return true; } //TODO
 
 	if (_lavfi_video_format_context != nullptr) {
 		if (!muxVideoPacket()) {
@@ -111,7 +111,9 @@ bool YMediaDestination::writePacket(AVPacket packet)
 	if (av_interleaved_write_frame(_media_format_context, &packet) < 0) {
         std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
 		return false;
-	}
+    } else {
+        std::cerr << "[YMediaDestination : Debug] Packet writed" << std::endl;
+    }
 
     return true;
 }

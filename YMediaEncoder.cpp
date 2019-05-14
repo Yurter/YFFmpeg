@@ -39,7 +39,6 @@ bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame*> &
             return false;
         }
     }
-    std::cerr << "[DEBUG] " << codec_context << " | " << encoded_packet<< std::endl;
     if ((ret = avcodec_receive_packet(codec_context, encoded_packet)) != 0) {
         std::cerr << "[YMediaEncoder] Could not receive packet " << ret << " " << AVERROR(EAGAIN) << std::endl;
         return false;

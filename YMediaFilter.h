@@ -1,31 +1,19 @@
 #pragma once
 
+#include "ffmpeg.h"
 #include "YMediaDecoder.h"
-
-extern "C" {
-#include "libavutil/avutil.h"
-#include "libavutil/pixfmt.h"
-#include "libavcodec/avcodec.h"
-#include "libavformat/avformat.h"
-#include "libavfilter/buffersink.h"
-#include "libavfilter/buffersrc.h"
-#include "libavfilter/avfilter.h"
-#include "libswscale/swscale.h"
-#include <libavutil/opt.h>
-};
-
 
 class YMediaFilter
 {
 
 public:
 
-	YMediaFilter();
+    YMediaFilter(std::string filter_description);
     ~YMediaFilter();
 
-    bool init();
+    bool init(YMediaSource *source, YMediaDecoder *decoder);
 
-    bool filterFrames(std::list<AVFrame> &frames);
+    bool filterFrames(std::list<AVFrame*> &frames);
 	bool apply(AVPacket packet);
 
 
@@ -36,17 +24,13 @@ public:
 
 private:
 
-	//
+    // General parameters
+    std::string         _filter_description;
 
-	AVFormatContext *pFormatCtx;
-	AVCodecContext *pCodecCtx;
-	AVFilterContext *buffersink_ctx;
-	AVFilterContext *buffersrc_ctx;
-	AVFilterGraph *filter_graph;
-	static int video_stream_index;
-	static int64_t last_pts;
-
-	AVFormatContext *_format_context;
+    // FFmpeg
+    AVFilterContext     *_buffersrc_ctx;
+    AVFilterContext     *_buffersink_ctx;
+    AVFilterGraph       *_filter_graph;
 
 };
 

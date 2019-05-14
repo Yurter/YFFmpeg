@@ -3,8 +3,6 @@
 #include "YAbstractMedia.h"
 #include "YMediaDestination.h"
 #include <queue>
-#include <thread>
-#include <mutex>
 
 class YMediaSource : public YAbstractMedia
 {

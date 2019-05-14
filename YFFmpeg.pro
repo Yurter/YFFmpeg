@@ -27,7 +27,8 @@ HEADERS += \
     YMediaEncoder.h \
     YMediaFilter.h \
     YMediaSource.h \
-    YAbstractCoder.h
+    YAbstractCoder.h \
+    ffmpeg.h
 
 #--Home--
 INCLUDEPATH += G:\dev\FFmpeg\ffmpeg-4.1.1-win64-dev\include
