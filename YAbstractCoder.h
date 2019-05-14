@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ffmpeg.h"
+#include <string>
 
 class YAbstractCoder
 {
@@ -11,6 +12,10 @@ public:
     virtual ~YAbstractCoder();
 
     virtual bool        init() = 0;
+
+//    void setOption(std::string name, std::string value);
+//    void setOption(std::string name, int64_t     value);
+//    void setOption(std::string name, double      value);
 
     AVCodecContext*     videoCodecContext();
     AVCodecContext*     audioCodecContext();

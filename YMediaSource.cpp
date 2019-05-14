@@ -33,13 +33,13 @@ bool YMediaSource::close()
 bool YMediaSource::readPacket(AVPacket &packet)
 {
     std::lock_guard<std::mutex> lock(_packet_queue_mutex);
-    if (_packet_queue.empty()) {
-        return false;
-    } else {
-        packet = _packet_queue.front();
-        _packet_queue.pop();
-        return true;
+    while (_packet_queue.empty()) {
+        if (!_is_opened) { return false; }
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
+    packet = _packet_queue.front();
+    _packet_queue.pop();
+    return true;
 }
 
 bool YMediaSource::openInput()
@@ -79,6 +79,7 @@ void YMediaSource::startRead()
             AVPacket packet;
             if (av_read_frame(_media_format_context, &packet) < 0) {
                 std::cerr << "[YMediaSource] Cannot read source: \"" << _media_resource_locator << "\". Error or EOF." << std::endl;
+                close();
                 return;
             } else {
                 queuePacket(packet);

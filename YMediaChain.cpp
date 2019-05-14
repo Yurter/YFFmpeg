@@ -61,27 +61,32 @@ bool YMediaChain::start()
                 AVPacket source_packet;
                 if (!_source->readPacket(source_packet)) {
                     std::cerr << "[YMediaChain] Read failed" << std::endl;
-                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
                     continue;
-//                    break;
+                    break;
                 }
-//                std::list<AVFrame*> decoded_frames;
-//                if (!_decoder->decodePacket(&source_packet, decoded_frames)) {
-//                    std::cerr << "[YMediaChain] Decode failed" << std::endl;
-//                    break;
-//                }
-//                if (source_packet.stream_index == 0) {
-//                    if (!_filter->filterFrames(decoded_frames)) {
-//                        std::cerr << "[YMediaChain] Filter failed" << std::endl;
-//                        break;
-//                    }
-//                }
-//                AVPacket *encoded_packet = av_packet_alloc();
-//                encoded_packet->stream_index = source_packet.stream_index;
-//                if (!_encoder->encodeFrames(encoded_packet, decoded_frames)) {
-//                    std::cerr << "[YMediaChain] Encode failed" << std::endl;
-//                    continue;
-//                }
+                std::list<AVFrame*> decoded_frames;
+                if (!_decoder->decodePacket(&source_packet, decoded_frames)) {
+                    std::cerr << "[YMediaChain] Decode failed" << std::endl;
+                    break;
+                }
+                if (source_packet.stream_index == AVMEDIA_TYPE_VIDEO) {
+                    if (!_filter->filterFrames(decoded_frames)) {
+                        std::cerr << "[YMediaChain] Filter failed" << std::endl;
+                        break;
+                    }
+                }
+                if (source_packet.stream_index == AVMEDIA_TYPE_AUDIO) {
+                    if (!_filter->filterFrames(decoded_frames)) {
+                        std::cerr << "[YMediaChain] Filter failed" << std::endl;
+                        break;
+                    }
+                }
+                AVPacket *encoded_packet = av_packet_alloc();
+                encoded_packet->stream_index = source_packet.stream_index;
+                if (!_encoder->encodeFrames(encoded_packet, decoded_frames)) {
+                    std::cerr << "[YMediaChain] Encode failed" << std::endl;
+                    continue;
+                }
                 if (!_destination->writePacket(source_packet)) {
                     std::cerr << "[YMediaChain] Write failed" << std::endl;
                     break;
