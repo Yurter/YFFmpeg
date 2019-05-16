@@ -14,12 +14,13 @@ class YMediaChain
 
 public:
 
-    YMediaChain(YMediaSource		*source,
-                YMediaDestination	*destination);
+    YMediaChain(YMediaSource*       source,
+                YMediaDestination*  destination);
 
-    YMediaChain(YMediaSource		*source,
-                YMediaFilter		*filter,
-                YMediaDestination	*destination);
+    YMediaChain(YMediaSource*       source,
+                YMediaFilter*       video_filter,
+                YMediaFilter*       audio_filter,
+                YMediaDestination*  destination);
 
     ~YMediaChain();
 
@@ -32,15 +33,16 @@ public:
 private:
 
 	//YMedia
-	YMediaSource		*_source;
-	YMediaDecoder		*_decoder;
-	YMediaFilter		*_filter;
-	YMediaEncoder		*_encoder;
-	YMediaDestination	*_destination;
+    YMediaSource*       _source;
+    YMediaDecoder*      _decoder;
+    YMediaFilter*       _video_filter;
+    YMediaFilter*       _audio_filter;
+    YMediaEncoder*      _encoder;
+    YMediaDestination*  _destination;
 
 	//General parameters
 	std::thread			_thread;
     volatile bool       _active;
-    volatile bool       _paused;
+    volatile bool       _paused; 
 
 };

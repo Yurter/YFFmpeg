@@ -21,7 +21,8 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         setAspectRatio({16,9});
         setFrameRate(30);
         setVideoCodecName("libx264");//h264
-        setAudioCodecName("aac");//pcm_mulaw//aac
+        setAudioCodecName("aac");//pcm_mulaw//aac//aac_latm//libfdk_aac
+//        avformat_network_init();
         break;
     case Timelapse:
         break;
@@ -52,6 +53,9 @@ bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
     out_stream->codecpar->width = 1920;
     out_stream->codecpar->height = 1080;
     //
+    out_stream->codec->coded_width = 1920;
+    out_stream->codec->coded_height = 1920;
+    //
 
     if (avcodec_parameters_from_context(out_stream->codecpar, stream_codec_context) < 0) {
         std::cerr << "[YMediaDestination] Failed to copy context input to output stream codec context" << std::endl;
@@ -80,6 +84,14 @@ bool YMediaDestination::open()
     return true;
 }
 
+bool YMediaDestination::close()
+{
+    if (!_is_opened) { return false; }
+    av_write_trailer(_media_format_context);
+    _is_opened = false;
+    return true;
+}
+
 bool YMediaDestination::writePacket(AVPacket packet)
 {
 	if (!_is_opened) { return false; }
@@ -99,7 +111,7 @@ bool YMediaDestination::writePacket(AVPacket packet)
 	}
 
 	switch (packet.stream_index) {
-	case AVMEDIA_TYPE_VIDEO:
+    case AVMEDIA_TYPE_VIDEO:
 		stampPacket(packet);
 		_frame_index++;
 		break;
@@ -113,14 +125,6 @@ bool YMediaDestination::writePacket(AVPacket packet)
 		return false;
     }
 
-    return true;
-}
-
-bool YMediaDestination::close()
-{
-    if (!_is_opened) { return false; }
-	av_write_trailer(_media_format_context);
-	_is_opened = false;
     return true;
 }
 

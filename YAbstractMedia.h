@@ -68,8 +68,8 @@ protected:
 
 	// FFmpeg 
 	AVFormatContext*	_media_format_context;
-	AVFormatContext*	_lavfi_video_format_context;
-	AVFormatContext*	_lavfi_audio_format_context;
+    AVFormatContext*	_lavfi_video_format_context; //удалить
+    AVFormatContext*	_lavfi_audio_format_context; //удалить
 
 	// Media parameters
 	uint64_t			_width;

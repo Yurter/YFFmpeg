@@ -60,6 +60,9 @@ bool YMediaDecoder::initAudioCodec()
     if (!copied) {
         std::cerr << "[YMediaDecoder] Audio codec copy error" << std::endl;
     }
+    //
+    _audio_codec_context->channel_layout = _audio_codec_context->channels;
+    //
     return copied;
 }
 

@@ -1,17 +1,23 @@
 #include "YMediaChain.h"
 
-YMediaChain::YMediaChain(YMediaSource *source, YMediaDestination *destination) :
-    YMediaChain(source, new YMediaFilter(""), destination)
+YMediaChain::YMediaChain(YMediaSource*      source,
+                         YMediaDestination* destination) :
+    YMediaChain(source,
+                nullptr,
+                nullptr,
+                destination)
 {
     //
 }
 
-YMediaChain::YMediaChain(YMediaSource *source,
-                         YMediaFilter *filter,
-                         YMediaDestination *destination) :
+YMediaChain::YMediaChain(YMediaSource*      source,
+                         YMediaFilter*      video_filter,
+                         YMediaFilter*      audio_filter,
+                         YMediaDestination* destination) :
     _source(source),
     _decoder(new YMediaDecoder(source)),
-    _filter(filter),
+    _video_filter(video_filter),
+    _audio_filter(audio_filter),
     _encoder(new YMediaEncoder(destination)),
     _destination(destination),
     _active(false),
@@ -39,18 +45,21 @@ bool YMediaChain::start()
         start_failed = true;
     } else if (!_decoder->init()) {
         start_failed = true;
-//    } else if (!_filter->init(_source, _decoder)) {
-//        start_failed = true;
     } else if (!_encoder->init()) {
         start_failed = true;
     } else if (!_destination->open()) {
         start_failed = true;
     }
 
+    if (!_video_filter->init(_source, _decoder)) {
+        start_failed = true;
+    } else if (!_audio_filter->init(_source, _decoder)) {
+        start_failed = true;
+    }
+
     if (start_failed) {
-        _source->close();
-        _destination->close();
         std::cout << "[YMediaChain] Start failed" << std::endl;
+        stop();
         return false;
     }
 
@@ -61,7 +70,6 @@ bool YMediaChain::start()
                 AVPacket source_packet;
                 if (!_source->readPacket(source_packet)) {
                     std::cerr << "[YMediaChain] Read failed" << std::endl;
-                    continue;
                     break;
                 }
                 std::list<AVFrame*> decoded_frames;
@@ -69,31 +77,34 @@ bool YMediaChain::start()
                     std::cerr << "[YMediaChain] Decode failed" << std::endl;
                     break;
                 }
-                if (source_packet.stream_index == AVMEDIA_TYPE_VIDEO) {
-                    if (!_filter->filterFrames(decoded_frames)) {
-                        std::cerr << "[YMediaChain] Filter failed" << std::endl;
-                        break;
-                    }
-                }
+                /*-------------------------filters-------------------------*/
+//                if (source_packet.stream_index == AVMEDIA_TYPE_VIDEO) {
+//                    if (!_video_filter->filterFrames(decoded_frames)) {
+//                        std::cerr << "[YMediaChain] Filter failed" << std::endl;
+//                        break;
+//                    }
+//                }
                 if (source_packet.stream_index == AVMEDIA_TYPE_AUDIO) {
-                    if (!_filter->filterFrames(decoded_frames)) {
+                    if (!_audio_filter->filterFrames(decoded_frames)) {
                         std::cerr << "[YMediaChain] Filter failed" << std::endl;
                         break;
                     }
                 }
+                /*----------------------------------------------------------*/
                 AVPacket *encoded_packet = av_packet_alloc();
                 encoded_packet->stream_index = source_packet.stream_index;
                 if (!_encoder->encodeFrames(encoded_packet, decoded_frames)) {
                     std::cerr << "[YMediaChain] Encode failed" << std::endl;
                     continue;
+//                    break;
                 }
                 if (!_destination->writePacket(source_packet)) {
                     std::cerr << "[YMediaChain] Write failed" << std::endl;
                     break;
                 }
-                std::cout << "[YMediaChain] LOOP" << std::endl;
             }
-            stop();
+            //stop();
+            std::cout << "[YMediaChain] Finished" << std::endl;
         });
         std::cout << "[YMediaChain] Started" << std::endl;
     }
@@ -104,9 +115,10 @@ bool YMediaChain::start()
 bool YMediaChain::stop()
 {
     _active = false;
-    _thread.join();
-//    if (_thread.joinable()) { _thread.join(); }
-    std::cout << "[YMediaChain] Stopped" << std::endl;
+//    _source->close();
+//    _destination->close();
+//    _thread.join();
+//    std::cout << "[YMediaChain] Stopped" << std::endl;
     return true;
 }
 

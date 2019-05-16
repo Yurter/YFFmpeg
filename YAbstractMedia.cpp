@@ -26,7 +26,7 @@ YAbstractMedia::YAbstractMedia(const std::string & mrl) :
 
 YAbstractMedia::~YAbstractMedia()
 {
-    //
+    avformat_free_context(_media_format_context);
 }
 
 void YAbstractMedia::getInfo()
@@ -141,12 +141,12 @@ bool YAbstractMedia::audioStreamAvailable() const
 
 void YAbstractMedia::setWidth(uint64_t width)
 {
-	_width = width;
+    _width = width;// - width % 2
 }
 
 void YAbstractMedia::setHeight(uint64_t height)
 {
-    _height = height;
+    _height = height;// - height % 2
 }
 
 void YAbstractMedia::setAspectRatio(AVRational aspect_ratio)

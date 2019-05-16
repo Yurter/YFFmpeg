@@ -9,7 +9,8 @@ YAbstractCoder::YAbstractCoder() :
 
 YAbstractCoder::~YAbstractCoder()
 {
-    // TODO
+    avcodec_close(_video_codec_context);
+    avcodec_close(_audio_codec_context);
 }
 
 AVCodecContext* YAbstractCoder::videoCodecContext()

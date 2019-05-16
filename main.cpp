@@ -15,13 +15,24 @@ int main()
 //    YMediaDestination destination("rtmp://a.rtmp.youtube.com/live2/sem2-ctw6-1ms9-41dp", YMediaDestination::YMediaPreset::YouTube);
 
 
-    std::string mrl_dst = "findme.flv";
-//    std:string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/sem2-ctw6-1ms9-41dp";
+//    std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
+    std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
 
-    YMediaSource source("rtsp://admin:admin@192.168.10.3");
+    std::string mrl_dst = "findme.flv";
+//    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/4cdh-qt4a-86u7-bxr8";
+
+    YMediaSource source(mrl_src);
     YMediaDestination destination(mrl_dst, YMediaDestination::YMediaPreset::YouTube);
 
-    YMediaChain chain(&source, &destination);
+//    std::vector<YMediaFilter> filters = {
+//        YMediaFilter(AVMEDIA_TYPE_VIDEO, "size=1920:1080" ),
+//        YMediaFilter(AVMEDIA_TYPE_AUDIO, "aresample=44100")
+//    };
+
+    YMediaFilter video_filter(AVMEDIA_TYPE_VIDEO, "scale=1920:1080");
+    YMediaFilter audio_filter(AVMEDIA_TYPE_AUDIO, "aformat=s16p,aresample=44100"); //aformat=s16p:aresample=44100
+
+    YMediaChain chain(&source, &video_filter, &audio_filter, &destination);
     chain.start();
     while (chain.active()) {}
 

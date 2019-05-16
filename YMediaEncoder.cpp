@@ -1,7 +1,8 @@
 #include "YMediaEncoder.h"
 #include <iostream>
 
-YMediaEncoder::YMediaEncoder(YMediaDestination *destination) : _destination(destination)
+YMediaEncoder::YMediaEncoder(YMediaDestination *destination) :
+    _destination(destination)
 {
     //
 }
@@ -40,7 +41,9 @@ bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame*> &
         }
     }
     if ((ret = avcodec_receive_packet(codec_context, encoded_packet)) != 0) {
-        std::cerr << "[YMediaEncoder] Could not receive packet " << ret << " " << AVERROR(EAGAIN) << std::endl;
+        char* text_error = new char[AV_ERROR_MAX_STRING_SIZE];
+        av_strerror(ret, text_error, AV_ERROR_MAX_STRING_SIZE);
+        std::cerr << "[YMediaEncoder] Could not receive packet " << ret << " " << AVERROR(EAGAIN) << " " << std::string(text_error) << std::endl;
         return false;
     }
     return true;
@@ -84,7 +87,7 @@ bool YMediaEncoder::initVideoCodec()
 
 
     if (decoder->id == AV_CODEC_ID_H264) {
-        av_opt_set(_video_codec_context->priv_data, "preset", "slow", 0);
+        av_opt_set(_video_codec_context->priv_data, "preset", "ultrafast", 0);
     }
 
 
@@ -124,14 +127,16 @@ bool YMediaEncoder::initAudioCodec()
     //
     _audio_codec_context->codec_tag = 0;
 
-    _audio_codec_context->sample_rate = 44'100; //48'000;
+    _audio_codec_context->sample_rate = 44'100;
     _audio_codec_context->sample_fmt = AV_SAMPLE_FMT_FLTP;
     _audio_codec_context->channel_layout = AV_CH_LAYOUT_MONO;
-    _audio_codec_context->bit_rate = 69 * 1'024;
+    _audio_codec_context->bit_rate = 192 * 1'024;
+
+//    _audio_codec_context->time_base = { 1, _audio_codec_context->sample_rate };
 
 
     av_opt_set(_audio_codec_context, "profile", "aac_low", 0);
-    av_opt_set(_audio_codec_context, "b", "384k", 0);
+    //av_opt_set(_audio_codec_context, "b", "384k", 0);
 
 
     // Audio: pcm_mulaw, 16000 Hz, mono, s16, 128 kb/s
