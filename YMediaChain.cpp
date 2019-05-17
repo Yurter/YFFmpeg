@@ -77,13 +77,16 @@ bool YMediaChain::start()
                     std::cerr << "[YMediaChain] Decode failed" << std::endl;
                     break;
                 }
+
+                if (decoded_frames.empty()) { continue; }
+
                 /*-------------------------filters-------------------------*/
-//                if (source_packet.stream_index == AVMEDIA_TYPE_VIDEO) {
-//                    if (!_video_filter->filterFrames(decoded_frames)) {
-//                        std::cerr << "[YMediaChain] Filter failed" << std::endl;
-//                        break;
-//                    }
-//                }
+                if (source_packet.stream_index == AVMEDIA_TYPE_VIDEO) {
+                    if (!_video_filter->filterFrames(decoded_frames)) {
+                        std::cerr << "[YMediaChain] Filter failed" << std::endl;
+                        break;
+                    }
+                }
                 if (source_packet.stream_index == AVMEDIA_TYPE_AUDIO) {
                     if (!_audio_filter->filterFrames(decoded_frames)) {
                         std::cerr << "[YMediaChain] Filter failed" << std::endl;

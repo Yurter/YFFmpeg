@@ -57,12 +57,11 @@ bool YMediaFilter::filterFrames(std::list<AVFrame*> &frames)
                 break;
 
             filtered_frames.push_back(filt_frame);
-
+            filt_frame = av_frame_alloc();
 
         }
 
     }
-
 
     frames = std::move(filtered_frames);
 

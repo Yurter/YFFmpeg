@@ -30,7 +30,7 @@ int main()
 //    };
 
     YMediaFilter video_filter(AVMEDIA_TYPE_VIDEO, "scale=1920:1080");
-    YMediaFilter audio_filter(AVMEDIA_TYPE_AUDIO, "aformat=s16p,aresample=44100"); //aformat=s16p:aresample=44100
+    YMediaFilter audio_filter(AVMEDIA_TYPE_AUDIO, "aresample=44100,aformat=sample_fmts=s16:channel_layouts=mono"); //aformat=s16p:aresample=44100//aresample=8000,aformat=sample_fmts=s16:channel_layouts=mono//aformat=s16p,aresample=44100
 
     YMediaChain chain(&source, &video_filter, &audio_filter, &destination);
     chain.start();
