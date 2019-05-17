@@ -2,10 +2,10 @@
 
 YAbstractMedia::YAbstractMedia(const std::string & mrl) :
 	_media_resource_locator(mrl),
-    _is_active(false),
     _is_opened(false),
+    _is_active(false),
     _reopening_after_failure(false),
-//    _reopening_timeout(0),
+    _reopening_timeout(0),
 	_media_format_context(nullptr),
 	_lavfi_video_format_context(nullptr),
     _lavfi_audio_format_context(nullptr),
@@ -29,6 +29,16 @@ YAbstractMedia::~YAbstractMedia()
     avformat_free_context(_media_format_context);
 }
 
+bool YAbstractMedia::close()
+{
+    if (!_is_opened) { return false; }
+    if (_thread.joinable()) {
+        _is_active = false;
+        _thread.join();
+    }
+    return true;
+}
+
 void YAbstractMedia::getInfo()
 {
     if (_media_format_context == nullptr) { return; }
@@ -49,9 +59,9 @@ void YAbstractMedia::getInfo()
             setHeight(static_cast<uint64_t>(in_stream->codecpar->height));
             _duration = static_cast<uint64_t>(in_stream->duration);
             if (in_stream->avg_frame_rate.den == 0) {
-                setFrameRate(-1.f);
+                setFrameRate(0);
             } else {
-                setFrameRate(in_stream->avg_frame_rate.num / in_stream->avg_frame_rate.den);
+                setFrameRate(static_cast<uint64_t>(in_stream->avg_frame_rate.num / in_stream->avg_frame_rate.den));
             }
 			AVCodec *decoder = avcodec_find_decoder(in_stream->codecpar->codec_id);
             setVideoCodecName(decoder ? decoder->name : "undefined");

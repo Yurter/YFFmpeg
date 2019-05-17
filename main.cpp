@@ -17,6 +17,7 @@ int main()
 
 //    std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
     std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
+//    std::string mrl_src = "h264_aac.flv";
 
     std::string mrl_dst = "findme.flv";
 //    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/4cdh-qt4a-86u7-bxr8";
@@ -24,17 +25,14 @@ int main()
     YMediaSource source(mrl_src);
     YMediaDestination destination(mrl_dst, YMediaDestination::YMediaPreset::YouTube);
 
-//    std::vector<YMediaFilter> filters = {
-//        YMediaFilter(AVMEDIA_TYPE_VIDEO, "size=1920:1080" ),
-//        YMediaFilter(AVMEDIA_TYPE_AUDIO, "aresample=44100")
-//    };
-
     YMediaFilter video_filter(AVMEDIA_TYPE_VIDEO, "scale=1920:1080");
-    YMediaFilter audio_filter(AVMEDIA_TYPE_AUDIO, "aresample=44100,aformat=sample_fmts=s16:channel_layouts=mono"); //aformat=s16p:aresample=44100//aresample=8000,aformat=sample_fmts=s16:channel_layouts=mono//aformat=s16p,aresample=44100
+    YMediaFilter audio_filter(AVMEDIA_TYPE_AUDIO, "aformat=sample_fmts=s16,aresample=44100,channel_layouts=stereo"); //aformat=s16p:aresample=44100//aresample=8000,aformat=sample_fmts=s16:channel_layouts=mono//aformat=s16p,aresample=44100
+    //aformat=sample_fmts=s16,aresample=44100
 
     YMediaChain chain(&source, &video_filter, &audio_filter, &destination);
     chain.start();
     while (chain.active()) {}
+    chain.stop();
 
     cout << "Program finished." << endl;
     return 0;

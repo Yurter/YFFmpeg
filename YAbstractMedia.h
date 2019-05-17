@@ -15,7 +15,7 @@ public:
     virtual ~YAbstractMedia();
 
     virtual bool        open() = 0;                                     // Функция открывает медиа-ресурс.
-    virtual bool        close() = 0;									// Функция закрывает медиа-ресурс.
+    virtual bool        close();                                        // Функция закрывает медиа-ресурс.
     virtual bool        isActive() const;								// Функция возвращает true, если запись/чтение не закончены, иначе - false.
 
     std::string         mediaResourceLocator() const;                   // Функция возвращает mrl.
@@ -61,10 +61,12 @@ protected:
 	// General parameters
     std::thread         _thread;
 	std::string			_media_resource_locator;
+    bool				_is_opened;
 	bool				_is_active;
-	bool				_is_opened;
     bool                _reopening_after_failure;
-//    uint64_t            _reopening_timeout;
+    uint64_t            _reopening_timeout;
+    bool                _close_after_failure;
+    uint64_t            _close_timeout;
 
 	// FFmpeg 
 	AVFormatContext*	_media_format_context;

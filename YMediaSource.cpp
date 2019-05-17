@@ -24,6 +24,7 @@ bool YMediaSource::open()
 
 bool YMediaSource::close()
 {
+    if (!YAbstractMedia::close()) { return false; }
     if (!_is_opened) { return false; }
     _is_opened = false;
     avformat_close_input(&_media_format_context);

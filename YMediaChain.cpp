@@ -51,11 +51,11 @@ bool YMediaChain::start()
         start_failed = true;
     }
 
-    if (!_video_filter->init(_source, _decoder)) {
-        start_failed = true;
-    } else if (!_audio_filter->init(_source, _decoder)) {
-        start_failed = true;
-    }
+//    if (!_video_filter->init(_source, _decoder)) {
+//        start_failed = true;
+//    } else if (!_audio_filter->init(_source, _decoder)) {
+//        start_failed = true;
+//    }
 
     if (start_failed) {
         std::cout << "[YMediaChain] Start failed" << std::endl;
@@ -72,6 +72,7 @@ bool YMediaChain::start()
                     std::cerr << "[YMediaChain] Read failed" << std::endl;
                     break;
                 }
+                if (source_packet.stream_index == 1) { continue; }
                 std::list<AVFrame*> decoded_frames;
                 if (!_decoder->decodePacket(&source_packet, decoded_frames)) {
                     std::cerr << "[YMediaChain] Decode failed" << std::endl;
@@ -81,18 +82,18 @@ bool YMediaChain::start()
                 if (decoded_frames.empty()) { continue; }
 
                 /*-------------------------filters-------------------------*/
-                if (source_packet.stream_index == AVMEDIA_TYPE_VIDEO) {
-                    if (!_video_filter->filterFrames(decoded_frames)) {
-                        std::cerr << "[YMediaChain] Filter failed" << std::endl;
-                        break;
-                    }
-                }
-                if (source_packet.stream_index == AVMEDIA_TYPE_AUDIO) {
-                    if (!_audio_filter->filterFrames(decoded_frames)) {
-                        std::cerr << "[YMediaChain] Filter failed" << std::endl;
-                        break;
-                    }
-                }
+//                if (source_packet.stream_index == AVMEDIA_TYPE_VIDEO) {
+//                    if (!_video_filter->filterFrames(decoded_frames)) {
+//                        std::cerr << "[YMediaChain] Filter failed" << std::endl;
+//                        break;
+//                    }
+//                }
+//                if (source_packet.stream_index == AVMEDIA_TYPE_AUDIO) {
+//                    if (!_audio_filter->filterFrames(decoded_frames)) {
+//                        std::cerr << "[YMediaChain] Filter failed" << std::endl;
+//                        break;
+//                    }
+//                }
                 /*----------------------------------------------------------*/
                 AVPacket *encoded_packet = av_packet_alloc();
                 encoded_packet->stream_index = source_packet.stream_index;
@@ -106,7 +107,8 @@ bool YMediaChain::start()
                     break;
                 }
             }
-            //stop();
+//            stop();
+            _active = false;
             std::cout << "[YMediaChain] Finished" << std::endl;
         });
         std::cout << "[YMediaChain] Started" << std::endl;
@@ -118,10 +120,10 @@ bool YMediaChain::start()
 bool YMediaChain::stop()
 {
     _active = false;
-//    _source->close();
-//    _destination->close();
+    _source->close();
+    _destination->close();
 //    _thread.join();
-//    std::cout << "[YMediaChain] Stopped" << std::endl;
+    std::cout << "[YMediaChain] Stopped" << std::endl;
     return true;
 }
 

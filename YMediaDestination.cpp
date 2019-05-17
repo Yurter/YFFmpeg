@@ -21,7 +21,7 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         setAspectRatio({16,9});
         setFrameRate(30);
         setVideoCodecName("libx264");//h264
-        setAudioCodecName("aac");//pcm_mulaw//aac//aac_latm//libfdk_aac
+        setAudioCodecName("lib_aac");//pcm_mulaw//aac//aac_latm//libfdk_aac//libfaac//libfdk_aac
 //        avformat_network_init();
         break;
     case Timelapse:
@@ -88,7 +88,9 @@ bool YMediaDestination::close()
 {
     if (!_is_opened) { return false; }
     av_write_trailer(_media_format_context);
-    _is_opened = false;
+
+    YAbstractMedia::close();
+
     return true;
 }
 
@@ -120,9 +122,12 @@ bool YMediaDestination::writePacket(AVPacket packet)
 		break;
 	}
 
-	if (av_interleaved_write_frame(_media_format_context, &packet) < 0) {
+    auto size = packet.size;
+    if (av_write_frame(_media_format_context, &packet) < 0) {
         std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
 		return false;
+    } else {
+        std::cerr << "[YMediaDestination] Writed " << size << std::endl;
     }
 
     return true;

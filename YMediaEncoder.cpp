@@ -58,7 +58,7 @@ bool YMediaEncoder::initVideoCodec()
 {
     AVCodec *decoder = avcodec_find_encoder_by_name(_destination->videoCodecName().c_str());
     if (decoder == nullptr) {
-        std::cerr << "[YMediaEncoder] Could not find video decoder " << _destination->videoCodecName() << std::endl;
+        std::cerr << "[YMediaEncoder] Could not find video encoder " << _destination->videoCodecName() << std::endl;
         return false;
     }
     _video_codec_context = avcodec_alloc_context3(decoder);
@@ -116,7 +116,7 @@ bool YMediaEncoder::initAudioCodec()
 {
     AVCodec *decoder = avcodec_find_encoder_by_name(_destination->audioCodecName().c_str());
     if (decoder == nullptr) {
-        std::cerr << "[YMediaEncoder] Could not find audio decoder " << _destination->audioCodecName() << std::endl;
+        std::cerr << "[YMediaEncoder] Could not find audio encoder " << _destination->audioCodecName() << std::endl;
         return false;
     } else {
         //
@@ -129,7 +129,8 @@ bool YMediaEncoder::initAudioCodec()
 
     _audio_codec_context->sample_rate = 44'100;
     _audio_codec_context->sample_fmt = AV_SAMPLE_FMT_FLTP;
-    _audio_codec_context->channel_layout = AV_CH_LAYOUT_MONO;
+    _audio_codec_context->channel_layout = AV_CH_LAYOUT_STEREO;
+    _audio_codec_context->channels = 2;
     _audio_codec_context->bit_rate = 192 * 1'024;
 
 //    _audio_codec_context->time_base = { 1, _audio_codec_context->sample_rate };

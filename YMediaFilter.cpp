@@ -83,7 +83,7 @@ bool YMediaFilter::initVideoFilter(YMediaSource *source, YMediaDecoder *decoder)
     AVFilterInOut *outputs = avfilter_inout_alloc();
     AVFilterInOut *inputs  = avfilter_inout_alloc();
     AVRational time_base = fmt_ctx->streams[AVMEDIA_TYPE_VIDEO]->time_base;
-    enum AVPixelFormat pix_fmts[] = { AV_PIX_FMT_GRAY8, AV_PIX_FMT_NONE };
+    enum AVPixelFormat pix_fmts[] = { AV_PIX_FMT_YUV420P }; //{ AV_PIX_FMT_GRAY8, AV_PIX_FMT_NONE };
 
     _filter_graph = avfilter_graph_alloc();
     if (!outputs || !inputs || !_filter_graph) {
@@ -178,7 +178,7 @@ bool YMediaFilter::initAudioFilter(YMediaSource *source, YMediaDecoder *decoder)
     const AVFilter *abuffersink = avfilter_get_by_name("abuffersink");
     AVFilterInOut *outputs = avfilter_inout_alloc();
     AVFilterInOut *inputs  = avfilter_inout_alloc();
-    static const enum AVSampleFormat out_sample_fmts[] = { AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_NONE };
+    static const enum AVSampleFormat out_sample_fmts[] = { AV_SAMPLE_FMT_S16 }; //{ AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_NONE };
     static const int64_t out_channel_layouts[] = { AV_CH_LAYOUT_MONO, -1 };
     static const int out_sample_rates[] = { 8000, -1 };
     const AVFilterLink *outlink;
