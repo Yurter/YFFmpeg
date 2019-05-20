@@ -83,6 +83,7 @@ bool YMediaDecoder::copyCodecPar(AVFormatContext *input_format_context, AVMediaT
         std::cerr << "Cannot open av decoder" << std::endl;
         return false;
     }
+    std::cout << "[DEBUG] codec: " << codec->name << std::endl;
     return true;
 }
 

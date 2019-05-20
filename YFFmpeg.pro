@@ -15,7 +15,9 @@ SOURCES += \
     YMediaEncoder.cpp \
     YMediaFilter.cpp \
     YMediaSource.cpp \
-    YAbstractCoder.cpp
+    YAbstractCoder.cpp \
+    YVideoRescaler.cpp \
+    YAudioResampler.cpp
 
 HEADERS += \
     YMediaSource.h \
@@ -28,7 +30,9 @@ HEADERS += \
     YMediaFilter.h \
     YMediaSource.h \
     YAbstractCoder.h \
-    ffmpeg.h
+    ffmpeg.h \
+    YVideoRescaler.h \
+    YAudioResampler.h
 
 #--Home--
 INCLUDEPATH += G:\dev\FFmpeg\ffmpeg-4.1.1-win64-dev\include

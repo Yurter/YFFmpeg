@@ -5,6 +5,7 @@
 #include "YMediaFilter.h"
 #include "YMediaEncoder.h"
 #include "YMediaDestination.h"
+#include "YAudioResampler.h"
 
 #include <thread>
 #include <iostream>
@@ -39,6 +40,7 @@ private:
     YMediaFilter*       _audio_filter;
     YMediaEncoder*      _encoder;
     YMediaDestination*  _destination;
+    YAudioResampler*    _resampler;
 
 	//General parameters
 	std::thread			_thread;

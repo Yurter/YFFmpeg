@@ -21,8 +21,7 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         setAspectRatio({16,9});
         setFrameRate(30);
         setVideoCodecName("libx264");//h264
-        setAudioCodecName("lib_aac");//pcm_mulaw//aac//aac_latm//libfdk_aac//libfaac//libfdk_aac
-//        avformat_network_init();
+        setAudioCodecName("aac");//pcm_mulaw//aac//aac_latm//libfdk_aac//libfaac//libfdk_aac
         break;
     case Timelapse:
         break;
@@ -136,8 +135,8 @@ bool YMediaDestination::writePacket(AVPacket packet)
 bool YMediaDestination::createOutputContext()
 {
 	std::string output_format_name = guessFormatName();
-	const char *format_name = output_format_name.empty() ? nullptr : output_format_name.c_str();
-	if (avformat_alloc_output_context2(&_media_format_context, nullptr, format_name, _media_resource_locator.c_str()) < 0) {
+    const char *format_name = output_format_name.empty() ? nullptr : output_format_name.c_str();
+    if (avformat_alloc_output_context2(&_media_format_context, nullptr, "avi", _media_resource_locator.c_str()) < 0) {
         std::cerr << "[YMediaDestination] Failed to alloc output context." << std::endl;
 		return false;
     }

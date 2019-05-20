@@ -25,7 +25,7 @@ bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame*> &
         codec_context = _audio_codec_context;
     }
     int ret;
-    for (auto decoded_frame : decoded_frames) {
+    for (auto&& decoded_frame : decoded_frames) {
 //        if (encoded_packet->stream_index == AVMEDIA_TYPE_AUDIO) {
 //            decoded_frame->sample_rate = codec_context->sample_rate;
 //            decoded_frame->format = codec_context->sample_fmt;
@@ -35,10 +35,23 @@ bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame*> &
 //        }
 //        decoded_frame.pts = 0;
 //        decoded_frame.pkt_dts = 0;
-        if ((ret = avcodec_send_frame(codec_context, decoded_frame)) != 0) {
-            std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
-            return false;
-        }
+        ret = -1;
+//        if (!decoded_frame) {
+//            return false;
+//        }
+//        auto empty_frame = av_frame_alloc();
+//        ret = av_frame_make_writable(decoded_frame);
+//        av_frame_copy(empty_frame, decoded_frame);
+//        if ((ret = avcodec_send_frame(codec_context, empty_frame)) != 0) {
+//            std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
+//            return false;
+//        }
+        try {
+            if ((ret = avcodec_send_frame(codec_context, decoded_frame)) != 0) {
+                std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
+                return false;
+            }
+        } catch (...) {}
     }
     if ((ret = avcodec_receive_packet(codec_context, encoded_packet)) != 0) {
         char* text_error = new char[AV_ERROR_MAX_STRING_SIZE];
@@ -127,10 +140,10 @@ bool YMediaEncoder::initAudioCodec()
     //
     _audio_codec_context->codec_tag = 0;
 
-    _audio_codec_context->sample_rate = 44'100;
-    _audio_codec_context->sample_fmt = AV_SAMPLE_FMT_FLTP;
-    _audio_codec_context->channel_layout = AV_CH_LAYOUT_STEREO;
-    _audio_codec_context->channels = 2;
+    _audio_codec_context->sample_rate = 16000;//44'100;
+    _audio_codec_context->sample_fmt = AV_SAMPLE_FMT_FLTP;//AV_SAMPLE_FMT_FLTP;//AV_SAMPLE_FMT_S16
+    _audio_codec_context->channel_layout = AV_CH_LAYOUT_MONO;//AV_CH_LAYOUT_STEREO;
+    _audio_codec_context->channels = 1;//2;
     _audio_codec_context->bit_rate = 192 * 1'024;
 
 //    _audio_codec_context->time_base = { 1, _audio_codec_context->sample_rate };

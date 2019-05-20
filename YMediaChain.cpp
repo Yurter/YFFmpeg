@@ -20,6 +20,7 @@ YMediaChain::YMediaChain(YMediaSource*      source,
     _audio_filter(audio_filter),
     _encoder(new YMediaEncoder(destination)),
     _destination(destination),
+    _resampler(new YAudioResampler()),
     _active(false),
     _paused(false)
 {
@@ -56,6 +57,10 @@ bool YMediaChain::start()
 //    } else if (!_audio_filter->init(_source, _decoder)) {
 //        start_failed = true;
 //    }
+    if (!_resampler->init(_decoder->audioCodecContext(), _encoder->audioCodecContext())) {
+        start_failed = true;
+    }
+
 
     if (start_failed) {
         std::cout << "[YMediaChain] Start failed" << std::endl;
@@ -72,7 +77,7 @@ bool YMediaChain::start()
                     std::cerr << "[YMediaChain] Read failed" << std::endl;
                     break;
                 }
-                if (source_packet.stream_index == 1) { continue; }
+//                if (source_packet.stream_index == 1) { continue; }
                 std::list<AVFrame*> decoded_frames;
                 if (!_decoder->decodePacket(&source_packet, decoded_frames)) {
                     std::cerr << "[YMediaChain] Decode failed" << std::endl;
@@ -95,19 +100,31 @@ bool YMediaChain::start()
 //                    }
 //                }
                 /*----------------------------------------------------------*/
+
+//                if (source_packet.stream_index == AVMEDIA_TYPE_AUDIO) {
+//                    if (!_resampler->resample(decoded_frames.front())) {
+//                        std::cerr << "[YMediaChain] Resaple failed" << std::endl;
+//                        break;
+//                    }
+//                }
+
                 AVPacket *encoded_packet = av_packet_alloc();
+                av_init_packet(encoded_packet);
                 encoded_packet->stream_index = source_packet.stream_index;
                 if (!_encoder->encodeFrames(encoded_packet, decoded_frames)) {
                     std::cerr << "[YMediaChain] Encode failed" << std::endl;
                     continue;
 //                    break;
                 }
-                if (!_destination->writePacket(source_packet)) {
+                if (!_destination->writePacket(*encoded_packet)) {
                     std::cerr << "[YMediaChain] Write failed" << std::endl;
                     break;
                 }
+//                if (!_destination->writePacket(source_packet)) {
+//                    std::cerr << "[YMediaChain] Write failed" << std::endl;
+//                    break;
+//                }
             }
-//            stop();
             _active = false;
             std::cout << "[YMediaChain] Finished" << std::endl;
         });

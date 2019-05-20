@@ -20,7 +20,8 @@ int main()
 //    std::string mrl_src = "h264_aac.flv";
 
     std::string mrl_dst = "findme.flv";
-//    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/4cdh-qt4a-86u7-bxr8";
+//    std::string mrl_dst = "findme.avi";
+//    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/rks9-hkxw-60f9-fk2e";
 
     YMediaSource source(mrl_src);
     YMediaDestination destination(mrl_dst, YMediaDestination::YMediaPreset::YouTube);
