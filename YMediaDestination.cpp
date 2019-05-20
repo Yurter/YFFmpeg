@@ -123,6 +123,7 @@ bool YMediaDestination::writePacket(AVPacket packet)
 
     auto size = packet.size;
     if (av_write_frame(_media_format_context, &packet) < 0) {
+//    if (av_interleaved_write_frame(_media_format_context, &packet) < 0) {
         std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
 		return false;
     } else {
@@ -136,7 +137,7 @@ bool YMediaDestination::createOutputContext()
 {
 	std::string output_format_name = guessFormatName();
     const char *format_name = output_format_name.empty() ? nullptr : output_format_name.c_str();
-    if (avformat_alloc_output_context2(&_media_format_context, nullptr, "avi", _media_resource_locator.c_str()) < 0) {
+    if (avformat_alloc_output_context2(&_media_format_context, nullptr, format_name, _media_resource_locator.c_str()) < 0) {
         std::cerr << "[YMediaDestination] Failed to alloc output context." << std::endl;
 		return false;
     }
@@ -228,7 +229,7 @@ void YMediaDestination::stampPacket(AVPacket &packet)
     int64_t frame_duration = static_cast<int64_t>(1000.f / _frame_rate);
     packet.pts = _frame_index * frame_duration;
     packet.dts = packet.pts;
-    packet.duration = frame_duration;
+    packet.duration = (packet.stream_index = AVMEDIA_TYPE_VIDEO) ? frame_duration : packet.duration;
     packet.pos = -1;
 }
 

@@ -51,19 +51,26 @@ bool YAudioResampler::resample(AVFrame *frame)
 {
     int error;
     /* Convert the samples using the resampler. */
-//    if ((error = swr_convert(_resample_context, frame->extended_data, frame_size, input_data, frame_size)) < 0) {
+//    if ((error = swr_convert(_resample_context, frame->extended_data, frame->linesize[0], const_cast<const uint8_t**>(frame->extended_data), frame->linesize[0])) < 0) {
 //        fprintf(stderr, "Could not convert input samples (error '')\n");
 //        return error;
 //    }
 
+    // resample frames
+    double* buffer;
+    av_samples_alloc((uint8_t**) &buffer, nullptr, 1, frame->nb_samples, AV_SAMPLE_FMT_DBL, 0);
+    int frame_count = swr_convert(_resample_context, (uint8_t**) &buffer, frame->nb_samples, (const uint8_t**) frame->data, frame->nb_samples);
+    // append resampled frames to data
+    frame->data[0] = (uint8_t*)buffer;
 
-    uint8_t **dst_data = nullptr;
-    int dst_nb_channels = 2;
-    int dst_linesize;
-    int dst_nb_samples = frame->nb_samples;
-    enum AVSampleFormat dst_sample_fmt = AV_SAMPLE_FMT_S16;
-    error = av_samples_alloc_array_and_samples(&dst_data, &dst_linesize, dst_nb_channels, dst_nb_samples, dst_sample_fmt, 0);
+
+//    uint8_t **dst_data = nullptr;
+//    int dst_nb_channels = 2;
+//    int dst_linesize;
+//    int dst_nb_samples = frame->nb_samples;
+//    enum AVSampleFormat dst_sample_fmt = AV_SAMPLE_FMT_S16;
+//    error = av_samples_alloc_array_and_samples(&dst_data, &dst_linesize, dst_nb_channels, dst_nb_samples, dst_sample_fmt, 0);
 
 
-    return 0;
+    return true;
 }

@@ -11,7 +11,6 @@ bool YMediaEncoder::init()
 {
     std::cout << "[YMediaEncoder] Initializing" << std::endl;
     bool encoder_inited = initVideoCodec() && initAudioCodec();
-    std::cerr << "[DEBUG] " << _video_codec_context << " | " << _audio_codec_context << std::endl;
     return encoder_inited;
 }
 
@@ -26,32 +25,11 @@ bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame*> &
     }
     int ret;
     for (auto&& decoded_frame : decoded_frames) {
-//        if (encoded_packet->stream_index == AVMEDIA_TYPE_AUDIO) {
-//            decoded_frame->sample_rate = codec_context->sample_rate;
-//            decoded_frame->format = codec_context->sample_fmt;
-//            decoded_frame->nb_samples = codec_context->frame_size;
-//            decoded_frame->channel_layout = 2;//_audio_codec_context->channel_layout;
-//            decoded_frame->channels = 2;
-//        }
-//        decoded_frame.pts = 0;
-//        decoded_frame.pkt_dts = 0;
-        ret = -1;
-//        if (!decoded_frame) {
-//            return false;
-//        }
-//        auto empty_frame = av_frame_alloc();
-//        ret = av_frame_make_writable(decoded_frame);
-//        av_frame_copy(empty_frame, decoded_frame);
-//        if ((ret = avcodec_send_frame(codec_context, empty_frame)) != 0) {
-//            std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
-//            return false;
-//        }
-        try {
-            if ((ret = avcodec_send_frame(codec_context, decoded_frame)) != 0) {
-                std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
-                return false;
-            }
-        } catch (...) {}
+        ret = av_frame_make_writable(decoded_frame);
+        if ((ret = avcodec_send_frame(codec_context, decoded_frame)) != 0) {
+            std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
+            return false;
+        }
     }
     if ((ret = avcodec_receive_packet(codec_context, encoded_packet)) != 0) {
         char* text_error = new char[AV_ERROR_MAX_STRING_SIZE];
@@ -102,17 +80,6 @@ bool YMediaEncoder::initVideoCodec()
     if (decoder->id == AV_CODEC_ID_H264) {
         av_opt_set(_video_codec_context->priv_data, "preset", "ultrafast", 0);
     }
-
-
-
-//    av_opt_set(avCodecContext, "size", "1920:1080", 0);
-//    av_opt_set(avCodecContext, "s", "2000:900", 0);
-//    av_opt_set(avCodecContext, "profile", "Baseline", 0);
-//    av_opt_set(avCodecContext, "profile", "high", 0);
-//    av_opt_set(avCodecContext, "bf", "2", 0);
-//    av_opt_set(avCodecContext, "coder", "1", 0);
-//    av_opt_set_int(avCodecContext, "coder", 1, 0);
-//    av_opt_set(avCodecContext, "crf", "18", 0);
 
 
     if (avcodec_open2(_video_codec_context, decoder, nullptr) < 0) {
