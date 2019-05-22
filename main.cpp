@@ -11,8 +11,8 @@ int main()
 //    std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
     std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
 
-//    std::string mrl_dst = "findme.flv";
-    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/rks9-hkxw-60f9-fk2e";
+    std::string mrl_dst = "findme.flv";
+//    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/rks9-hkxw-60f9-fk2e";
 
     YMediaSource source(mrl_src);
     YMediaDestination destination(mrl_dst, YMediaDestination::YMediaPreset::YouTube);

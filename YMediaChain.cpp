@@ -71,6 +71,9 @@ bool YMediaChain::start()
                     std::cerr << "[YMediaChain] Read failed" << std::endl;
                     break;
                 }
+                if (source_packet.stream_index == 1) {
+                    int debug_stop = 0;
+                }
                 std::list<AVFrame*> decoded_frames;
                 if (!_decoder->decodePacket(&source_packet, decoded_frames)) {
                     std::cerr << "[YMediaChain] Decode failed" << std::endl;
@@ -79,12 +82,12 @@ bool YMediaChain::start()
 
                 if (decoded_frames.empty()) { continue; }
 
-                if (source_packet.stream_index == AVMEDIA_TYPE_AUDIO) {
-                    if (!_resampler->resample(decoded_frames.front())) {
-                        std::cerr << "[YMediaChain] Resaple failed" << std::endl;
-                        break;
-                    }
-                }
+//                if (source_packet.stream_index == AVMEDIA_TYPE_AUDIO) {
+//                    if (!_resampler->resample(decoded_frames.front())) {
+//                        std::cerr << "[YMediaChain] Resaple failed" << std::endl;
+//                        break;
+//                    }
+//                }
 
                 AVPacket *encoded_packet = av_packet_alloc();
                 av_init_packet(encoded_packet);
