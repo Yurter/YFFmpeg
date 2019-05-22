@@ -2,7 +2,6 @@
 
 #include "YAbstractMedia.h"
 #include "YMediaDestination.h"
-#include <queue>
 
 class YMediaSource : public YAbstractMedia
 {
@@ -20,13 +19,10 @@ public:
 private:
 
     bool openInput();
-    void startRead();
-    void queuePacket(AVPacket packet);
+    void run();
 
 private:
 
-	// General parameters
-    std::queue<AVPacket>        _packet_queue;
-    std::mutex                  _packet_queue_mutex;
+    // General parameters
 
 };

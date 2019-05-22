@@ -14,7 +14,7 @@ public:
     bool open();
     bool close();
 
-    bool writePacket(AVPacket packet);
+    void writePacket(AVPacket packet);
 
     AVOutputFormat*     outputFrormat() const;
 
@@ -25,22 +25,15 @@ private:
     bool createOutputContext();
 	bool openOutputContext();
 
+    void run();
+
     void parseOutputFormat();
-
-
-    bool run();
-
     void stampPacket(AVPacket &packet);
-
-	void setVideoCodecContextOptions(AVCodecContext* avCodecContext);
-	void setAudioCodecContextOptions(AVCodecContext* avCodecContext);
 
 private:
 
 	// General parameters
     int64_t             _frame_index;
-    bool                _video_required;
-    bool                _audio_required;
 
     //FFmpeg
     //

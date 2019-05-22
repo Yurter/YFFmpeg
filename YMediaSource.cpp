@@ -22,7 +22,7 @@ bool YMediaSource::open()
         return false;
     }
     _is_opened = openInput();
-    if (_is_opened) { startRead(); }
+    if (_is_opened) { run(); }
     return _is_opened;
 }
 
@@ -70,7 +70,7 @@ bool YMediaSource::openInput()
     }
 }
 
-void YMediaSource::startRead()
+void YMediaSource::run()
 {
     _thread = std::thread([this](){
         while (_is_opened) {
@@ -85,10 +85,4 @@ void YMediaSource::startRead()
             }
         }
     });
-}
-
-void YMediaSource::queuePacket(AVPacket packet)
-{
-    std::lock_guard<std::mutex> lock(_packet_queue_mutex);
-    _packet_queue.push(packet);
 }

@@ -5,6 +5,7 @@
 #include <string>
 #include <thread>
 #include <mutex>
+#include <queue>
 
 #define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
 
@@ -79,7 +80,10 @@ public:
 
 protected:
 
-    virtual bool        run() = 0;
+    virtual void        run() = 0;
+
+    void                queuePacket(AVPacket packet);
+    bool                getPacket(AVPacket &packet);
 
     void                parseFormatContext();
     std::string         guessFormatShortName();
@@ -95,6 +99,9 @@ protected:
     uint64_t            _reopening_timeout;
     bool                _close_after_failure;
     uint64_t            _close_timeout;
+
+    std::queue<AVPacket>    _packet_queue;
+    std::mutex              _packet_queue_mutex;
 
 	// FFmpeg 
     AVFormatContext*	_media_format_context;

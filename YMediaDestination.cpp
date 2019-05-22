@@ -4,10 +4,7 @@
 
 YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset) :
 	YAbstractMedia(mrl),
-    _frame_index(0),
-    _video_required(false),
-    _audio_required(false),
-    _output_format(nullptr)
+    _frame_index(0)
 {
     switch (preset) {
     case Auto:
@@ -17,8 +14,6 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
     case Silence:
         break;
     case YouTube:
-        _video_required = true;
-        _audio_required = true;
         setWidth(1920);
         setHeight(1080);
         setAspectRatio({16,9});
@@ -98,6 +93,7 @@ bool YMediaDestination::open()
         return false;
     }
     parseFormatContext();
+    run();
     return true;
 }
 
@@ -111,32 +107,9 @@ bool YMediaDestination::close()
     return true;
 }
 
-bool YMediaDestination::writePacket(AVPacket packet)
+void YMediaDestination::writePacket(AVPacket packet)
 {
-	if (!_is_opened) { return false; }
-
-    if (packet.stream_index == 2) { return true; } //TODO
-
-    stampPacket(packet);
-
-    switch (packet.stream_index) {
-    case AVMEDIA_TYPE_VIDEO:
-		_frame_index++;
-		break;
-	case AVMEDIA_TYPE_AUDIO:
-		break;
-	}
-
-    auto size = packet.size;
-//    if (av_write_frame(_media_format_context, &packet) < 0) {
-    if (av_interleaved_write_frame(_media_format_context, &packet) < 0) {
-        std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
-		return false;
-    } else {
-//        std::cerr << "[YMediaDestination] Writed " << size << std::endl;
-    }
-
-    return true;
+    queuePacket(packet);
 }
 
 AVOutputFormat *YMediaDestination::outputFrormat() const
@@ -195,9 +168,34 @@ void YMediaDestination::parseOutputFormat()
     setAudioCodecId(_output_format->audio_codec);
 }
 
-void YMediaDestination::startWrite()
+void YMediaDestination::run()
 {
-    //
+    _thread = std::thread([this](){
+        while (_is_opened) {
+            AVPacket packet;
+            if (!getPacket(packet)) {
+                std::cerr << "[YMediaDestination] Buffer is empty." << std::endl;
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                continue;
+            }
+
+            stampPacket(packet);
+
+            if (packet.stream_index == _video_stream_index) {
+                _frame_index++;
+            }
+            if (packet.stream_index == _audio_stream_index) {
+                //
+            }
+
+            if (av_interleaved_write_frame(_media_format_context, &packet) < 0) {
+                std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
+                break;
+            } else {
+                std::cerr << "[YMediaDestination] Writed" << std::endl;
+            }
+        }
+    });
 }
 
 void YMediaDestination::stampPacket(AVPacket &packet)
@@ -207,27 +205,4 @@ void YMediaDestination::stampPacket(AVPacket &packet)
     packet.dts = packet.pts;
     packet.duration = (packet.stream_index = AVMEDIA_TYPE_VIDEO) ? frame_duration : packet.duration;
     packet.pos = -1;
-}
-
-void YMediaDestination::setVideoCodecContextOptions(AVCodecContext *avCodecContext)
-{
-	av_opt_set(avCodecContext->priv_data, "profile",	"high",			0);		// High Profile
-	av_opt_set(avCodecContext->priv_data, "bf",			"2",			0);		// 2 consecutive B frames
-	av_opt_set(avCodecContext->priv_data, "g",			"30",			0);		// Closed GOP. GOP of half the frame rate.
-	av_opt_set(avCodecContext->priv_data, "codec",		"1",			0);		// CABAC
-	av_opt_set(avCodecContext->priv_data, "crf",		"18",			0);		// Variable bitrate.
-	av_opt_set(avCodecContext->priv_data, "pix_fmt",	"yuv420p",		0);		// Chroma subsampling: 4:2:0
-	av_opt_set(avCodecContext->priv_data, "preset",		"veryfast",		0);
-
-	av_opt_set(avCodecContext->priv_data, "flags",		"+cgop",		0);		// closed GOP as per guideline
-	av_opt_set(avCodecContext->priv_data, "movflags",	"+faststart",	0);		// places moov atom/box at front of the output file.
-}
-
-void YMediaDestination::setAudioCodecContextOptions(AVCodecContext *avCodecContext)
-{
-	av_opt_set(avCodecContext->priv_data, "profile",	"aac_low",		0);		// AAC-LC
-	av_opt_set(avCodecContext->priv_data, "c",			"aac",			0);		// AAC-LC
-	av_opt_set(avCodecContext->priv_data, "b",			"384k",			0);		// Recommended audio bitrates for uploads: Stereo 384 kbps
-
-	av_opt_set(avCodecContext->priv_data, "strict",		"-2",			0); 
 }

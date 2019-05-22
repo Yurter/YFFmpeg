@@ -342,6 +342,21 @@ void YAbstractMedia::setAudioChanels(int64_t chanels)
     _chanels = chanels;
 }
 
+void YAbstractMedia::queuePacket(AVPacket packet)
+{
+    std::lock_guard<std::mutex> lock(_packet_queue_mutex);
+    _packet_queue.push(packet);
+}
+
+bool YAbstractMedia::getPacket(AVPacket &packet)
+{
+    std::lock_guard<std::mutex> lock(_packet_queue_mutex);
+    if (_packet_queue.empty()) { return false; }
+    packet = _packet_queue.front();
+    _packet_queue.pop();
+    return true;
+}
+
 void YAbstractMedia::setAudioChanelsLayout(uint64_t chanels_layout)
 {
     _chanels_layout = chanels_layout;
