@@ -34,17 +34,31 @@ YAbstractMedia::YAbstractMedia(const std::string & mrl) :
 
 YAbstractMedia::~YAbstractMedia()
 {
+    if (_thread.joinable()) {
+        _is_active = false;
+        _thread.join();
+    }
     avformat_free_context(_media_format_context);
 }
 
 bool YAbstractMedia::close()
 {
-    if (!_is_opened) { return false; }
-    if (_thread.joinable()) {
-        _is_active = false;
-        _thread.join();
+    if (!_is_opened) {
+        std::cerr << "[YAbstractMedia] Already closed." << std::endl;
+        return false;
     }
+    _is_opened = false;
     return true;
+}
+
+bool YAbstractMedia::active() const
+{
+    return _is_active;
+}
+
+bool YAbstractMedia::opened() const
+{
+    return _is_opened;
 }
 
 void YAbstractMedia::parseFormatContext()
@@ -105,11 +119,6 @@ std::string YAbstractMedia::guessFormatShortName()
 		return std::string("flv");
 	}
 	return std::string();
-}
-
-bool YAbstractMedia::isActive() const
-{
-	return _is_active;
 }
 
 std::string YAbstractMedia::mediaResourceLocator() const

@@ -17,6 +17,10 @@ YMediaSource::~YMediaSource()
 
 bool YMediaSource::open()
 {
+    if (_is_opened) {
+        std::cerr << "[YMediaSource] Already opened." << std::endl;
+        return false;
+    }
     _is_opened = openInput();
     if (_is_opened) { startRead(); }
     return _is_opened;
@@ -25,8 +29,6 @@ bool YMediaSource::open()
 bool YMediaSource::close()
 {
     if (!YAbstractMedia::close()) { return false; }
-    if (!_is_opened) { return false; }
-    _is_opened = false;
     avformat_close_input(&_media_format_context);
     std::cout << "[YMediaSource] Source: \"" << _media_resource_locator << "\" closed." << std::endl;
     return true;
@@ -35,10 +37,11 @@ bool YMediaSource::close()
 bool YMediaSource::readPacket(AVPacket &packet)
 {
     std::lock_guard<std::mutex> lock(_packet_queue_mutex);
-    while (_packet_queue.empty()) {
-        if (!_is_opened) { return false; }
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
+//    while (_packet_queue.empty()) {
+//        if (!_is_opened) { return false; }
+//        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+//    }
+    if (_packet_queue.empty()) { return false; }
     packet = _packet_queue.front();
     _packet_queue.pop();
     return true;
@@ -72,7 +75,8 @@ void YMediaSource::startRead()
     _thread = std::thread([this](){
         while (_is_opened) {
             AVPacket packet;
-            if (av_read_frame(_media_format_context, &packet) < 0) {
+            _is_active = (av_read_frame(_media_format_context, &packet) == 0);
+            if (!_is_active) {
                 std::cerr << "[YMediaSource] Cannot read source: \"" << _media_resource_locator << "\". Error or EOF." << std::endl;
                 close();
                 return;

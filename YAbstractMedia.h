@@ -18,7 +18,8 @@ public:
 
     virtual bool        open() = 0;                                     // Функция открывает медиа-ресурс.
     virtual bool        close();                                        // Функция закрывает медиа-ресурс.
-    virtual bool        isActive() const;								// Функция возвращает true, если запись/чтение не закончены, иначе - false.
+    virtual bool        active() const final;                           // Функция возвращает true, если запись/чтение не закончены, иначе - false.
+    virtual bool        opened() const final;                           //
 
     std::string         mediaResourceLocator() const;                   // Функция возвращает mrl.
     AVFormatContext*    mediaFormatContext() const;                     // Функция возвращает медиа-контекст.
@@ -77,6 +78,8 @@ public:
     };
 
 protected:
+
+    virtual bool        run() = 0;
 
     void                parseFormatContext();
     std::string         guessFormatShortName();

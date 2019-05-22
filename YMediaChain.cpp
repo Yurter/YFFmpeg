@@ -68,7 +68,7 @@ bool YMediaChain::start()
             while (_active) {
                 AVPacket source_packet;
                 if (!_source->readPacket(source_packet)) {
-                    std::cerr << "[YMediaChain] Read failed" << std::endl;
+                    std::cerr << "[YMediaChain] No data available" << std::endl;
                     break;
                 }
                 std::list<AVFrame*> decoded_frames;
@@ -76,7 +76,6 @@ bool YMediaChain::start()
                     std::cerr << "[YMediaChain] Decode failed" << std::endl;
                     break;
                 }
-
                 if (decoded_frames.empty()) { continue; }
 
 //                if (source_packet.stream_index == AVMEDIA_TYPE_AUDIO) {
@@ -95,7 +94,7 @@ bool YMediaChain::start()
                 }
                 if (!_destination->writePacket(*encoded_packet)) {
                     std::cerr << "[YMediaChain] Write failed " << ((encoded_packet->stream_index == 0) ? "VIDEO" : "AUDIO" ) << std::endl;
-                    continue;
+                    break;
                 }
             }
             _active = false;

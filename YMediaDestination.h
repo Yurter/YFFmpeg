@@ -27,6 +27,9 @@ private:
 
     void parseOutputFormat();
 
+
+    bool run();
+
     void stampPacket(AVPacket &packet);
 
 	void setVideoCodecContextOptions(AVCodecContext* avCodecContext);
@@ -40,6 +43,6 @@ private:
     bool                _audio_required;
 
     //FFmpeg
-    AVOutputFormat*     _output_format;
+    //
 
 };

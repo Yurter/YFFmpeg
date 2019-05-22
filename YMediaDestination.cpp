@@ -117,13 +117,13 @@ bool YMediaDestination::writePacket(AVPacket packet)
 
     if (packet.stream_index == 2) { return true; } //TODO
 
-	switch (packet.stream_index) {
+    stampPacket(packet);
+
+    switch (packet.stream_index) {
     case AVMEDIA_TYPE_VIDEO:
-		stampPacket(packet);
 		_frame_index++;
 		break;
 	case AVMEDIA_TYPE_AUDIO:
-		stampPacket(packet);
 		break;
 	}
 
@@ -133,7 +133,7 @@ bool YMediaDestination::writePacket(AVPacket packet)
         std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
 		return false;
     } else {
-        std::cerr << "[YMediaDestination] Writed " << size << std::endl;
+//        std::cerr << "[YMediaDestination] Writed " << size << std::endl;
     }
 
     return true;
@@ -193,6 +193,11 @@ void YMediaDestination::parseOutputFormat()
     setAudioCodecName(avcodec_get_name(_output_format->audio_codec));
     setVideoCodecId(_output_format->video_codec);
     setAudioCodecId(_output_format->audio_codec);
+}
+
+void YMediaDestination::startWrite()
+{
+    //
 }
 
 void YMediaDestination::stampPacket(AVPacket &packet)
