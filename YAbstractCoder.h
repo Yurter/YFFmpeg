@@ -24,9 +24,13 @@ protected:
 protected:
 
     // General parameters
+//    bool                _video_available;
+//    bool                _audio_available;
+    int64_t             _video_stream_index;
+    int64_t             _audio_stream_index;
 
     // FFmpeg
-    AVCodecContext		*_video_codec_context;
-    AVCodecContext		*_audio_codec_context;
+    AVCodecContext*     _video_codec_context;
+    AVCodecContext*     _audio_codec_context;
 
 };

@@ -50,13 +50,6 @@ bool YMediaSource::openInput()
         std::cerr << "[YMediaSource] Media resource locator is empty. Cannot start read." << std::endl;
         return false;
     }
-//    {
-//        _media_format_context = avformat_alloc_context();
-//        if (_media_format_context == nullptr) {
-//            std::cerr << "[YMediaSource] Failed to alloc input format context." << std::endl;
-//            return false;
-//        }
-//    }
     std::cout << "[YMediaSource] Source: \"" << _media_resource_locator << "\" is opening..." << std::endl;
     if (avformat_open_input(&_media_format_context, _media_resource_locator.c_str(), nullptr, nullptr) < 0) {
         std::cerr << "[YMediaSource] Failed to open input context." << std::endl;
@@ -67,7 +60,7 @@ bool YMediaSource::openInput()
         return false;
     }
     {
-        getInfo();
+        parseFormatContext();
         av_dump_format(_media_format_context, 0, _media_resource_locator.c_str(), 0);
         std::cout << "[YMediaSource] Source: \"" << _media_resource_locator << "\" opened." << std::endl;
         return true;

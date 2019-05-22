@@ -16,22 +16,18 @@ public:
 
     bool writePacket(AVPacket packet);
 
+    AVOutputFormat*     outputFrormat() const;
+
+    bool                guessOutputFromat();
+
 private:
 
-	bool createOutputContext();
-	bool copyInputContext(const AVFormatContext *input_format_context, bool audio_required, bool video_required);
+    bool createOutputContext();
 	bool openOutputContext();
 
+    void parseOutputFormat();
+
     void stampPacket(AVPacket &packet);
-
-	bool muxVideoPacket();
-	bool muxAudioPacket();
-
-	void openVirtualAudioInput();
-	void openVirtualVideoInput();
-
-	AVPacket readVirtualAudioPacket();
-	AVPacket readVirtualVideoPacket();
 
 	void setVideoCodecContextOptions(AVCodecContext* avCodecContext);
 	void setAudioCodecContextOptions(AVCodecContext* avCodecContext);
@@ -39,8 +35,11 @@ private:
 private:
 
 	// General parameters
-    int64_t     _frame_index;
-    bool        _video_required;
-    bool        _audio_required;
+    int64_t             _frame_index;
+    bool                _video_required;
+    bool                _audio_required;
+
+    //FFmpeg
+    AVOutputFormat*     _output_format;
 
 };

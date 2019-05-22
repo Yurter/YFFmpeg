@@ -1,6 +1,8 @@
 #include "YAbstractCoder.h"
 
 YAbstractCoder::YAbstractCoder() :
+    _video_stream_index(-1),
+    _audio_stream_index(-1),
     _video_codec_context(nullptr),
     _audio_codec_context(nullptr)
 {
