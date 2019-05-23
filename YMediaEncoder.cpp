@@ -123,7 +123,7 @@ bool YMediaEncoder::initAudioCodec()
 
     _audio_codec_context->sample_rate = static_cast<int>(_destination->sampleRate());
     _audio_codec_context->bit_rate = _destination->audioBitrate();
-    _audio_codec_context->sample_fmt = AV_SAMPLE_FMT_FLTP;//encoder->sample_fmts[0]; //TODO
+    _audio_codec_context->sample_fmt = _destination->sampleFormat();//AV_SAMPLE_FMT_FLTP;//encoder->sample_fmts[0]; //TODO
     _audio_codec_context->channel_layout = _destination->audioChanelsLayout();
     _audio_codec_context->channels = static_cast<int>(_destination->audioChanels());
 

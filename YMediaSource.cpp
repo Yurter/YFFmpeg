@@ -37,10 +37,6 @@ bool YMediaSource::close()
 bool YMediaSource::readPacket(AVPacket &packet)
 {
     std::lock_guard<std::mutex> lock(_packet_queue_mutex);
-//    while (_packet_queue.empty()) {
-//        if (!_is_opened) { return false; }
-//        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-//    }
     if (_packet_queue.empty()) { return false; }
     packet = _packet_queue.front();
     _packet_queue.pop();

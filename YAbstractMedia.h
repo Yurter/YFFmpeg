@@ -55,12 +55,16 @@ public:
     void                setVideoDuration(int64_t video_duration);
     void                setAudioDuration(int64_t audio_duration);
     void                setAspectRatio(AVRational aspect_ratio);
+    void                setPixelFormat(AVPixelFormat pixel_format);
+
     void                setFrameRate(uint64_t frame_rate);
     void                setFrameRate(AVRational frame_rate);
-    void                setVideoCodecName(std::string video_codec_name);
-    void                setAudioCodecName(std::string audio_codec_name);
-    void                setVideoCodecId(AVCodecID video_codec_id);
-    void                setAudioCodecId(AVCodecID audio_codec_id);
+
+    void                setVideoCodec(std::string video_codec_short_name);
+    void                setAudioCodec(std::string audio_codec_short_name);
+    void                setVideoCodec(AVCodecID video_codec_id);
+    void                setAudioCodec(AVCodecID audio_codec_id);
+
     void                setSampleRate(int64_t sample_rate);
     void                setSampleFormat(AVSampleFormat sample_format);
     void                setVideoBitrate(int64_t video_bitrate);
@@ -123,6 +127,7 @@ protected:
     int64_t             _height;
     AVRational          _aspect_ratio;
     uint64_t    		_frame_rate;
+    AVPixelFormat       _pixel_format;
     int64_t             _video_bitrate;
     int64_t             _video_duration;
     /* Audio */

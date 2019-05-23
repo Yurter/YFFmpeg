@@ -21,7 +21,7 @@ YAbstractMedia::YAbstractMedia(const std::string & mrl) :
 	_width(0),
 	_height(0),
     _aspect_ratio({-1,-1}),
-	_frame_rate(0.0f),
+    _frame_rate(0),
     _video_bitrate(0),
     _video_duration(0),
     _audio_codec_id(AV_CODEC_ID_NONE),
@@ -75,32 +75,30 @@ void YAbstractMedia::parseFormatContext()
 
     for (int64_t i = 0; i < _media_format_context->nb_streams; i++) {
 		AVStream* in_stream = _media_format_context->streams[i];
+        auto codec = in_stream->codec;
         auto codecpar = in_stream->codecpar;
         auto codec_type = codecpar->codec_type;
 
         switch (codec_type) {
         case AVMEDIA_TYPE_VIDEO: {
-            setVideoCodecId(codecpar->codec_id);
-            setVideoCodecName(avcodec_get_name(codecpar->codec_id));
+            setVideoCodec(codecpar->codec_id);
             setWidth(codecpar->width);
             setHeight(codecpar->height);
             setAspectRatio({-1,-1}); //TODO
             setVideoDuration(in_stream->duration);
             setFrameRate(in_stream->avg_frame_rate); // ? -> r_frame_rate
             setVideoBitrate(codecpar->bit_rate);
-            _video_available = true;
+            setPixelFormat(codec->pix_fmt);
             _video_stream_index = i;
             break;
         }
         case AVMEDIA_TYPE_AUDIO: {
-            setAudioCodecId(codecpar->codec_id);
-            setAudioCodecName(avcodec_get_name(codecpar->codec_id));
+            setAudioCodec(codecpar->codec_id);
             setSampleRate(codecpar->sample_rate);
-//            setSampleFormat(codecpar->)
+            setSampleFormat(codec->sample_fmt);
             setAudioBitrate(codecpar->bit_rate);
             setAudioChanelsLayout(codecpar->channel_layout);
             setAudioChanels(codecpar->channels);
-            _audio_available = true;
             _audio_stream_index = i;
             break;
         }
@@ -276,6 +274,11 @@ void YAbstractMedia::setAspectRatio(AVRational aspect_ratio)
     _aspect_ratio = aspect_ratio;
 }
 
+void YAbstractMedia::setPixelFormat(AVPixelFormat pixel_format)
+{
+    _pixel_format = pixel_format;
+}
+
 void YAbstractMedia::setFrameRate(uint64_t frame_rate)
 {
     _frame_rate = frame_rate;
@@ -290,31 +293,34 @@ void YAbstractMedia::setFrameRate(AVRational frame_rate)
     }
 }
 
-void YAbstractMedia::setVideoCodecName(std::string video_codec_name)
+void YAbstractMedia::setVideoCodec(std::string video_codec_short_name)
 {
-    if (video_codec_name.empty())   { return; }
-    if (video_codec_name == "none") { return; }
-    if (video_codec_name != "h264") { return; } //TODO
-    _video_codec_name = video_codec_name;
+    if (video_codec_short_name != "h264") { return; } //Fix it
+//    _video_codec_id = codec_get_id(video_codec_short_name); //TODO
+    _video_codec_name = video_codec_short_name;
     _video_available = true;
 }
 
-void YAbstractMedia::setAudioCodecName(std::string audio_codec_name)
+void YAbstractMedia::setAudioCodec(std::string audio_codec_short_name)
 {
-    if (audio_codec_name.empty())   { return; }
-    if (audio_codec_name == "none") { return; }
-    _audio_codec_name = audio_codec_name;
+//    _audio_codec_id = codec_get_id(audio_codec_short_name); //TODO
+    _audio_codec_name = audio_codec_short_name;
     _audio_available = true;
 }
 
-void YAbstractMedia::setVideoCodecId(AVCodecID video_codec_id)
+void YAbstractMedia::setVideoCodec(AVCodecID video_codec_id)
 {
+    if (video_codec_id != AV_CODEC_ID_H264) { return; } //Fix it
     _video_codec_id = video_codec_id;
+    _video_codec_name = avcodec_get_name(video_codec_id);
+    _video_available = true;
 }
 
-void YAbstractMedia::setAudioCodecId(AVCodecID audio_codec_id)
+void YAbstractMedia::setAudioCodec(AVCodecID audio_codec_id)
 {
     _audio_codec_id = audio_codec_id;
+    _audio_codec_name = avcodec_get_name(audio_codec_id);
+    _audio_available = true;
 }
 
 void YAbstractMedia::setSampleRate(int64_t sample_rate)

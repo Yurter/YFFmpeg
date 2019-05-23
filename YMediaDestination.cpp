@@ -18,8 +18,8 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         setHeight(1080);
         setAspectRatio({16,9});
         setFrameRate(30);
-        setVideoCodecName("libx264");
-        setAudioCodecName("aac");
+        setVideoCodec("libx264");
+        setAudioCodec("aac");
         break;
     case Timelapse:
         break;
@@ -45,14 +45,6 @@ bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
         std::cerr << "[YMediaDestination] Failed allocating output stream" << std::endl;
         return false;
     }
-
-    //
-    out_stream->codecpar->width = 1920;
-    out_stream->codecpar->height = 1080;
-    //
-    out_stream->codec->coded_width = 1920;
-    out_stream->codec->coded_height = 1920;
-    //
 
     if (avcodec_parameters_from_context(out_stream->codecpar, stream_codec_context) < 0) {
         std::cerr << "[YMediaDestination] Failed to copy context input to output stream codec context" << std::endl;
@@ -162,10 +154,8 @@ bool YMediaDestination::openOutputContext()
 void YMediaDestination::parseOutputFormat()
 {
     if (_output_format == nullptr) { return; }
-    setVideoCodecName(avcodec_get_name(_output_format->video_codec));
-    setAudioCodecName(avcodec_get_name(_output_format->audio_codec));
-    setVideoCodecId(_output_format->video_codec);
-    setAudioCodecId(_output_format->audio_codec);
+    setVideoCodec(_output_format->video_codec);
+    setAudioCodec(_output_format->audio_codec);
 }
 
 void YMediaDestination::run()
