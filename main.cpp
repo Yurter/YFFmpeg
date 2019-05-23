@@ -12,8 +12,8 @@ int main()
 
 //    std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
 //    std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
-//    std::string mrl_src = "source.mp3";
-    std::string mrl_src = "source.wav";
+    std::string mrl_src = "source.mp3";
+//    std::string mrl_src = "source.wav";
 
 
 
@@ -29,7 +29,8 @@ int main()
 
 
 
-    destination.setSampleRate(44'100);
+//    destination.setSampleRate(44'100);
+    destination.setSampleRate(11'025);
     destination.setSampleFormat(AV_SAMPLE_FMT_FLTP);
     destination.setAudioBitrate(128 * 1024);
     destination.setAudioChanelsLayout(AV_CH_LAYOUT_STEREO);

@@ -41,6 +41,7 @@ bool YMediaDecoder::decodePacket(AVPacket *packet, std::list<AVFrame*> &decoded_
     //decoded_frames.clear();
     AVFrame *decoded_frame = av_frame_alloc();
 //    int ret = av_frame_make_writable(decoded_frame);
+//    decoded_frame->nb_samples = 1024;
     while (avcodec_receive_frame(codec_context, decoded_frame) >= 0) {
         decoded_frames.push_back(decoded_frame);
         decoded_frame = av_frame_alloc();

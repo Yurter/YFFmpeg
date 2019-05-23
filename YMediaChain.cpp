@@ -97,14 +97,18 @@ bool YMediaChain::start()
                     }
                 }
 
-//                if (_resampler != nullptr) {
-//                    if (source_packet.stream_index == source_audio_stream_index) {
-//                        if (!_resampler->resample(decoded_frames.front())) {
-//                            std::cerr << "[YMediaChain] Resample failed" << std::endl;
-//                            break;
-//                        }
-//                    }
-//                }
+                if (decoded_frames.front()->nb_samples != 1152) {
+                    int debug_stop = 3;
+                }
+
+                if (_resampler != nullptr) {
+                    if (source_packet.stream_index == source_audio_stream_index) {
+                        if (!_resampler->resample(decoded_frames.front())) {
+                            std::cerr << "[YMediaChain] Resample failed" << std::endl;
+                            break;
+                        }
+                    }
+                }
 
                 AVPacket *encoded_packet = av_packet_alloc();
                 av_init_packet(encoded_packet);
