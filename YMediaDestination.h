@@ -28,12 +28,13 @@ private:
     void run();
 
     void parseOutputFormat();
-    void stampPacket(AVPacket &packet);
+    bool stampPacket(AVPacket &packet);
 
 private:
 
 	// General parameters
-    int64_t             _frame_index;
+    int64_t             _video_packet_index;
+    int64_t             _audio_packet_index;
 
     //FFmpeg
     //

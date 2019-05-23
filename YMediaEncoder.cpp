@@ -37,6 +37,7 @@ bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame*> &
     int ret;
     for (auto&& decoded_frame : decoded_frames) {
         ret = av_frame_make_writable(decoded_frame);
+        std::cout << "[DEBUG] " << decoded_frame->nb_samples << ":" << codec_context->frame_size << std::endl;
         if ((ret = avcodec_send_frame(codec_context, decoded_frame)) != 0) {
             std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
             return false;
@@ -126,8 +127,7 @@ bool YMediaEncoder::initAudioCodec()
     _audio_codec_context->sample_fmt = _destination->sampleFormat();
     _audio_codec_context->channel_layout = _destination->audioChanelsLayout();
     _audio_codec_context->channels = static_cast<int>(_destination->audioChanels());
-
-//    _audio_codec_context->time_base = { 1, _audio_codec_context->sample_rate };
+    _audio_codec_context->time_base = { 1, _audio_codec_context->sample_rate };
 
 
 //    av_opt_set(_audio_codec_context, "profile", "aac_low", 0);

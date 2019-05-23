@@ -97,10 +97,6 @@ bool YMediaChain::start()
                     }
                 }
 
-                if (decoded_frames.front()->nb_samples != 1152) {
-                    int debug_stop = 3;
-                }
-
                 if (_resampler != nullptr) {
                     if (source_packet.stream_index == source_audio_stream_index) {
                         if (!_resampler->resample(decoded_frames.front())) {

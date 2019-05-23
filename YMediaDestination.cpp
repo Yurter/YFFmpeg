@@ -4,7 +4,8 @@
 
 YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset) :
 	YAbstractMedia(mrl),
-    _frame_index(0)
+    _video_packet_index(0),
+    _audio_packet_index(0)
 {
     switch (preset) {
     case Auto:
@@ -49,7 +50,6 @@ YMediaDestination::~YMediaDestination()
 
 bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
 {
-    std::cout << "[YMediaDestination] Adding new " << stream_codec_context->codec->name << " stream" << std::endl;
     AVStream* out_stream = avformat_new_stream(_media_format_context, stream_codec_context->codec);
     if (out_stream == nullptr) {
         std::cerr << "[YMediaDestination] Failed allocating output stream" << std::endl;
@@ -75,12 +75,13 @@ bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
         break;
     }
 
+    std::cout << "[YMediaDestination] Created stream: " << stream_codec_context->codec->name << std::endl;
     return true;
 }
 
 bool YMediaDestination::open()
 {
-    std::cout << "[YMediaDestination] Opening" << std::endl;
+//    std::cout << "[YMediaDestination] Opening" << std::endl;
 
 //    if (!createOutputContext()) {
 //        std::cerr << "[YMediaDestination] Failed to create output context." << std::endl;
@@ -179,13 +180,9 @@ void YMediaDestination::run()
                 continue;
             }
 
-            stampPacket(packet);
-
-            if (packet.stream_index == _video_stream_index) {
-                _frame_index++;
-            }
-            if (packet.stream_index == _audio_stream_index) {
-                //
+            if (!stampPacket(packet)) {
+                std::cerr << "[YMediaDestination] stampPacket failed" << std::endl;
+                break;
             }
 
             if (av_interleaved_write_frame(_media_format_context, &packet) < 0) {
@@ -198,11 +195,22 @@ void YMediaDestination::run()
     });
 }
 
-void YMediaDestination::stampPacket(AVPacket &packet)
+bool YMediaDestination::stampPacket(AVPacket &packet)
 {
-    int64_t frame_duration = static_cast<int64_t>(1000.f / _frame_rate);
-    packet.pts = _frame_index * frame_duration;
-    packet.dts = packet.pts;
-    packet.duration = (packet.stream_index = AVMEDIA_TYPE_VIDEO) ? frame_duration : packet.duration;
-    packet.pos = -1;
+    if (packet.stream_index == _video_stream_index) {
+        packet.pts = _video_packet_index;
+        packet.dts = _video_packet_index;
+//        packet.duration
+        packet.pos = -1;
+        _video_packet_index++;
+        return false; //TODO: duration
+    }
+    if (packet.stream_index == _audio_stream_index) {
+        packet.pts = _audio_packet_index;
+        packet.dts = _audio_packet_index;
+        packet.pos = -1;
+        _audio_packet_index++;
+        return true;
+    }
+    return false;
 }
