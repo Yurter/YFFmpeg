@@ -1,11 +1,13 @@
-#ifndef YVIDEORESCALER_H
-#define YVIDEORESCALER_H
-
+#pragma once
+#include "ffmpeg.h"
 
 class YVideoRescaler
 {
-public:
-    YVideoRescaler();
-};
 
-#endif // YVIDEORESCALER_H
+public:
+
+    YVideoRescaler();
+
+    bool rescale(AVFrame* frame);
+
+};

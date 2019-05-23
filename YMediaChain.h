@@ -5,6 +5,7 @@
 #include "YMediaFilter.h"
 #include "YMediaEncoder.h"
 #include "YMediaDestination.h"
+#include "YVideoRescaler.h"
 #include "YAudioResampler.h"
 
 #include <thread>
@@ -33,6 +34,11 @@ public:
 
 private:
 
+    bool rescalerRequired();
+    bool resamplerRequired();
+
+private:
+
 	//YMedia
     YMediaSource*       _source;
     YMediaDecoder*      _decoder;
@@ -40,6 +46,7 @@ private:
     YMediaFilter*       _audio_filter;
     YMediaEncoder*      _encoder;
     YMediaDestination*  _destination;
+    YVideoRescaler*     _rescaler;
     YAudioResampler*    _resampler;
 
 	//General parameters

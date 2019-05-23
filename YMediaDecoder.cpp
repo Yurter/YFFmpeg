@@ -9,7 +9,6 @@ YMediaDecoder::YMediaDecoder(YMediaSource *source) :
 
 bool YMediaDecoder::init()
 {
-    std::cout << "[YMediaDecoder] Initializing" << std::endl;
     if (_source->videoAvailable()) {
         if (!initVideoCodec()) {
             std::cerr << "[YMediaDecoder] Failed to init video codec" << std::endl;
@@ -22,6 +21,7 @@ bool YMediaDecoder::init()
             return false;
         }
     }
+    std::cout << "[YMediaDecoder] Inited" << std::endl;
     return true;
 }
 

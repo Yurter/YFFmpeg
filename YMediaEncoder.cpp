@@ -9,7 +9,6 @@ YMediaEncoder::YMediaEncoder(YMediaDestination *destination) :
 
 bool YMediaEncoder::init()
 {
-    std::cout << "[YMediaEncoder] Initializing" << std::endl;
     if (_destination->videoAvailable()) {
         if (!initVideoCodec()) {
             std::cerr << "[YMediaDecoder] Failed to init video codec" << std::endl;
@@ -22,6 +21,7 @@ bool YMediaEncoder::init()
             return false;
         }
     }
+    std::cout << "[YMediaEncoder] Inited" << std::endl;
     return true;
 }
 
@@ -122,7 +122,7 @@ bool YMediaEncoder::initAudioCodec()
 //    _audio_codec_context->codec_tag = 0;
 
     _audio_codec_context->sample_rate = static_cast<int>(_destination->sampleRate());
-    _audio_codec_context->bit_rate = _destination->audioBitrate();
+    _audio_codec_context->bit_rate = 384000;//_destination->audioBitrate();
     _audio_codec_context->sample_fmt = _destination->sampleFormat();//AV_SAMPLE_FMT_FLTP;//encoder->sample_fmts[0]; //TODO
     _audio_codec_context->channel_layout = _destination->audioChanelsLayout();
     _audio_codec_context->channels = static_cast<int>(_destination->audioChanels());
@@ -133,6 +133,8 @@ bool YMediaEncoder::initAudioCodec()
 //    av_opt_set(_audio_codec_context, "profile", "aac_low", 0);
     //av_opt_set(_audio_codec_context, "b", "384k", 0);
 
+//    av_opt_set(_audio_codec_context, "frame_size ", "4096", 0);
+
 
     // Audio: pcm_mulaw, 16000 Hz, mono, s16, 128 kb/s
     // Audio: aac (LC) ([10][0][0][0] / 0x000A), 16000 Hz, mono, fltp, 69 kb/s
@@ -141,6 +143,8 @@ bool YMediaEncoder::initAudioCodec()
         std::cerr << "[YMediaEncoder] Could not open audio encoder" << std::endl;
         return false;
     }
+
+//    _audio_codec_context->frame_size = 4096;
 
     _destination->addStream(_audio_codec_context);
 

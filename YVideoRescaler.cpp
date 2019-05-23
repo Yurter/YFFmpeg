@@ -2,5 +2,10 @@
 
 YVideoRescaler::YVideoRescaler()
 {
+    //
+}
 
+bool YVideoRescaler::rescale(AVFrame *frame)
+{
+    return false;
 }

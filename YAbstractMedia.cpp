@@ -296,14 +296,25 @@ void YAbstractMedia::setFrameRate(AVRational frame_rate)
 void YAbstractMedia::setVideoCodec(std::string video_codec_short_name)
 {
     if (video_codec_short_name != "h264") { return; } //Fix it
-//    _video_codec_id = codec_get_id(video_codec_short_name); //TODO
+    //
+    AVCodec *codec;
+    codec = avcodec_find_decoder_by_name(video_codec_short_name.c_str());
+    if (codec != nullptr) { _video_codec_id = codec->id; }
+    codec = avcodec_find_encoder_by_name(video_codec_short_name.c_str());
+    if (codec != nullptr) { _video_codec_id = codec->id; }
+
     _video_codec_name = video_codec_short_name;
     _video_available = true;
 }
 
 void YAbstractMedia::setAudioCodec(std::string audio_codec_short_name)
 {
-//    _audio_codec_id = codec_get_id(audio_codec_short_name); //TODO
+    AVCodec *codec;
+    codec = avcodec_find_decoder_by_name(audio_codec_short_name.c_str());
+    if (codec != nullptr) { _audio_codec_id  = codec->id; }
+    codec = avcodec_find_encoder_by_name(audio_codec_short_name.c_str());
+    if (codec != nullptr) { _audio_codec_id = codec->id; }
+
     _audio_codec_name = audio_codec_short_name;
     _audio_available = true;
 }

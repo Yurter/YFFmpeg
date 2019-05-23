@@ -14,12 +14,22 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
     case Silence:
         break;
     case YouTube:
+        /* Video */
         setWidth(1920);
         setHeight(1080);
         setAspectRatio({16,9});
         setFrameRate(30);
+        setVideoBitrate(400'000);
         setVideoCodec("libx264");
-        setAudioCodec("aac");
+        /* Audio */
+        setSampleRate(44'100);
+        setSampleFormat(AV_SAMPLE_FMT_FLTP);
+        setAudioBitrate(128 * 1024);
+        setAudioChanelsLayout(AV_CH_LAYOUT_STEREO);
+        setAudioChanels(2);
+        //setAudioCodec("aac");
+        setAudioCodec("mp3");
+//        setAudioCodec("wav");
         break;
     case Timelapse:
         break;
