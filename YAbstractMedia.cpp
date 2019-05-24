@@ -73,6 +73,7 @@ void YAbstractMedia::parseFormatContext()
             video_parameters.setBitrate(codecpar->bit_rate);
             video_parameters.setPixelFormat(codec->pix_fmt);
             video_parameters.setStreamIndex(i);
+            video_parameters.setAvailable(true);
             break;
         }
         case AVMEDIA_TYPE_AUDIO: {
@@ -83,6 +84,7 @@ void YAbstractMedia::parseFormatContext()
             audio_parameters.setChanelsLayout(codecpar->channel_layout);
             audio_parameters.setChanels(codecpar->channels);
             audio_parameters.setStreamIndex(i);
+            audio_parameters.setAvailable(true);
             break;
         }
         default:

@@ -60,6 +60,7 @@ bool YMediaSource::openInput()
         return false;
     }
     {
+        _input_format = _media_format_context->iformat;
         parseFormatContext();
         av_dump_format(_media_format_context, 0, _media_resource_locator.c_str(), 0);
         std::cout << "[YMediaSource] Source: \"" << _media_resource_locator << "\" opened." << std::endl;

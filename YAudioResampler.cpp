@@ -22,6 +22,15 @@ bool YAudioResampler::init(AVCodecContext *input_codec_context, AVCodecContext *
 {
     if (_inited) {
         std::cerr << "[YAudioResampler] Already inited" << std::endl;
+        return false;
+    }
+    if (input_codec_context == nullptr) {
+        std::cerr << "[YAudioResampler] input_codec_context is null" << std::endl;
+        return false;
+    }
+    if (output_codec_context == nullptr) {
+        std::cerr << "[YAudioResampler] output_codec_context is null" << std::endl;
+        return false;
     }
 
     _input_codec_context = input_codec_context;

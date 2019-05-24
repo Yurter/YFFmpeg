@@ -21,6 +21,10 @@ bool YMediaDecoder::init()
             return false;
         }
     }
+    if (_source->mediaFormatContext()->nb_streams == 0) {
+        std::cerr << "[YMediaDecoder] Source wasn't inited" << std::endl;
+        return false;
+    }
     std::cout << "[YMediaDecoder] Inited" << std::endl;
     return true;
 }
