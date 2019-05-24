@@ -38,10 +38,10 @@ int main()
 //    destination.audio_parameters.setSampleRate(11'025);
     destination.audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
     destination.audio_parameters.setBitrate(128 * 1024);
-    destination.audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
-//    destination.audio_parameters.setChanelsLayout(AV_CH_LAYOUT_MONO);
-    destination.audio_parameters.setChanels(2);
-//    destination.audio_parameters.setChanels(1);
+//    destination.audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
+    destination.audio_parameters.setChanelsLayout(AV_CH_LAYOUT_MONO);
+//    destination.audio_parameters.setChanels(2);
+    destination.audio_parameters.setChanels(1);
 
 
 

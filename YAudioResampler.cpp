@@ -97,7 +97,7 @@ bool YAudioResampler::resample(AVFrame **frame)
     /* Use the maximum number of possible samples per frame.
      * If there is less than the maximum possible frame size in the FIFO
      * buffer use this number. Otherwise, use the maximum possible frame size. */
-    const int frame_size = FFMIN(av_audio_fifo_size(_audio_fifo), _output_codec_context->frame_size);
+    const int frame_size = FFMIN(av_audio_fifo_size(_audio_fifo), output_frame_size);
     /* Initialize temporary storage for one output frame. */
     if (!initOutputFrame(&output_frame, frame_size)) {
         std::cerr << "[YAudioResampler] initOutputFrame failed" << std::endl;
@@ -112,9 +112,7 @@ bool YAudioResampler::resample(AVFrame **frame)
         return false;
     }
 
-
     (*frame) = output_frame;
-
 
     return true;
 }
@@ -205,7 +203,6 @@ bool YAudioResampler::initOutputFrame(AVFrame **frame, int frame_size)
     (*frame)->channel_layout = _output_codec_context->channel_layout;
     (*frame)->format         = _output_codec_context->sample_fmt;
     (*frame)->sample_rate    = _output_codec_context->sample_rate;
-//    (*frame)->nb_samples = _output_codec_context->frame_size;
     /* Allocate the samples of the created frame. This call will make
      * sure that the audio frame can hold as many samples as specified. */
     if (av_frame_get_buffer(*frame, 0) < 0) {

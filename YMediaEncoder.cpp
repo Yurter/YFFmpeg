@@ -7,6 +7,11 @@ YMediaEncoder::YMediaEncoder(YMediaDestination *destination) :
     //
 }
 
+YMediaEncoder::~YMediaEncoder()
+{
+    //
+}
+
 bool YMediaEncoder::init()
 {
     if (_destination->video_parameters.available()) {
@@ -40,7 +45,7 @@ bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame*> &
     }
     int ret;
     for (auto&& decoded_frame : decoded_frames) {
-        ret = av_frame_make_writable(decoded_frame);
+//        ret = av_frame_make_writable(decoded_frame); // ??
         std::cout << "[DEBUG] " << decoded_frame->nb_samples << ":" << codec_context->frame_size << std::endl;
         if ((ret = avcodec_send_frame(codec_context, decoded_frame)) != 0) {
             std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
@@ -54,11 +59,6 @@ bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame*> &
         return false;
     }
     return true;
-}
-
-YMediaEncoder::~YMediaEncoder()
-{
-    //
 }
 
 bool YMediaEncoder::initVideoCodec()
@@ -118,14 +118,11 @@ bool YMediaEncoder::initAudioCodec()
     if (encoder == nullptr) {
         std::cerr << "[YMediaEncoder] Could not find audio encoder " << _destination->audio_parameters.codecName() << std::endl;
         return false;
-    } else {
-        //
     }
+
     _audio_codec_context = avcodec_alloc_context3(encoder);
-    //
-    // инициализвация параметров кодека
-    //
-    _audio_codec_context->codec_tag = 0;
+
+//    _audio_codec_context->codec_tag = 0;
 
     _audio_codec_context->sample_rate = static_cast<int>(_destination->audio_parameters.sampleRate());
     _audio_codec_context->bit_rate = _destination->audio_parameters.bitrate();
@@ -134,22 +131,10 @@ bool YMediaEncoder::initAudioCodec()
     _audio_codec_context->channels = static_cast<int>(_destination->audio_parameters.chanels());
     _audio_codec_context->time_base = { 1, _audio_codec_context->sample_rate };
 
-
-//    av_opt_set(_audio_codec_context, "profile", "aac_low", 0);
-    //av_opt_set(_audio_codec_context, "b", "384k", 0);
-
-//    av_opt_set(_audio_codec_context, "frame_size ", "4096", 0);
-
-
-    // Audio: pcm_mulaw, 16000 Hz, mono, s16, 128 kb/s
-    // Audio: aac (LC) ([10][0][0][0] / 0x000A), 16000 Hz, mono, fltp, 69 kb/s
-
     if (avcodec_open2(_audio_codec_context, encoder, nullptr) < 0) {
         std::cerr << "[YMediaEncoder] Could not open audio encoder" << std::endl;
         return false;
     }
-
-//    _audio_codec_context->frame_size = 4096;
 
     _destination->addStream(_audio_codec_context);
 
