@@ -16,6 +16,8 @@ public:
 
     bool readPacket(AVPacket &packet);
 
+    AVInputFormat*      inputFormat() const;
+
 private:
 
     bool openInput();
@@ -25,4 +27,6 @@ private:
 
     // General parameters
 
+    // FFmpeg
+    AVInputFormat*      _input_format;
 };

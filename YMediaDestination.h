@@ -37,6 +37,6 @@ private:
     int64_t             _audio_packet_index;
 
     //FFmpeg
-    //
+    AVOutputFormat*     _output_format;
 
 };

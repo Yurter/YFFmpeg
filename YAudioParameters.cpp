@@ -15,7 +15,7 @@ void YAudioParameters::setSampleFormat(AVSampleFormat sample_format)
     _sample_format = sample_format;
 }
 
-void YAudioParameters::setChanelsLayout(int64_t chanels_layout)
+void YAudioParameters::setChanelsLayout(uint64_t chanels_layout)
 {
     _chanels_layout = chanels_layout;
 }

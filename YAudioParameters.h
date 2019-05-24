@@ -12,7 +12,7 @@ public:
 
     void            setSampleRate(int64_t sample_rate);
     void            setSampleFormat(AVSampleFormat sample_format);
-    void            setChanelsLayout(int64_t chanels_layout);
+    void            setChanelsLayout(uint64_t chanels_layout);
     void            setChanels(int64_t chanels);
 
     int64_t         sampleRate()    const;
@@ -24,7 +24,7 @@ private:
 
     int64_t         _sample_rate;
     AVSampleFormat  _sample_format;
-    int64_t         _chanels_layout;
+    uint64_t        _chanels_layout;
     int64_t         _chanels;
 
 };

@@ -36,6 +36,15 @@ void YVideoParameters::setFrameRate(float frame_rate)
     _frame_rate = frame_rate;
 }
 
+void YVideoParameters::setFrameRate(AVRational frame_rate)
+{
+    if (frame_rate.den == 0) {
+        _frame_rate = -1.f;
+    } else {
+        _frame_rate = frame_rate.num / frame_rate.den;
+    }
+}
+
 void YVideoParameters::setPixelFormat(AVPixelFormat pixel_format)
 {
     _pixel_format = pixel_format;

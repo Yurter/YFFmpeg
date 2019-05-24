@@ -14,6 +14,7 @@ public:
     void            setHeight(int64_t height);
     void            setAspectRatio(AVRational aspect_ratio);
     void            setFrameRate(float frame_rate);
+    void            setFrameRate(AVRational frame_rate);
     void            setPixelFormat(AVPixelFormat pixel_format);
 
     int64_t         width()         const;

@@ -4,7 +4,7 @@
 #include <thread>
 
 YMediaSource::YMediaSource(const std::string &mrl) :
-	YAbstractMedia(mrl)
+    YAbstractMedia(mrl)
 {
     //
 }
