@@ -99,7 +99,7 @@ bool YMediaChain::start()
 
                 if (_resampler != nullptr) {
                     if (source_packet.stream_index == source_audio_stream_index) {
-                        if (!_resampler->resample(decoded_frames.front())) {
+                        if (!_resampler->resample(&decoded_frames.front())) {
                             std::cerr << "[YMediaChain] Resample failed" << std::endl;
                             break;
                         }

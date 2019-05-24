@@ -12,7 +12,7 @@ public:
 
     bool init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context);
 
-    bool resample(AVFrame* frame);
+    bool resample(AVFrame **frame);
 
 private:
 

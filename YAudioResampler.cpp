@@ -57,7 +57,7 @@ bool YAudioResampler::init(AVCodecContext *input_codec_context, AVCodecContext *
     return true;
 }
 
-bool YAudioResampler::resample(AVFrame *frame)
+bool YAudioResampler::resample(AVFrame **frame)
 {
     std::cout << "[YAudioResampler] resample" << std::endl;
     if (!_inited) {
@@ -73,13 +73,13 @@ bool YAudioResampler::resample(AVFrame *frame)
     }
     /* Convert the input samples to the desired output sample format.
      * This requires a temporary storage provided by converted_input_samples. */
-    if (!convertSamples(const_cast<const uint8_t**>(frame->extended_data),
-                        converted_input_samples, frame->nb_samples)) {
+    if (!convertSamples(const_cast<const uint8_t**>((*frame)->extended_data),
+                        converted_input_samples, (*frame)->nb_samples)) {
         std::cerr << "[YAudioResampler] convertSamples failed" << std::endl;
         return false;
     }
     /* Add the converted input samples to the FIFO buffer for later processing. */
-    if (!addSamplesToFifo(converted_input_samples, frame->nb_samples)) {
+    if (!addSamplesToFifo(converted_input_samples, (*frame)->nb_samples)) {
         std::cerr << "[YAudioResampler] addSamplesToFifo failed" << std::endl;
         return false;
     }
@@ -104,6 +104,7 @@ bool YAudioResampler::resample(AVFrame *frame)
     }
 
 
+    (*frame) = output_frame;
 
 
     return true;
@@ -195,7 +196,7 @@ bool YAudioResampler::initOutputFrame(AVFrame **frame, int frame_size)
     (*frame)->channel_layout = _output_codec_context->channel_layout;
     (*frame)->format         = _output_codec_context->sample_fmt;
     (*frame)->sample_rate    = _output_codec_context->sample_rate;
-    (*frame)->nb_samples = _output_codec_context->frame_size;
+//    (*frame)->nb_samples = _output_codec_context->frame_size;
     /* Allocate the samples of the created frame. This call will make
      * sure that the audio frame can hold as many samples as specified. */
     if (av_frame_get_buffer(*frame, 0) < 0) {
