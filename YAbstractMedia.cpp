@@ -295,7 +295,7 @@ void YAbstractMedia::setFrameRate(AVRational frame_rate)
 
 void YAbstractMedia::setVideoCodec(std::string video_codec_short_name)
 {
-    if (video_codec_short_name != "h264") { return; } //Fix it
+    if (!(video_codec_short_name == "h264" || video_codec_short_name == "libx264")) { return; } //Fix it
     //
     AVCodec *codec;
     codec = avcodec_find_decoder_by_name(video_codec_short_name.c_str());

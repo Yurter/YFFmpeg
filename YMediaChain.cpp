@@ -23,7 +23,11 @@ YMediaChain::YMediaChain(YMediaSource*      source,
     _rescaler(nullptr),
     _resampler(nullptr),
     _active(false),
-    _paused(false)
+    _paused(false),
+    _source_video_stream_index(-1),
+    _source_audio_stream_index(-1),
+    _destination_video_stream_index(-1),
+    _destination_audio_stream_index(-1)
 {
     //
 }
@@ -69,10 +73,15 @@ bool YMediaChain::start()
     }
 
     {
-        auto source_video_stream_index = _source->videoStreamIndex();
-        auto source_audio_stream_index = _source->audioStreamIndex();
+        _source_video_stream_index = _source->videoStreamIndex();
+        _source_audio_stream_index = _source->audioStreamIndex();
+        _destination_video_stream_index = _destination->videoStreamIndex();
+        _destination_audio_stream_index = _destination->audioStreamIndex();
+
         _active = true;
-        _thread = std::thread([this, source_video_stream_index, source_audio_stream_index](){
+        _thread = std::thread([this](){
+            bool destination_video_available = _destination->videoAvailable();
+            bool destination_audio_available = _destination->audioAvailable();
             while (_active) {
                 AVPacket source_packet;
                 if (!_source->readPacket(source_packet)) {
@@ -88,8 +97,12 @@ bool YMediaChain::start()
                 }
                 if (decoded_frames.empty()) { continue; }
 
+                bool skip_packet = (!destination_video_available && isVideoPacket(&source_packet))
+                        || (!destination_audio_available && isAudioPacket(&source_packet));
+                if (skip_packet) { continue; }
+
                 if (_rescaler != nullptr) {
-                    if (source_packet.stream_index == source_video_stream_index) {
+                    if (isVideoPacket(&source_packet)) {
                         if (!_rescaler->rescale(decoded_frames.front())) {
                             std::cerr << "[YMediaChain] Rescale failed" << std::endl;
                             break;
@@ -98,7 +111,7 @@ bool YMediaChain::start()
                 }
 
                 if (_resampler != nullptr) {
-                    if (source_packet.stream_index == source_audio_stream_index) {
+                    if (isAudioPacket(&source_packet)) {
                         if (!_resampler->resample(&decoded_frames.front())) {
                             std::cerr << "[YMediaChain] Resample failed" << std::endl;
                             break;
@@ -106,15 +119,17 @@ bool YMediaChain::start()
                     }
                 }
 
-                AVPacket *encoded_packet = av_packet_alloc();
-                av_init_packet(encoded_packet);
-                encoded_packet->stream_index = source_packet.stream_index;
-                if (!_encoder->encodeFrames(encoded_packet, decoded_frames)) {
+                AVPacket *destination_packet = av_packet_alloc();
+                av_init_packet(destination_packet);
+                if (!mapStreamIndex(&source_packet, destination_packet)) {
+                    std::cerr << "[YMediaChain] mapStreamIndex failed" << std::endl;
+                }
+                if (!_encoder->encodeFrames(destination_packet, decoded_frames)) {
                     std::cerr << "[YMediaChain] Encode failed" << std::endl;
                     continue;
                 }
 
-                _destination->writePacket(*encoded_packet);
+                _destination->writePacket(*destination_packet);
             }
             _active = false;
             std::cout << "[YMediaChain] Finished" << std::endl;
@@ -157,6 +172,9 @@ bool YMediaChain::rescalerRequired()
 
 bool YMediaChain::resamplerRequired()
 {
+    if (!_destination->audioAvailable()) {
+        return false;
+    }
     if (_source->sampleRate() != _destination->sampleRate()) {
         return true;
     }
@@ -167,6 +185,29 @@ bool YMediaChain::resamplerRequired()
         return true;
     }
     if (_source->audioChanelsLayout() != _destination->audioChanelsLayout()) {
+        return true;
+    }
+    return false;
+}
+
+bool YMediaChain::isVideoPacket(AVPacket *packet)
+{
+    return (packet->stream_index == _source_video_stream_index);
+}
+
+bool YMediaChain::isAudioPacket(AVPacket *packet)
+{
+    return (packet->stream_index == _source_audio_stream_index);
+}
+
+bool YMediaChain::mapStreamIndex(AVPacket *src_packet, AVPacket *dst_packet)
+{
+    if (isVideoPacket(src_packet)) {
+        dst_packet->stream_index = static_cast<int>(_destination_video_stream_index);
+        return true;
+    }
+    if (isAudioPacket(src_packet)) {
+        dst_packet->stream_index = static_cast<int>(_destination_audio_stream_index);
         return true;
     }
     return false;

@@ -23,14 +23,13 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         setVideoBitrate(400'000);
         setVideoCodec("libx264");
         /* Audio */
-        setSampleRate(44'100);
-        setSampleFormat(AV_SAMPLE_FMT_FLTP);
-        setAudioBitrate(128 * 1024);
-        setAudioChanelsLayout(AV_CH_LAYOUT_STEREO);
-        setAudioChanels(2);
-        //setAudioCodec("aac");
-        setAudioCodec("mp3");
-//        setAudioCodec("wav");
+//        setSampleRate(44'100);
+//        setSampleFormat(AV_SAMPLE_FMT_FLTP);
+//        setAudioBitrate(128 * 1024);
+//        setAudioChanelsLayout(AV_CH_LAYOUT_STEREO);
+//        setAudioChanels(2);
+//        //setAudioCodec("aac");
+//        setAudioCodec("mp3");
         break;
     case Timelapse:
         break;

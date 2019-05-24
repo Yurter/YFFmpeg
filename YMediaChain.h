@@ -37,6 +37,11 @@ private:
     bool rescalerRequired();
     bool resamplerRequired();
 
+    bool isVideoPacket(AVPacket* packet);
+    bool isAudioPacket(AVPacket* packet);
+
+    bool mapStreamIndex(AVPacket* src_packet, AVPacket* dst_packet);
+
 private:
 
 	//YMedia
@@ -53,5 +58,10 @@ private:
 	std::thread			_thread;
     volatile bool       _active;
     volatile bool       _paused; 
+
+    int64_t             _source_video_stream_index;
+    int64_t             _source_audio_stream_index;
+    int64_t             _destination_video_stream_index;
+    int64_t             _destination_audio_stream_index;
 
 };
