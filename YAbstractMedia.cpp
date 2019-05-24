@@ -80,6 +80,7 @@ void YAbstractMedia::parseFormatContext()
             audio_parameters.setCodec(codecpar->codec_id);
             audio_parameters.setSampleRate(codecpar->sample_rate);
             audio_parameters.setSampleFormat(codec->sample_fmt);
+            audio_parameters.setDuration(in_stream->duration);
             audio_parameters.setBitrate(codecpar->bit_rate);
             audio_parameters.setChanelsLayout(codecpar->channel_layout);
             audio_parameters.setChanels(codecpar->channels);

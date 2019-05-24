@@ -79,21 +79,18 @@ bool YMediaChain::start()
         _destination_audio_stream_index = _destination->audio_parameters.streamIndex();
 
         _active = true;
-        _thread = std::thread([this](){
-            bool destination_video_available = _destination->video_parameters.available();
-            bool destination_audio_available = _destination->audio_parameters.available();
+        _thread = std::thread([this]() {
             while (_active) {
+                /*------------------------------- Чтение -------------------------------*/
                 AVPacket source_packet;
                 if (!_source->readPacket(source_packet)) {
                     std::cerr << "[YMediaChain] No data available" << std::endl;
                     _destination->close(); //TODO: вылет при завершении main() - поток дест не завершен.
                     break;
                 }
+                if (skipPacket(&source_packet)) { continue; }
 
-                bool skip_packet = (!destination_video_available && isVideoPacket(&source_packet))
-                        || (!destination_audio_available && isAudioPacket(&source_packet));
-                if (skip_packet) { continue; }
-
+                /*---------------------------- Декодирование ---------------------------*/
                 std::list<AVFrame*> decoded_frames;
                 if (!_decoder->decodePacket(&source_packet, decoded_frames)) {
                     std::cerr << "[YMediaChain] Decode failed" << std::endl;
@@ -101,6 +98,7 @@ bool YMediaChain::start()
                 }
                 if (decoded_frames.empty()) { continue; }
 
+                /*------------------------------ Рескейлинг ----------------------------*/
                 if (_rescaler != nullptr) {
                     if (isVideoPacket(&source_packet)) {
                         if (!_rescaler->rescale(decoded_frames.front())) {
@@ -110,6 +108,7 @@ bool YMediaChain::start()
                     }
                 }
 
+                /*------------------------------ Ресемплинг ----------------------------*/
                 if (_resampler != nullptr) {
                     if (isAudioPacket(&source_packet)) {
                         if (!_resampler->resample(&decoded_frames.front())) {
@@ -119,6 +118,7 @@ bool YMediaChain::start()
                     }
                 }
 
+                /*------------------------------ Кодирование ---------------------------*/
                 AVPacket *destination_packet = av_packet_alloc();
                 av_init_packet(destination_packet);
                 if (!mapStreamIndex(&source_packet, destination_packet)) {
@@ -129,6 +129,7 @@ bool YMediaChain::start()
                     continue;
                 }
 
+                /*-------------------------------- Запись ------------------------------*/
                 _destination->writePacket(*destination_packet);
             }
             _active = false;
@@ -200,6 +201,13 @@ bool YMediaChain::isVideoPacket(AVPacket *packet)
 bool YMediaChain::isAudioPacket(AVPacket *packet)
 {
     return (packet->stream_index == _source_audio_stream_index);
+}
+
+bool YMediaChain::skipPacket(AVPacket *packet)
+{
+    bool skip_packet = (!_destination->video_parameters.available() && isVideoPacket(packet))
+                    || (!_destination->audio_parameters.available() && isAudioPacket(packet));
+    return skip_packet;
 }
 
 bool YMediaChain::mapStreamIndex(AVPacket *src_packet, AVPacket *dst_packet)

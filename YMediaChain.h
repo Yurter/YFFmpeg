@@ -40,6 +40,7 @@ private:
     bool isVideoPacket(AVPacket* packet);
     bool isAudioPacket(AVPacket* packet);
 
+    bool skipPacket(AVPacket* packet);
     bool mapStreamIndex(AVPacket* src_packet, AVPacket* dst_packet);
 
 private:
