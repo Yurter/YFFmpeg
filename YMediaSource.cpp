@@ -4,7 +4,8 @@
 #include <thread>
 
 YMediaSource::YMediaSource(const std::string &mrl) :
-    YAbstractMedia(mrl)
+    YAbstractMedia(mrl),
+    _input_format(nullptr)
 {
     //
 }

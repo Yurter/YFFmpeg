@@ -51,6 +51,12 @@ protected:
     void                parseFormatContext();
     std::string         guessFormatShortName();
 
+public:
+
+    // Media parameters
+    YVideoParameters    video_parameters;
+    YAudioParameters    audio_parameters;
+
 protected:
 
 	// General parameters
@@ -62,10 +68,6 @@ protected:
     int64_t             _reopening_timeout;
     bool                _close_after_failure;
     int64_t             _close_timeout;
-
-    // Media parameters
-    YVideoParameters    _video_parameters;
-    YAudioParameters    _audio_parameters;
 
     std::queue<AVPacket>    _packet_queue;
     std::mutex              _packet_queue_mutex;

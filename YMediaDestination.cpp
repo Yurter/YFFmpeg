@@ -5,7 +5,8 @@
 YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset) :
 	YAbstractMedia(mrl),
     _video_packet_index(0),
-    _audio_packet_index(0)
+    _audio_packet_index(0),
+    _output_format(nullptr)
 {
     switch (preset) {
     case Auto:
@@ -16,19 +17,19 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         break;
     case YouTube:
         /* Video */
-        setWidth(1920);
-        setHeight(1080);
-        setAspectRatio({16,9});
-        setFrameRate(30);
-        setVideoBitrate(400'000);
-        setVideoCodec("libx264");
+        video_parameters.setWidth(1920);
+        video_parameters.setHeight(1080);
+        video_parameters.setAspectRatio({16,9});
+        video_parameters.setFrameRate(30);
+        video_parameters.setBitrate(400'000);
+        video_parameters.setCodec("libx264");
         /* Audio */
-        setSampleRate(44'100);
-        setSampleFormat(AV_SAMPLE_FMT_FLTP);
-        setAudioBitrate(128 * 1024);
-        setAudioChanelsLayout(AV_CH_LAYOUT_STEREO);
-        setAudioChanels(2);
-        setAudioCodec("aac");
+        audio_parameters.setSampleRate(44'100);
+        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
+        audio_parameters.setBitrate(128 * 1024);
+        audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
+        audio_parameters.setChanels(2);
+        audio_parameters.setCodec("aac");
 //        setAudioCodec("mp3");
         break;
     case Timelapse:
@@ -71,10 +72,10 @@ bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
 
     switch (codec_type) {
     case AVMEDIA_TYPE_VIDEO:
-        _video_stream_index = _media_format_context->nb_streams - 1;
+        video_parameters.setStreamIndex(_media_format_context->nb_streams - 1);
         break;
     case AVMEDIA_TYPE_AUDIO:
-        _audio_stream_index = _media_format_context->nb_streams - 1;
+        audio_parameters.setStreamIndex(_media_format_context->nb_streams - 1);
         break;
     default:
         std::cerr << "[YMediaDestination] Unsupported media type added: " << av_get_media_type_string(codec_type) << std::endl;
@@ -87,16 +88,6 @@ bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
 
 bool YMediaDestination::open()
 {
-//    std::cout << "[YMediaDestination] Opening" << std::endl;
-
-//    if (!createOutputContext()) {
-//        std::cerr << "[YMediaDestination] Failed to create output context." << std::endl;
-//        return false;
-//    }
-//    if (!copyInputContext(_media_format_context, _video_required, _audio_required)) {
-//        std::cerr << "Failed to copy input context." << std::endl;
-//        return false;
-//    }
     if (!openOutputContext()) {
         std::cerr << "[YMediaDestination] Failed to open output context." << std::endl;
         return false;
@@ -145,6 +136,8 @@ bool YMediaDestination::createOutputContext()
         std::cerr << "[YMediaDestination] Failed to alloc output context." << std::endl;
 		return false;
     }
+    _output_format = _media_format_context->oformat;
+    parseOutputFormat();
 	return true;
 }
 
@@ -171,8 +164,14 @@ bool YMediaDestination::openOutputContext()
 void YMediaDestination::parseOutputFormat()
 {
     if (_output_format == nullptr) { return; }
-    setVideoCodec(_output_format->video_codec);
-    setAudioCodec(_output_format->audio_codec);
+    if (_output_format->video_codec != AV_CODEC_ID_NONE) {
+        video_parameters.setCodec(_output_format->video_codec);
+        video_parameters.setAvailable(true);
+    }
+    if (_output_format->audio_codec != AV_CODEC_ID_NONE) {
+        audio_parameters.setCodec(_output_format->audio_codec);
+        audio_parameters.setAvailable(true);
+    }
 }
 
 void YMediaDestination::run()
@@ -203,7 +202,7 @@ void YMediaDestination::run()
 
 bool YMediaDestination::stampPacket(AVPacket &packet) //TODO: duration
 {
-    if (packet.stream_index == _video_stream_index) {
+    if (packet.stream_index == video_parameters.streamIndex()) {
         packet.pts = _video_packet_index;
         packet.dts = _video_packet_index;
         packet.duration = 1;
@@ -211,7 +210,7 @@ bool YMediaDestination::stampPacket(AVPacket &packet) //TODO: duration
         _video_packet_index++;
         return true;
     }
-    if (packet.stream_index == _audio_stream_index) {
+    if (packet.stream_index == audio_parameters.streamIndex()) {
         packet.pts = _audio_packet_index;
         packet.dts = _audio_packet_index;
         packet.duration = 1;

@@ -64,25 +64,25 @@ void YAbstractMedia::parseFormatContext()
 
         switch (codec_type) {
         case AVMEDIA_TYPE_VIDEO: {
-            _video_parameters.setCodec(codecpar->codec_id);
-            _video_parameters.setWidth(codecpar->width);
-            _video_parameters.setHeight(codecpar->height);
-            _video_parameters.setAspectRatio({-1,-1}); //TODO
-            _video_parameters.setDuration(in_stream->duration);
-            _video_parameters.setFrameRate(in_stream->avg_frame_rate); // ? -> r_frame_rate
-            _video_parameters.setBitrate(codecpar->bit_rate);
-            _video_parameters.setPixelFormat(codec->pix_fmt);
-            _video_parameters.setStreamIndex(i);
+            video_parameters.setCodec(codecpar->codec_id);
+            video_parameters.setWidth(codecpar->width);
+            video_parameters.setHeight(codecpar->height);
+            video_parameters.setAspectRatio({-1,-1}); //TODO
+            video_parameters.setDuration(in_stream->duration);
+            video_parameters.setFrameRate(in_stream->avg_frame_rate); // ? -> r_frame_rate
+            video_parameters.setBitrate(codecpar->bit_rate);
+            video_parameters.setPixelFormat(codec->pix_fmt);
+            video_parameters.setStreamIndex(i);
             break;
         }
         case AVMEDIA_TYPE_AUDIO: {
-            _audio_parameters.setCodec(codecpar->codec_id);
-            _audio_parameters.setSampleRate(codecpar->sample_rate);
-            _audio_parameters.setSampleFormat(codec->sample_fmt);
-            _audio_parameters.setBitrate(codecpar->bit_rate);
-            _audio_parameters.setChanelsLayout(codecpar->channel_layout);
-            _audio_parameters.setChanels(codecpar->channels);
-            _audio_parameters.setStreamIndex(i);
+            audio_parameters.setCodec(codecpar->codec_id);
+            audio_parameters.setSampleRate(codecpar->sample_rate);
+            audio_parameters.setSampleFormat(codec->sample_fmt);
+            audio_parameters.setBitrate(codecpar->bit_rate);
+            audio_parameters.setChanelsLayout(codecpar->channel_layout);
+            audio_parameters.setChanels(codecpar->channels);
+            audio_parameters.setStreamIndex(i);
             break;
         }
         default:

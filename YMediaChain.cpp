@@ -73,15 +73,15 @@ bool YMediaChain::start()
     }
 
     {
-        _source_video_stream_index = _source->videoStreamIndex();
-        _source_audio_stream_index = _source->audioStreamIndex();
-        _destination_video_stream_index = _destination->videoStreamIndex();
-        _destination_audio_stream_index = _destination->audioStreamIndex();
+        _source_video_stream_index = _source->video_parameters.streamIndex();
+        _source_audio_stream_index = _source->audio_parameters.streamIndex();
+        _destination_video_stream_index = _destination->video_parameters.streamIndex();
+        _destination_audio_stream_index = _destination->audio_parameters.streamIndex();
 
         _active = true;
         _thread = std::thread([this](){
-            bool destination_video_available = _destination->videoAvailable();
-            bool destination_audio_available = _destination->audioAvailable();
+            bool destination_video_available = _destination->video_parameters.available();
+            bool destination_audio_available = _destination->audio_parameters.available();
             while (_active) {
                 AVPacket source_packet;
                 if (!_source->readPacket(source_packet)) {
@@ -172,19 +172,21 @@ bool YMediaChain::rescalerRequired()
 
 bool YMediaChain::resamplerRequired()
 {
-    if (!_destination->audioAvailable()) {
+    auto& src = _source->audio_parameters;
+    auto& dst = _destination->audio_parameters;
+    if (!dst.available()) {
         return false;
     }
-    if (_source->sampleRate() != _destination->sampleRate()) {
+    if (src.sampleRate() != dst.sampleRate()) {
         return true;
     }
-    if (_source->sampleFormat() != _destination->sampleFormat()) {
+    if (src.sampleFormat() != dst.sampleFormat()) {
         return true;
     }
-    if (_source->audioChanels() != _destination->audioChanels()) {
+    if (src.chanels() != dst.chanels()) {
         return true;
     }
-    if (_source->audioChanelsLayout() != _destination->audioChanelsLayout()) {
+    if (src.chanelsLayout() != dst.chanelsLayout()) {
         return true;
     }
     return false;

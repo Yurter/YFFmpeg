@@ -5,6 +5,11 @@ YAudioParameters::YAudioParameters()
     //
 }
 
+YAudioParameters::~YAudioParameters()
+{
+    //
+}
+
 void YAudioParameters::setSampleRate(int64_t sample_rate)
 {
     _sample_rate = sample_rate;
@@ -35,7 +40,7 @@ AVSampleFormat YAudioParameters::sampleFormat() const
     return _sample_format;
 }
 
-int64_t YAudioParameters::chanelsLayout() const
+uint64_t YAudioParameters::chanelsLayout() const
 {
     return _chanels_layout;
 }

@@ -9,13 +9,13 @@ YMediaDecoder::YMediaDecoder(YMediaSource *source) :
 
 bool YMediaDecoder::init()
 {
-    if (_source->videoAvailable()) {
+    if (_source->video_parameters.available()) {
         if (!initVideoCodec()) {
             std::cerr << "[YMediaDecoder] Failed to init video codec" << std::endl;
             return false;
         }
     }
-    if (_source->audioAvailable()) {
+    if (_source->audio_parameters.available()) {
         if (!initAudioCodec()) {
             std::cerr << "[YMediaDecoder] Failed to init audio codec" << std::endl;
             return false;
@@ -52,25 +52,22 @@ bool YMediaDecoder::decodePacket(AVPacket *packet, std::list<AVFrame*> &decoded_
 bool YMediaDecoder::initVideoCodec()
 {
     std::cout << "[YMediaDecoder] Copying video codec" << std::endl;
-    bool copied = copyCodecPar(_source->mediaFormatContext(), AVMEDIA_TYPE_VIDEO, _source->videoStreamIndex(), &_video_codec_context);
+    bool copied = copyCodecPar(_source->mediaFormatContext(), AVMEDIA_TYPE_VIDEO, _source->video_parameters.streamIndex(), &_video_codec_context);
     if (!copied) {
         std::cerr << "[YMediaDecoder] Video codec copy error" << std::endl;
     }
-    _video_stream_index = _source->videoStreamIndex();
+    _video_stream_index = _source->video_parameters.streamIndex();
     return copied;
 }
 
 bool YMediaDecoder::initAudioCodec()
 {
     std::cout << "[YMediaDecoder] Copying audio codec" << std::endl;
-    bool copied = copyCodecPar(_source->mediaFormatContext(), AVMEDIA_TYPE_AUDIO, _source->audioStreamIndex(), &_audio_codec_context);
+    bool copied = copyCodecPar(_source->mediaFormatContext(), AVMEDIA_TYPE_AUDIO, _source->audio_parameters.streamIndex(), &_audio_codec_context);
     if (!copied) {
         std::cerr << "[YMediaDecoder] Audio codec copy error" << std::endl;
     }
-    _audio_stream_index = _source->audioStreamIndex();
-    //
-//    _audio_codec_context->channel_layout = _audio_codec_context->channels;
-    //
+    _audio_stream_index = _source->audio_parameters.streamIndex();
     return copied;
 }
 

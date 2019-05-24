@@ -17,7 +17,7 @@ public:
 
     int64_t         sampleRate()    const;
     AVSampleFormat  sampleFormat()  const;
-    int64_t         chanelsLayout() const;
+    uint64_t        chanelsLayout() const;
     int64_t         chanels()       const;
 
 private:

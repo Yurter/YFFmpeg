@@ -9,17 +9,21 @@ YMediaEncoder::YMediaEncoder(YMediaDestination *destination) :
 
 bool YMediaEncoder::init()
 {
-    if (_destination->videoAvailable()) {
+    if (_destination->video_parameters.available()) {
         if (!initVideoCodec()) {
             std::cerr << "[YMediaDecoder] Failed to init video codec" << std::endl;
             return false;
         }
     }
-    if (_destination->audioAvailable()) {
+    if (_destination->audio_parameters.available()) {
         if (!initAudioCodec()) {
             std::cerr << "[YMediaDecoder] Failed to init audio codec" << std::endl;
             return false;
         }
+    }
+    if (_destination->mediaFormatContext()->nb_streams == 0) {
+        std::cerr << "[YMediaEncoder] Destination wasn't inited" << std::endl;
+        return false;
     }
     std::cout << "[YMediaEncoder] Inited" << std::endl;
     return true;
@@ -60,9 +64,9 @@ YMediaEncoder::~YMediaEncoder()
 bool YMediaEncoder::initVideoCodec()
 {
 //    AVCodec *decoder = avcodec_find_encoder_by_name(_destination->videoCodecName().c_str());
-    AVCodec *decoder = avcodec_find_encoder(_destination->videoCodecId());
+    AVCodec *decoder = avcodec_find_encoder(_destination->video_parameters.codecId());
     if (decoder == nullptr) {
-        std::cerr << "[YMediaEncoder] Could not find video encoder " << _destination->videoCodecName() << std::endl;
+        std::cerr << "[YMediaEncoder] Could not find video encoder " << _destination->video_parameters.codecName() << std::endl;
         return false;
     }
     _video_codec_context = avcodec_alloc_context3(decoder);
@@ -71,9 +75,10 @@ bool YMediaEncoder::initVideoCodec()
     //
     _video_codec_context->codec_tag = 0;
 
-    int frames_per_second = static_cast<int>(_destination->frameRate());
-    _video_codec_context->width = static_cast<int>(_destination->width());
-    _video_codec_context->height = static_cast<int>(_destination->height());
+    // TODO: copy func
+    int frames_per_second = static_cast<int>(_destination->video_parameters.frameRate());
+    _video_codec_context->width = static_cast<int>(_destination->video_parameters.width());
+    _video_codec_context->height = static_cast<int>(_destination->video_parameters.height());
     _video_codec_context->pix_fmt = AV_PIX_FMT_YUV420P;
     _video_codec_context->sample_aspect_ratio = {1,1};//_destination->aspectRatio();
     _video_codec_context->gop_size = 10;//frames_per_second * 2;
@@ -102,16 +107,16 @@ bool YMediaEncoder::initVideoCodec()
 
     _destination->addStream(_video_codec_context);
 
-    _video_stream_index = _destination->videoStreamIndex();
+    _video_stream_index = _destination->video_parameters.streamIndex();
 
     return true;
 }
 
 bool YMediaEncoder::initAudioCodec()
 {
-    AVCodec *encoder = avcodec_find_encoder(_destination->audioCodecId());
+    AVCodec *encoder = avcodec_find_encoder(_destination->audio_parameters.codecId());
     if (encoder == nullptr) {
-        std::cerr << "[YMediaEncoder] Could not find audio encoder " << _destination->audioCodecName() << std::endl;
+        std::cerr << "[YMediaEncoder] Could not find audio encoder " << _destination->audio_parameters.codecName() << std::endl;
         return false;
     } else {
         //
@@ -122,11 +127,11 @@ bool YMediaEncoder::initAudioCodec()
     //
     _audio_codec_context->codec_tag = 0;
 
-    _audio_codec_context->sample_rate = static_cast<int>(_destination->sampleRate());
-    _audio_codec_context->bit_rate = _destination->audioBitrate();
-    _audio_codec_context->sample_fmt = _destination->sampleFormat();
-    _audio_codec_context->channel_layout = _destination->audioChanelsLayout();
-    _audio_codec_context->channels = static_cast<int>(_destination->audioChanels());
+    _audio_codec_context->sample_rate = static_cast<int>(_destination->audio_parameters.sampleRate());
+    _audio_codec_context->bit_rate = _destination->audio_parameters.bitrate();
+    _audio_codec_context->sample_fmt = _destination->audio_parameters.sampleFormat();
+    _audio_codec_context->channel_layout = _destination->audio_parameters.chanelsLayout();
+    _audio_codec_context->channels = static_cast<int>(_destination->audio_parameters.chanels());
     _audio_codec_context->time_base = { 1, _audio_codec_context->sample_rate };
 
 
@@ -148,7 +153,7 @@ bool YMediaEncoder::initAudioCodec()
 
     _destination->addStream(_audio_codec_context);
 
-    _audio_stream_index = _destination->audioStreamIndex();
+    _audio_stream_index = _destination->audio_parameters.streamIndex();
 
     return true;
 }
