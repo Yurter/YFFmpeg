@@ -19,7 +19,8 @@ SOURCES += \
     YVideoRescaler.cpp \
     YAudioResampler.cpp \
     YVideoParameters.cpp \
-    YAudioParameters.cpp
+    YAudioParameters.cpp \
+    YParameters.cpp
 
 HEADERS += \
     YMediaSource.h \
@@ -36,7 +37,8 @@ HEADERS += \
     YVideoRescaler.h \
     YAudioResampler.h \
     YVideoParameters.h \
-    YAudioParameters.h
+    YAudioParameters.h \
+    YParameters.h
 
 #--Home--
 INCLUDEPATH += G:\dev\FFmpeg\ffmpeg-4.1.1-win64-dev\include

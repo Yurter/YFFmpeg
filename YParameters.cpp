@@ -1,6 +1,82 @@
 #include "YParameters.h"
 
-YParameters::YParameters()
+YParameters::YParameters() :
+    _available(false),
+    _codec_id(AV_CODEC_ID_NONE),
+    _codec_name(avcodec_get_name(_codec_id)),
+    _bitrate(-1),
+    _duration(-1),
+    _stream_index(-1)
 {
+    //
+}
 
+YParameters::~YParameters()
+{
+    //
+}
+
+void YParameters::setAvailable(bool available)
+{
+    _available = available;
+}
+
+void YParameters::setCodec(AVCodecID codec_id)
+{
+    _codec_id = codec_id;
+    _codec_name = avcodec_get_name(codec_id);
+}
+
+void YParameters::setCodec(std::string _codec_short_name)
+{
+    AVCodec *codec;
+    codec = avcodec_find_decoder_by_name(_codec_short_name.c_str());
+    if (codec != nullptr) { _codec_id = codec->id; }
+    codec = avcodec_find_encoder_by_name(_codec_short_name.c_str());
+    if (codec != nullptr) { _codec_id = codec->id; }
+}
+
+void YParameters::setBitrate(int64_t bitrate)
+{
+    _bitrate = bitrate;
+}
+
+void YParameters::setDuration(int64_t duration)
+{
+    _duration = duration;
+}
+
+void YParameters::setStreamIndex(int64_t stream_index)
+{
+    _stream_index = stream_index;
+}
+
+bool YParameters::available() const
+{
+    return _available;
+}
+
+AVCodecID YParameters::codecId() const
+{
+    return _codec_id;
+}
+
+std::string YParameters::codecName() const
+{
+    return _codec_name;
+}
+
+int64_t YParameters::bitrate() const
+{
+    return _bitrate;
+}
+
+int64_t YParameters::duration() const
+{
+    return _duration;
+}
+
+int64_t YParameters::streamIndex() const
+{
+    return _stream_index;
 }
