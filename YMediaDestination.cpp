@@ -23,12 +23,12 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         setVideoBitrate(400'000);
         setVideoCodec("libx264");
         /* Audio */
-//        setSampleRate(44'100);
-//        setSampleFormat(AV_SAMPLE_FMT_FLTP);
-//        setAudioBitrate(128 * 1024);
-//        setAudioChanelsLayout(AV_CH_LAYOUT_STEREO);
-//        setAudioChanels(2);
-//        //setAudioCodec("aac");
+        setSampleRate(44'100);
+        setSampleFormat(AV_SAMPLE_FMT_FLTP);
+        setAudioBitrate(128 * 1024);
+        setAudioChanelsLayout(AV_CH_LAYOUT_STEREO);
+        setAudioChanels(2);
+        setAudioCodec("aac");
 //        setAudioCodec("mp3");
         break;
     case Timelapse:
@@ -62,6 +62,10 @@ bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
 
     /* Crutch */
     out_stream->codec->sample_fmt = stream_codec_context->sample_fmt;
+
+    //r_frame_rate avg_frame_rate
+    out_stream->r_frame_rate = stream_codec_context->framerate;
+    out_stream->avg_frame_rate = stream_codec_context->framerate;
 
     auto codec_type = out_stream->codecpar->codec_type;
 
@@ -197,21 +201,21 @@ void YMediaDestination::run()
     });
 }
 
-bool YMediaDestination::stampPacket(AVPacket &packet)
+bool YMediaDestination::stampPacket(AVPacket &packet) //TODO: duration
 {
     if (packet.stream_index == _video_stream_index) {
         packet.pts = _video_packet_index;
         packet.dts = _video_packet_index;
-//        packet.duration
+        packet.duration = 1;
         packet.pos = -1;
         _video_packet_index++;
-        return false; //TODO: duration
+        return true;
     }
     if (packet.stream_index == _audio_stream_index) {
         packet.pts = _audio_packet_index;
         packet.dts = _audio_packet_index;
-        packet.pos = -1;
         packet.duration = 1;
+        packet.pos = -1;
         _audio_packet_index++;
         return true;
     }

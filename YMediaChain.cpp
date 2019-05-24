@@ -90,16 +90,16 @@ bool YMediaChain::start()
                     break;
                 }
 
+                bool skip_packet = (!destination_video_available && isVideoPacket(&source_packet))
+                        || (!destination_audio_available && isAudioPacket(&source_packet));
+                if (skip_packet) { continue; }
+
                 std::list<AVFrame*> decoded_frames;
                 if (!_decoder->decodePacket(&source_packet, decoded_frames)) {
                     std::cerr << "[YMediaChain] Decode failed" << std::endl;
                     break;
                 }
                 if (decoded_frames.empty()) { continue; }
-
-                bool skip_packet = (!destination_video_available && isVideoPacket(&source_packet))
-                        || (!destination_audio_available && isAudioPacket(&source_packet));
-                if (skip_packet) { continue; }
 
                 if (_rescaler != nullptr) {
                     if (isVideoPacket(&source_packet)) {
