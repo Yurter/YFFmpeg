@@ -94,7 +94,7 @@ void YAbstractMedia::parseFormatContext()
         }
     }
 
-//    setDuration(MAX(_video_duration, _audio_duration));
+//    setDuration(FFMAX(_video_duration, _audio_duration));
 }
 
 std::string YAbstractMedia::guessFormatShortName()

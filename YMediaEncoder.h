@@ -10,7 +10,7 @@ public:
 
     YMediaEncoder() = delete;
     YMediaEncoder(YMediaDestination *destination);
-    ~YMediaEncoder();
+    virtual ~YMediaEncoder();
 
     bool init();
 
@@ -23,6 +23,7 @@ private:
 
 private:
 
-    YMediaDestination       *_destination;
+    //General parametres
+    YMediaDestination*  _destination;
 
 };

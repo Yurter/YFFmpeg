@@ -34,7 +34,7 @@ YMediaChain::YMediaChain(YMediaSource*      source,
 
 YMediaChain::~YMediaChain()
 {
-    //
+    stop();
 }
 
 bool YMediaChain::start()
@@ -148,7 +148,7 @@ bool YMediaChain::stop()
     _active = false;
     _source->close();
     _destination->close();
-//    _thread.join();
+    _thread.join();
     std::cout << "[YMediaChain] Stopped" << std::endl;
     return true;
 }

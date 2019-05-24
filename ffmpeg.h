@@ -16,3 +16,9 @@ extern "C" {
 #include <libswscale/swscale.h>
 #include <libswresample/swresample.h>
 }
+
+/* not used yet */
+enum YCODES {
+    YEOF,
+    YAGAIN
+};

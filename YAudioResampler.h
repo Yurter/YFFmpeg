@@ -11,7 +11,6 @@ public:
     ~YAudioResampler();
 
     bool init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context);
-
     bool resample(AVFrame **frame);
 
 private:
@@ -34,4 +33,6 @@ protected:
     AVAudioFifo*        _audio_fifo;
 
     // Media parameters
+    //
+
 };

@@ -9,8 +9,6 @@
 #include <mutex>
 #include <queue>
 
-#define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
-
 class YAbstractMedia
 {
 

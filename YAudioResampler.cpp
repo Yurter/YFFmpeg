@@ -68,7 +68,6 @@ bool YAudioResampler::init(AVCodecContext *input_codec_context, AVCodecContext *
 
 bool YAudioResampler::resample(AVFrame **frame)
 {
-    std::cout << "[YAudioResampler] resample" << std::endl;
     if (!_inited) {
         std::cerr << "[YAudioResampler] Not ineted" << std::endl;
         return false;
@@ -112,7 +111,7 @@ bool YAudioResampler::resample(AVFrame **frame)
         return false;
     }
 
-    (*frame) = output_frame;
+    (*frame) = output_frame; // ?
 
     return true;
 }
@@ -162,12 +161,11 @@ bool YAudioResampler::convertSamples(const uint8_t **input_data, uint8_t **conve
 {
     /* Convert the samples using the resampler. */
     if (swr_convert(_resampler_context,
-                     converted_data, _output_codec_context->frame_size,//frame_size,        // output
+                     converted_data, frame_size,        // output
                      input_data    , frame_size) < 0) { // input
         std::cerr << "[YAudioResampler] Could not convert input samples" << std::endl;
         return false;
     }
-//    swr_convert_frame(_resampler_context)
     return true;
 }
 

@@ -45,7 +45,7 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
 
 YMediaDestination::~YMediaDestination()
 {
-    close(); //TODO падает на строке: _is_opened = false;
+    close();
 }
 
 bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
@@ -64,7 +64,6 @@ bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
     /* Crutch */
     out_stream->codec->sample_fmt = stream_codec_context->sample_fmt;
 
-    //r_frame_rate avg_frame_rate
     out_stream->r_frame_rate = stream_codec_context->framerate;
     out_stream->avg_frame_rate = stream_codec_context->framerate;
 
@@ -99,11 +98,13 @@ bool YMediaDestination::open()
 
 bool YMediaDestination::close()
 {
-    if (!_is_opened) { return false; }
-    av_write_trailer(_media_format_context);
-
-    YAbstractMedia::close();
-
+    if (!YAbstractMedia::close()) {
+        return false;
+    }
+    if (av_write_trailer(_media_format_context) != 0) {
+        std::cerr << "[YMediaDestination] av_write_trailer failed" << std::endl;
+        return false;
+    }
     return true;
 }
 
@@ -164,7 +165,7 @@ bool YMediaDestination::openOutputContext()
 void YMediaDestination::parseOutputFormat()
 {
     if (_output_format == nullptr) { return; }
-    //TODO
+    //TODO: mp3 AVOutputFormat дает видео кодек PNG
     if (_output_format->video_codec != AV_CODEC_ID_NONE && _output_format->video_codec != AV_CODEC_ID_PNG) {
         video_parameters.setCodec(_output_format->video_codec);
         video_parameters.setAvailable(true);
@@ -177,7 +178,7 @@ void YMediaDestination::parseOutputFormat()
 
 void YMediaDestination::run()
 {
-    _thread = std::thread([this](){
+    _thread = std::thread([this]() {
         while (_is_opened) {
             AVPacket packet;
             if (!getPacket(packet)) {
@@ -201,7 +202,7 @@ void YMediaDestination::run()
     });
 }
 
-bool YMediaDestination::stampPacket(AVPacket &packet) //TODO: duration
+bool YMediaDestination::stampPacket(AVPacket &packet)
 {
     if (packet.stream_index == video_parameters.streamIndex()) {
         packet.pts = _video_packet_index;
