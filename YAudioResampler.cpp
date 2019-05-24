@@ -51,7 +51,6 @@ bool YAudioResampler::init(AVCodecContext *input_codec_context, AVCodecContext *
         return false;
     }
 
-
     _inited = true;
 
     std::cout << "[YAudioResampler] Inited" << std::endl;
@@ -60,8 +59,9 @@ bool YAudioResampler::init(AVCodecContext *input_codec_context, AVCodecContext *
 
 bool YAudioResampler::resample(AVFrame *frame)
 {
+    std::cout << "[YAudioResampler] resample" << std::endl;
     if (!_inited) {
-        std::cout << "[YAudioResampler] Not ineted" << std::endl;
+        std::cerr << "[YAudioResampler] Not ineted" << std::endl;
         return false;
     }
     uint8_t **converted_input_samples = nullptr;
@@ -102,13 +102,9 @@ bool YAudioResampler::resample(AVFrame *frame)
         av_frame_free(&output_frame);
         return false;
     }
-//    (*frame) = output_frame;
-//    std::cout << "[DEBUG] " << frame->nb_samples << std::endl;
-////    av_frame_free(&frame);
-//    *frame = *output_frame;
-    *frame->data = *output_frame->data;
-//    frame->extended_data = output_frame->extended_data;
-    frame->nb_samples = output_frame->nb_samples;
+
+
+
 
     return true;
 }

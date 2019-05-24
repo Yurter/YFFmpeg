@@ -61,6 +61,9 @@ bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
         return false;
     }
 
+    /* Crutch */
+    out_stream->codec->sample_fmt = stream_codec_context->sample_fmt;
+
     auto codec_type = out_stream->codecpar->codec_type;
 
     switch (codec_type) {
@@ -209,6 +212,7 @@ bool YMediaDestination::stampPacket(AVPacket &packet)
         packet.pts = _audio_packet_index;
         packet.dts = _audio_packet_index;
         packet.pos = -1;
+        packet.duration = 1;
         _audio_packet_index++;
         return true;
     }

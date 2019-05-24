@@ -29,8 +29,8 @@ int main()
 
 
 
-//    destination.setSampleRate(44'100);
-    destination.setSampleRate(11'025);
+    destination.setSampleRate(44'100);
+//    destination.setSampleRate(11'025);
     destination.setSampleFormat(AV_SAMPLE_FMT_FLTP);
     destination.setAudioBitrate(128 * 1024);
     destination.setAudioChanelsLayout(AV_CH_LAYOUT_STEREO);
