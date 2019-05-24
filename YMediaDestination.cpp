@@ -164,7 +164,8 @@ bool YMediaDestination::openOutputContext()
 void YMediaDestination::parseOutputFormat()
 {
     if (_output_format == nullptr) { return; }
-    if (_output_format->video_codec != AV_CODEC_ID_NONE) {
+    //TODO
+    if (_output_format->video_codec != AV_CODEC_ID_NONE && _output_format->video_codec != AV_CODEC_ID_PNG) {
         video_parameters.setCodec(_output_format->video_codec);
         video_parameters.setAvailable(true);
     }

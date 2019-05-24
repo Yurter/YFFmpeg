@@ -27,13 +27,14 @@ void YParameters::setCodec(AVCodecID codec_id)
     _codec_name = avcodec_get_name(codec_id);
 }
 
-void YParameters::setCodec(std::string _codec_short_name)
+void YParameters::setCodec(std::string codec_short_name)
 {
     AVCodec *codec;
-    codec = avcodec_find_decoder_by_name(_codec_short_name.c_str());
+    codec = avcodec_find_decoder_by_name(codec_short_name.c_str());
     if (codec != nullptr) { _codec_id = codec->id; }
-    codec = avcodec_find_encoder_by_name(_codec_short_name.c_str());
+    codec = avcodec_find_encoder_by_name(codec_short_name.c_str());
     if (codec != nullptr) { _codec_id = codec->id; }
+    _codec_name = codec_short_name;
 }
 
 void YParameters::setBitrate(int64_t bitrate)

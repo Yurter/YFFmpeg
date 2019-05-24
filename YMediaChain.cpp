@@ -85,8 +85,10 @@ bool YMediaChain::start()
                 AVPacket source_packet;
                 if (!_source->readPacket(source_packet)) {
                     std::cerr << "[YMediaChain] No data available" << std::endl;
-                    _destination->close(); //TODO: вылет при завершении main() - поток дест не завершен.
-                    break;
+                    if (!_source->opened()) {
+                        _destination->close(); //TODO: вылет при завершении main() - поток дест не завершен.
+                        break;
+                    }
                 }
                 if (skipPacket(&source_packet)) { continue; }
 
