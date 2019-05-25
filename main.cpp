@@ -21,8 +21,8 @@ int main()
 
 //    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/rks9-hkxw-60f9-fk2e";
 //    std::string mrl_dst = "findme.flv";
-    std::string mrl_dst = "remuxed.aac";
-//    std::string mrl_dst = "remuxed.mp3";
+//    std::string mrl_dst = "remuxed.aac";
+    std::string mrl_dst = "remuxed.mp3";
 
 
 
@@ -38,10 +38,8 @@ int main()
 //    destination.audio_parameters.setSampleRate(11'025);
     destination.audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
     destination.audio_parameters.setBitrate(128 * 1024);
-//    destination.audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
-    destination.audio_parameters.setChanelsLayout(AV_CH_LAYOUT_MONO);
-//    destination.audio_parameters.setChanels(2);
-    destination.audio_parameters.setChanels(1);
+    destination.audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
+    destination.audio_parameters.setChanels(2);
 
 
 

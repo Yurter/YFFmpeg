@@ -2,6 +2,7 @@
 
 #include "ffmpeg.h"
 #include <string>
+#include <list>
 
 class YAbstractCoder
 {
