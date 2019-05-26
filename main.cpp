@@ -33,8 +33,8 @@ int main()
 
 
 //    destination.audio_parameters.setSampleRate(48'000);
-//    destination.audio_parameters.setSampleRate(44'100);
-    destination.audio_parameters.setSampleRate(16'000);
+    destination.audio_parameters.setSampleRate(44'100);
+//    destination.audio_parameters.setSampleRate(16'000);
 //    destination.audio_parameters.setSampleRate(11'025);
     destination.audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
     destination.audio_parameters.setBitrate(128 * 1024);

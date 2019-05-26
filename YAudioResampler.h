@@ -26,6 +26,8 @@ protected:
     // General parameters
     bool                _inited;
 
+    uint64_t            _audioPTStracker = 0;
+
     // FFmpeg
     AVCodecContext*     _input_codec_context;
     AVCodecContext*     _output_codec_context;
