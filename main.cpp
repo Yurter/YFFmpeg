@@ -17,11 +17,12 @@ int main()
 //    std::string mrl_src = "source.mp3";
 //    std::string mrl_src = "source16.mp3";
 //    std::string mrl_src = "source.wav";
-      std::string mrl_src = "source.flv";
+//    std::string mrl_src = "source.flv";
+    std::string mrl_src = "rtsp://192.168.0.14:8080/h264";
 
 
 
-//    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/rks9-hkxw-60f9-fk2e";
+//    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/2qqv-7ttx-xhk0-az48";
     std::string mrl_dst = "remuxed.flv";
 //    std::string mrl_dst = "remuxed.aac";
 //    std::string mrl_dst = "remuxed.mp3";

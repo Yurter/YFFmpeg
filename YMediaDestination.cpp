@@ -194,11 +194,13 @@ void YMediaDestination::run()
                 break;
             }
 
+            auto packet_size = packet.size;
+
             if (av_interleaved_write_frame(_media_format_context, &packet) < 0) {
                 std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
                 break;
             } else {
-                std::cerr << "[YMediaDestination] Writed" << std::endl;
+                std::cerr << "[YMediaDestination] Writed " << packet_size << std::endl;
             }
         }
     });
@@ -209,7 +211,7 @@ bool YMediaDestination::stampPacket(AVPacket &packet)
     if (packet.stream_index == video_parameters.streamIndex()) {
         packet.pts = _video_packet_index;
         packet.dts = _video_packet_index;
-        packet.duration = 1;
+//        packet.duration = 1;
         packet.pos = -1;
         _video_packet_index++;
         return true;
@@ -217,7 +219,7 @@ bool YMediaDestination::stampPacket(AVPacket &packet)
     if (packet.stream_index == audio_parameters.streamIndex()) {
         packet.pts = _audio_packet_index;
         packet.dts = _audio_packet_index;
-        packet.duration = 1;
+//        packet.duration = 1;
         packet.pos = -1;
         _audio_packet_index++;
         return true;
