@@ -21,12 +21,14 @@ private:
     bool addSamplesToFifo(uint8_t **converted_input_samples, const int frame_size);
     bool initOutputFrame(AVFrame **frame, int frame_size);
 
+    void stampFrame(AVFrame *frame);
+
 protected:
 
     // General parameters
     bool                _inited;
 
-    uint64_t            _audioPTStracker = 0;
+    int64_t             _frame_pts;
 
     // FFmpeg
     AVCodecContext*     _input_codec_context;

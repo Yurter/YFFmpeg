@@ -3,6 +3,7 @@
 
 YAudioResampler::YAudioResampler() :
     _inited(false),
+    _frame_pts(0),
     _input_codec_context(nullptr),
     _output_codec_context(nullptr),
     _resampler_context(nullptr),
@@ -83,6 +84,8 @@ bool YAudioResampler::resample(AVFrame **frame)
         std::cerr << "[YAudioResampler] swr_convert_frame failed" << std::endl;
         return false;
     }
+
+    stampFrame(output_frame);
 
     (*frame) = output_frame;
 
@@ -182,4 +185,10 @@ bool YAudioResampler::initOutputFrame(AVFrame **frame, int frame_size)
         return false;
     }
     return true;
+}
+
+void YAudioResampler::stampFrame(AVFrame *frame)
+{
+    frame->pts = _frame_pts;
+    _frame_pts++;
 }

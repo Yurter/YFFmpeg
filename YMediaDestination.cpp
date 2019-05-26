@@ -32,7 +32,7 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         audio_parameters.setChanels(2);
         audio_parameters.setCodec("aac");
         audio_parameters.setAvailable(true);
-//        setAudioCodec("mp3");
+//        audio_parameters.setCodec("mp3");
         break;
     case Timelapse:
         break;
@@ -209,16 +209,16 @@ void YMediaDestination::run()
 bool YMediaDestination::stampPacket(AVPacket &packet)
 {
     if (packet.stream_index == video_parameters.streamIndex()) {
-        packet.pts = _video_packet_index;
-        packet.dts = _video_packet_index;
+        packet.pts = _video_packet_index * 30;
+        packet.dts = _video_packet_index * 30;
 //        packet.duration = 1;
         packet.pos = -1;
         _video_packet_index++;
         return true;
     }
     if (packet.stream_index == audio_parameters.streamIndex()) {
-        packet.pts = _audio_packet_index;
-        packet.dts = _audio_packet_index;
+        packet.pts = _audio_packet_index * 30;
+        packet.dts = _audio_packet_index * 30;
 //        packet.duration = 1;
         packet.pos = -1;
         _audio_packet_index++;
