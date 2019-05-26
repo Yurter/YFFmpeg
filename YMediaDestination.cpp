@@ -208,17 +208,19 @@ void YMediaDestination::run()
 
 bool YMediaDestination::stampPacket(AVPacket &packet)
 {
+    auto aaa = _media_format_context->streams[0]->time_base; //TODO
+    auto bbb = _media_format_context->streams[1]->time_base;
     if (packet.stream_index == video_parameters.streamIndex()) {
-        packet.pts = _video_packet_index * 30;
-        packet.dts = _video_packet_index * 30;
+        packet.pts = _video_packet_index * 30; //TODO
+        packet.dts = _video_packet_index * 30; //TODO
 //        packet.duration = 1;
         packet.pos = -1;
         _video_packet_index++;
         return true;
     }
     if (packet.stream_index == audio_parameters.streamIndex()) {
-        packet.pts = _audio_packet_index * 30;
-        packet.dts = _audio_packet_index * 30;
+        packet.pts = _audio_packet_index * 30; //TODO
+        packet.dts = _audio_packet_index * 30; //TODO
 //        packet.duration = 1;
         packet.pos = -1;
         _audio_packet_index++;
