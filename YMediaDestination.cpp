@@ -31,8 +31,8 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
         audio_parameters.setChanels(2);
         audio_parameters.setCodec("aac");
-        audio_parameters.setAvailable(true);
 //        audio_parameters.setCodec("mp3");
+        audio_parameters.setAvailable(true);
         break;
     case Timelapse:
         break;

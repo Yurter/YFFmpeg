@@ -22,16 +22,16 @@ int main()
 
 
 
-//    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/2qqv-7ttx-xhk0-az48";
-    std::string mrl_dst = "remuxed.flv";
+//    std::string mrl_dst = "rtmp://a./rtmp.youtube.com/live2/2qqv-7ttx-xhk0-az48";
+//    std::string mrl_dst = "remuxed.flv";
 //    std::string mrl_dst = "remuxed.aac";
-//    std::string mrl_dst = "remuxed.mp3";
+    std::string mrl_dst = "remuxed.mp3";
 
 
 
     YMediaSource source(mrl_src);
-    YMediaDestination destination(mrl_dst, YMediaDestination::YMediaPreset::YouTube);
-//    YMediaDestination destination(mrl_dst, YMediaDestination::YMediaPreset::Auto);
+//    YMediaDestination destination(mrl_dst, YMediaDestination::YMediaPreset::YouTube);
+    YMediaDestination destination(mrl_dst, YMediaDestination::YMediaPreset::Auto);
 
 
 
