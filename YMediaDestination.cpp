@@ -23,6 +23,7 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         video_parameters.setFrameRate(30);
         video_parameters.setBitrate(400'000);
         video_parameters.setCodec("libx264");
+        video_parameters.setAvailable(true);
         /* Audio */
         audio_parameters.setSampleRate(44'100);
         audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
@@ -30,6 +31,7 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
         audio_parameters.setChanels(2);
         audio_parameters.setCodec("aac");
+        audio_parameters.setAvailable(true);
 //        setAudioCodec("mp3");
         break;
     case Timelapse:
@@ -138,7 +140,7 @@ bool YMediaDestination::createOutputContext()
 		return false;
     }
     _output_format = _media_format_context->oformat;
-    parseOutputFormat();
+//    parseOutputFormat(); //TODO check it!
 	return true;
 }
 

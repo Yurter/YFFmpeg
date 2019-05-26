@@ -73,100 +73,18 @@ bool YAudioResampler::resample(AVFrame **frame)
         return false;
     }
 
-
-
-
-
-
-    uint64_t src_ch_layout = _input_codec_context->channel_layout;
-    uint64_t dst_ch_layout = _output_codec_context->channel_layout;
-    int src_rate = _input_codec_context->sample_rate;
-    int dst_rate = _output_codec_context->sample_rate;
-    uint8_t **src_data = (*frame)->data;
-    uint8_t **dst_data = nullptr;
-    int src_nb_channels = _input_codec_context->channels;
-    int dst_nb_channels = _output_codec_context->channels;
-    int src_linesize = (*frame)->linesize[0];
-    int dst_linesize;
-    int src_nb_samples = (*frame)->nb_samples;
-    int dst_nb_samples;
-    int max_dst_nb_samples;
-    AVSampleFormat src_sample_fmt = _input_codec_context->sample_fmt;
-    AVSampleFormat dst_sample_fmt = _output_codec_context->sample_fmt;
-    int dst_bufsize;
-    SwrContext *swr_ctx = _resampler_context;
-    double t;
-    int ret;
-
-
-
-
-
-
-
-
-
-
-    //////////
-
-    src_nb_channels = av_get_channel_layout_nb_channels(src_ch_layout);
-    ret = av_samples_alloc_array_and_samples(&src_data, &src_linesize, src_nb_channels,
-                                             src_nb_samples, src_sample_fmt, 0);
-    if (ret < 0) {
-        fprintf(stderr, "Could not allocate source samples\n");
+    AVFrame *output_frame = nullptr;
+    if (!initOutputFrame(&output_frame, _output_codec_context->frame_size)) {
+        std::cerr << "[YAudioResampler] initOutputFrame failed" << std::endl;
         return false;
     }
 
-    /* compute the number of converted samples: buffering is avoided
-     * ensuring that the output buffer will contain at least all the
-     * converted input samples */
-    max_dst_nb_samples = dst_nb_samples =
-        av_rescale_rnd(src_nb_samples, dst_rate, src_rate, AV_ROUND_UP);
-
-    /* buffer is going to be directly written to a rawaudio file, no alignment */
-    dst_nb_channels = av_get_channel_layout_nb_channels(dst_ch_layout);
-    ret = av_samples_alloc_array_and_samples(&dst_data, &dst_linesize, dst_nb_channels,
-                                             dst_nb_samples, dst_sample_fmt, 0);
-    if (ret < 0) {
-        fprintf(stderr, "Could not allocate destination samples\n");
+    if (swr_convert_frame(_resampler_context, output_frame, *frame) != 0) {
+        std::cerr << "[YAudioResampler] swr_convert_frame failed" << std::endl;
         return false;
     }
 
-
-    /* compute destination number of samples */
-    dst_nb_samples = av_rescale_rnd(swr_get_delay(swr_ctx, src_rate) +
-                                    src_nb_samples, dst_rate, src_rate, AV_ROUND_UP);
-    if (dst_nb_samples > max_dst_nb_samples) {
-        av_freep(&dst_data[0]);
-        ret = av_samples_alloc(dst_data, &dst_linesize, dst_nb_channels,
-                               dst_nb_samples, dst_sample_fmt, 1);
-        if (ret < 0)
-            return false;
-        max_dst_nb_samples = dst_nb_samples;
-    }
-
-    /* convert to destination format */
-    ret = swr_convert(swr_ctx, dst_data, dst_nb_samples, (const uint8_t **)src_data, src_nb_samples);
-    if (ret < 0) {
-        fprintf(stderr, "Error while converting\n");
-        return false;
-    }
-    dst_bufsize = av_samples_get_buffer_size(&dst_linesize, dst_nb_channels,
-                                             ret, dst_sample_fmt, 1);
-    if (dst_bufsize < 0) {
-        fprintf(stderr, "Could not get sample buffer size\n");
-        return false;
-    }
-    printf("t:%f in:%d out:%d\n", t, src_nb_samples, ret);
-//    fwrite(dst_data[0], 1, dst_bufsize, dst_file);
-
-//    (*frame)->data[0] = *dst_data;
-//    (*frame)->data[1] = *dst_data;
-//    (*frame)->data = nullptr;
-    (*frame)->extended_data = dst_data;
-    (*frame)->nb_samples = dst_nb_samples;
-//    (*frame)->linesize[0] = dst_linesize;
-//    (*frame)->data = dst_data;
+    (*frame) = output_frame;
 
     return true;
 }
