@@ -80,8 +80,9 @@ bool YAudioResampler::resample(AVFrame **frame)
         return false;
     }
 
-    if (swr_convert_frame(_resampler_context, output_frame, *frame) != 0) {
-        std::cerr << "[YAudioResampler] swr_convert_frame failed" << std::endl;
+    int ret = 0;
+    if ((ret = swr_convert_frame(_resampler_context, output_frame, *frame)) != 0) {
+        std::cerr << "[YAudioResampler] swr_convert_frame failed " << ret << std::endl;
         return false;
     }
 

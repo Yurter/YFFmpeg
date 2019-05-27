@@ -69,6 +69,10 @@ bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
     out_stream->r_frame_rate = stream_codec_context->framerate;
     out_stream->avg_frame_rate = stream_codec_context->framerate;
 
+    // TODO
+    out_stream->time_base = stream_codec_context->time_base;
+    //
+
     auto codec_type = out_stream->codecpar->codec_type;
 
     switch (codec_type) {
@@ -82,6 +86,9 @@ bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
         std::cerr << "[YMediaDestination] Unsupported media type added: " << av_get_media_type_string(codec_type) << std::endl;
         break;
     }
+
+//    auto aaaa = _media_format_context->streams[0]->time_base; //TODO
+//    auto bbbb = _media_format_context->streams[1]->time_base;
 
     std::cout << "[YMediaDestination] Created stream: " << stream_codec_context->codec->name << std::endl;
     return true;
@@ -146,6 +153,10 @@ bool YMediaDestination::createOutputContext()
 
 bool YMediaDestination::openOutputContext()
 {
+    /* Crutch */ // avformat_write_header портит time_base потоков -> { 1 / 1000 }
+    auto tb_1 = _media_format_context->streams[0]->time_base;
+    auto tb_2 = _media_format_context->streams[1]->time_base;
+
 	if (!(_media_format_context->flags & AVFMT_NOFILE)) {
 		if (avio_open(&_media_format_context->pb, _media_resource_locator.c_str(), AVIO_FLAG_WRITE) < 0) {
             std::cerr << "[YMediaDestination] Could not open output: " << _media_resource_locator << std::endl;
@@ -156,6 +167,11 @@ bool YMediaDestination::openOutputContext()
         std::cerr << "[YMediaDestination] Error occurred when opening output" << std::endl;
 		return false;
 	}
+
+    /* Crutch */
+    _media_format_context->streams[0]->time_base = tb_1;
+    _media_format_context->streams[1]->time_base = tb_2;
+
 	{
 		_is_opened = true;
 		av_dump_format(_media_format_context, 0, _media_resource_locator.c_str(), 1);
@@ -208,19 +224,21 @@ void YMediaDestination::run()
 
 bool YMediaDestination::stampPacket(AVPacket &packet)
 {
-    auto aaa = _media_format_context->streams[0]->time_base; //TODO
-    auto bbb = _media_format_context->streams[1]->time_base;
     if (packet.stream_index == video_parameters.streamIndex()) {
-        packet.pts = _video_packet_index * 30; //TODO
-        packet.dts = _video_packet_index * 30; //TODO
+        packet.pts = _video_packet_index;
+        packet.dts = _video_packet_index;
+//        packet.pts = _video_packet_index * 20;
+//        packet.dts = _video_packet_index * 20;
 //        packet.duration = 1;
         packet.pos = -1;
         _video_packet_index++;
         return true;
     }
     if (packet.stream_index == audio_parameters.streamIndex()) {
-        packet.pts = _audio_packet_index * 30; //TODO
-        packet.dts = _audio_packet_index * 30; //TODO
+        packet.pts = _audio_packet_index;
+        packet.dts = _audio_packet_index;
+//        packet.pts = _audio_packet_index * 20;
+//        packet.dts = _audio_packet_index * 20;
 //        packet.duration = 1;
         packet.pos = -1;
         _audio_packet_index++;

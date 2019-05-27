@@ -6,7 +6,8 @@ YParameters::YParameters() :
     _codec_name(avcodec_get_name(_codec_id)),
     _bitrate(-1),
     _duration(-1),
-    _stream_index(-1)
+    _stream_index(-1),
+    _time_base({0,1})
 {
     //
 }
@@ -52,6 +53,11 @@ void YParameters::setStreamIndex(int64_t stream_index)
     _stream_index = stream_index;
 }
 
+void YParameters::setTimeBase(AVRational time_base)
+{
+    _time_base = time_base;
+}
+
 bool YParameters::available() const
 {
     return _available;
@@ -80,4 +86,9 @@ int64_t YParameters::duration() const
 int64_t YParameters::streamIndex() const
 {
     return _stream_index;
+}
+
+AVRational YParameters::timeBase() const
+{
+    return _time_base;
 }

@@ -57,9 +57,9 @@ void YAbstractMedia::parseFormatContext()
     }
 
     for (int64_t i = 0; i < _media_format_context->nb_streams; i++) {
-		AVStream* in_stream = _media_format_context->streams[i];
-        auto codec = in_stream->codec;
-        auto codecpar = in_stream->codecpar;
+        AVStream* stream = _media_format_context->streams[i];
+        auto codec = stream->codec;
+        auto codecpar = stream->codecpar;
         auto codec_type = codecpar->codec_type;
 
         switch (codec_type) {
@@ -68,11 +68,12 @@ void YAbstractMedia::parseFormatContext()
             video_parameters.setWidth(codecpar->width);
             video_parameters.setHeight(codecpar->height);
             video_parameters.setAspectRatio({-1,-1}); //TODO
-            video_parameters.setDuration(in_stream->duration);
-            video_parameters.setFrameRate(in_stream->avg_frame_rate); // ? -> r_frame_rate
+            video_parameters.setDuration(stream->duration);
+            video_parameters.setFrameRate(stream->avg_frame_rate); // ? -> r_frame_rate
             video_parameters.setBitrate(codecpar->bit_rate);
             video_parameters.setPixelFormat(codec->pix_fmt);
             video_parameters.setStreamIndex(i);
+            video_parameters.setTimeBase(stream->time_base);
             video_parameters.setAvailable(true);
             break;
         }
@@ -80,11 +81,12 @@ void YAbstractMedia::parseFormatContext()
             audio_parameters.setCodec(codecpar->codec_id);
             audio_parameters.setSampleRate(codecpar->sample_rate);
             audio_parameters.setSampleFormat(codec->sample_fmt);
-            audio_parameters.setDuration(in_stream->duration);
+            audio_parameters.setDuration(stream->duration);
             audio_parameters.setBitrate(codecpar->bit_rate);
             audio_parameters.setChanelsLayout(codecpar->channel_layout);
             audio_parameters.setChanels(codecpar->channels);
             audio_parameters.setStreamIndex(i);
+            video_parameters.setTimeBase(stream->time_base);
             audio_parameters.setAvailable(true);
             break;
         }
@@ -93,6 +95,9 @@ void YAbstractMedia::parseFormatContext()
             break;
         }
     }
+
+    auto aaaa = _media_format_context->streams[0]->time_base; //TODO
+    auto bbbb = _media_format_context->streams[1]->time_base;
 
 //    setDuration(FFMAX(_video_duration, _audio_duration));
 }
