@@ -100,6 +100,14 @@ bool YMediaChain::start()
                 }
                 if (skipPacket(&source_packet)) { continue; }
 
+
+
+                if (source_packet.stream_index == 1) {
+                    int t = 0;
+                }
+
+
+
                 /*---------------------------- Декодирование ---------------------------*/
                 std::list<AVFrame*> decoded_frames;
                 if (!_decoder->decodePacket(&source_packet, decoded_frames)) {

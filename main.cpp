@@ -24,8 +24,8 @@ int main()
 
 
 
-//    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/8sfh-322a-063b-ahuk";
-    std::string mrl_dst = "remuxed.flv";
+    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/8sfh-322a-063b-ahuk";
+//    std::string mrl_dst = "remuxed.flv";
 //    std::string mrl_dst = "remuxed.aac";
 //    std::string mrl_dst = "remuxed.mp3";
 

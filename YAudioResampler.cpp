@@ -89,7 +89,7 @@ bool YAudioResampler::resample(AVFrame **frame)
         return false;
     }
 
-    stampFrame(output_frame);
+//    stampFrame(output_frame); // output_frame->pts = AV_NOPTS_VALUE;
 
     (*frame) = output_frame;
 

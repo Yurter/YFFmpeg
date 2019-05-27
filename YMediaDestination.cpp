@@ -160,10 +160,6 @@ bool YMediaDestination::createOutputContext()
 
 bool YMediaDestination::openOutputContext()
 {
-    /* Crutch */ // avformat_write_header портит time_base потоков -> { 1 / 1000 }
-    auto tb_1 = _media_format_context->streams[0]->time_base;
-    auto tb_2 = _media_format_context->streams[1]->time_base;
-
 	if (!(_media_format_context->flags & AVFMT_NOFILE)) {
 		if (avio_open(&_media_format_context->pb, _media_resource_locator.c_str(), AVIO_FLAG_WRITE) < 0) {
             std::cerr << "[YMediaDestination] Could not open output: " << _media_resource_locator << std::endl;
@@ -174,11 +170,6 @@ bool YMediaDestination::openOutputContext()
         std::cerr << "[YMediaDestination] Error occurred when opening output" << std::endl;
 		return false;
 	}
-
-    /* Crutch */
-    _media_format_context->streams[0]->time_base = tb_1;
-    _media_format_context->streams[1]->time_base = tb_2;
-
 	{
 		_is_opened = true;
 		av_dump_format(_media_format_context, 0, _media_resource_locator.c_str(), 1);
@@ -223,7 +214,7 @@ void YMediaDestination::run()
                 std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
                 break;
             } else {
-                std::cerr << "[YMediaDestination] Writed " << packet_size << std::endl;
+                std::cerr << "[YMediaDestination] Writed " << (packet.stream_index == 0 ? "VIDEO" : "AUDIO") << " " << packet_size << std::endl;
             }
         }
     });
@@ -232,20 +223,22 @@ void YMediaDestination::run()
 bool YMediaDestination::stampPacket(AVPacket &packet)
 {
     if (packet.stream_index == video_parameters.streamIndex()) {
-        packet.pts = _video_packet_index;
-        packet.dts = _video_packet_index;
-        packet.duration = 1;
+        auto frame_rate = _media_format_context->streams[packet.stream_index]->avg_frame_rate;
+        auto duration = (1000 * frame_rate.den) / frame_rate.num;
+        packet.pts = _video_packet_index * duration;
+        packet.dts = _video_packet_index * duration;
+        packet.duration = duration;
         packet.pos = -1;
         _video_packet_index++;
         return true;
     }
-    if (packet.stream_index == audio_parameters.streamIndex()) {
-        packet.pts = _audio_packet_index;
-        packet.dts = _audio_packet_index;
-        packet.duration = 1;
-        packet.pos = -1;
-        _audio_packet_index++;
-        return true;
-    }
+//    if (packet.stream_index == audio_parameters.streamIndex()) {
+//        packet.pts = _audio_packet_index;
+//        packet.dts = _audio_packet_index;
+//        packet.duration = 1;
+//        packet.pos = -1;
+//        _audio_packet_index++;
+//        return true;
+//    }
     return false;
 }
