@@ -77,6 +77,8 @@ bool YMediaDecoder::initAudioCodec()
         std::cerr << "[YMediaDecoder] Audio codec copy error" << std::endl;
     }
     _audio_stream_index = _source->audio_parameters.streamIndex();
+    /* Crutch */ //TODO
+    _audio_codec_context->channel_layout = static_cast<uint64_t>(av_get_default_channel_layout(_audio_codec_context->channels));
     return copied;
 }
 

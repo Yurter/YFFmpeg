@@ -25,13 +25,20 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         video_parameters.setCodec("libx264");
         video_parameters.setAvailable(true);
         /* Audio */
-        audio_parameters.setSampleRate(44'100);
-        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
+//        audio_parameters.setSampleRate(44'100);
+//        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
+//        audio_parameters.setBitrate(128 * 1024);
+//        audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
+//        audio_parameters.setChanels(2);
+//        audio_parameters.setCodec("aac");
+//        audio_parameters.setAvailable(true);
+        //
+        audio_parameters.setSampleRate(22'050);
+        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_S16P);
         audio_parameters.setBitrate(128 * 1024);
-        audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
-        audio_parameters.setChanels(2);
-        audio_parameters.setCodec("aac");
-//        audio_parameters.setCodec("mp3");
+        audio_parameters.setChanelsLayout(AV_CH_LAYOUT_MONO);
+        audio_parameters.setChanels(1);
+        audio_parameters.setCodec("mp3");
         audio_parameters.setAvailable(true);
         break;
     case Timelapse:
@@ -227,9 +234,7 @@ bool YMediaDestination::stampPacket(AVPacket &packet)
     if (packet.stream_index == video_parameters.streamIndex()) {
         packet.pts = _video_packet_index;
         packet.dts = _video_packet_index;
-//        packet.pts = _video_packet_index * 20;
-//        packet.dts = _video_packet_index * 20;
-//        packet.duration = 1;
+        packet.duration = 1;
         packet.pos = -1;
         _video_packet_index++;
         return true;
@@ -237,9 +242,7 @@ bool YMediaDestination::stampPacket(AVPacket &packet)
     if (packet.stream_index == audio_parameters.streamIndex()) {
         packet.pts = _audio_packet_index;
         packet.dts = _audio_packet_index;
-//        packet.pts = _audio_packet_index * 20;
-//        packet.dts = _audio_packet_index * 20;
-//        packet.duration = 1;
+        packet.duration = 1;
         packet.pos = -1;
         _audio_packet_index++;
         return true;

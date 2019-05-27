@@ -37,8 +37,6 @@ bool YAudioResampler::init(AVCodecContext *input_codec_context, AVCodecContext *
     _input_codec_context = input_codec_context;
     _output_codec_context = output_codec_context;
 
-    if (!initFifo()) { return false; }
-
     _resampler_context = swr_alloc_set_opts(
         nullptr,
         av_get_default_channel_layout(_output_codec_context->channels),
@@ -70,13 +68,18 @@ bool YAudioResampler::init(AVCodecContext *input_codec_context, AVCodecContext *
 bool YAudioResampler::resample(AVFrame **frame)
 {
     if (!_inited) {
-        std::cerr << "[YAudioResampler] Not ineted" << std::endl;
+        std::cerr << "[YAudioResampler] Not inited" << std::endl;
         return false;
     }
 
     AVFrame *output_frame = nullptr;
     if (!initOutputFrame(&output_frame, _output_codec_context->frame_size)) {
         std::cerr << "[YAudioResampler] initOutputFrame failed" << std::endl;
+        return false;
+    }
+
+    if (configChanged(*frame, output_frame)) {
+        std::cerr << "[YAudioResampler] configChanged" << std::endl;
         return false;
     }
 
@@ -90,75 +93,6 @@ bool YAudioResampler::resample(AVFrame **frame)
 
     (*frame) = output_frame;
 
-    return true;
-}
-
-bool YAudioResampler::initFifo()
-{
-    /* Create the FIFO buffer based on the specified output sample format. */
-    _audio_fifo = av_audio_fifo_alloc(_output_codec_context->sample_fmt,
-                                      _output_codec_context->channels, 1);
-    if (_audio_fifo == nullptr) {
-        std::cerr << "[YAudioResampler] Could not allocate FIFO" << std::endl;
-        return false;
-    }
-    return true;
-}
-
-bool YAudioResampler::initConvertedSamples(uint8_t ***converted_input_samples, int64_t frame_size)
-{
-    /* Allocate as many pointers as there are audio channels.
-     * Each pointer will later point to the audio samples of the corresponding
-     * channels (although it may be NULL for interleaved formats). */
-    *converted_input_samples = reinterpret_cast<uint8_t**>(
-        calloc(static_cast<size_t>(_output_codec_context->channels),
-                sizeof(**converted_input_samples))
-        );
-
-    if (*converted_input_samples == nullptr) {
-        std::cerr << "[YAudioResampler] Could not allocate converted input sample pointers" << std::endl;
-        return false;
-    }
-
-    /* Allocate memory for the samples of all channels in one consecutive
-     * block for convenience. */
-    if (av_samples_alloc(*converted_input_samples, nullptr,
-                          _output_codec_context->channels,
-                          static_cast<int>(frame_size),
-                          _output_codec_context->sample_fmt, 0) < 0) {
-        std::cerr << "[YAudioResampler] Could not allocate converted input samples" << std::endl;
-        av_freep(&(*converted_input_samples)[0]);
-        free(*converted_input_samples);
-        return false;
-    }
-    return true;
-}
-
-bool YAudioResampler::convertSamples(const uint8_t **input_data, uint8_t **converted_data, const int frame_size)
-{
-    /* Convert the samples using the resampler. */
-    if (swr_convert(_resampler_context,
-                     converted_data, frame_size,        // output
-                     input_data    , frame_size) < 0) { // input
-        std::cerr << "[YAudioResampler] Could not convert input samples" << std::endl;
-        return false;
-    }
-    return true;
-}
-
-bool YAudioResampler::addSamplesToFifo(uint8_t **converted_input_samples, const int frame_size)
-{
-    /* Make the FIFO as large as it needs to be to hold both,
-     * the old and the new samples. */
-    if (av_audio_fifo_realloc(_audio_fifo, av_audio_fifo_size(_audio_fifo) + frame_size) < 0) {
-        std::cerr << "[YAudioResampler] Could not reallocate FIFO" << std::endl;
-        return false;
-    }
-    /* Store the new samples in the FIFO buffer. */
-    if (av_audio_fifo_write(_audio_fifo, reinterpret_cast<void**>(converted_input_samples), frame_size) < frame_size) {
-        std::cerr << "[YAudioResampler] Could not write data to FIFO" << std::endl;
-        return false;
-    }
     return true;
 }
 
@@ -186,6 +120,27 @@ bool YAudioResampler::initOutputFrame(AVFrame **frame, int frame_size)
         return false;
     }
     return true;
+}
+
+bool YAudioResampler::configChanged(const AVFrame *in, const AVFrame *out)
+{
+    if (in) {
+        if (_input_codec_context->channel_layout != in->channel_layout
+                || _input_codec_context->sample_rate != in->sample_rate
+                || _input_codec_context->sample_fmt  != in->format) {
+            return true;
+        }
+    }
+
+    if (out) {
+        if (_output_codec_context->channel_layout != out->channel_layout ||
+            _output_codec_context->sample_rate != out->sample_rate ||
+            _output_codec_context->sample_fmt  != out->format) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void YAudioResampler::stampFrame(AVFrame *frame)

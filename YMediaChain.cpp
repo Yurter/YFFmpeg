@@ -58,6 +58,14 @@ bool YMediaChain::start()
         start_failed = true;
     }
 
+    if (rescalerRequired()) {
+        _rescaler = new YVideoRescaler();
+        if (!_rescaler->init(_decoder->videoCodecContext()
+                              , _encoder->videoCodecContext())) {
+            start_failed = true;
+        }
+    }
+
     if (resamplerRequired()) {
         _resampler = new YAudioResampler();
         if (!_resampler->init(_decoder->audioCodecContext()
