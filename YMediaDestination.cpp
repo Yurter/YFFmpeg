@@ -215,21 +215,10 @@ void YMediaDestination::run()
 
 bool YMediaDestination::stampPacket(AVPacket &packet)
 {
-//    if (packet.stream_index == video_parameters.streamIndex()) {
-//        auto frame_rate = _media_format_context->streams[packet.stream_index]->avg_frame_rate;
-//        auto duration = (1000 * frame_rate.den) / frame_rate.num;
-//        packet.pts = _video_packet_index * duration;
-//        packet.dts = _video_packet_index * duration;
-//        packet.duration = duration;
-//        packet.pos = -1;
-//        _video_packet_index++;
-//        return true;
-//    }
-    if (packet.stream_index == video_parameters.streamIndex()) {
+    if (packet.stream_index == video_parameters.streamIndex()) { //TODO
         auto frame_rate = _media_format_context->streams[packet.stream_index]->avg_frame_rate;
         auto duration = (1000 * frame_rate.den) / frame_rate.num;
-        auto src_time_base =
-        packet.pts = av_rescale_q(_video_packet_index, _media_format_context->streams[packet.stream_index]->codec->time_base, _media_format_context->streams[packet.stream_index]->time_base);
+        packet.pts = _video_packet_index * duration;
         packet.dts = _video_packet_index * duration;
         packet.duration = duration;
         packet.pos = -1;

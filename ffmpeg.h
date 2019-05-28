@@ -17,7 +17,8 @@ extern "C" {
 #include <libswresample/swresample.h>
 }
 
-// Варианты для быстрой преднастройки параметров медиа-ресурсa.
+/* Варианты для быстрой преднастройки */
+/* параметров медиа-ресурсa           */
 enum YMediaPreset {
     Auto,
     /* Input */
