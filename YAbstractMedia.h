@@ -29,16 +29,6 @@ public:
     AVFormatContext*    mediaFormatContext() const;                     // Функция возвращает медиа-контекст.
     int64_t             duration() const;								// Функция возвращает длительность медиа-файла в секундах.
 
-    // Варианты для быстрой преднастройки параметров медиа-ресурсa.
-    enum YMediaPreset {
-        Auto,
-        /* Input */
-        Silence,
-        /* Output */
-        YouTube,
-        Timelapse
-    };
-
 protected:
 
     virtual void        run() = 0;

@@ -17,8 +17,24 @@ extern "C" {
 #include <libswresample/swresample.h>
 }
 
-/* not used yet */
-enum YCODES {
-    YEOF,
-    YAGAIN
+// Варианты для быстрой преднастройки параметров медиа-ресурсa.
+enum YMediaPreset {
+    Auto,
+    /* Input */
+    Silence,
+    /* Output */
+    YouTube,
+    Timelapse
+};
+
+/* Коды результата выполнения некоторых функций */
+enum YCode {
+    END_OF_FILE,
+    AGAIN
+};
+
+/* Опции для настройки  */
+enum YOptions {
+    COPY_VIDEO,
+    COPY_AUDIO
 };

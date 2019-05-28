@@ -32,8 +32,8 @@ int main()
 
 
     YMediaSource source(mrl_src);
-    YMediaDestination destination(mrl_dst, YMediaDestination::YMediaPreset::YouTube);
-//    YMediaDestination destination(mrl_dst, YMediaDestination::YMediaPreset::Auto);
+    YMediaDestination destination(mrl_dst, YMediaPreset::YouTube);
+//    YMediaDestination destination(mrl_dst, YMediaPreset::Auto);
 
 
 
