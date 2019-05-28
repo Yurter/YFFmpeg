@@ -3,11 +3,37 @@
 #include <iostream>
 #include <thread>
 
-YMediaSource::YMediaSource(const std::string &mrl) :
+YMediaSource::YMediaSource(const std::string &mrl, YMediaPreset preset) :
     YAbstractMedia(mrl),
     _input_format(nullptr)
 {
-    //
+    switch (preset) {
+    case Auto:
+        break;
+    case Silence:
+        _media_resource_locator = "aevalsrc=0";
+        _input_format = av_find_input_format("lavfi");
+        if (_input_format == nullptr) {
+            std::cerr << "[YMediaSource] FFmpeg lavfi format not found" << std::endl;
+            break;
+        }
+
+        //
+        audio_parameters.setSampleRate(44'100);
+        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_S16P);
+//        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
+        audio_parameters.setBitrate(128 * 1024);
+        audio_parameters.setChanelsLayout(AV_CH_LAYOUT_MONO);
+        audio_parameters.setChanels(1);
+        audio_parameters.setCodec("mp3");
+//        audio_parameters.setCodec(AV_CODEC_ID_PCM_MULAW);
+        audio_parameters.setAvailable(true);
+        //
+        break;
+    default:
+        std::cerr << "[YMediaSource] Invalid preset." << std::endl;
+        break;
+    }
 }
 
 
@@ -51,7 +77,7 @@ bool YMediaSource::openInput()
         return false;
     }
     std::cout << "[YMediaSource] Source: \"" << _media_resource_locator << "\" is opening..." << std::endl;
-    if (avformat_open_input(&_media_format_context, _media_resource_locator.c_str(), nullptr, nullptr) < 0) {
+    if (avformat_open_input(&_media_format_context, _media_resource_locator.c_str(), _input_format, nullptr) < 0) {
         std::cerr << "[YMediaSource] Failed to open input context." << std::endl;
         return false;
     }

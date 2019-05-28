@@ -32,6 +32,10 @@ public:
     void unpause();
     bool active();
 
+    void setContingencySource();
+    void setContingencyVideoSource();
+    void setContingencyAudioSource(YMediaSource* contingency_audio_source);
+
 private:
 
     bool rescalerRequired();

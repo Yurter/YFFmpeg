@@ -7,7 +7,8 @@ YParameters::YParameters() :
     _bitrate(-1),
     _duration(-1),
     _stream_index(-1),
-    _time_base({0,1})
+    _time_base({0,1}),
+    _ignore(false)
 {
     //
 }
@@ -58,6 +59,11 @@ void YParameters::setTimeBase(AVRational time_base)
     _time_base = time_base;
 }
 
+void YParameters::setIgnore(bool ignore)
+{
+    _ignore = ignore;
+}
+
 bool YParameters::available() const
 {
     return _available;
@@ -91,4 +97,9 @@ int64_t YParameters::streamIndex() const
 AVRational YParameters::timeBase() const
 {
     return _time_base;
+}
+
+bool YParameters::ignore() const
+{
+    return _ignore;
 }

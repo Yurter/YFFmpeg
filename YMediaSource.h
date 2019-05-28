@@ -1,14 +1,13 @@
 #pragma once
 
 #include "YAbstractMedia.h"
-#include "YMediaDestination.h"
 
 class YMediaSource : public YAbstractMedia
 {
 
 public:
 
-    YMediaSource(const std::string &mrl);   // mrl - media resource locator
+    YMediaSource(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);   // mrl - media resource locator
     virtual ~YMediaSource();
 
     bool open();

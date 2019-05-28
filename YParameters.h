@@ -18,6 +18,7 @@ public:
     void            setDuration(int64_t duration);
     void            setStreamIndex(int64_t stream_index);
     void            setTimeBase(AVRational time_base);
+    void            setIgnore(bool ignore);
 
     bool            available()     const;
     AVCodecID       codecId()       const;
@@ -26,6 +27,7 @@ public:
     int64_t         duration()      const;
     int64_t         streamIndex()   const;
     AVRational      timeBase()      const;
+    bool            ignore()        const;
 
 protected:
 
@@ -36,6 +38,7 @@ protected:
     int64_t             _duration;
     int64_t             _stream_index;
     AVRational          _time_base;
+    bool                _ignore;
 
 };
 
