@@ -5,6 +5,8 @@ CONFIG -= qt
 CONFIG += c++17
 
 SOURCES += \
+    YFrame.cpp \
+    YPacket.cpp \
         main.cpp \
     YMediaSource.cpp \
     YMediaDestination.cpp \
@@ -15,14 +17,10 @@ SOURCES += \
     YMediaEncoder.cpp \
     YMediaFilter.cpp \
     YMediaSource.cpp \
-    YAbstractCoder.cpp \
-    YVideoRescaler.cpp \
-    YAudioResampler.cpp \
-    YVideoParameters.cpp \
-    YAudioParameters.cpp \
-    YParameters.cpp
+    YAbstractCoder.cpp
 
 HEADERS += \
+    YFrame.h \
     YMediaSource.h \
     YMediaDestination.h \
     YAbstractMedia.h \
@@ -33,19 +31,19 @@ HEADERS += \
     YMediaFilter.h \
     YMediaSource.h \
     YAbstractCoder.h \
-    ffmpeg.h \
-    YVideoRescaler.h \
-    YAudioResampler.h \
-    YVideoParameters.h \
-    YAudioParameters.h \
-    YParameters.h
+    YPacket.h \
+    ffmpeg.h
 
-#--Home--
+#-- Home --
 INCLUDEPATH += G:\dev\FFmpeg\ffmpeg-4.1.1-win64-dev\include
 LIBS += -LG:\dev\FFmpeg\ffmpeg-4.1.1-win64-dev\lib
 
-#--Office--
+#-- Office 1 --
 INCLUDEPATH += D:\dev\00_ffmpeg\ffmpeg-4.1.1-win64-dev\include
 LIBS += -LD:\dev\00_ffmpeg\ffmpeg-4.1.1-win64-dev\lib
+
+#-- Office 2 --
+INCLUDEPATH += D:\dev\00_ffmpeg\ffmpeg-4.1.3-win64-dev\include
+LIBS += -LD:\dev\00_ffmpeg\ffmpeg-4.1.3-win64-dev\lib
 
 LIBS += -lavcodec -lavformat -lavutil -lswscale -lavdevice -lavfilter -lpostproc -lswresample
