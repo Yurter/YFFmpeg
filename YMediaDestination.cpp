@@ -76,10 +76,6 @@ bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
     out_stream->r_frame_rate = stream_codec_context->framerate;
     out_stream->avg_frame_rate = stream_codec_context->framerate;
 
-    // TODO
-    out_stream->time_base = stream_codec_context->time_base;
-    //
-
     auto codec_type = out_stream->codecpar->codec_type;
 
     switch (codec_type) {
@@ -93,9 +89,6 @@ bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
         std::cerr << "[YMediaDestination] Unsupported media type added: " << av_get_media_type_string(codec_type) << std::endl;
         break;
     }
-
-//    auto aaaa = _media_format_context->streams[0]->time_base; //TODO
-//    auto bbbb = _media_format_context->streams[1]->time_base;
 
     std::cout << "[YMediaDestination] Created stream: " << stream_codec_context->codec->name << std::endl;
     return true;

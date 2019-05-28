@@ -5,8 +5,13 @@ CONFIG -= qt
 CONFIG += c++17
 
 SOURCES += \
+    YAudioParameters.cpp \
+    YAudioResampler.cpp \
     YFrame.cpp \
     YPacket.cpp \
+    YParameters.cpp \
+    YVideoParameters.cpp \
+    YVideoRescaler.cpp \
         main.cpp \
     YMediaSource.cpp \
     YMediaDestination.cpp \
@@ -20,6 +25,8 @@ SOURCES += \
     YAbstractCoder.cpp
 
 HEADERS += \
+    YAudioParameters.h \
+    YAudioResampler.h \
     YFrame.h \
     YMediaSource.h \
     YMediaDestination.h \
@@ -32,6 +39,9 @@ HEADERS += \
     YMediaSource.h \
     YAbstractCoder.h \
     YPacket.h \
+    YParameters.h \
+    YVideoParameters.h \
+    YVideoRescaler.h \
     ffmpeg.h
 
 #-- Home --
