@@ -29,15 +29,15 @@ public:
     AVFormatContext*    mediaFormatContext() const;                     // Функция возвращает медиа-контекст.
     int64_t             duration() const;								// Функция возвращает длительность медиа-файла в секундах.
 
+    bool                isVideoPacket(AVPacket &packet);                //
+    bool                isAudioPacket(AVPacket &packet);                //
+
 protected:
 
     virtual void        run() = 0;
 
     void                queuePacket(AVPacket packet);
     bool                getPacket(AVPacket &packet);
-
-    bool                isVideoPacket(AVPacket &packet);
-    bool                isAudioPacket(AVPacket &packet);
 
     void                parseFormatContext();
     std::string         guessFormatShortName();

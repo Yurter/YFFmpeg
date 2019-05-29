@@ -37,8 +37,9 @@ enum YCode {
 
 /* Опции для настройки  */
 enum YOptions {
-    COPY_VIDEO,
-    COPY_AUDIO
+    COPY_VIDEO      = 0x0001,
+    COPY_AUDIO      = 0x0002,
+    DUMMY_ENUM      = 0x0004
 };
 
 //TODO

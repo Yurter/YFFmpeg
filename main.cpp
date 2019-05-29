@@ -7,27 +7,19 @@ int main()
 {
 
 //    av_log_set_level(AV_LOG_VERBOSE);
-//    av_log_set_level(AV_LOG_DEBUG);
+    av_log_set_level(AV_LOG_DEBUG);
     cout << "Program started..." << endl;
 
 
 
 //    std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
     std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
-//    std::string mrl_src = "source_01.mp3";
-//    std::string mrl_src = "source.mp3";
-//    std::string mrl_src = "source16.mp3";
-//    std::string mrl_src = "source16.flv";
-//    std::string mrl_src = "source.wav";
-//    std::string mrl_src = "source.flv";
 //    std::string mrl_src = "rtsp://192.168.0.14:8080/h264";
 
 
 
 //    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/8sfh-322a-063b-ahuk";
     std::string mrl_dst = "remuxed.flv";
-//    std::string mrl_dst = "remuxed.aac";
-//    std::string mrl_dst = "remuxed.mp3";
 
 
 
@@ -50,7 +42,7 @@ int main()
 
 
 
-    YMediaChain chain(&source, &destination);
+    YMediaChain chain(&source, &destination, COPY_VIDEO);
 
 
 

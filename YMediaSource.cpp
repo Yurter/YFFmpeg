@@ -17,14 +17,6 @@ YMediaSource::YMediaSource(const std::string &mrl, YMediaPreset preset) :
             std::cerr << "[YMediaSource] FFmpeg lavfi format not found" << std::endl;
             break;
         }
-
-//        std::cout << "[DEBUG] 11111111111111111111111111111111" << std::endl;
-//        if (avformat_open_input(&_media_format_context, _media_resource_locator.c_str(), _input_format, nullptr) < 0) {
-//            std::cout << "Failed to open virtual input context" << std::endl;
-//            return;
-//        }
-//        std::cout << "[DEBUG] 22222222222222222222222222222222" << std::endl;
-
         //
 //        audio_parameters.setSampleRate(44'100);
 ////        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_S16P);

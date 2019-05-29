@@ -29,6 +29,8 @@ public:
     AVRational      timeBase()      const;
     bool            ignore()        const;
 
+    void            softCopy(YParameters& other_parametrs);
+
 protected:
 
     bool				_available;

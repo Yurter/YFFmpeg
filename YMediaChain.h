@@ -17,12 +17,14 @@ class YMediaChain
 public:
 
     YMediaChain(YMediaSource*       source,
-                YMediaDestination*  destination);
+                YMediaDestination*  destination,
+                int64_t             options = 0);
 
     YMediaChain(YMediaSource*       source,
                 YMediaFilter*       video_filter,
                 YMediaFilter*       audio_filter,
-                YMediaDestination*  destination);
+                YMediaDestination*  destination,
+                int64_t             options);
 
     ~YMediaChain();
 
@@ -44,11 +46,10 @@ private:
     bool contingencyVideoSourceRequired();
     bool contingencyAudioSourceRequired();
 
-    bool isVideoPacket(AVPacket* packet);
-    bool isAudioPacket(AVPacket* packet);
+    bool skipPacket(AVPacket& packet);
+    bool mapStreamIndex(AVPacket& src_packet, AVPacket& dst_packet);
 
-    bool skipPacket(AVPacket* packet);
-    bool mapStreamIndex(AVPacket* src_packet, AVPacket* dst_packet);
+    bool optionInstalled(YOptions option);
 
 private:
 
@@ -69,6 +70,8 @@ private:
 	std::thread			_thread;
     volatile bool       _active;
     volatile bool       _paused; 
+
+    int64_t             _options;
 
     int64_t             _source_video_stream_index;
     int64_t             _source_audio_stream_index;

@@ -103,3 +103,8 @@ bool YParameters::ignore() const
 {
     return _ignore;
 }
+
+void YParameters::softCopy(YParameters &other_parametrs)
+{
+    //
+}
