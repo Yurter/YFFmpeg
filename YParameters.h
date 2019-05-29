@@ -9,7 +9,7 @@ class YParameters
 public:
 
     YParameters();
-    ~YParameters();
+    virtual ~YParameters();
 
     void            setAvailable(bool available);
     void            setCodec(AVCodecID codec_id);
@@ -30,6 +30,7 @@ public:
     bool            ignore()        const;
 
     void            softCopy(YParameters& other_parametrs);
+    virtual YParameters&    operator=(const YParameters &rhs);
 
 protected:
 

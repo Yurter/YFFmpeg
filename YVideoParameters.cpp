@@ -2,11 +2,11 @@
 
 YVideoParameters::YVideoParameters() :
     YParameters(),
-    _width(-1),
-    _height(-1),
-    _aspect_ratio({-1,-1}),
-    _frame_rate(-1.f),
-    _pixel_format(AV_PIX_FMT_NONE)
+    _width(DEFAULT_INT),
+    _height(DEFAULT_INT),
+    _aspect_ratio(DEFAULT_RATIONAL),
+    _frame_rate(DEFAULT_FLOAT),
+    _pixel_format(DEFAULT_PIXEL_FORMAT)
 {
     //
 }
@@ -73,4 +73,19 @@ float YVideoParameters::frameRate() const
 AVPixelFormat YVideoParameters::pixelFormat() const
 {
     return _pixel_format;
+}
+
+void YVideoParameters::softCopy(YVideoParameters &other_parametrs)
+{
+    if (not_inited_int(_width))             { _width = other_parametrs.width();                 }
+    if (not_inited_int(_height))            { _height = other_parametrs.height();               }
+    if (not_inited_q(_aspect_ratio))        { _aspect_ratio = other_parametrs.aspectRatio();    }
+    if (not_inited_float(_frame_rate))      { _frame_rate = other_parametrs.frameRate();        }
+    if (not_inited_pix_fmt(_pixel_format))  { _pixel_format = other_parametrs.pixelFormat();    }
+    YParameters::softCopy(other_parametrs);
+}
+
+YParameters &YVideoParameters::operator=(const YParameters &rhs)
+{
+    //
 }

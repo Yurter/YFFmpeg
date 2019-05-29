@@ -20,6 +20,9 @@ public:
     uint64_t        chanelsLayout() const;
     int64_t         chanels()       const;
 
+    void            softCopy(YAudioParameters &other_parametrs);
+    YAudioParameters&    operator=(const YParameters &rhs);
+
 private:
 
     int64_t         _sample_rate;

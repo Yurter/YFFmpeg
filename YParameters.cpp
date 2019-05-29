@@ -2,12 +2,12 @@
 
 YParameters::YParameters() :
     _available(false),
-    _codec_id(AV_CODEC_ID_NONE),
-    _codec_name(avcodec_get_name(_codec_id)),
-    _bitrate(-1),
-    _duration(-1),
-    _stream_index(-1),
-    _time_base({0,1}),
+    _codec_id(DEFAULT_CODEC_ID),
+    _codec_name(DEFAULT_STRING),
+    _bitrate(DEFAULT_FLOAT),
+    _duration(DEFAULT_INT),
+    _stream_index(INVALID_INT),
+    _time_base(DEFAULT_RATIONAL),
     _ignore(false)
 {
     //
@@ -106,5 +106,25 @@ bool YParameters::ignore() const
 
 void YParameters::softCopy(YParameters& other_parametrs)
 {
-    //
+    _available = other_parametrs.available();
+    if (not_inited_codec_id(_codec_id)) { _codec_id = other_parametrs.codecId();            }
+    if (not_inited_string(_codec_name)) { _codec_name = other_parametrs.codecName();        }
+    if (not_inited_int(_bitrate))       { _bitrate = other_parametrs.bitrate();             }
+    if (not_inited_int(_duration))      { _duration = other_parametrs.duration();           }
+    if (invalid_int(_stream_index))     { _stream_index = other_parametrs.streamIndex();    }
+    if (not_inited_q(_time_base))       { _time_base = other_parametrs.timeBase();          }
+    _ignore = other_parametrs.ignore();
+}
+
+YParameters &YParameters::operator=(const YParameters &rhs)
+{
+    _available =    rhs.available();
+    _codec_id =     rhs.codecId();
+    _codec_name =   rhs.codecName();
+    _bitrate =      rhs.bitrate();
+    _duration =     rhs.duration();
+    _stream_index = rhs.streamIndex();
+    _time_base =    rhs.timeBase();
+    _ignore =       rhs.ignore();
+    return *this;
 }

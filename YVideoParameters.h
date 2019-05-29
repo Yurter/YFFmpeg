@@ -8,7 +8,7 @@ class YVideoParameters : public YParameters
 public:
 
     YVideoParameters();
-    ~YVideoParameters();
+    virtual ~YVideoParameters();
 
     void            setWidth(int64_t width);
     void            setHeight(int64_t height);
@@ -22,6 +22,9 @@ public:
     AVRational      aspectRatio()   const;
     float           frameRate()     const;
     AVPixelFormat   pixelFormat()   const;
+
+    void            softCopy(YVideoParameters &other_parametrs);
+    YVideoParameters&    operator=(const YParameters &rhs);
 
 private:
 
