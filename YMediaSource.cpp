@@ -11,7 +11,7 @@ YMediaSource::YMediaSource(const std::string &mrl, YMediaPreset preset) :
         break;
     case Silence:
         avdevice_register_all();
-        _media_resource_locator = "aevalsrc=0";
+//        _media_resource_locator = "aevalsrc=0";
         _input_format = av_find_input_format("lavfi");
         if (_input_format == nullptr) {
             std::cerr << "[YMediaSource] FFmpeg lavfi format not found" << std::endl;
@@ -36,12 +36,12 @@ YMediaSource::YMediaSource(const std::string &mrl, YMediaPreset preset) :
 ////        audio_parameters.setCodec(AV_CODEC_ID_PCM_MULAW);
 //        audio_parameters.setAvailable(true);
         //
-        audio_parameters.setSampleRate(22'050);
-        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_S16P);
-        audio_parameters.setBitrate(128 * 1024);
+        audio_parameters.setSampleRate(44'100);
+        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);//(AV_SAMPLE_FMT_S16P);//pcm_f64le
+        audio_parameters.setBitrate(128'000);
         audio_parameters.setChanelsLayout(AV_CH_LAYOUT_MONO);
         audio_parameters.setChanels(1);
-        audio_parameters.setCodec("mp3");
+        audio_parameters.setCodec("aac");
         audio_parameters.setAvailable(true);
         break;
     default:

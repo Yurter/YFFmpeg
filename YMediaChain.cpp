@@ -152,6 +152,10 @@ bool YMediaChain::start()
                 _destination->writePacket(*destination_packet);
 
                 /*--------------------------------- TODO -------------------------------*/
+                auto aaa1 = _destination->_video_packet_index;
+                auto aaa2 = (int)_destination->video_parameters.frameRate();
+                auto aaa3 = aaa1 % aaa2;
+                if (_destination->_video_packet_index % (int)_destination->video_parameters.frameRate() != 0) { continue; }
                 AVPacket silence_packet;
                 if (contingencyAudioSourceRequired()) {
                     if (!_contingency_audio_source->readPacket(silence_packet)) {

@@ -2,5 +2,10 @@
 
 YFrame::YFrame()
 {
+    //
+}
 
+YFrame::~YFrame()
+{
+    //
 }

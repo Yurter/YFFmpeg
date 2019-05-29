@@ -20,7 +20,7 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         video_parameters.setWidth(1920);
         video_parameters.setHeight(1080);
         video_parameters.setAspectRatio({16,9});
-        video_parameters.setFrameRate(30);
+        video_parameters.setFrameRate(24);//(30); //TODO
         video_parameters.setBitrate(400'000);
         video_parameters.setCodec("libx264");
         video_parameters.setAvailable(true);
@@ -33,12 +33,12 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
 //        audio_parameters.setCodec("aac");
 //        audio_parameters.setAvailable(true);
         //
-        audio_parameters.setSampleRate(22'050);
-        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_S16P);
-        audio_parameters.setBitrate(128 * 1024);
+        audio_parameters.setSampleRate(44'100);
+        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);//(AV_SAMPLE_FMT_S16P);
+        audio_parameters.setBitrate(128'000);
         audio_parameters.setChanelsLayout(AV_CH_LAYOUT_MONO);
         audio_parameters.setChanels(1);
-        audio_parameters.setCodec("mp3");
+        audio_parameters.setCodec("aac");
         audio_parameters.setAvailable(true);
         break;
     case Timelapse:
@@ -244,8 +244,10 @@ bool YMediaDestination::stampPacket(AVPacket &packet)
         //
 //        auto frame_rate = _media_format_context->streams[packet.stream_index]->avg_frame_rate;
 //        auto duration = (1000 * frame_rate.den) / frame_rate.num;
-//        packet.pts = _video_packet_index * duration;
-//        packet.dts = _video_packet_index * duration;
+        auto frame_rate = video_parameters.frameRate();
+        auto duration = (int)(1000 / frame_rate);
+        packet.pts = _video_packet_index * duration;
+        packet.dts = _video_packet_index * duration;
         _audio_packet_index++;
         return true;
     }

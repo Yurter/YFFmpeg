@@ -31,6 +31,7 @@ private:
     bool stampPacket(AVPacket &packet);
 
 private:
+public: //TODO
 
 	// General parameters
     int64_t             _video_packet_index;
