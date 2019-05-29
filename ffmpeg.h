@@ -42,8 +42,19 @@ enum YOptions {
     DUMMY_ENUM      = 0x0004
 };
 
-//TODO
-#define DEFAULT_INT             -1
-#define DEFAULT_FLOAT           -1.f
+/* ? */
+#define DEFAULT_INT             0
+#define DEFAULT_FLOAT           0.f
+#define DEFAULT_STRING          "none"
 #define DEFAULT_RATIONAL        { 0, 1 }
+#define DEFAULT_CODEC_ID        AV_CODEC_ID_NONE
+#define DEFAULT_PIXEL_FORMAT    AV_PIX_FMT_NONE
+#define DEFAULT_SAMPLE_FORMAT   AV_SAMPLE_FMT_NONE
+
 #define not_inited_int(x)       ((x) == DEFAULT_INT)
+#define not_inited_float(x)     ((x) == DEFAULT_FLOAT)
+#define not_inited_string(x)    ((x) == DEFAULT_STRING)
+#define not_inited_q(x)         ((x) == DEFAULT_RATIONAL)
+#define not_inited_codec_id(x)  ((x) == DEFAULT_CODEC_ID)
+#define not_inited_pix_fmt(x)   ((x) == DEFAULT_PIXEL_FORMAT)
+#define not_inited_smp_fmt(x)   ((x) == DEFAULT_SAMPLE_FORMAT)
