@@ -10,6 +10,7 @@ YAbstractMedia::YAbstractMedia(const std::string & mrl) :
     _reopening_timeout(-1),
     _close_after_failure(false),
     _close_timeout(-1),
+    _packet_queue_capacity(100),
     _media_format_context(nullptr)
 {
     //
@@ -96,9 +97,6 @@ void YAbstractMedia::parseFormatContext()
         }
     }
 
-    auto aaaa = _media_format_context->streams[0]->time_base; //TODO
-    auto bbbb = _media_format_context->streams[1]->time_base;
-
 //    setDuration(FFMAX(_video_duration, _audio_duration));
 }
 
@@ -133,4 +131,14 @@ bool YAbstractMedia::getPacket(AVPacket &packet)
     packet = _packet_queue.front();
     _packet_queue.pop();
     return true;
+}
+
+bool YAbstractMedia::isVideoPacket(AVPacket &packet)
+{
+    return packet.stream_index == video_parameters.streamIndex();
+}
+
+bool YAbstractMedia::isAudioPacket(AVPacket &packet)
+{
+    return packet.stream_index == audio_parameters.streamIndex();
 }

@@ -32,14 +32,17 @@ public:
     void unpause();
     bool active();
 
-    void setContingencySource();
-    void setContingencyVideoSource();
+//    void setContingencySource(YMediaSource* contingency_source);
+    void setContingencyVideoSource(YMediaSource* contingency_video_source);
     void setContingencyAudioSource(YMediaSource* contingency_audio_source);
 
 private:
 
     bool rescalerRequired();
     bool resamplerRequired();
+
+    bool contingencyVideoSourceRequired();
+    bool contingencyAudioSourceRequired();
 
     bool isVideoPacket(AVPacket* packet);
     bool isAudioPacket(AVPacket* packet);
@@ -58,6 +61,9 @@ private:
     YMediaDestination*  _destination;
     YVideoRescaler*     _rescaler;
     YAudioResampler*    _resampler;
+
+    YMediaSource*       _contingency_video_source;
+    YMediaSource*       _contingency_audio_source;
 
 	//General parameters
 	std::thread			_thread;

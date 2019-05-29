@@ -13,6 +13,7 @@ extern "C" {
 #include <libavfilter/buffersink.h>
 #include <libavfilter/buffersrc.h>
 #include <libavfilter/avfilter.h>
+#include <libavdevice/avdevice.h>
 #include <libswscale/swscale.h>
 #include <libswresample/swresample.h>
 }
@@ -39,3 +40,9 @@ enum YOptions {
     COPY_VIDEO,
     COPY_AUDIO
 };
+
+//TODO
+#define DEFAULT_INT             -1
+#define DEFAULT_FLOAT           -1.f
+#define DEFAULT_RATIONAL        { 0, 1 }
+#define not_inited_int(x)       ((x) == DEFAULT_INT)

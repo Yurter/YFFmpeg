@@ -36,6 +36,9 @@ protected:
     void                queuePacket(AVPacket packet);
     bool                getPacket(AVPacket &packet);
 
+    bool                isVideoPacket(AVPacket &packet);
+    bool                isAudioPacket(AVPacket &packet);
+
     void                parseFormatContext();
     std::string         guessFormatShortName();
 
@@ -59,6 +62,7 @@ protected:
 
     std::queue<AVPacket>    _packet_queue;
     std::mutex              _packet_queue_mutex;
+    uint64_t                _packet_queue_capacity;
 
 	// FFmpeg 
     AVFormatContext*	_media_format_context;

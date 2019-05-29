@@ -1,7 +1,6 @@
 #include "YMediaSource.h"
 #include <exception>
 #include <iostream>
-#include <thread>
 
 YMediaSource::YMediaSource(const std::string &mrl, YMediaPreset preset) :
     YAbstractMedia(mrl),
@@ -11,6 +10,7 @@ YMediaSource::YMediaSource(const std::string &mrl, YMediaPreset preset) :
     case Auto:
         break;
     case Silence:
+        avdevice_register_all();
         _media_resource_locator = "aevalsrc=0";
         _input_format = av_find_input_format("lavfi");
         if (_input_format == nullptr) {
@@ -18,17 +18,31 @@ YMediaSource::YMediaSource(const std::string &mrl, YMediaPreset preset) :
             break;
         }
 
+//        std::cout << "[DEBUG] 11111111111111111111111111111111" << std::endl;
+//        if (avformat_open_input(&_media_format_context, _media_resource_locator.c_str(), _input_format, nullptr) < 0) {
+//            std::cout << "Failed to open virtual input context" << std::endl;
+//            return;
+//        }
+//        std::cout << "[DEBUG] 22222222222222222222222222222222" << std::endl;
+
         //
-        audio_parameters.setSampleRate(44'100);
-        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_S16P);
+//        audio_parameters.setSampleRate(44'100);
+////        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_S16P);
 //        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
+//        audio_parameters.setBitrate(128'000);
+//        audio_parameters.setChanelsLayout(AV_CH_LAYOUT_MONO);
+//        audio_parameters.setChanels(1);
+//        audio_parameters.setCodec("mp3");
+////        audio_parameters.setCodec(AV_CODEC_ID_PCM_MULAW);
+//        audio_parameters.setAvailable(true);
+        //
+        audio_parameters.setSampleRate(22'050);
+        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_S16P);
         audio_parameters.setBitrate(128 * 1024);
         audio_parameters.setChanelsLayout(AV_CH_LAYOUT_MONO);
         audio_parameters.setChanels(1);
         audio_parameters.setCodec("mp3");
-//        audio_parameters.setCodec(AV_CODEC_ID_PCM_MULAW);
         audio_parameters.setAvailable(true);
-        //
         break;
     default:
         std::cerr << "[YMediaSource] Invalid preset." << std::endl;
@@ -63,11 +77,7 @@ bool YMediaSource::close()
 
 bool YMediaSource::readPacket(AVPacket &packet)
 {
-    std::lock_guard<std::mutex> lock(_packet_queue_mutex);
-    if (_packet_queue.empty()) { return false; }
-    packet = _packet_queue.front();
-    _packet_queue.pop();
-    return true;
+    return getPacket(packet);
 }
 
 bool YMediaSource::openInput()
@@ -76,6 +86,7 @@ bool YMediaSource::openInput()
         std::cerr << "[YMediaSource] Media resource locator is empty. Cannot start read." << std::endl;
         return false;
     }
+    _media_format_context = avformat_alloc_context();
     std::cout << "[YMediaSource] Source: \"" << _media_resource_locator << "\" is opening..." << std::endl;
     if (avformat_open_input(&_media_format_context, _media_resource_locator.c_str(), _input_format, nullptr) < 0) {
         std::cerr << "[YMediaSource] Failed to open input context." << std::endl;
@@ -98,6 +109,7 @@ void YMediaSource::run()
 {
     _thread = std::thread([this](){
         while (_is_opened) {
+            if (_packet_queue.size() >= _packet_queue_capacity) { continue; }
             AVPacket packet;
             _is_active = (av_read_frame(_media_format_context, &packet) == 0);
             if (!_is_active) {
@@ -105,6 +117,8 @@ void YMediaSource::run()
                 close();
                 return;
             } else {
+                if (isVideoPacket(packet) && video_parameters.ignore()) { continue; }
+                if (isAudioPacket(packet) && audio_parameters.ignore()) { continue; }
                 queuePacket(packet);
             }
         }

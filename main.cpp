@@ -12,8 +12,8 @@ int main()
 
 
 
-    std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
-//    std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
+//    std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
+    std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
 //    std::string mrl_src = "source_01.mp3";
 //    std::string mrl_src = "source.mp3";
 //    std::string mrl_src = "source16.mp3";
@@ -24,17 +24,18 @@ int main()
 
 
 
-//    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/8sfh-322a-063b-ahuk";
-    std::string mrl_dst = "remuxed.flv";
+    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/8sfh-322a-063b-ahuk";
+//    std::string mrl_dst = "remuxed.flv";
 //    std::string mrl_dst = "remuxed.aac";
 //    std::string mrl_dst = "remuxed.mp3";
 
 
 
     YMediaSource source(mrl_src);
+    source.audio_parameters.setIgnore(true);
     YMediaSource silence("aevalsrc=0", YMediaPreset::Silence);
-//    YMediaDestination destination(mrl_dst, YMediaPreset::YouTube);
-    YMediaDestination destination(mrl_dst, YMediaPreset::Auto);
+    YMediaDestination destination(mrl_dst, YMediaPreset::YouTube);
+//    YMediaDestination destination(mrl_dst, YMediaPreset::Auto);
 
 
 
@@ -50,6 +51,12 @@ int main()
 
 
     YMediaChain chain(&source, &destination);
+
+
+
+    chain.setContingencyAudioSource(&silence);
+
+
 
     chain.start();
     while (chain.active()) {}

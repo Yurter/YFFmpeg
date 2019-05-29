@@ -22,6 +22,8 @@ YMediaChain::YMediaChain(YMediaSource*      source,
     _destination(destination),
     _rescaler(nullptr),
     _resampler(nullptr),
+    _contingency_video_source(nullptr),
+    _contingency_audio_source(nullptr),
     _active(false),
     _paused(false),
     _source_video_stream_index(-1),
@@ -56,6 +58,13 @@ bool YMediaChain::start()
         start_failed = true;
     } else if (!_destination->open()) {
         start_failed = true;
+    }
+
+    if (contingencyAudioSourceRequired()) {
+        std::cout << "[YMediaChain] contingencyAudioSourceRequired" << std::endl;
+        if (!_contingency_audio_source->open()) {
+            start_failed = true;
+        }
     }
 
     if (rescalerRequired()) {
@@ -94,7 +103,7 @@ bool YMediaChain::start()
                 if (!_source->readPacket(source_packet)) {
                     std::cerr << "[YMediaChain] No data available" << std::endl;
                     if (!_source->opened()) {
-                        _destination->close(); //TODO: вылет при завершении main() - поток дест не завершен.
+                        _destination->close();
                         break;
                     }
                 }
@@ -141,6 +150,19 @@ bool YMediaChain::start()
 
                 /*-------------------------------- Запись ------------------------------*/
                 _destination->writePacket(*destination_packet);
+
+                /*--------------------------------- TODO -------------------------------*/
+                AVPacket silence_packet;
+                if (contingencyAudioSourceRequired()) {
+                    if (!_contingency_audio_source->readPacket(silence_packet)) {
+                        std::cerr << "[YMediaChain] _contingency_audio_source No data available" << std::endl;
+                        if (!_contingency_audio_source->opened()) {
+                            break;
+                        }
+                    }
+                    silence_packet.stream_index = static_cast<int>(_destination_audio_stream_index);
+                    _destination->writePacket(silence_packet);
+                }
             }
             _active = false;
             std::cout << "[YMediaChain] Finished" << std::endl;
@@ -176,6 +198,16 @@ bool YMediaChain::active()
     return _active;
 }
 
+void YMediaChain::setContingencyVideoSource(YMediaSource *contingency_video_source)
+{
+    _contingency_video_source = contingency_video_source;
+}
+
+void YMediaChain::setContingencyAudioSource(YMediaSource *contingency_audio_source)
+{
+    _contingency_audio_source = contingency_audio_source;
+}
+
 bool YMediaChain::rescalerRequired()
 {
     return false;
@@ -201,6 +233,17 @@ bool YMediaChain::resamplerRequired()
         return true;
     }
     return false;
+}
+
+bool YMediaChain::contingencyVideoSourceRequired()
+{
+    return false;
+}
+
+bool YMediaChain::contingencyAudioSourceRequired()
+{
+    return !_source->audio_parameters.available()
+            || _source->audio_parameters.ignore();
 }
 
 bool YMediaChain::isVideoPacket(AVPacket *packet)

@@ -191,7 +191,7 @@ void YMediaDestination::run()
         while (_is_opened) {
             AVPacket packet;
             if (!getPacket(packet)) {
-                std::cerr << "[YMediaDestination] Buffer is empty." << std::endl;
+//                std::cerr << "[YMediaDestination] Buffer is empty." << std::endl;
                 std::this_thread::sleep_for(std::chrono::milliseconds(10));
                 continue;
             }
@@ -202,12 +202,21 @@ void YMediaDestination::run()
             }
 
             auto packet_size = packet.size;
+            auto packet_index = packet.stream_index;
 
             if (av_interleaved_write_frame(_media_format_context, &packet) < 0) {
                 std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
                 break;
             } else {
-                std::cerr << "[YMediaDestination] Writed " << (packet.stream_index == 0 ? "VIDEO" : "AUDIO") << " " << packet_size << std::endl;
+                packet.stream_index = packet_index;
+                std::string packet_type;
+                if (isVideoPacket(packet)) {
+                    packet_type = "VIDEO";
+                }
+                if (isAudioPacket(packet)) {
+                    packet_type = "AUDIO";
+                }
+                std::cerr << "[YMediaDestination] Writed " << packet_type << " " << packet_size << std::endl;
             }
         }
     });
@@ -225,13 +234,20 @@ bool YMediaDestination::stampPacket(AVPacket &packet)
         _video_packet_index++;
         return true;
     }
-//    if (packet.stream_index == audio_parameters.streamIndex()) {
+    if (packet.stream_index == audio_parameters.streamIndex()) {
 //        packet.pts = _audio_packet_index;
 //        packet.dts = _audio_packet_index;
 //        packet.duration = 1;
+//        packet.pts = AV_NOPTS_VALUE;
+//        packet.dts = AV_NOPTS_VALUE;
 //        packet.pos = -1;
-//        _audio_packet_index++;
-//        return true;
-//    }
+        //
+//        auto frame_rate = _media_format_context->streams[packet.stream_index]->avg_frame_rate;
+//        auto duration = (1000 * frame_rate.den) / frame_rate.num;
+//        packet.pts = _video_packet_index * duration;
+//        packet.dts = _video_packet_index * duration;
+        _audio_packet_index++;
+        return true;
+    }
     return false;
 }
