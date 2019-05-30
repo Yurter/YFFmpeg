@@ -1,6 +1,6 @@
 #pragma once
 
-#include "YAbstractMedia.h"
+#include "base/YAbstractMedia.h"
 
 class YMediaDestination : public YAbstractMedia
 {

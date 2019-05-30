@@ -1,7 +1,7 @@
 #pragma once
 
+#include "base/YAbstractCoder.h"
 #include "YMediaDestination.h"
-#include "YAbstractCoder.h"
 
 class YMediaEncoder : public YAbstractCoder
 {

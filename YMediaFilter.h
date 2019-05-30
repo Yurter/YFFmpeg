@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ffmpeg.h"
 #include "YMediaDecoder.h"
 
 class YMediaFilter
