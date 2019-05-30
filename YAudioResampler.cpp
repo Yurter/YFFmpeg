@@ -145,6 +145,6 @@ bool YAudioResampler::configChanged(const AVFrame *in, const AVFrame *out)
 
 void YAudioResampler::stampFrame(AVFrame *frame)
 {
-    frame->pts = _frame_pts;
+    //frame->pts = _frame_pts;
     _frame_pts++;
 }
