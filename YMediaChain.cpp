@@ -235,6 +235,21 @@ void YMediaChain::setContingencyAudioSource(YMediaSource *contingency_audio_sour
     _contingency_audio_source = contingency_audio_source;
 }
 
+void YMediaChain::setVideoFilter(std::string video_filter)
+{
+    //
+}
+
+void YMediaChain::setAudioFilter(std::string audio_filter)
+{
+    //
+}
+
+bool YMediaChain::init()
+{
+    //
+}
+
 bool YMediaChain::rescalerRequired()
 {
     return false;

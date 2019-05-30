@@ -38,7 +38,13 @@ public:
     void setContingencyVideoSource(YMediaSource* contingency_video_source);
     void setContingencyAudioSource(YMediaSource* contingency_audio_source);
 
+    //TODO
+    void setVideoFilter(std::string video_filter);
+    void setAudioFilter(std::string audio_filter);
+
 private:
+
+    bool init();
 
     bool rescalerRequired();
     bool resamplerRequired();
