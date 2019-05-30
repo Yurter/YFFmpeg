@@ -122,6 +122,13 @@ bool YMediaEncoder::initAudioCodec()
 
 //    _audio_codec_context->codec_tag = 0;
 
+    if (not_inited_smp_fmt(_destination->audio_parameters.sampleFormat())) {
+        _destination->audio_parameters.setSampleFormat(encoder->sample_fmts[0]);
+    }
+    if (!compatibleWithSampleFormat(_destination->audio_parameters.sampleFormat())) {
+        _destination->audio_parameters.setSampleFormat(encoder->sample_fmts[0]);
+    }
+
     _audio_codec_context->sample_rate = static_cast<int>(_destination->audio_parameters.sampleRate());
     _audio_codec_context->bit_rate = _destination->audio_parameters.bitrate();
     _audio_codec_context->sample_fmt = _destination->audio_parameters.sampleFormat();

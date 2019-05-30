@@ -245,11 +245,18 @@ bool YMediaDestination::stampPacket(AVPacket &packet)
         //
 //        auto frame_rate = _media_format_context->streams[packet.stream_index]->avg_frame_rate;
 //        auto duration = (1000 * frame_rate.den) / frame_rate.num;
-        auto frame_rate = video_parameters.frameRate();
-        auto duration = (int)(1000 / frame_rate);
-        packet.pts = _video_packet_index * duration;
-        packet.dts = _video_packet_index * duration;
-        packet.duration = duration;
+        //
+//        auto frame_rate = video_parameters.frameRate();
+//        auto duration = (int)(1000 / frame_rate);
+//        packet.pts = _video_packet_index * duration;
+//        packet.dts = _video_packet_index * duration;
+//        packet.duration = duration;
+        //
+
+        auto value = _audio_packet_index * packet.duration;
+//        value = 1000;
+//        packet.pts = value;
+//        packet.dts = value;
         _audio_packet_index++;
         return true;
     }

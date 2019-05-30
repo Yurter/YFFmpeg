@@ -7,7 +7,7 @@ class YMediaSource : public YAbstractMedia
 
 public:
 
-    YMediaSource(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);   // mrl - media resource locator
+    YMediaSource(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
     virtual ~YMediaSource();
 
     bool open();

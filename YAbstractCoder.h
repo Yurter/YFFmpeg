@@ -17,6 +17,8 @@ public:
     AVCodecContext*     videoCodecContext();
     AVCodecContext*     audioCodecContext();
 
+    bool                compatibleWithSampleFormat(AVSampleFormat sample_format);
+
 protected:
 
     virtual bool        initVideoCodec() = 0;

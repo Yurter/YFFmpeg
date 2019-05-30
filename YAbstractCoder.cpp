@@ -24,3 +24,13 @@ AVCodecContext* YAbstractCoder::audioCodecContext()
 {
     return _audio_codec_context;
 }
+
+bool YAbstractCoder::compatibleWithSampleFormat(AVSampleFormat sample_format)
+{
+    auto smp_fmt = _audio_codec_context->codec->sample_fmts;
+    while (smp_fmt[0] != AV_SAMPLE_FMT_NONE) {
+        if (smp_fmt[0] == sample_format) { return true; }
+        smp_fmt++;
+    }
+    return false;
+}

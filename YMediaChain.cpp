@@ -61,7 +61,11 @@ bool YMediaChain::start()
     parseInstalledOptions();
     if (!_decoder->init()) {
         start_failed = true;
-    } else if (!_encoder->init()) {
+    }
+    //TODO
+    _destination->video_parameters.softCopy(_source->video_parameters);
+    _destination->audio_parameters.softCopy(_source->audio_parameters);
+    if (!_encoder->init()) {
         start_failed = true;
     } else if (!_destination->open()) {
         start_failed = true;
@@ -247,6 +251,9 @@ bool YMediaChain::resamplerRequired()
         return false;
     }
     if (src.ignore()) {
+        return false;
+    }
+    if (optionInstalled(COPY_AUDIO)) {
         return false;
     }
     if (src.sampleRate() != dst.sampleRate()) {

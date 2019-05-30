@@ -7,7 +7,7 @@ class YMediaDestination : public YAbstractMedia
 
 public:
 
-    YMediaDestination(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);		// mrl - media resource locator
+    YMediaDestination(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
     virtual ~YMediaDestination();
 
     bool addStream(AVCodecContext *stream_codec_context);
