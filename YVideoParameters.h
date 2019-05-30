@@ -24,7 +24,7 @@ public:
     AVPixelFormat   pixelFormat()   const;
 
     void            softCopy(YVideoParameters &other_parametrs);
-    YVideoParameters&    operator=(const YParameters &rhs);
+    YVideoParameters&    operator=(const YVideoParameters &rhs);
 
 private:
 

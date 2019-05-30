@@ -204,7 +204,8 @@ void YMediaDestination::run()
             auto packet_size = packet.size;
             auto packet_index = packet.stream_index;
 
-            if (av_interleaved_write_frame(_media_format_context, &packet) < 0) {
+//            if (av_interleaved_write_frame(_media_format_context, &packet) < 0) {
+            if (av_write_frame(_media_format_context, &packet) < 0) {
                 std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
                 break;
             } else {
@@ -248,6 +249,7 @@ bool YMediaDestination::stampPacket(AVPacket &packet)
         auto duration = (int)(1000 / frame_rate);
         packet.pts = _video_packet_index * duration;
         packet.dts = _video_packet_index * duration;
+        packet.duration = duration;
         _audio_packet_index++;
         return true;
     }

@@ -30,7 +30,7 @@ public:
     bool            ignore()        const;
 
     void            softCopy(YParameters& other_parametrs);
-    virtual YParameters&    operator=(const YParameters &rhs);
+    YParameters&    operator=(const YParameters &rhs);
 
 protected:
 

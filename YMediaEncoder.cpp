@@ -45,8 +45,6 @@ bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame*> &
     }
     int ret;
     for (auto&& decoded_frame : decoded_frames) {
-//        ret = av_frame_make_writable(decoded_frame); // ??
-        std::cout << "[DEBUG] " << decoded_frame->nb_samples << ":" << codec_context->frame_size << std::endl;
         if ((ret = avcodec_send_frame(codec_context, decoded_frame)) != 0) {
             std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
             return false;

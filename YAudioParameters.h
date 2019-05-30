@@ -21,7 +21,7 @@ public:
     int64_t         chanels()       const;
 
     void            softCopy(YAudioParameters &other_parametrs);
-    YAudioParameters&    operator=(const YParameters &rhs);
+    YAudioParameters&    operator=(const YAudioParameters &rhs);
 
 private:
 

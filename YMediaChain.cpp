@@ -52,11 +52,14 @@ bool YMediaChain::start()
         std::cout << "[YMediaChain] Initialization started..." << std::endl;
     }
 
+
     bool start_failed = false;
 
     if (!_source->open()) {
         start_failed = true;
-    } else if (!_decoder->init()) {
+    }
+    parseInstalledOptions();
+    if (!_decoder->init()) {
         start_failed = true;
     } else if (!_encoder->init()) {
         start_failed = true;
@@ -170,18 +173,19 @@ bool YMediaChain::start()
                 _destination->writePacket(processed_packet);
 
                 /*--------------------------------- TODO -------------------------------*/
-//                if (contingencyAudioSourceRequired()) {
-//                    if (_destination->_video_packet_index % (int)_destination->video_parameters.frameRate() != 0) { continue; }
-//                    AVPacket silence_packet;
-//                    if (!_contingency_audio_source->readPacket(silence_packet)) {
-//                        std::cerr << "[YMediaChain] _contingency_audio_source No data available" << std::endl;
-//                        if (!_contingency_audio_source->opened()) {
-//                            break;
-//                        }
-//                    }
-//                    silence_packet.stream_index = static_cast<int>(_destination_audio_stream_index);
-//                    _destination->writePacket(silence_packet);
-//                }
+                if (contingencyAudioSourceRequired()) {
+                    if (_destination->_video_packet_index % ((int)_destination->video_parameters.frameRate() / 2) != 0) { continue; }
+                    AVPacket silence_packet;
+                    if (!_contingency_audio_source->readPacket(silence_packet)) {
+                        std::cerr << "[YMediaChain] _contingency_audio_source No data available" << std::endl;
+                        if (!_contingency_audio_source->opened()) {
+                            break;
+                        }
+                    }
+                    silence_packet.stream_index = static_cast<int>(_destination_audio_stream_index);
+                    _destination->writePacket(silence_packet);
+                    std::cout << "[YMediaChain] Silence muxed" << std::endl;
+                }
             }
             _active = false;
             std::cout << "[YMediaChain] Finished" << std::endl;
@@ -242,6 +246,9 @@ bool YMediaChain::resamplerRequired()
     if (!dst.available()) {
         return false;
     }
+    if (src.ignore()) {
+        return false;
+    }
     if (src.sampleRate() != dst.sampleRate()) {
         return true;
     }
@@ -291,4 +298,14 @@ bool YMediaChain::mapStreamIndex(AVPacket& src_packet, AVPacket& dst_packet)
 bool YMediaChain::optionInstalled(YOptions option)
 {
     return _options & option;
+}
+
+void YMediaChain::parseInstalledOptions()
+{
+    if (optionInstalled(COPY_VIDEO)) {
+        _destination->video_parameters = _source->video_parameters;
+    }
+    if (optionInstalled(COPY_AUDIO)) {
+        _destination->audio_parameters = _source->audio_parameters;
+    }
 }

@@ -85,7 +85,13 @@ void YVideoParameters::softCopy(YVideoParameters &other_parametrs)
     YParameters::softCopy(other_parametrs);
 }
 
-YParameters &YVideoParameters::operator=(const YParameters &rhs)
+YVideoParameters& YVideoParameters::operator=(const YVideoParameters &rhs)
 {
-    //
+    _width          = rhs.width();
+    _height         = rhs.height();
+    _aspect_ratio   = rhs.aspectRatio();
+    _frame_rate     = rhs.frameRate();
+    _pixel_format   = rhs.pixelFormat();
+    YParameters::operator=(rhs);
+    return *this;
 }

@@ -50,6 +50,7 @@ private:
     bool mapStreamIndex(AVPacket& src_packet, AVPacket& dst_packet);
 
     bool optionInstalled(YOptions option);
+    void parseInstalledOptions();
 
 private:
 

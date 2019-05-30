@@ -14,13 +14,13 @@ YMediaDecoder::~YMediaDecoder()
 
 bool YMediaDecoder::init()
 {
-    if (_source->video_parameters.available()) {
+    if (_source->video_parameters.available() && !_source->video_parameters.ignore()) {
         if (!initVideoCodec()) {
             std::cerr << "[YMediaDecoder] Failed to init video codec" << std::endl;
             return false;
         }
     }
-    if (_source->audio_parameters.available()) {
+    if (_source->audio_parameters.available() && !_source->audio_parameters.ignore()) {
         if (!initAudioCodec()) {
             std::cerr << "[YMediaDecoder] Failed to init audio codec" << std::endl;
             return false;
