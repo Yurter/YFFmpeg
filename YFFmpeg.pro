@@ -5,50 +5,48 @@ CONFIG -= qt
 CONFIG += c++17
 
 SOURCES += \
+    main.cpp \
+    base\YAbstractCoder.cpp \
+    base\YAbstractMedia.cpp \
     base\YAbstractFilter.cpp \
-    YAudioFilter.cpp \
-    YAudioParameters.cpp \
-    YAudioResampler.cpp \
     base\YFrame.cpp \
     base\YPacket.cpp \
     base\YParameters.cpp \
-    YVideoFilter.cpp \
     YVideoParameters.cpp \
+    YAudioParameters.cpp \
     YVideoRescaler.cpp \
-        main.cpp \
+    YAudioResampler.cpp \
     YMediaSource.cpp \
     YMediaDestination.cpp \
-    base\YAbstractMedia.cpp \
     YMediaChain.cpp \
     YMediaDecoder.cpp \
     YMediaDestination.cpp \
     YMediaEncoder.cpp \
+    YVideoFilter.cpp \
+    YAudioFilter.cpp \
     YMediaFilter.cpp \
-    YMediaSource.cpp \
-    base\YAbstractCoder.cpp
 
 HEADERS += \
+    base\ffmpeg.h \
+    base\YAbstractCoder.h \
+    base\YAbstractMedia.h \
     base\YAbstractFilter.h \
-    YAudioFilter.h \
-    YAudioParameters.h \
-    YAudioResampler.h \
     base\YFrame.h \
+    base\YPacket.h \
+    base\YParameters.h \
+    YVideoParameters.h \
+    YAudioParameters.h \
+    YVideoRescaler.h \
+    YAudioResampler.h \
     YMediaSource.h \
     YMediaDestination.h \
-    base\YAbstractMedia.h \
     YMediaChain.h \
     YMediaDecoder.h \
     YMediaDestination.h \
     YMediaEncoder.h \
     YMediaFilter.h \
-    YMediaSource.h \
-    base\YAbstractCoder.h \
-    base\YPacket.h \
-    base\YParameters.h \
+    YAudioFilter.h \
     YVideoFilter.h \
-    YVideoParameters.h \
-    YVideoRescaler.h \
-    base\ffmpeg.h
 
 #-- Home --
 INCLUDEPATH += G:\dev\FFmpeg\ffmpeg-4.1.1-win64-dev\include
