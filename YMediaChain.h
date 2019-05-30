@@ -58,6 +58,8 @@ private:
     bool optionInstalled(YOptions option);
     void parseInstalledOptions();
 
+    void completeDestinationParametres();
+
 private:
 
 	//YMedia

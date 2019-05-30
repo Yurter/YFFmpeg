@@ -55,44 +55,7 @@ bool YMediaChain::start()
 
     bool start_failed = false;
 
-    if (!_source->open()) {
-        start_failed = true;
-    }
-    parseInstalledOptions();
-    if (!_decoder->init()) {
-        start_failed = true;
-    }
-    //TODO
-    _destination->video_parameters.softCopy(_source->video_parameters);
-    _destination->audio_parameters.softCopy(_source->audio_parameters);
-    if (!_encoder->init()) {
-        start_failed = true;
-    } else if (!_destination->open()) {
-        start_failed = true;
-    }
-
-    if (contingencyAudioSourceRequired()) {
-        std::cout << "[YMediaChain] contingencyAudioSourceRequired" << std::endl;
-        if (!_contingency_audio_source->open()) {
-            start_failed = true;
-        }
-    }
-
-    if (rescalerRequired()) {
-        _rescaler = new YVideoRescaler();
-        if (!_rescaler->init(_decoder->videoCodecContext()
-                              , _encoder->videoCodecContext())) {
-            start_failed = true;
-        }
-    }
-
-    if (resamplerRequired()) {
-        _resampler = new YAudioResampler();
-        if (!_resampler->init(_decoder->audioCodecContext()
-                              , _encoder->audioCodecContext())) {
-            start_failed = true;
-        }
-    }
+    init();
 
     if (start_failed) {
         std::cout << "[YMediaChain] Start failed" << std::endl;
@@ -247,7 +210,33 @@ void YMediaChain::setAudioFilter(std::string audio_filter)
 
 bool YMediaChain::init()
 {
-    //
+    parseInstalledOptions();
+    if (!_source->open())       { return false; }
+    if (!_decoder->init())      { return false; }
+    if (!_encoder->init())      { return false; }
+    if (!_destination->open())  { return false; }
+
+    completeDestinationParametres();
+
+    if (contingencyVideoSourceRequired()) {
+        std::cout << "[YMediaChain] Contingency video source required" << std::endl;
+        if (!_contingency_video_source->open()) { return false; }
+    }
+    if (contingencyAudioSourceRequired()) {
+        std::cout << "[YMediaChain] Contingency audio source required" << std::endl;
+        if (!_contingency_audio_source->open()) { return false; }
+    }
+    if (rescalerRequired()) {
+        _rescaler = new YVideoRescaler();
+        if (!_rescaler->init(_decoder->videoCodecContext()
+                              , _encoder->videoCodecContext())) { return false; }
+    }
+    if (resamplerRequired()) {
+        _resampler = new YAudioResampler();
+        if (!_resampler->init(_decoder->audioCodecContext()
+                              , _encoder->audioCodecContext())) { return false; }
+    }
+    return true;
 }
 
 bool YMediaChain::rescalerRequired()
@@ -330,4 +319,10 @@ void YMediaChain::parseInstalledOptions()
     if (optionInstalled(COPY_AUDIO)) {
         _destination->audio_parameters = _source->audio_parameters;
     }
+}
+
+void YMediaChain::completeDestinationParametres()
+{
+    _destination->video_parameters.softCopy(_source->video_parameters);
+    _destination->audio_parameters.softCopy(_source->audio_parameters);
 }
