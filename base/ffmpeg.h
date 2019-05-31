@@ -44,6 +44,13 @@ enum YOptions {
 };
 
 /* ? */
+enum YMediaType {
+    MEDIA_TYPE_UNKNOWN,
+    MEDIA_TYPE_VIDEO,
+    MEDIA_TYPE_AUDIO
+};
+
+/* Значения по умолчанию для видео- и аудиопараметров */
 #define INVALID_INT             -1
 #define DEFAULT_INT             0
 #define DEFAULT_FLOAT           0.f

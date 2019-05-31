@@ -193,12 +193,12 @@ void YMediaChain::setContingencyAudioSource(YMediaSource *contingency_audio_sour
 
 void YMediaChain::setVideoFilter(std::string video_filter)
 {
-    video_filter = "";
+    video_filter = ""; //TODO
 }
 
 void YMediaChain::setAudioFilter(std::string audio_filter)
 {
-    audio_filter = "";
+    audio_filter = ""; //TODO
 }
 
 bool YMediaChain::init()

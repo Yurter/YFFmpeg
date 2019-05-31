@@ -5,6 +5,7 @@ CONFIG -= qt
 CONFIG += c++17
 
 SOURCES += \
+    base/utils.cpp \
     main.cpp \
     base\YAbstractCoder.cpp \
     base\YAbstractMedia.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
     YMediaFilter.cpp \
 
 HEADERS += \
+    base/utils.h \
     base\ffmpeg.h \
     base\YAbstractCoder.h \
     base\YAbstractMedia.h \
