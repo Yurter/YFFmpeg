@@ -34,25 +34,20 @@ bool YMediaDecoder::init()
     return true;
 }
 
-bool YMediaDecoder::decodePacket(AVPacket *packet, std::list<AVFrame*> &decoded_frames)
+bool YMediaDecoder::decodePacket(YPacket& packet, std::list<AVFrame*>& decoded_frames)
 {
     AVCodecContext *codec_context = nullptr;
-    if (packet->stream_index == _video_stream_index) {
-        codec_context = _video_codec_context;
-    }
-    if (packet->stream_index == _audio_stream_index) {
-        codec_context = _audio_codec_context;
-    }
+    if (packet.isVideo()) { codec_context = _video_codec_context; }
+    if (packet.isAudio()) { codec_context = _audio_codec_context; }
     if (codec_context == nullptr) {
         std::cerr << "[YMediaDecoder] codec_context is null" << std::endl;
         return false;
     }
-    if (avcodec_send_packet(codec_context, packet) != 0) {
+    if (avcodec_send_packet(codec_context, packet.raw()) != 0) {
         std::cerr << "[YMediaDecoder] Could not send packet" << std::endl;
         return false;
     }
-    //decoded_frames.clear();
-    AVFrame *decoded_frame = av_frame_alloc();
+    AVFrame *decoded_frame = av_frame_alloc(); //TODO ! ! !
     while (avcodec_receive_frame(codec_context, decoded_frame) >= 0) {
         decoded_frames.push_back(decoded_frame);
         decoded_frame = av_frame_alloc();

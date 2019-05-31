@@ -53,8 +53,8 @@ private:
     bool contingencyVideoSourceRequired();
     bool contingencyAudioSourceRequired();
 
-    bool skipPacket(AVPacket& packet);
-    bool mapStreamIndex(AVPacket& src_packet, AVPacket& dst_packet);
+    bool skipPacket(YPacket& packet);
+    bool mapStreamIndex(YPacket& src_packet, YPacket& dst_packet);
 
     bool optionInstalled(YOptions option);
     void parseInstalledOptions();

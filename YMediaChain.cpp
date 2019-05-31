@@ -64,26 +64,25 @@ bool YMediaChain::start()
                 /*------------------------------- Чтение -------------------------------*/
                 YPacket source_packet;
                 if (!_source->readPacket(source_packet)) {
-//                    std::cerr << "[YMediaChain] No data available" << std::endl;
-//                    if (!_source->opened()) {
-////                        _destination->close();
-////                        _running = false;
-////                        break;
-//                    }
+                    if (_source->closed()) {
+                        _running = false;
+                        break;
+                    }
                     continue;
                 }
                 if (skipPacket(source_packet)) { continue; }
 
                 /*-------------------------- Сверка с опциями --------------------------*/
                 bool process_packet = true;
-                if (_source->isVideoPacket(source_packet) && optionInstalled(COPY_VIDEO)) {
+                if (source_packet.isVideo() && optionInstalled(COPY_VIDEO)) {
                     process_packet = false;
                 }
-                if (_source->isAudioPacket(source_packet) && optionInstalled(COPY_AUDIO)) {
+                if (source_packet.isAudio() && optionInstalled(COPY_AUDIO)) {
                     process_packet = false;
                 }
 
-                AVPacket processed_packet;
+                YPacket processed_packet;
+                processed_packet.setType(source_packet.type()); //TODO refactoring <-
 
                 if (process_packet) {
                     /*---------------------------- Декодирование ---------------------------*/
@@ -96,7 +95,7 @@ bool YMediaChain::start()
 
                     /*------------------------------ Рескейлинг ----------------------------*/
                     if (_rescaler != nullptr) {
-                        if (_source->isVideoPacket(source_packet)) {
+                        if (source_packet.isVideo()) {
                             if (!_rescaler->rescale(decoded_frames.front())) {
                                 std::cerr << "[YMediaChain] Rescale failed" << std::endl;
                                 _running = false;
@@ -107,7 +106,7 @@ bool YMediaChain::start()
 
                     /*------------------------------ Ресемплинг ----------------------------*/
                     if (_resampler != nullptr) {
-                        if (_source->isAudioPacket(source_packet)) {
+                        if (source_packet.isAudio()) {
                             if (!_resampler->resample(&decoded_frames.front())) {
                                 std::cerr << "[YMediaChain] Resample failed" << std::endl;
                                 _running = false;
@@ -117,7 +116,7 @@ bool YMediaChain::start()
                     }
 
                     /*------------------------------ Кодирование ---------------------------*/
-                    av_init_packet(&processed_packet);
+//                    av_init_packet(&processed_packet); ?? можно убрать?
                     if (!mapStreamIndex(source_packet, processed_packet)) {
                         std::cerr << "[YMediaChain] mapStreamIndex failed" << std::endl;
                     }
@@ -286,21 +285,21 @@ bool YMediaChain::contingencyAudioSourceRequired()
             || _source->audio_parameters.ignore();
 }
 
-bool YMediaChain::skipPacket(AVPacket &packet)
+bool YMediaChain::skipPacket(YPacket &packet)
 {
-    bool skip_packet = (!_destination->video_parameters.available() && _source->isVideoPacket(packet))
-                    || (!_destination->audio_parameters.available() && _source->isAudioPacket(packet));
+    bool skip_packet = (!_destination->video_parameters.available() && packet.isVideo())
+                    || (!_destination->audio_parameters.available() && packet.isAudio());
     return skip_packet;
 }
 
-bool YMediaChain::mapStreamIndex(AVPacket& src_packet, AVPacket& dst_packet)
+bool YMediaChain::mapStreamIndex(YPacket& src_packet, YPacket& dst_packet)
 {
-    if (_source->isVideoPacket(src_packet)) {
-        dst_packet.stream_index = static_cast<int>(_destination_video_stream_index);
+    if (src_packet.isVideo()) {
+        dst_packet.raw()->stream_index = static_cast<int>(_destination_video_stream_index);
         return true;
     }
-    if (_source->isAudioPacket(src_packet)) {
-        dst_packet.stream_index = static_cast<int>(_destination_audio_stream_index);
+    if (src_packet.isAudio()) {
+        dst_packet.raw()->stream_index = static_cast<int>(_destination_audio_stream_index);
         return true;
     }
     return false;

@@ -21,16 +21,15 @@ public:
     virtual bool        open() = 0;                                     // Функция открывает медиа-ресурс.
     virtual bool        close();                                        // Функция закрывает медиа-ресурс.
     virtual bool        opened() const final;                           //
+    virtual bool        closed() const final;                           //
 
     void                setReopeingAfterFailure(bool reopening);        //
     void                setReopeningTimeout(uint64_t timeout);          //
 
     std::string         mediaResourceLocator() const;                   // Функция возвращает mrl.
     AVFormatContext*    mediaFormatContext() const;                     // Функция возвращает медиа-контекст.
+    AVStream*           stream(int64_t index);                          //
     int64_t             duration() const;								// Функция возвращает длительность медиа-файла в секундах.
-
-    bool                isVideoPacket(AVPacket &packet);                //
-    bool                isAudioPacket(AVPacket &packet);                //
 
 protected:
 

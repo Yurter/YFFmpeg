@@ -35,6 +35,11 @@ bool YAbstractMedia::opened() const
     return _opened;
 }
 
+bool YAbstractMedia::closed() const
+{
+    return !_opened;
+}
+
 void YAbstractMedia::parseFormatContext()
 {
     if (_media_format_context == nullptr) {
@@ -111,6 +116,11 @@ AVFormatContext *YAbstractMedia::mediaFormatContext() const
     return _media_format_context;
 }
 
+AVStream *YAbstractMedia::stream(int64_t index)
+{
+    return _media_format_context->streams[index];
+}
+
 void YAbstractMedia::queuePacket(YPacket packet)
 {
     std::lock_guard<std::mutex> lock(_packet_queue_mutex);
@@ -124,16 +134,6 @@ bool YAbstractMedia::getPacket(YPacket &packet)
     packet = _packet_queue.front();
     _packet_queue.pop();
     return true;
-}
-
-bool YAbstractMedia::isVideoPacket(AVPacket &packet)
-{
-    return packet.stream_index == video_parameters.streamIndex();
-}
-
-bool YAbstractMedia::isAudioPacket(AVPacket &packet)
-{
-    return packet.stream_index == audio_parameters.streamIndex();
 }
 
 void YAbstractMedia::stopThread()

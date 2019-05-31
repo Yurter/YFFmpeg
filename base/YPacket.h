@@ -14,6 +14,7 @@ public:
 
     AVPacket*       raw();
 
+    YMediaType      type() const;
     void            setType(YMediaType type);
 
     bool            isVideo() const;

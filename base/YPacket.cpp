@@ -8,12 +8,18 @@ YPacket::YPacket() :
 
 YPacket::~YPacket()
 {
-    //
+    // TODO ffmpeg ф-ии на отчистку
+    //avpacket_unref(&m_raw);
 }
 
 AVPacket *YPacket::raw()
 {
     return &_packet;
+}
+
+YMediaType YPacket::type() const
+{
+    return _type;
 }
 
 void YPacket::setType(YMediaType type)

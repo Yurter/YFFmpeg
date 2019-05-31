@@ -111,7 +111,7 @@ bool YMediaDestination::close()
     return true;
 }
 
-void YMediaDestination::writePacket(AVPacket packet)
+void YMediaDestination::writePacket(YPacket packet)
 {
     queuePacket(packet);
 }
@@ -183,76 +183,43 @@ void YMediaDestination::run()
     _running = true;
     _thread = std::thread([this]() {
         while (_running) {
-            AVPacket packet;
+            YPacket packet;
             if (!getPacket(packet)) {
-//                std::cerr << "[YMediaDestination] Buffer is empty." << std::endl;
                 std::this_thread::sleep_for(std::chrono::milliseconds(10));
                 continue;
             }
-
             if (!stampPacket(packet)) {
                 std::cerr << "[YMediaDestination] stampPacket failed" << std::endl;
                 _running = false;
                 break;
             }
-
-            auto packet_size = packet.size;
-            auto packet_index = packet.stream_index;
-
+            {
+                std::cout << "[YMediaDestination] Packet : " << packet << std::endl;
+            }
 //            if (av_interleaved_write_frame(_media_format_context, &packet) < 0) {
-            if (av_write_frame(_media_format_context, &packet) < 0) {
+            if (av_write_frame(_media_format_context, packet.raw()) < 0) {
                 std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
                 _running = false;
                 break;
-            } else {
-                packet.stream_index = packet_index;
-                std::string packet_type;
-                if (isVideoPacket(packet)) {
-                    packet_type = "VIDEO";
-                }
-                if (isAudioPacket(packet)) {
-                    packet_type = "AUDIO";
-                }
-                std::cerr << "[YMediaDestination] Writed " << packet_type << " " << packet_size << std::endl;
             }
         }
     });
 }
 
-bool YMediaDestination::stampPacket(AVPacket &packet)
+bool YMediaDestination::stampPacket(YPacket &packet)
 {
-    if (packet.stream_index == video_parameters.streamIndex()) { //TODO
-        auto frame_rate = _media_format_context->streams[packet.stream_index]->avg_frame_rate;
+    if (packet.isVideo()) {
+        auto raw_packet = packet.raw();
+        auto frame_rate = stream(packet.raw()->stream_index)->avg_frame_rate;
         auto duration = (1000 * frame_rate.den) / frame_rate.num;
-        packet.pts = _video_packet_index * duration;
-        packet.dts = _video_packet_index * duration;
-        packet.duration = duration;
-        packet.pos = -1;
+        raw_packet->pts = _video_packet_index * duration;
+        raw_packet->dts = _video_packet_index * duration;
+        raw_packet->duration = duration;
+        raw_packet->pos = -1;
         _video_packet_index++;
         return true;
     }
-    if (packet.stream_index == audio_parameters.streamIndex()) {
-//        packet.pts = _audio_packet_index;
-//        packet.dts = _audio_packet_index;
-//        packet.duration = 1;
-//        packet.pts = AV_NOPTS_VALUE;
-//        packet.dts = AV_NOPTS_VALUE;
-//        packet.pos = -1;
-        //
-//        auto frame_rate = _media_format_context->streams[packet.stream_index]->avg_frame_rate;
-//        auto duration = (1000 * frame_rate.den) / frame_rate.num;
-        //
-//        auto frame_rate = video_parameters.frameRate();
-//        auto duration = (int)(1000 / frame_rate);
-//        packet.pts = _video_packet_index * duration;
-//        packet.dts = _video_packet_index * duration;
-//        packet.duration = duration;
-        //
-
-        auto value = _audio_packet_index * packet.duration;
-//        value = 1000;
-//        packet.pts = value;
-//        packet.dts = value;
+    if (packet.isAudio()) {
         _audio_packet_index++;
         return true;
     }

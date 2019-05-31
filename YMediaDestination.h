@@ -14,7 +14,7 @@ public:
     bool open();
     bool close();
 
-    void writePacket(AVPacket packet);
+    void writePacket(YPacket packet);
 
     AVOutputFormat*     outputFrormat() const;
 
@@ -28,7 +28,7 @@ private:
     void run();
 
     void parseOutputFormat();
-    bool stampPacket(AVPacket &packet);
+    bool stampPacket(YPacket &packet);
 
 private:
 public: //TODO
