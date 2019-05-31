@@ -32,8 +32,11 @@ enum YMediaPreset {
 
 /* Коды результата выполнения некоторых функций */
 enum YCode {
+    OK,
+    ERR,
+    AGAIN,
     END_OF_FILE,
-    AGAIN
+    INVALID_INPUT
 };
 
 /* Опции для настройки  */

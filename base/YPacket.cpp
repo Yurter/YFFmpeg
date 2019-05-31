@@ -37,6 +37,11 @@ bool YPacket::isAudio() const
     return _type == YMediaType::MEDIA_TYPE_AUDIO;
 }
 
+bool YPacket::empty() const
+{
+    return _packet.size == 0;
+}
+
 std::ostream& operator<<(std::ostream &os, const YPacket &pkt)
 {
     /* Video packet: 33123 byte, dts 460, pts 460, duration 33 */

@@ -14,7 +14,7 @@ public:
 
     bool init();
 
-    bool decodePacket(YPacket& packet, std::list<AVFrame*>& decoded_frames);
+    YCode decodePacket(YPacket& packet, AVFrame** decoded_frame);
 
 private:
 

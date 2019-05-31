@@ -20,6 +20,8 @@ public:
     bool            isVideo() const;
     bool            isAudio() const;
 
+    bool            empty() const;
+
     friend std::ostream& operator<<(std::ostream& os, const YPacket& pkt);
 
 private:
