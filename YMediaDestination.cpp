@@ -46,7 +46,7 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
     }
 
     //
-    if (!createOutputContext()) {
+    if (!createOutput()) {
         std::cerr << "[YMediaDestination] Failed to create output context." << std::endl;
         return;
     }
@@ -96,24 +96,25 @@ bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
 
 bool YMediaDestination::open()
 {
-    if (!openOutputContext()) {
-        std::cerr << "[YMediaDestination] Failed to open output context." << std::endl;
-        return false;
+    if (_opened) { return false; }
+    _opened = openOutput();
+    if (_opened) {
+        parseFormatContext();
+        run();
     }
-    parseFormatContext();
-    run();
-    return true;
+    return _opened;
 }
 
 bool YMediaDestination::close()
 {
-    if (!YAbstractMedia::close()) {
-        return false;
-    }
+    if (!_opened) { return false; }
+    stopThread();
     if (av_write_trailer(_media_format_context) != 0) {
-        std::cerr << "[YMediaDestination] av_write_trailer failed" << std::endl;
+        std::cerr << "[YMediaDestination] Failed to write the stream trailer to an output media file" << std::endl;
         return false;
     }
+    if (!YAbstractMedia::close()) { return false; }
+    std::cout << "[YMediaDestination] Destination: \"" << _media_resource_locator << "\" closed." << std::endl;
     return true;
 }
 
@@ -138,7 +139,7 @@ bool YMediaDestination::guessOutputFromat()
     return true;
 }
 
-bool YMediaDestination::createOutputContext()
+bool YMediaDestination::createOutput()
 {
     std::string output_format_name = guessFormatShortName();
     const char *format_name = output_format_name.empty() ? nullptr : output_format_name.c_str();
@@ -147,11 +148,10 @@ bool YMediaDestination::createOutputContext()
 		return false;
     }
     _output_format = _media_format_context->oformat;
-//    parseOutputFormat(); //TODO check it!
 	return true;
 }
 
-bool YMediaDestination::openOutputContext()
+bool YMediaDestination::openOutput()
 {
 	if (!(_media_format_context->flags & AVFMT_NOFILE)) {
 		if (avio_open(&_media_format_context->pb, _media_resource_locator.c_str(), AVIO_FLAG_WRITE) < 0) {
@@ -164,7 +164,6 @@ bool YMediaDestination::openOutputContext()
 		return false;
 	}
 	{
-		_is_opened = true;
 		av_dump_format(_media_format_context, 0, _media_resource_locator.c_str(), 1);
         std::cout << "[YMediaDestination] Destination opened: \"" << _media_resource_locator << "\"" << std::endl;
 	}
@@ -188,7 +187,7 @@ void YMediaDestination::parseOutputFormat()
 void YMediaDestination::run()
 {
     _thread = std::thread([this]() {
-        while (_is_opened) {
+        while (_running) {
             AVPacket packet;
             if (!getPacket(packet)) {
 //                std::cerr << "[YMediaDestination] Buffer is empty." << std::endl;
@@ -198,6 +197,7 @@ void YMediaDestination::run()
 
             if (!stampPacket(packet)) {
                 std::cerr << "[YMediaDestination] stampPacket failed" << std::endl;
+                _running = false;
                 break;
             }
 
@@ -207,6 +207,7 @@ void YMediaDestination::run()
 //            if (av_interleaved_write_frame(_media_format_context, &packet) < 0) {
             if (av_write_frame(_media_format_context, &packet) < 0) {
                 std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
+                _running = false;
                 break;
             } else {
                 packet.stream_index = packet_index;

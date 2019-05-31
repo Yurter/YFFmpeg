@@ -1,4 +1,4 @@
-#include "YMediaChain.h"
+  #include "YMediaChain.h"
 
 YMediaChain::YMediaChain(YMediaSource*      source,
                          YMediaDestination* destination,
@@ -28,6 +28,7 @@ YMediaChain::YMediaChain(YMediaSource*      source,
     _contingency_video_source(nullptr),
     _contingency_audio_source(nullptr),
     _active(false),
+    _running(false),
     _paused(false),
     _options(options),
     _source_video_stream_index(-1),
@@ -46,38 +47,30 @@ YMediaChain::~YMediaChain()
 bool YMediaChain::start()
 {
     if (_active) {
-        std::cout << "[YMediaChain] Already started" << std::endl;
         return false;
-    } else {
-        std::cout << "[YMediaChain] Initialization started..." << std::endl;
     }
-
-
-    bool start_failed = false;
-
-    init();
-
-    if (start_failed) {
+    std::cout << "[YMediaChain] Initialization started..." << std::endl;
+    if (!init()) {
         std::cout << "[YMediaChain] Start failed" << std::endl;
         stop();
         return false;
     }
-
     {
         _source_video_stream_index = _source->video_parameters.streamIndex();
         _source_audio_stream_index = _source->audio_parameters.streamIndex();
         _destination_video_stream_index = _destination->video_parameters.streamIndex();
         _destination_audio_stream_index = _destination->audio_parameters.streamIndex();
 
-        _active = true;
+        _running = true;
         _thread = std::thread([this]() {
-            while (_active) {
+            while (_running) {
                 /*------------------------------- Чтение -------------------------------*/
                 AVPacket source_packet;
                 if (!_source->readPacket(source_packet)) {
                     std::cerr << "[YMediaChain] No data available" << std::endl;
                     if (!_source->opened()) {
                         _destination->close();
+                        _running = false;
                         break;
                     }
                 }
@@ -108,6 +101,7 @@ bool YMediaChain::start()
                         if (_source->isVideoPacket(source_packet)) {
                             if (!_rescaler->rescale(decoded_frames.front())) {
                                 std::cerr << "[YMediaChain] Rescale failed" << std::endl;
+                                _running = false;
                                 break;
                             }
                         }
@@ -118,6 +112,7 @@ bool YMediaChain::start()
                         if (_source->isAudioPacket(source_packet)) {
                             if (!_resampler->resample(&decoded_frames.front())) {
                                 std::cerr << "[YMediaChain] Resample failed" << std::endl;
+                                _running = false;
                                 break;
                             }
                         }
@@ -146,6 +141,7 @@ bool YMediaChain::start()
                     if (!_contingency_audio_source->readPacket(silence_packet)) {
                         std::cerr << "[YMediaChain] _contingency_audio_source No data available" << std::endl;
                         if (!_contingency_audio_source->opened()) {
+                            _running = false;
                             break;
                         }
                     }
@@ -168,7 +164,7 @@ bool YMediaChain::stop()
     _active = false;
     _source->close();
     _destination->close();
-    _thread.join();
+    stopThread();
     std::cout << "[YMediaChain] Stopped" << std::endl;
     return true;
 }
@@ -237,6 +233,12 @@ bool YMediaChain::init()
                               , _encoder->audioCodecContext())) { return false; }
     }
     return true;
+}
+
+void YMediaChain::stopThread()
+{
+    _running = false;
+    if (_thread.joinable()) { _thread.join(); }
 }
 
 bool YMediaChain::rescalerRequired()

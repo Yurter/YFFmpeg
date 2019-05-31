@@ -45,6 +45,7 @@ public:
 private:
 
     bool init();
+    void stopThread();
 
     bool rescalerRequired();
     bool resamplerRequired();
@@ -78,6 +79,7 @@ private:
 	//General parameters
 	std::thread			_thread;
     volatile bool       _active;
+    volatile bool       _running;
     volatile bool       _paused; 
 
     int64_t             _options;

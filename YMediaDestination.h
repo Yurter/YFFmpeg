@@ -22,8 +22,8 @@ public:
 
 private:
 
-    bool createOutputContext();
-	bool openOutputContext();
+    bool createOutput();
+    bool openOutput();
 
     void run();
 

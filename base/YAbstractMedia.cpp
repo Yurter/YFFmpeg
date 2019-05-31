@@ -4,8 +4,8 @@
 
 YAbstractMedia::YAbstractMedia(const std::string & mrl) :
 	_media_resource_locator(mrl),
-    _is_opened(false),
-    _is_active(false),
+    _opened(false),
+    _running(false),
     _reopening_after_failure(false),
     _reopening_timeout(-1),
     _close_after_failure(false),
@@ -18,31 +18,21 @@ YAbstractMedia::YAbstractMedia(const std::string & mrl) :
 
 YAbstractMedia::~YAbstractMedia()
 {
-    if (_thread.joinable()) {
-        _is_active = false;
-        _thread.join();
-    }
-    avformat_free_context(_media_format_context);
+    close();
 }
 
 bool YAbstractMedia::close()
 {
-    if (!_is_opened) {
-        std::cerr << "[YAbstractMedia] Already closed." << std::endl;
-        return false;
-    }
-    _is_opened = false;
+    if (!_opened) { return false; }
+    _packet_queue = std::queue<AVPacket>();
+    avformat_free_context(_media_format_context);
+    _opened = false;
     return true;
-}
-
-bool YAbstractMedia::active() const
-{
-    return _is_active;
 }
 
 bool YAbstractMedia::opened() const
 {
-    return _is_opened;
+    return _opened;
 }
 
 void YAbstractMedia::parseFormatContext()
@@ -141,4 +131,10 @@ bool YAbstractMedia::isVideoPacket(AVPacket &packet)
 bool YAbstractMedia::isAudioPacket(AVPacket &packet)
 {
     return packet.stream_index == audio_parameters.streamIndex();
+}
+
+void YAbstractMedia::stopThread()
+{
+    _running = false;
+    if (_thread.joinable()) { _thread.join(); }
 }

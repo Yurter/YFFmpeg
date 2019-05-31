@@ -50,19 +50,18 @@ YMediaSource::~YMediaSource()
 
 bool YMediaSource::open()
 {
-    if (_is_opened) {
-        std::cerr << "[YMediaSource] Already opened." << std::endl;
-        return false;
-    }
-    _is_opened = openInput();
-    if (_is_opened) { run(); }
-    return _is_opened;
+    if (_opened) { return false; }
+    _opened = openInput();
+    if (_opened) { run(); }
+    return _opened;
 }
 
 bool YMediaSource::close()
 {
+    if (!_opened) { return false; }
+    stopThread();
+    if (_media_format_context != nullptr) { avformat_close_input(&_media_format_context); }
     if (!YAbstractMedia::close()) { return false; }
-    avformat_close_input(&_media_format_context);
     std::cout << "[YMediaSource] Source: \"" << _media_resource_locator << "\" closed." << std::endl;
     return true;
 }
@@ -100,14 +99,13 @@ bool YMediaSource::openInput()
 void YMediaSource::run()
 {
     _thread = std::thread([this](){
-        while (_is_opened) {
+        while (_running) {
             if (_packet_queue.size() >= _packet_queue_capacity) { continue; }
             AVPacket packet;
-            _is_active = (av_read_frame(_media_format_context, &packet) == 0);
-            if (!_is_active) {
+            if (av_read_frame(_media_format_context, &packet) != 0) {
                 std::cerr << "[YMediaSource] Cannot read source: \"" << _media_resource_locator << "\". Error or EOF." << std::endl;
-                close();
-                return;
+                _running = false;
+                break;
             } else {
                 if (isVideoPacket(packet) && video_parameters.ignore()) { continue; }
                 if (isAudioPacket(packet) && audio_parameters.ignore()) { continue; }

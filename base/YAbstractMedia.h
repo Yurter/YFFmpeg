@@ -19,7 +19,6 @@ public:
 
     virtual bool        open() = 0;                                     // Функция открывает медиа-ресурс.
     virtual bool        close();                                        // Функция закрывает медиа-ресурс.
-    virtual bool        active() const final;                           // Функция возвращает true, если запись/чтение не закончены, иначе - false.
     virtual bool        opened() const final;                           //
 
     void                setReopeingAfterFailure(bool reopening);        //
@@ -35,6 +34,7 @@ public:
 protected:
 
     virtual void        run() = 0;
+    void                stopThread();
 
     void                queuePacket(AVPacket packet);
     bool                getPacket(AVPacket &packet);
@@ -53,8 +53,8 @@ protected:
 	// General parameters
     std::thread         _thread;
 	std::string			_media_resource_locator;
-    bool				_is_opened;
-	bool				_is_active;
+    bool				_opened;
+    volatile bool       _running;
     bool                _reopening_after_failure;
     int64_t             _reopening_timeout;
     bool                _close_after_failure;
