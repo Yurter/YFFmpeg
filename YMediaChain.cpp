@@ -116,7 +116,7 @@ bool YMediaChain::start()
                     }
 
                     /*------------------------------ Кодирование ---------------------------*/
-                    av_init_packet(processed_packet.raw()); // ?? можно убрать?
+                    av_init_packet(processed_packet.raw()); // ?? можно убрать? нет
                     if (!mapStreamIndex(source_packet, processed_packet)) {
                         std::cerr << "[YMediaChain] mapStreamIndex failed" << std::endl;
                     }
