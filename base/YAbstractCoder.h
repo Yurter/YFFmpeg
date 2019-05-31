@@ -1,10 +1,11 @@
 #pragma once
 
 #include "ffmpeg.h"
+#include "YThread.h"
 #include <string>
 #include <list>
 
-class YAbstractCoder
+class YAbstractCoder : public YThread
 {
 
 public:
