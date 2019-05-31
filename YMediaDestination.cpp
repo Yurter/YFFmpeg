@@ -196,8 +196,8 @@ void YMediaDestination::run()
             {
                 std::cout << "[YMediaDestination] " << packet << std::endl;
             }
-//            if (av_interleaved_write_frame(_media_format_context, &packet) < 0) {
-            if (av_write_frame(_media_format_context, packet.raw()) < 0) {
+            if (av_interleaved_write_frame(_media_format_context, packet.raw()) < 0) {
+//            if (av_write_frame(_media_format_context, packet.raw()) < 0) {
                 std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
                 _running = false;
                 break;
@@ -210,8 +210,10 @@ bool YMediaDestination::stampPacket(YPacket &packet)
 {
     if (packet.isVideo()) {
         auto raw_packet = packet.raw();
-        auto frame_rate = stream(packet.raw()->stream_index)->avg_frame_rate;
-        auto duration = (1000 * frame_rate.den) / frame_rate.num;
+//        auto frame_rate = stream(packet.raw()->stream_index)->avg_frame_rate; //TODO : проверить (!)
+//        auto duration = (1000 * frame_rate.den) / frame_rate.num;
+        auto frame_rate = video_parameters.frameRate();
+        int64_t duration = static_cast<int64_t>(1000 / frame_rate);
         raw_packet->pts = _video_packet_index * duration;
         raw_packet->dts = _video_packet_index * duration;
         raw_packet->duration = duration;
