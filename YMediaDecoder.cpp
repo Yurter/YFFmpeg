@@ -52,6 +52,8 @@ YCode YMediaDecoder::decodePacket(YPacket& packet, AVFrame** decoded_frame)
     *decoded_frame = av_frame_alloc(); //TODO ! ! !
     int ret = avcodec_receive_frame(codec_context, *decoded_frame);
     switch (ret) {
+    case 0:
+        return YCode::OK;
     case AVERROR(EAGAIN):
         return YCode::AGAIN;
     case AVERROR_EOF:

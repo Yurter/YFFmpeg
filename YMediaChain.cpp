@@ -86,8 +86,20 @@ bool YMediaChain::start()
 
                 if (process_packet) {
                     /*---------------------------- Декодирование ---------------------------*/
-                    std::list<AVFrame*> decoded_frames;
-                    if (!_decoder->decodePacket(source_packet, decoded_frames)) {
+//                    AVFrame* decoded_frame;
+//                    if (!_decoder->decodePacket(source_packet, decoded_frame)) {
+//                        std::cerr << "[YMediaChain] Decode failed" << std::endl;
+//                        break;
+//                    }
+//                    if (decoded_frames.empty()) { continue; }
+                    //
+                    AVFrame* decoded_frame;
+                    YCode ret;
+                    do {
+                        ret = _decoder->decodePacket(source_packet, &decoded_frame);
+                    } while (ret == YCode::AGAIN);
+                    if
+                    if (!_decoder->decodePacket(source_packet, decoded_frame)) {
                         std::cerr << "[YMediaChain] Decode failed" << std::endl;
                         break;
                     }
