@@ -3,6 +3,7 @@
 #include "ffmpeg.h"
 #include "YVideoParameters.h"
 #include "YAudioParameters.h"
+#include "YPacket.h"
 
 #include <string>
 #include <thread>
@@ -36,8 +37,8 @@ protected:
     virtual void        run() = 0;
     void                stopThread();
 
-    void                queuePacket(AVPacket packet);
-    bool                getPacket(AVPacket &packet);
+    void                queuePacket(YPacket packet);
+    bool                getPacket(YPacket &packet);
 
     void                parseFormatContext();
     std::string         guessFormatShortName();
@@ -60,7 +61,7 @@ protected:
     bool                _close_after_failure;
     int64_t             _close_timeout;
 
-    std::queue<AVPacket>    _packet_queue;
+    std::queue<YPacket>     _packet_queue;
     std::mutex              _packet_queue_mutex;
     uint64_t                _packet_queue_capacity;
 

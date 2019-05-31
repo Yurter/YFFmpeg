@@ -24,7 +24,7 @@ YAbstractMedia::~YAbstractMedia()
 bool YAbstractMedia::close()
 {
     if (!_opened) { return false; }
-    _packet_queue = std::queue<AVPacket>();
+    _packet_queue = std::queue<YPacket>();
     avformat_free_context(_media_format_context);
     _opened = false;
     return true;
@@ -111,13 +111,13 @@ AVFormatContext *YAbstractMedia::mediaFormatContext() const
     return _media_format_context;
 }
 
-void YAbstractMedia::queuePacket(AVPacket packet)
+void YAbstractMedia::queuePacket(YPacket packet)
 {
     std::lock_guard<std::mutex> lock(_packet_queue_mutex);
     _packet_queue.push(packet);
 }
 
-bool YAbstractMedia::getPacket(AVPacket &packet)
+bool YAbstractMedia::getPacket(YPacket &packet)
 {
     std::lock_guard<std::mutex> lock(_packet_queue_mutex);
     if (_packet_queue.empty()) { return false; }

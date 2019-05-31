@@ -16,6 +16,21 @@ AVPacket *YPacket::raw()
     return &_packet;
 }
 
+void YPacket::setType(YMediaType type)
+{
+    _type = type;
+}
+
+bool YPacket::isVideo() const
+{
+    return _type == YMediaType::MEDIA_TYPE_VIDEO;
+}
+
+bool YPacket::isAudio() const
+{
+    return _type == YMediaType::MEDIA_TYPE_AUDIO;
+}
+
 std::ostream& operator<<(std::ostream &os, const YPacket &pkt)
 {
     /* Video packet: 33123 byte, dts 460, pts 460, duration 33 */

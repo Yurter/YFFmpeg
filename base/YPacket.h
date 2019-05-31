@@ -14,14 +14,19 @@ public:
 
     AVPacket*       raw();
 
+    void            setType(YMediaType type);
+
+    bool            isVideo() const;
+    bool            isAudio() const;
+
     friend std::ostream& operator<<(std::ostream& os, const YPacket& pkt);
 
 private:
 
-    //General
+    // General
     YMediaType      _type;
 
-    //FFmpeg
+    // FFmpeg
     AVPacket        _packet;
 
 };

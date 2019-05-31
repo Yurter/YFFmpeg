@@ -41,7 +41,7 @@ bool YMediaSource::close()
     return true;
 }
 
-bool YMediaSource::readPacket(AVPacket &packet)
+bool YMediaSource::readPacket(YPacket &packet)
 {
     return getPacket(packet);
 }
@@ -85,16 +85,30 @@ void YMediaSource::run()
     _thread = std::thread([this](){
         while (_running) {
             if (_packet_queue.size() >= _packet_queue_capacity) { continue; }
-            AVPacket packet;
-            if (av_read_frame(_media_format_context, &packet) != 0) {
+            YPacket packet;
+            if (av_read_frame(_media_format_context, packet.raw()) != 0) {
                 std::cerr << "[YMediaSource] Cannot read source: \"" << _media_resource_locator << "\". Error or EOF." << std::endl;
                 _running = false;
                 break;
             } else {
-                if (isVideoPacket(packet) && video_parameters.ignore()) { continue; }
-                if (isAudioPacket(packet) && audio_parameters.ignore()) { continue; }
+                analyzePacket(packet);
+                if (packet.isVideo() && video_parameters.ignore()) { continue; }
+                if (packet.isAudio() && audio_parameters.ignore()) { continue; }
                 queuePacket(packet);
             }
         }
     });
+}
+
+void YMediaSource::analyzePacket(YPacket packet)
+{
+    if (packet.raw()->stream_index == video_parameters.streamIndex()) {
+        packet.setType(YMediaType::MEDIA_TYPE_VIDEO);
+        return;
+    }
+    if (packet.raw()->stream_index == audio_parameters.streamIndex()) {
+        packet.setType(YMediaType::MEDIA_TYPE_AUDIO);
+        return;
+    }
+    packet.setType(YMediaType::MEDIA_TYPE_UNKNOWN);
 }

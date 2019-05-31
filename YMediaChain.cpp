@@ -62,7 +62,7 @@ bool YMediaChain::start()
         _thread = std::thread([this]() {
             while (_running) {
                 /*------------------------------- Чтение -------------------------------*/
-                AVPacket source_packet;
+                YPacket source_packet;
                 if (!_source->readPacket(source_packet)) {
 //                    std::cerr << "[YMediaChain] No data available" << std::endl;
 //                    if (!_source->opened()) {

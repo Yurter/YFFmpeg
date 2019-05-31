@@ -10,24 +10,27 @@ public:
     YMediaSource(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
     virtual ~YMediaSource();
 
-    bool open();
-    bool close();
+    bool            open();
+    bool            close();
 
-    bool readPacket(AVPacket &packet);
+    bool            readPacket(YPacket &packet);
 
-    AVInputFormat*      inputFormat() const;
+    AVInputFormat*  inputFormat() const;
 
-    bool                guessInputFromat();
-
-private:
-
-    bool openInput();
-    void run();
+    bool            guessInputFromat();
 
 private:
 
-    // General parameters
+    bool            openInput();
+    void            run();
+
+    void            analyzePacket(YPacket packet);
+
+private:
+
+    // General
+    //
 
     // FFmpeg
-    AVInputFormat*      _input_format;
+    AVInputFormat*  _input_format;
 };
