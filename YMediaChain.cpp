@@ -27,7 +27,6 @@ YMediaChain::YMediaChain(YMediaSource*      source,
     _resampler(nullptr),
     _contingency_video_source(nullptr),
     _contingency_audio_source(nullptr),
-    _active(false),
     _running(false),
     _paused(false),
     _options(options),
@@ -46,9 +45,7 @@ YMediaChain::~YMediaChain()
 
 bool YMediaChain::start()
 {
-    if (_active) {
-        return false;
-    }
+    if (_running) { return false; }
     std::cout << "[YMediaChain] Initialization started..." << std::endl;
     if (!init()) {
         std::cout << "[YMediaChain] Start failed" << std::endl;
@@ -67,12 +64,13 @@ bool YMediaChain::start()
                 /*------------------------------- Чтение -------------------------------*/
                 AVPacket source_packet;
                 if (!_source->readPacket(source_packet)) {
-                    std::cerr << "[YMediaChain] No data available" << std::endl;
-                    if (!_source->opened()) {
-//                        _destination->close();
-//                        _running = false;
-//                        break;
-                    }
+//                    std::cerr << "[YMediaChain] No data available" << std::endl;
+//                    if (!_source->opened()) {
+////                        _destination->close();
+////                        _running = false;
+////                        break;
+//                    }
+                    continue;
                 }
                 if (skipPacket(source_packet)) { continue; }
 
@@ -150,7 +148,7 @@ bool YMediaChain::start()
 //                    std::cout << "[YMediaChain] Silence muxed" << std::endl;
 //                }
             }
-            _active = false;
+            _running = false;
             std::cout << "[YMediaChain] Finished" << std::endl;
         });
         std::cout << "[YMediaChain] Started" << std::endl;
@@ -161,7 +159,6 @@ bool YMediaChain::start()
 
 bool YMediaChain::stop()
 {
-    _active = false;
     _source->close();
     _destination->close();
     stopThread();
@@ -181,7 +178,7 @@ void YMediaChain::unpause()
 
 bool YMediaChain::active()
 {
-    return _active;
+    return _running;;
 }
 
 void YMediaChain::setContingencyVideoSource(YMediaSource *contingency_video_source)
@@ -206,10 +203,9 @@ void YMediaChain::setAudioFilter(std::string audio_filter)
 
 bool YMediaChain::init()
 {
-    parseInstalledOptions();
-
     if (!_source->open())       { return false; }
 
+    parseInstalledOptions();
     completeDestinationParametres();
 
     if (!_decoder->init())      { return false; }

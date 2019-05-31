@@ -78,7 +78,6 @@ private:
 
 	//General parameters
 	std::thread			_thread;
-    volatile bool       _active;
     volatile bool       _running;
     volatile bool       _paused; 
 

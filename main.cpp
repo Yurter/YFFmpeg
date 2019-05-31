@@ -37,12 +37,13 @@ int main()
 
 
 
-    std::string mrl_src = "aevalsrc=10";
-    std::string mrl_dst = "remuxed.mp3";
+    std::string mrl_src = "aevalsrc=-2+random(0)";
+    std::string mrl_dst = "remuxed.aac";
 
     YMediaSource source(mrl_src, YMediaPreset::Virtual);
     YMediaDestination destination(mrl_dst);
 
+//    YMediaChain chain(&source, &destination, COPY_AUDIO);
     YMediaChain chain(&source, &destination);
 
     chain.start();
