@@ -1,11 +1,6 @@
 #include "utils.h"
 
-utils::utils()
-{
-    //
-}
-
-std::string utils::mediaTypeToString(YMediaType media_type)
+std::string utils::media_type_to_string(YMediaType media_type)
 {
     switch (media_type) {
     case YMediaType::MEDIA_TYPE_UNKNOWN:
@@ -15,4 +10,9 @@ std::string utils::mediaTypeToString(YMediaType media_type)
     case YMediaType::MEDIA_TYPE_AUDIO:
         return "Audio";
     }
+}
+
+void utils::sleep_for(int64_t milliseconds)
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ffmpeg.h"
+#include <thread>
 #include <string>
 
 class utils
@@ -8,8 +9,9 @@ class utils
 
 public:
 
-    utils();
-    ~utils();
+    utils() = default;
+    ~utils() = default;
 
-    static std::string mediaTypeToString(YMediaType media_type);
+    inline static std::string   media_type_to_string(YMediaType media_type);
+    inline static void          sleep_for(int64_t milliseconds);
 };

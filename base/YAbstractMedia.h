@@ -59,6 +59,7 @@ protected:
     int64_t             _reopening_timeout;
     bool                _close_after_failure;
     int64_t             _close_timeout;
+    int64_t             _artificial_delay;
 
     std::queue<YPacket>     _packet_queue;
     std::mutex              _packet_queue_mutex;

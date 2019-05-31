@@ -7,9 +7,10 @@ YAbstractMedia::YAbstractMedia(const std::string & mrl) :
     _opened(false),
     _running(false),
     _reopening_after_failure(false),
-    _reopening_timeout(-1),
+    _reopening_timeout(-1),         //TODO
     _close_after_failure(false),
-    _close_timeout(-1),
+    _close_timeout(-1),             //TODO
+    _artificial_delay(0),
     _packet_queue_capacity(100),
     _media_format_context(nullptr)
 {

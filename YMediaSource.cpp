@@ -10,6 +10,8 @@ YMediaSource::YMediaSource(const std::string &mrl, YMediaPreset preset) :
     case Virtual:
         avdevice_register_all();
         guessInputFromat();
+        parseInputFormat();
+        _artificial_delay = 1024; //TODO: 1024 для аудио, для видео - ?
         break;
     default:
         std::cerr << "[YMediaSource] Invalid preset." << std::endl;
@@ -95,9 +97,15 @@ void YMediaSource::run()
                 if (packet.isVideo() && video_parameters.ignore()) { continue; }
                 if (packet.isAudio() && audio_parameters.ignore()) { continue; }
                 queuePacket(packet);
+                if (_artificial_delay > 0) { utils::sleep_for(_artificial_delay); }
             }
         }
     });
+}
+
+void YMediaSource::parseInputFormat()
+{
+    // ?
 }
 
 void YMediaSource::analyzePacket(YPacket& packet)

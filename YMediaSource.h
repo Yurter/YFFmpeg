@@ -17,20 +17,19 @@ public:
 
     AVInputFormat*  inputFormat() const;
 
-    bool            guessInputFromat();
-
 private:
 
+    bool            guessInputFromat();
     bool            openInput();
+
     void            run();
 
+    void            parseInputFormat(); //TODO : YAbstractMedia::parseIOFormat
     void            analyzePacket(YPacket& packet);
 
 private:
 
-    // General
-    //
-
     // FFmpeg
     AVInputFormat*  _input_format;
+
 };

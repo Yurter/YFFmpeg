@@ -42,7 +42,7 @@ std::ostream& operator<<(std::ostream &os, const YPacket &pkt)
     /* Video packet: 33123 byte, dts 460, pts 460, duration 33 */
     auto dts_str = pkt._packet.dts == AV_NOPTS_VALUE ? "AV_NOPTS_VALUE" : std::to_string(pkt._packet.dts);
     auto pts_str = pkt._packet.pts == AV_NOPTS_VALUE ? "AV_NOPTS_VALUE" : std::to_string(pkt._packet.pts);
-    os << utils::mediaTypeToString(pkt._type) << " packet: "
+    os << utils::media_type_to_string(pkt._type) << " packet: "
        << pkt._packet.size << " bytes, "
        << "dts " << dts_str << ", "
        << "pts " << pts_str << ", "
