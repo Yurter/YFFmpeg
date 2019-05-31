@@ -43,7 +43,7 @@ enum YOptions {
     DUMMY_ENUM      = 0x0004
 };
 
-/* ? */
+/* Медиа тип потока/пакета/фрейма */
 enum YMediaType {
     MEDIA_TYPE_UNKNOWN,
     MEDIA_TYPE_VIDEO,
@@ -70,3 +70,16 @@ enum YMediaType {
 #define not_inited_pix_fmt(x)   ((x) == DEFAULT_PIXEL_FORMAT)
 #define not_inited_smp_fmt(x)   ((x) == DEFAULT_SAMPLE_FORMAT)
 #define not_inited_ch_layout(x) ((x) == DEFAULT_CHANEL_LAYOUT)
+
+/* Категории сообщений, которые выводятся в консоль */
+enum YLogLevel {
+    /* Сообщения не выводится */
+    Quiet,
+    /* Стандартная информация */
+    Info,
+    /* Сообщения о некорректно установленных параметрах,
+     * которые могут привести к проблемам */
+    Warning,
+    /* Сообщения об ошибках */
+    Error
+};
