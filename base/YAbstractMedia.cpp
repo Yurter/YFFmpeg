@@ -95,6 +95,9 @@ std::string YAbstractMedia::guessFormatShortName()
 	if (_media_resource_locator.find("rtmp://") != std::string::npos) {
 		return std::string("flv");
 	}
+    if (_media_resource_locator.find("aevalsrc") != std::string::npos) {
+        return std::string("lavfi");
+    }
 	return std::string();
 }
 
@@ -135,6 +138,7 @@ bool YAbstractMedia::isAudioPacket(AVPacket &packet)
 
 void YAbstractMedia::stopThread()
 {
+    if (!_running) { return; }
     _running = false;
     if (_thread.joinable()) { _thread.join(); }
 }

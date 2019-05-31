@@ -23,7 +23,8 @@ extern "C" {
 enum YMediaPreset {
     Auto,
     /* Input */
-    Silence,
+    Virtual,
+//    Silence,
     /* Output */
     YouTube,
     Timelapse

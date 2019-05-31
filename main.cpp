@@ -40,7 +40,7 @@ int main()
     std::string mrl_src = "aevalsrc=10";
     std::string mrl_dst = "remuxed.mp3";
 
-    YMediaSource source(mrl_src, YMediaPreset::Silence);
+    YMediaSource source(mrl_src, YMediaPreset::Virtual);
     YMediaDestination destination(mrl_dst);
 
     YMediaChain chain(&source, &destination);

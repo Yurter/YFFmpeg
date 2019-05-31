@@ -17,6 +17,8 @@ public:
 
     AVInputFormat*      inputFormat() const;
 
+    bool                guessInputFromat();
+
 private:
 
     bool openInput();

@@ -13,35 +13,28 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
          guessOutputFromat();
          parseOutputFormat();
         break;
-    case Silence:
-        break;
     case YouTube:
         /* Video */
-        video_parameters.setWidth(1920);
-        video_parameters.setHeight(1080);
+//        video_parameters.setWidth(1920);
+//        video_parameters.setHeight(1080);
         video_parameters.setAspectRatio({16,9});
-        video_parameters.setFrameRate(24); //TODO
+//        video_parameters.setFrameRate(24);
         video_parameters.setBitrate(400'000);
-        video_parameters.setCodec("libx264");
+//        video_parameters.setCodec("libx264");
         video_parameters.setAvailable(true);
         /* Audio */
-//        audio_parameters.setSampleRate(44'100);
-//        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
-//        audio_parameters.setBitrate(128 * 1024);
-//        audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
-//        audio_parameters.setChanels(2);
-//        audio_parameters.setCodec("aac");
-//        audio_parameters.setAvailable(true);
-        //
         audio_parameters.setSampleRate(44'100);
-        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);//(AV_SAMPLE_FMT_S16P);
+        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
         audio_parameters.setBitrate(128'000);
-        audio_parameters.setChanelsLayout(AV_CH_LAYOUT_MONO);
-        audio_parameters.setChanels(1);
-        audio_parameters.setCodec("aac");
+        audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
+        audio_parameters.setChanels(2);
+        audio_parameters.setCodec("mp3");
         audio_parameters.setAvailable(true);
         break;
     case Timelapse:
+        break;
+    default:
+        std::cerr << "[YMediaDestination] Invalid preset." << std::endl;
         break;
     }
 
@@ -186,6 +179,8 @@ void YMediaDestination::parseOutputFormat()
 
 void YMediaDestination::run()
 {
+    if (_running) { return; }
+    _running = true;
     _thread = std::thread([this]() {
         while (_running) {
             AVPacket packet;

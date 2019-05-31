@@ -106,7 +106,7 @@ bool YParameters::ignore() const
 
 void YParameters::softCopy(YParameters& other_parametrs)
 {
-    _available = other_parametrs.available();
+//    _available = other_parametrs.available(); // ? Find out
     if (not_inited_codec_id(_codec_id)) { _codec_id = other_parametrs.codecId();            }
     if (not_inited_string(_codec_name)) { _codec_name = other_parametrs.codecName();        }
     if (not_inited_int(_bitrate))       { _bitrate = other_parametrs.bitrate();             }

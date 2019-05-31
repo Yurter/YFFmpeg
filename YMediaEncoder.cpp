@@ -27,7 +27,7 @@ bool YMediaEncoder::init()
         }
     }
     if (_destination->mediaFormatContext()->nb_streams == 0) {
-        std::cerr << "[YMediaEncoder] Destination wasn't inited" << std::endl;
+        std::cerr << "[YMediaEncoder] Failed to initialize destination." << std::endl;
         return false;
     }
     std::cout << "[YMediaEncoder] Inited" << std::endl;
@@ -129,12 +129,12 @@ bool YMediaEncoder::initAudioCodec()
         _destination->audio_parameters.setSampleFormat(encoder->sample_fmts[0]);
     }
 
-    _audio_codec_context->sample_rate = static_cast<int>(_destination->audio_parameters.sampleRate());
-    _audio_codec_context->bit_rate = _destination->audio_parameters.bitrate();
-    _audio_codec_context->sample_fmt = _destination->audio_parameters.sampleFormat();
-    _audio_codec_context->channel_layout = _destination->audio_parameters.chanelsLayout();
-    _audio_codec_context->channels = static_cast<int>(_destination->audio_parameters.chanels());
-    _audio_codec_context->time_base = { 1, _audio_codec_context->sample_rate };
+    _audio_codec_context->sample_rate =     static_cast<int>(_destination->audio_parameters.sampleRate());
+    _audio_codec_context->bit_rate =        _destination->audio_parameters.bitrate();
+    _audio_codec_context->sample_fmt =      _destination->audio_parameters.sampleFormat();
+    _audio_codec_context->channel_layout =  _destination->audio_parameters.chanelsLayout();
+    _audio_codec_context->channels =        static_cast<int>(_destination->audio_parameters.chanels());
+    _audio_codec_context->time_base =       { 1, _audio_codec_context->sample_rate };
 
     if (avcodec_open2(_audio_codec_context, encoder, nullptr) < 0) {
         std::cerr << "[YMediaEncoder] Could not open audio encoder" << std::endl;
