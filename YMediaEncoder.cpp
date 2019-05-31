@@ -34,15 +34,11 @@ bool YMediaEncoder::init()
     return true;
 }
 
-bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame*> &decoded_frames)
+bool YMediaEncoder::encodeFrames(YPacket& encoded_packet, std::list<AVFrame*>& decoded_frames) //TODO
 {
     AVCodecContext *codec_context = nullptr;
-    if (encoded_packet->stream_index == _video_stream_index) {
-        codec_context = _video_codec_context;
-    }
-    if (encoded_packet->stream_index == _audio_stream_index) {
-        codec_context = _audio_codec_context;
-    }
+    if (encoded_packet.isVideo()) { codec_context = _video_codec_context; }
+    if (encoded_packet.isAudio()) { codec_context = _audio_codec_context; }
     int ret;
     for (auto&& decoded_frame : decoded_frames) {
         if ((ret = avcodec_send_frame(codec_context, decoded_frame)) != 0) {
@@ -50,8 +46,8 @@ bool YMediaEncoder::encodeFrames(AVPacket *encoded_packet, std::list<AVFrame*> &
             return false;
         }
     }
-    if ((ret = avcodec_receive_packet(codec_context, encoded_packet)) != 0) {
-        char* text_error = new char[AV_ERROR_MAX_STRING_SIZE];
+    if ((ret = avcodec_receive_packet(codec_context, encoded_packet.raw())) != 0) {
+        char* text_error = new char[AV_ERROR_MAX_STRING_SIZE]; //TODO
         av_strerror(ret, text_error, AV_ERROR_MAX_STRING_SIZE);
         std::cerr << "[YMediaEncoder] Could not receive packet " << ret << " " << AVERROR(EAGAIN) << " " << std::string(text_error) << std::endl;
         return false;

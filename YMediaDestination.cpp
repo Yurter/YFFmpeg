@@ -158,7 +158,7 @@ bool YMediaDestination::openOutput()
 	}
 	{
 		av_dump_format(_media_format_context, 0, _media_resource_locator.c_str(), 1);
-        std::cout << "[YMediaDestination] Destination opened: \"" << _media_resource_locator << "\"" << std::endl;
+        std::cout << "[YMediaDestination] Destination: \"" << _media_resource_locator << "\" opened." << std::endl;
 	}
     return true;
 }

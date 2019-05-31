@@ -87,7 +87,7 @@ bool YMediaChain::start()
                 if (process_packet) {
                     /*---------------------------- Декодирование ---------------------------*/
                     std::list<AVFrame*> decoded_frames;
-                    if (!_decoder->decodePacket(&source_packet, decoded_frames)) {
+                    if (!_decoder->decodePacket(source_packet, decoded_frames)) {
                         std::cerr << "[YMediaChain] Decode failed" << std::endl;
                         break;
                     }
@@ -116,11 +116,11 @@ bool YMediaChain::start()
                     }
 
                     /*------------------------------ Кодирование ---------------------------*/
-//                    av_init_packet(&processed_packet); ?? можно убрать?
+                    av_init_packet(processed_packet.raw()); // ?? можно убрать?
                     if (!mapStreamIndex(source_packet, processed_packet)) {
                         std::cerr << "[YMediaChain] mapStreamIndex failed" << std::endl;
                     }
-                    if (!_encoder->encodeFrames(&processed_packet, decoded_frames)) {
+                    if (!_encoder->encodeFrames(processed_packet, decoded_frames)) {
                         std::cerr << "[YMediaChain] Encode failed" << std::endl;
                         continue;
                     }

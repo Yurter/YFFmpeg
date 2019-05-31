@@ -100,7 +100,7 @@ void YMediaSource::run()
     });
 }
 
-void YMediaSource::analyzePacket(YPacket packet)
+void YMediaSource::analyzePacket(YPacket& packet)
 {
     if (packet.raw()->stream_index == video_parameters.streamIndex()) {
         packet.setType(YMediaType::MEDIA_TYPE_VIDEO);

@@ -24,7 +24,7 @@ private:
     bool            openInput();
     void            run();
 
-    void            analyzePacket(YPacket packet);
+    void            analyzePacket(YPacket& packet);
 
 private:
 
