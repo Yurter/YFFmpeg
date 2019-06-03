@@ -19,6 +19,16 @@ YAudioResampler::~YAudioResampler()
     }
 }
 
+void YAudioResampler::push(YFrame frame)
+{
+    _input_frame_queue.push(frame);
+}
+
+bool YAudioResampler::pop(YFrame &frame)
+{
+    return _output_frame_queue.pop(frame);
+}
+
 bool YAudioResampler::init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context)
 {
     if (_inited) {
@@ -65,36 +75,74 @@ bool YAudioResampler::init(AVCodecContext *input_codec_context, AVCodecContext *
     return true;
 }
 
-bool YAudioResampler::resample(AVFrame **frame)
+YCode YAudioResampler::run()
 {
     if (!_inited) {
         std::cerr << "[YAudioResampler] Not inited" << std::endl;
-        return false;
+        return YCode::ERR;
     }
-
-    AVFrame *output_frame = nullptr;
-    if (!initOutputFrame(&output_frame, _output_codec_context->frame_size)) {
+    YFrame input_frame;
+    if (!_input_frame_queue.pop(input_frame)) {
+        std::cerr << "[YAudioResampler] Not inited" << std::endl;
+        return YCode::AGAIN;
+    }
+    YFrame output_frame;
+    AVFrame *out_frame = output_frame.raw();
+    if (!initOutputFrame(&out_frame, _output_codec_context->frame_size)) {
         std::cerr << "[YAudioResampler] initOutputFrame failed" << std::endl;
-        return false;
+        return YCode::ERR;
     }
 
-    if (configChanged(*frame, output_frame)) {
+    if (configChanged(input_frame.raw(), output_frame.raw())) {
         std::cerr << "[YAudioResampler] configChanged" << std::endl;
-        return false;
+        return YCode::ERR;
     }
 
     int ret = 0;
-    if ((ret = swr_convert_frame(_resampler_context, output_frame, *frame)) != 0) {
+    if ((ret = swr_convert_frame(_resampler_context, output_frame, input_frame.raw())) != 0) {
         std::cerr << "[YAudioResampler] swr_convert_frame failed " << ret << std::endl;
-        return false;
+        return YCode::ERR;
     }
 
 //    stampFrame(output_frame); // output_frame->pts = AV_NOPTS_VALUE;
 
-    (*frame) = output_frame;
+//    (*frame) = output_frame;
 
-    return true;
+    _output_frame_queue.push(output_frame);
+
+    return YCode::OK;
 }
+
+//bool YAudioResampler::resample(AVFrame **frame)
+//{
+//    if (!_inited) {
+//        std::cerr << "[YAudioResampler] Not inited" << std::endl;
+//        return false;
+//    }
+
+//    AVFrame *output_frame = nullptr;
+//    if (!initOutputFrame(&output_frame, _output_codec_context->frame_size)) {
+//        std::cerr << "[YAudioResampler] initOutputFrame failed" << std::endl;
+//        return false;
+//    }
+
+//    if (configChanged(*frame, output_frame)) {
+//        std::cerr << "[YAudioResampler] configChanged" << std::endl;
+//        return false;
+//    }
+
+//    int ret = 0;
+//    if ((ret = swr_convert_frame(_resampler_context, output_frame, *frame)) != 0) {
+//        std::cerr << "[YAudioResampler] swr_convert_frame failed " << ret << std::endl;
+//        return false;
+//    }
+
+////    stampFrame(output_frame); // output_frame->pts = AV_NOPTS_VALUE;
+
+//    (*frame) = output_frame;
+
+//    return true;
+//}
 
 bool YAudioResampler::initOutputFrame(AVFrame **frame, int frame_size)
 {
