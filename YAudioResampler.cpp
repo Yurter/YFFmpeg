@@ -176,7 +176,8 @@ bool YAudioResampler::initOutputFrame(AVFrame **frame, int frame_size)
     return true;
 }
 
-bool YAudioResampler::configChanged(const AVFrame *in, const AVFrame *out)
+//bool YAudioResampler::configChanged(const AVFrame *in, const AVFrame *out)
+bool YAudioResampler::configChanged(AVFrame *in, AVFrame *out)
 {
     if (in) {
         if (_input_codec_context->channel_layout != in->channel_layout

@@ -12,7 +12,7 @@ public:
     YData() : _type(YMediaType::MEDIA_TYPE_UNKNOWN) {}
     virtual ~YData() {}
 
-    Type*           raw() { return &_data; }
+    Type            raw() { return _data; }
 
     YMediaType      type() const { return _type; }
     void            setType(YMediaType type) { _type = type; }

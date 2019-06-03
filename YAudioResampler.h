@@ -23,7 +23,8 @@ private:
 
     YCode run() override;
     bool initOutputFrame(AVFrame **frame, int frame_size);
-    bool configChanged(const AVFrame *in, const AVFrame *out);
+//    bool configChanged(const AVFrame *in, const AVFrame *out);
+    bool configChanged(AVFrame *in, AVFrame *out);
     void stampFrame(AVFrame *frame);
 
 protected:

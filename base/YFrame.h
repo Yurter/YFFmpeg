@@ -3,7 +3,7 @@
 #include "ffmpeg.h"
 #include "YData.h"
 
-class YFrame : public YData<AVFrame>
+class YFrame : public YData<AVFrame*>
 {
 
 public:

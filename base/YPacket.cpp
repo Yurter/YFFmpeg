@@ -14,7 +14,7 @@ YPacket::~YPacket()
 
 void YPacket::init()
 {
-    av_init_packet(raw());
+    av_init_packet(&_data);
 }
 
 bool YPacket::empty() const

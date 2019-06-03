@@ -1,28 +1,26 @@
 #include "YFrame.h"
 
 YFrame::YFrame() :
-    YData<AVFrame>()
+    YData<AVFrame*>()
 {
-    _data = *av_frame_alloc();
+    _data = av_frame_alloc();
 }
 
 YFrame::YFrame(AVFrame *frame)
 {
-    _data = *frame;
+    _data = frame;
 }
 
 YFrame::~YFrame()
 {
     // TODO ffmpeg ф-ии на отчистку
-    //av_frame_free(&m_raw);
+    av_frame_free(&_data);
 }
 
 bool YFrame::alloc() //TODO
 {
-    AVFrame* frame;
-    frame = av_frame_alloc();
-    if (frame == nullptr) { return false; }
-    _data = *frame;
+    _data = av_frame_alloc();
+    if (_data == nullptr) { return false; }
     return true;
 }
 
@@ -30,9 +28,9 @@ bool YFrame::empty() const //TODO frame sizes...
 {
     switch (_type) {
     case MEDIA_TYPE_VIDEO:
-        return _data.linesize[0];
+        return _data->linesize[0];
     case MEDIA_TYPE_AUDIO:
-        return _data.nb_samples;
+        return _data->nb_samples;
     case MEDIA_TYPE_UNKNOWN:
         return true;
     }
