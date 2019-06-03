@@ -118,13 +118,13 @@ bool YMediaChain::start()
 
                     /*------------------------------ Кодирование ---------------------------*/
                     //av_init_packet(processed_packet.raw()); // ?? можно убрать? нет
-                    processed_packet.init();
-                    if (!mapStreamIndex(source_packet, processed_packet)) {
-                        std::cerr << "[YMediaChain] mapStreamIndex failed" << std::endl;
-                    }
+//                    processed_packet.init();
                     _encoder->pushFrame(resampled_frame);
                     if (!_encoder->popPacket(processed_packet)) {
                         continue;
+                    }
+                    if (!mapStreamIndex(source_packet, processed_packet)) {
+                        std::cerr << "[YMediaChain] mapStreamIndex failed" << std::endl;
                     }
                 } else {
                     processed_packet = source_packet;
@@ -132,22 +132,6 @@ bool YMediaChain::start()
 
                 /*-------------------------------- Запись ------------------------------*/
                 _destination->push(processed_packet);
-
-                /*--------------------------------- TODO -------------------------------*/
-//                if (contingencyAudioSourceRequired()) {
-//                    if (_destination->_video_packet_index % ((int)_destination->video_parameters.frameRate() / 2) != 0) { continue; }
-//                    AVPacket silence_packet;
-//                    if (!_contingency_audio_source->readPacket(silence_packet)) {
-//                        std::cerr << "[YMediaChain] _contingency_audio_source No data available" << std::endl;
-//                        if (!_contingency_audio_source->opened()) {
-//                            _running = false;
-//                            break;
-//                        }
-//                    }
-//                    silence_packet.stream_index = static_cast<int>(_destination_audio_stream_index);
-//                    _destination->writePacket(silence_packet);
-//                    std::cout << "[YMediaChain] Silence muxed" << std::endl;
-//                }
             }
             _running = false;
             std::cout << "[YMediaChain] Finished" << std::endl;
@@ -233,11 +217,11 @@ bool YMediaChain::init()
     }
 
     _source->start();
-//    _decoder->start();
-////    _rescaler->start();
+    _decoder->start();
+//    _rescaler->start();
 //    _resampler->start();
-//    _encoder->start();
-//    _destination->start();
+    _encoder->start();
+    _destination->start();
 
     return true;
 }

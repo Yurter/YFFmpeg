@@ -27,6 +27,11 @@ bool YFrame::alloc() //TODO
     return true;
 }
 
+void YFrame::free()
+{
+    av_frame_free(&_data);
+}
+
 bool YFrame::empty() const //TODO frame sizes...
 {
     switch (_type) {

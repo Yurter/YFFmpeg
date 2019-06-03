@@ -157,9 +157,13 @@ bool YMediaEncoder::initAudioCodec()
 YCode YMediaEncoder::run()
 {
     YFrame frame;
+    if (!_frame_queue.pop(frame)) {
+        frame.free();
+        utils::sleep_for(100);
+        return YCode::AGAIN;
+    }
     YPacket encoded_packet;
     encoded_packet.init();
-    if (!_frame_queue.pop(frame)) { return YCode::AGAIN; }
     encoded_packet.setType(frame.type());
     AVCodecContext *codec_context = nullptr;
     if (encoded_packet.isVideo()) { codec_context = _video_codec_context; }
@@ -174,11 +178,12 @@ YCode YMediaEncoder::run()
         return YCode::ERR;
     }
     if ((ret = avcodec_receive_packet(codec_context, &encoded_packet.raw())) != 0) {
-        char* text_error = new char[AV_ERROR_MAX_STRING_SIZE]; //TODO
-        av_strerror(ret, text_error, AV_ERROR_MAX_STRING_SIZE);
-        std::cerr << "[YMediaEncoder] Could not receive packet " << ret << ", " << std::string(text_error) << std::endl;
+//        char* text_error = new char[AV_ERROR_MAX_STRING_SIZE]; //TODO
+//        av_strerror(ret, text_error, AV_ERROR_MAX_STRING_SIZE);
+//        std::cerr << "[YMediaEncoder] Could not receive packet " << ret << ", " << std::string(text_error) << std::endl;
         return YCode::ERR;
     }
     _packet_queue.push(encoded_packet);
+    frame.free(); //TODO
     return YCode::OK;
 }

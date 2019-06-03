@@ -13,6 +13,7 @@ public:
     ~YFrame();
 
     bool            alloc();
+    void            free();
 
     bool            empty() const;
     std::string     toString() const;

@@ -77,7 +77,6 @@ bool YMediaSource::openInput()
 
 YCode YMediaSource::run()
 {
-    std::cout << "[YMediaSource] " << _packet_queue.size() << std::endl;
     if (_packet_queue.full()) {
         utils::sleep_for(100);
         return YCode::OK;
