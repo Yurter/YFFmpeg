@@ -17,6 +17,7 @@ void YThread::start()
     _thread = std::thread([this]() {
         while (_running) { run(); }
     });
+    _thread.detach();
 }
 
 void YThread::quit()

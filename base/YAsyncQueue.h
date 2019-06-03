@@ -35,6 +35,11 @@ public:
         std::lock_guard<std::mutex> lock(_queue_mutex);
         return _queue.size() >= _queue_capacity;
     }
+    int64_t size()
+    {
+        std::lock_guard<std::mutex> lock(_queue_mutex);
+        return _queue.size();
+    }
     void clear()
     {
         std::queue<Type> empty;
