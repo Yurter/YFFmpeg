@@ -304,11 +304,11 @@ bool YMediaChain::skipPacket(YPacket &packet)
 bool YMediaChain::mapStreamIndex(YPacket& src_packet, YPacket& dst_packet)
 {
     if (src_packet.isVideo()) {
-        dst_packet.raw()->stream_index = static_cast<int>(_destination_video_stream_index);
+        dst_packet.raw().stream_index = static_cast<int>(_destination_video_stream_index);
         return true;
     }
     if (src_packet.isAudio()) {
-        dst_packet.raw()->stream_index = static_cast<int>(_destination_audio_stream_index);
+        dst_packet.raw().stream_index = static_cast<int>(_destination_audio_stream_index);
         return true;
     }
     return false;

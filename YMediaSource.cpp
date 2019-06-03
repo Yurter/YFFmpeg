@@ -88,7 +88,7 @@ void YMediaSource::run()
         while (_running) {
             if (_packet_queue.size() >= _packet_queue_capacity) { continue; }
             YPacket packet;
-            if (av_read_frame(_media_format_context, packet.raw()) != 0) {
+            if (av_read_frame(_media_format_context, &packet.raw()) != 0) {
                 std::cerr << "[YMediaSource] Cannot read source: \"" << _media_resource_locator << "\". Error or EOF." << std::endl;
                 _running = false;
                 break;
@@ -110,11 +110,11 @@ void YMediaSource::parseInputFormat()
 
 void YMediaSource::analyzePacket(YPacket& packet)
 {
-    if (packet.raw()->stream_index == video_parameters.streamIndex()) {
+    if (packet.raw().stream_index == video_parameters.streamIndex()) {
         packet.setType(YMediaType::MEDIA_TYPE_VIDEO);
         return;
     }
-    if (packet.raw()->stream_index == audio_parameters.streamIndex()) {
+    if (packet.raw().stream_index == audio_parameters.streamIndex()) {
         packet.setType(YMediaType::MEDIA_TYPE_AUDIO);
         return;
     }

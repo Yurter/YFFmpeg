@@ -135,7 +135,7 @@ YCode YMediaDecoder::run()
         return YCode::ERR;
     }
     if (!packet.empty()) {
-        if (avcodec_send_packet(codec_context, packet.raw()) != 0) {
+        if (avcodec_send_packet(codec_context, &packet.raw()) != 0) {
             std::cerr << "[YMediaDecoder] Could not send packet" << std::endl;
             return YCode::ERR;
         }
