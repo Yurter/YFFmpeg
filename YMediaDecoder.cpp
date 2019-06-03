@@ -146,6 +146,7 @@ YCode YMediaDecoder::run()
     int ret = avcodec_receive_frame(codec_context, decoded_frame.raw());
     switch (ret) {
     case 0:
+        decoded_frame.setType(packet.type());
         _frame_queue.push(decoded_frame);
         return YCode::OK;
     case AVERROR(EAGAIN):

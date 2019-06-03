@@ -83,7 +83,6 @@ YCode YAudioResampler::run()
     }
     YFrame input_frame;
     if (!_input_frame_queue.pop(input_frame)) {
-        std::cerr << "[YAudioResampler] Not inited" << std::endl;
         return YCode::AGAIN;
     }
     YFrame output_frame;

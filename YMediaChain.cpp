@@ -230,6 +230,14 @@ bool YMediaChain::init()
         if (!_resampler->init(_decoder->audioCodecContext()
                               , _encoder->audioCodecContext())) { return false; }
     }
+
+//  _source->start();
+    _decoder->start();
+//  _rescaler->start();
+    _resampler->start();
+    _encoder->start();
+//  _destination->start();
+
     return true;
 }
 

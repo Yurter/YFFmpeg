@@ -17,7 +17,7 @@ public:
         std::lock_guard<std::mutex> lock(_queue_mutex);
         _queue.push(data);
     }
-    bool pop(Type data)
+    bool pop(Type& data)
     {
         std::lock_guard<std::mutex> lock(_queue_mutex);
         if (_queue.empty()) { return false; }
