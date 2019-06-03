@@ -34,6 +34,7 @@ int main()
 
     /* Запись белого шума из lavfi в aac */
     std::string mrl_src = "aevalsrc=-2+random(0)";
+//    std::string mrl_src = "aevalsrc=100";
     std::string mrl_dst = "remuxed.aac";
 
     YMediaSource source(mrl_src, YMediaPreset::Virtual);
