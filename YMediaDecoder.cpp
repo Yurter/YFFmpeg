@@ -109,3 +109,8 @@ bool YMediaDecoder::copyCodecPar(AVFormatContext *input_format_context, AVMediaT
     }
     return true;
 }
+
+void YMediaDecoder::run()
+{
+    if ()
+}

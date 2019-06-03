@@ -1,21 +1,27 @@
 #include "YThread.h"
 
-YThread::YThread()
+YThread::YThread() :
+    _running(false)
 {
     //
 }
 
 YThread::~YThread()
 {
-    //
+    quit();
 }
 
 void YThread::start()
 {
-    run();
+    _running = true;
+    _thread = std::thread([this](){
+        while (_running) { run(); }
+    });
 }
 
 void YThread::quit()
 {
-    //
+    if (_running == false) { return; }
+    _running = false;
+    if (_thread.joinable()) { _thread.join(); }
 }

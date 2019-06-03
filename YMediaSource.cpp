@@ -97,7 +97,7 @@ void YMediaSource::run()
                 if (packet.isVideo() && video_parameters.ignore()) { continue; }
                 if (packet.isAudio() && audio_parameters.ignore()) { continue; }
                 queuePacket(packet);
-                if (_artificial_delay > 0) { utils::sleep_for(_artificial_delay); }
+//                if (_artificial_delay > 0) { utils::sleep_for(_artificial_delay); }
             }
         }
     });

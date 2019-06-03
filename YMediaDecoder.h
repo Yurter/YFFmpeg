@@ -20,11 +20,12 @@ private:
 
     bool initVideoCodec();
     bool initAudioCodec();
-    bool copyCodecPar(AVFormatContext *input_format_context, AVMediaType media_tipe, int64_t stream_index, AVCodecContext **codec_context);
+    bool copyCodecPar(AVFormatContext *input_format_context, AVMediaType media_tipe, int64_t stream_index, AVCodecContext **codec_context); //TODO arg list
+    void run();
 
 private:
 
     //General parametres
-    YMediaSource*   _source;
+    YMediaSource*       _source;
 
 };

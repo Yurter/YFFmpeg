@@ -98,44 +98,44 @@ bool YMediaChain::start()
                     do {
                         ret = _decoder->decodePacket(source_packet, &decoded_frame);
                     } while (ret == YCode::AGAIN);
-                    if
-                    if (!_decoder->decodePacket(source_packet, decoded_frame)) {
-                        std::cerr << "[YMediaChain] Decode failed" << std::endl;
-                        break;
-                    }
-                    if (decoded_frames.empty()) { continue; }
+//                    if
+//                    if (!_decoder->decodePacket(source_packet, decoded_frame)) {
+//                        std::cerr << "[YMediaChain] Decode failed" << std::endl;
+//                        break;
+//                    }
+//                    if (decoded_frames.empty()) { continue; }
 
                     /*------------------------------ Рескейлинг ----------------------------*/
-                    if (_rescaler != nullptr) {
-                        if (source_packet.isVideo()) {
-                            if (!_rescaler->rescale(decoded_frames.front())) {
-                                std::cerr << "[YMediaChain] Rescale failed" << std::endl;
-                                _running = false;
-                                break;
-                            }
-                        }
-                    }
+//                    if (_rescaler != nullptr) {
+//                        if (source_packet.isVideo()) {
+//                            if (!_rescaler->rescale(decoded_frames.front())) {
+//                                std::cerr << "[YMediaChain] Rescale failed" << std::endl;
+//                                _running = false;
+//                                break;
+//                            }
+//                        }
+//                    }
 
                     /*------------------------------ Ресемплинг ----------------------------*/
-                    if (_resampler != nullptr) {
-                        if (source_packet.isAudio()) {
-                            if (!_resampler->resample(&decoded_frames.front())) {
-                                std::cerr << "[YMediaChain] Resample failed" << std::endl;
-                                _running = false;
-                                break;
-                            }
-                        }
-                    }
+//                    if (_resampler != nullptr) {
+//                        if (source_packet.isAudio()) {
+//                            if (!_resampler->resample(&decoded_frames.front())) {
+//                                std::cerr << "[YMediaChain] Resample failed" << std::endl;
+//                                _running = false;
+//                                break;
+//                            }
+//                        }
+//                    }
 
                     /*------------------------------ Кодирование ---------------------------*/
-                    av_init_packet(processed_packet.raw()); // ?? можно убрать? нет
-                    if (!mapStreamIndex(source_packet, processed_packet)) {
-                        std::cerr << "[YMediaChain] mapStreamIndex failed" << std::endl;
-                    }
-                    if (!_encoder->encodeFrames(processed_packet, decoded_frames)) {
-                        std::cerr << "[YMediaChain] Encode failed" << std::endl;
-                        continue;
-                    }
+//                    av_init_packet(processed_packet.raw()); // ?? можно убрать? нет
+//                    if (!mapStreamIndex(source_packet, processed_packet)) {
+//                        std::cerr << "[YMediaChain] mapStreamIndex failed" << std::endl;
+//                    }
+//                    if (!_encoder->encodeFrames(processed_packet, decoded_frames)) {
+//                        std::cerr << "[YMediaChain] Encode failed" << std::endl;
+//                        continue;
+//                    }
                 } else {
                     processed_packet = source_packet;
                 }

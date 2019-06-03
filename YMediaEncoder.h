@@ -20,6 +20,7 @@ private:
 
     bool initVideoCodec();
     bool initAudioCodec();
+    void run();
 
 private:
 

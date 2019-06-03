@@ -29,6 +29,8 @@ SOURCES += \
     YMediaFilter.cpp \
 
 HEADERS += \
+    base/YAsyncQueue.h \
+    base/YData.h \
     base/YThread.h \
     base/utils.h \
     base\ffmpeg.h \

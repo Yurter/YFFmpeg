@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ffmpeg.h"
-#include <thread>
 #include <string>
 
 class utils

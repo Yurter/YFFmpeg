@@ -143,3 +143,8 @@ bool YMediaEncoder::initAudioCodec()
 
     return true;
 }
+
+void YMediaEncoder::run()
+{
+    //
+}

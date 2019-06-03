@@ -11,7 +11,6 @@ int main()
     cout << "Program started..." << endl;
 
 
-
 ////    std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
 //    std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
 ////    std::string mrl_src = "rtsp://192.168.0.14:8080/h264";
