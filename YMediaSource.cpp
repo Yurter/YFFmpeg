@@ -29,14 +29,14 @@ bool YMediaSource::open()
 {
     if (_opened) { return false; }
     _opened = openInput();
-    if (_opened) { run(); }
+    if (_opened) { start(); }
     return _opened;
 }
 
 bool YMediaSource::close()
 {
     if (!_opened) { return false; }
-    stopThread();
+    quit();
     if (_media_format_context != nullptr) { avformat_close_input(&_media_format_context); }
     if (!YAbstractMedia::close()) { return false; }
     std::cout << "[YMediaSource] Source: \"" << _media_resource_locator << "\" closed." << std::endl;
@@ -75,27 +75,24 @@ bool YMediaSource::openInput()
     }
 }
 
-void YMediaSource::run()
+YCode YMediaSource::run()
 {
-    if (_running) { return; }
-    _running = true;
-    _thread = std::thread([this](){
-        while (_running) {
-            if (_packet_queue.full()) { continue; }
-            YPacket packet;
-            if (av_read_frame(_media_format_context, &packet.raw()) != 0) {
-                std::cerr << "[YMediaSource] Cannot read source: \"" << _media_resource_locator << "\". Error or EOF." << std::endl;
-                _running = false;
-                break;
-            } else {
-                analyzePacket(packet);
-                if (packet.isVideo() && video_parameters.ignore()) { continue; }
-                if (packet.isAudio() && audio_parameters.ignore()) { continue; }
-                _packet_queue.push(packet);
-                if (_artificial_delay > 0) { utils::sleep_for(_artificial_delay); }
-            }
-        }
-    });
+    if (_packet_queue.full()) {
+        utils::sleep_for(10);
+        return YCode::OK;
+    }
+    YPacket packet;
+    if (av_read_frame(_media_format_context, &packet.raw()) != 0) {
+        std::cerr << "[YMediaSource] Cannot read source: \"" << _media_resource_locator << "\". Error or EOF." << std::endl;
+        return YCode::ERR;
+    } else {
+        analyzePacket(packet);
+        if (packet.isVideo() && video_parameters.ignore()) { return YCode::OK; }
+        if (packet.isAudio() && audio_parameters.ignore()) { return YCode::OK; }
+        _packet_queue.push(packet);
+        if (_artificial_delay > 0) { utils::sleep_for(_artificial_delay); }
+    }
+    return YCode::OK;
 }
 
 void YMediaSource::parseInputFormat()

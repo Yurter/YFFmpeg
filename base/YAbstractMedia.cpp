@@ -5,7 +5,6 @@
 YAbstractMedia::YAbstractMedia(const std::string & mrl) :
 	_media_resource_locator(mrl),
     _opened(false),
-    _running(false),
     _reopening_after_failure(false),
     _reopening_timeout(-1),         //TODO
     _close_after_failure(false),
@@ -129,11 +128,4 @@ void YAbstractMedia::push(YPacket packet)
 bool YAbstractMedia::pop(YPacket &packet)
 {
     return _packet_queue.pop(packet);
-}
-
-void YAbstractMedia::stopThread()
-{
-    if (!_running) { return; }
-    _running = false;
-    if (_thread.joinable()) { _thread.join(); }
 }

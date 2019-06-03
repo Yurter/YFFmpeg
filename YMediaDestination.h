@@ -8,11 +8,11 @@ class YMediaDestination : public YAbstractMedia
 public:
 
     YMediaDestination(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
-    virtual ~YMediaDestination();
+    virtual ~YMediaDestination() override;
 
     bool addStream(AVCodecContext *stream_codec_context);
-    bool open();
-    bool close();
+    bool open() override;
+    bool close() override;
 
     AVOutputFormat*     outputFrormat() const;
 
@@ -23,7 +23,7 @@ private:
     bool createOutput();
     bool openOutput();
 
-    void run();
+    YCode   run() override;
 
     void parseOutputFormat();
     bool stampPacket(YPacket &packet);

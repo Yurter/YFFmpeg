@@ -5,13 +5,14 @@
 #include "YAudioParameters.h"
 #include "YAsyncQueue.h"
 #include "YPacket.h"
+#include "YThread.h"
 
 #include <string>
 #include <thread>
 #include <mutex>
 #include <queue>
 
-class YAbstractMedia
+class YAbstractMedia : public YThread
 {
 
 public:
@@ -37,9 +38,6 @@ public:
 
 protected:
 
-    virtual void        run() = 0;
-    void                stopThread();
-
     void                parseFormatContext();
     std::string         guessFormatShortName();
 
@@ -55,7 +53,6 @@ protected:
     std::thread         _thread;
 	std::string			_media_resource_locator;
     bool				_opened;
-    volatile bool       _running;
     bool                _reopening_after_failure;
     int64_t             _reopening_timeout;
     bool                _close_after_failure;

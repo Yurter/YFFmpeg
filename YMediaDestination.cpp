@@ -93,7 +93,7 @@ bool YMediaDestination::open()
     _opened = openOutput();
     if (_opened) {
         parseFormatContext();
-        run();
+        start();
     }
     return _opened;
 }
@@ -101,7 +101,7 @@ bool YMediaDestination::open()
 bool YMediaDestination::close()
 {
     if (!_opened) { return false; }
-    stopThread();
+    quit();
     if (av_write_trailer(_media_format_context) != 0) {
         std::cerr << "[YMediaDestination] Failed to write the stream trailer to an output media file" << std::endl;
         return false;
@@ -172,33 +172,26 @@ void YMediaDestination::parseOutputFormat()
     }
 }
 
-void YMediaDestination::run()
+YCode YMediaDestination::run()
 {
-    if (_running) { return; }
-    _running = true;
-    _thread = std::thread([this]() {
-        while (_running) {
-            YPacket packet;
-            if (!_packet_queue.pop(packet)) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(10));
-                continue;
-            }
-            if (!stampPacket(packet)) {
-                std::cerr << "[YMediaDestination] stampPacket failed" << std::endl;
-                _running = false;
-                break;
-            }
-            {
-                std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
-            }
-            if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
+    YPacket packet;
+    if (!_packet_queue.pop(packet)) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        return YCode::AGAIN;
+    }
+    if (!stampPacket(packet)) {
+        std::cerr << "[YMediaDestination] stampPacket failed" << std::endl;
+        return YCode::ERR;
+    }
+    {
+        std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
+    }
+    if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
 //            if (av_write_frame(_media_format_context, packet.raw()) < 0) {
-                std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
-                _running = false;
-                break;
-            }
-        }
-    });
+        std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
+        return YCode::ERR;
+    }
+    return YCode::OK;
 }
 
 bool YMediaDestination::stampPacket(YPacket &packet)

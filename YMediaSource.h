@@ -8,10 +8,10 @@ class YMediaSource : public YAbstractMedia
 public:
 
     YMediaSource(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
-    virtual ~YMediaSource();
+    virtual ~YMediaSource() override;
 
-    bool            open();
-    bool            close();
+    bool            open() override;
+    bool            close() override;
 
     AVInputFormat*  inputFormat() const;
 
@@ -20,7 +20,7 @@ private:
     bool            guessInputFromat();
     bool            openInput();
 
-    void            run();
+    YCode           run() override;
 
     void            parseInputFormat(); //TODO : YAbstractMedia::parseIOFormat
     void            analyzePacket(YPacket& packet);

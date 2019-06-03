@@ -61,6 +61,8 @@ bool YMediaChain::start()
         _running = true;
         _thread = std::thread([this]() {
             while (_running) {
+                utils::sleep_for(100);
+                continue;
                 /*------------------------------- Чтение -------------------------------*/
                 YPacket source_packet;
                 if (!_source->pop(source_packet)) {
