@@ -12,6 +12,11 @@ YPacket::~YPacket()
     //avpacket_unref(&m_raw);
 }
 
+void YPacket::init()
+{
+    av_init_packet(raw());
+}
+
 bool YPacket::empty() const
 {
     return _data.size == 0;

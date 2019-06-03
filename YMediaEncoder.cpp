@@ -34,6 +34,16 @@ bool YMediaEncoder::init()
     return true;
 }
 
+void YMediaEncoder::pushFrame(YFrame &frame)
+{
+    _frame_queue.push(frame);
+}
+
+bool YMediaEncoder::popPacket(YPacket &packet)
+{
+    return _packet_queue.pop(packet);
+}
+
 //bool YMediaEncoder::encodeFrames(YPacket& encoded_packet, std::list<AVFrame*>& decoded_frames) //TODO
 //{
 //    AVCodecContext *codec_context = nullptr;

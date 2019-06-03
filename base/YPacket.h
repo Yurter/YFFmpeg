@@ -12,6 +12,8 @@ public:
     YPacket();
     ~YPacket();
 
+    void            init();
+
     bool            empty() const;
     std::string     toString() const;
 

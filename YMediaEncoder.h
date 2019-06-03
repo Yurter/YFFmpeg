@@ -14,6 +14,9 @@ public:
 
     bool init() override;
 
+    void pushFrame(YFrame& frame);
+    bool popPacket(YPacket& packet);
+
     //bool encodeFrames(YPacket& encoded_packet, std::list<AVFrame*>& decoded_frames);
 
 private:
