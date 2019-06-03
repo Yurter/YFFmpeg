@@ -114,7 +114,7 @@ YCode YAudioResampler::run()
 
     _output_frame_queue.push(output_frame);
 
-    std::cout << "[YAudioResampler] swr_convert_frame success " << std::endl;
+//    std::cout << "[YAudioResampler] swr_convert_frame success" << std::endl;
 
     return YCode::OK;
 }
@@ -186,15 +186,13 @@ bool YAudioResampler::configChanged(AVFrame *in, AVFrame *out)
             return true;
         }
     }
-
     if (out) {
-        if (_output_codec_context->channel_layout != out->channel_layout ||
-            _output_codec_context->sample_rate != out->sample_rate ||
-            _output_codec_context->sample_fmt  != out->format) {
+        if (_output_codec_context->channel_layout != out->channel_layout
+                || _output_codec_context->sample_rate != out->sample_rate
+                || _output_codec_context->sample_fmt  != out->format) {
             return true;
         }
     }
-
     return false;
 }
 
