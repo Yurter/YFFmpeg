@@ -26,3 +26,8 @@ void YThread::quit()
     _running = false;
     if (_thread.joinable()) { _thread.join(); }
 }
+
+bool YThread::running()
+{
+    return _running;
+}

@@ -81,7 +81,6 @@ YCode YMediaSource::run()
         utils::sleep_for(100);
         return YCode::OK;
     }
-//    utils::sleep_for(100);
     YPacket packet;
     if (av_read_frame(_media_format_context, &packet.raw()) != 0) {
         std::cerr << "[YMediaSource] Cannot read source: \"" << _media_resource_locator << "\". Error or EOF." << std::endl;
@@ -91,7 +90,7 @@ YCode YMediaSource::run()
         if (packet.isVideo() && video_parameters.ignore()) { return YCode::OK; }
         if (packet.isAudio() && audio_parameters.ignore()) { return YCode::OK; }
         _packet_queue.push(packet);
-//        if (_artificial_delay > 0) { utils::sleep_for(_artificial_delay); }
+        if (_artificial_delay > 0) { utils::sleep_for(_artificial_delay); }
     }
     return YCode::OK;
 }

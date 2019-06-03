@@ -1,5 +1,6 @@
 #pragma once
 
+#include "base/YThread.h"
 #include "YMediaSource.h"
 #include "YMediaDecoder.h"
 #include "YMediaFilter.h"
@@ -11,7 +12,7 @@
 #include <thread>
 #include <iostream>
 
-class YMediaChain
+class YMediaChain : public YThread
 {
 
 public:
@@ -26,9 +27,9 @@ public:
                 YMediaDestination*  destination,
                 int64_t             options);
 
-    ~YMediaChain();
+    ~YMediaChain() override;
 
-    bool start();
+    void start() override;
     bool stop();
     void pause();
     void unpause();
@@ -45,7 +46,7 @@ public:
 private:
 
     bool init();
-    void stopThread();
+    YCode run() override;
 
     bool rescalerRequired();
     bool resamplerRequired();
@@ -76,9 +77,7 @@ private:
     YMediaSource*       _contingency_video_source;
     YMediaSource*       _contingency_audio_source;
 
-	//General parameters
-	std::thread			_thread;
-    volatile bool       _running;
+    //General parameters
     volatile bool       _paused; 
 
     int64_t             _options;

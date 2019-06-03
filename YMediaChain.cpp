@@ -27,7 +27,6 @@ YMediaChain::YMediaChain(YMediaSource*      source,
     _resampler(nullptr),
     _contingency_video_source(nullptr),
     _contingency_audio_source(nullptr),
-    _running(false),
     _paused(false),
     _options(options),
     _source_video_stream_index(-1),
@@ -43,110 +42,28 @@ YMediaChain::~YMediaChain()
     stop();
 }
 
-bool YMediaChain::start()
+void YMediaChain::start()
 {
-    if (_running) { return false; }
-    std::cout << "[YMediaChain] Initialization started..." << std::endl;
     if (!init()) {
         std::cout << "[YMediaChain] Start failed" << std::endl;
         stop();
-        return false;
+        return;
     }
     {
         _source_video_stream_index = _source->video_parameters.streamIndex();
         _source_audio_stream_index = _source->audio_parameters.streamIndex();
         _destination_video_stream_index = _destination->video_parameters.streamIndex();
         _destination_audio_stream_index = _destination->audio_parameters.streamIndex();
-
-        _running = true;
-        _thread = std::thread([this]() {
-            while (_running) {
-                /*------------------------------- Чтение -------------------------------*/
-                YPacket source_packet;
-                if (!_source->pop(source_packet)) {
-                    if (_source->closed()) {
-                        _running = false;
-                        break;
-                    }
-                    utils::sleep_for(100);
-                    continue;
-                }
-                if (skipPacket(source_packet)) { continue; }
-
-                /*-------------------------- Сверка с опциями --------------------------*/
-                bool process_packet = true;
-                if (source_packet.isVideo() && optionInstalled(COPY_VIDEO)) {
-                    process_packet = false;
-                }
-                if (source_packet.isAudio() && optionInstalled(COPY_AUDIO)) {
-                    process_packet = false;
-                }
-
-                YPacket processed_packet;
-                processed_packet.setType(source_packet.type()); //TODO refactoring <-
-
-                if (process_packet) {
-                    /*---------------------------- Декодирование ---------------------------*/
-                    _decoder->pushPacket(source_packet);
-                    YFrame decoded_frame;
-                    if (!_decoder->popFrame(decoded_frame)) {
-                        continue;
-                    }
-
-                    /*------------------------------ Рескейлинг ----------------------------*/
-//                    if (_rescaler != nullptr) {
-//                        if (source_packet.isVideo()) {
-//                            if (!_rescaler->rescale(decoded_frames.front())) {
-//                                std::cerr << "[YMediaChain] Rescale failed" << std::endl;
-//                                _running = false;
-//                                break;
-//                            }
-//                        }
-//                    }
-
-                    /*------------------------------ Ресемплинг ----------------------------*/
-                    if (_resampler != nullptr) {
-                        if (decoded_frame.isAudio()) {
-                            _resampler->push(decoded_frame);
-                        }
-                    }
-
-                    YFrame resampled_frame;
-                    if (!_resampler->pop(resampled_frame)) {
-                        continue;
-                    }
-
-                    /*------------------------------ Кодирование ---------------------------*/
-                    //av_init_packet(processed_packet.raw()); // ?? можно убрать? нет
-//                    processed_packet.init();
-                    _encoder->pushFrame(resampled_frame);
-                    if (!_encoder->popPacket(processed_packet)) {
-                        continue;
-                    }
-                    if (!mapStreamIndex(source_packet, processed_packet)) {
-                        std::cerr << "[YMediaChain] mapStreamIndex failed" << std::endl;
-                    }
-                } else {
-                    processed_packet = source_packet;
-                }
-
-                /*-------------------------------- Запись ------------------------------*/
-                _destination->push(processed_packet);
-            }
-            _running = false;
-            std::cout << "[YMediaChain] Finished" << std::endl;
-        });
-        std::cout << "[YMediaChain] Started" << std::endl;
     }
 
-    return true;
+    YThread::start();
+    return;
 }
 
 bool YMediaChain::stop()
 {
     _source->close();
     _destination->close();
-    stopThread();
     std::cout << "[YMediaChain] Stopped" << std::endl;
     return true;
 }
@@ -163,7 +80,7 @@ void YMediaChain::unpause()
 
 bool YMediaChain::active()
 {
-    return _running;;
+    return running();
 }
 
 void YMediaChain::setContingencyVideoSource(YMediaSource *contingency_video_source)
@@ -188,6 +105,8 @@ void YMediaChain::setAudioFilter(std::string audio_filter)
 
 bool YMediaChain::init()
 {
+    std::cout << "[YMediaChain] Initialization started..." << std::endl;
+
     if (!_source->open())       { return false; }
 
     parseInstalledOptions();
@@ -226,10 +145,68 @@ bool YMediaChain::init()
     return true;
 }
 
-void YMediaChain::stopThread()
+YCode YMediaChain::run()
 {
-    _running = false;
-    if (_thread.joinable()) { _thread.join(); }
+    /*------------------------------- Чтение -------------------------------*/
+    YPacket source_packet;
+    if (!_source->pop(source_packet)) {
+        if (_source->closed()) {
+            return YCode::END_OF_FILE;
+        }
+        utils::sleep_for(10);
+        return YCode::AGAIN;
+    }
+    if (skipPacket(source_packet)) { return YCode::AGAIN; }
+
+    /*-------------------------- Сверка с опциями --------------------------*/
+    bool process_packet = true;
+    if (source_packet.isVideo() && optionInstalled(COPY_VIDEO)) {
+        process_packet = false;
+    }
+    if (source_packet.isAudio() && optionInstalled(COPY_AUDIO)) {
+        process_packet = false;
+    }
+
+    YPacket processed_packet;
+    processed_packet.setType(source_packet.type()); //TODO refactoring <-
+
+    if (process_packet) {
+        /*---------------------------- Декодирование ---------------------------*/
+        _decoder->pushPacket(source_packet);
+        YFrame decoded_frame;
+        if (!_decoder->popFrame(decoded_frame)) {
+            return YCode::AGAIN;
+        }
+
+        /*------------------------------ Рескейлинг ----------------------------*/
+        //
+
+        /*------------------------------ Ресемплинг ----------------------------*/
+        if (_resampler != nullptr) {
+            if (decoded_frame.isAudio()) {
+                _resampler->push(decoded_frame);
+            }
+        }
+        YFrame resampled_frame;
+        if (!_resampler->pop(resampled_frame)) {
+            return YCode::AGAIN;
+        }
+
+        /*------------------------------ Кодирование ---------------------------*/
+        _encoder->pushFrame(resampled_frame);
+        if (!_encoder->popPacket(processed_packet)) {
+            return YCode::AGAIN;
+        }
+        if (!mapStreamIndex(source_packet, processed_packet)) {
+            std::cerr << "[YMediaChain] mapStreamIndex failed" << std::endl;
+        }
+    } else {
+        processed_packet = source_packet;
+    }
+
+    /*-------------------------------- Запись ------------------------------*/
+    _destination->push(processed_packet);
+    return YCode::OK;
 }
 
 bool YMediaChain::rescalerRequired()

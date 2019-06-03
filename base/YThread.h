@@ -11,8 +11,9 @@ public:
     YThread();
     virtual ~YThread();
 
-    virtual void        start() final;
-    virtual void        quit()  final;
+    virtual void        start();
+    virtual void        quit()      final;
+    virtual bool        running()   final;
 
 protected:
 
