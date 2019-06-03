@@ -6,6 +6,11 @@ YFrame::YFrame() :
     //
 }
 
+YFrame::YFrame(AVFrame *frame)
+{
+    _data = *frame;
+}
+
 YFrame::~YFrame()
 {
     // TODO ffmpeg ф-ии на отчистку

@@ -9,6 +9,7 @@ class YFrame : public YData<AVFrame>
 public:
 
     YFrame();
+    YFrame(AVFrame* frame);
     ~YFrame();
 
     bool            alloc();

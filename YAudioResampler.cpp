@@ -85,12 +85,15 @@ YCode YAudioResampler::run()
     if (!_input_frame_queue.pop(input_frame)) {
         return YCode::AGAIN;
     }
-    YFrame output_frame;
-    AVFrame *out_frame = output_frame.raw();
+//    YFrame output_frame;
+//    AVFrame *out_frame = output_frame.raw();
+    AVFrame *out_frame = av_frame_alloc();
     if (!initOutputFrame(&out_frame, _output_codec_context->frame_size)) {
         std::cerr << "[YAudioResampler] initOutputFrame failed" << std::endl;
         return YCode::ERR;
     }
+    YFrame output_frame(out_frame);
+    output_frame.setType(MEDIA_TYPE_AUDIO);
 
     if (configChanged(input_frame.raw(), output_frame.raw())) {
         std::cerr << "[YAudioResampler] configChanged" << std::endl;
