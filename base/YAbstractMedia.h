@@ -3,6 +3,7 @@
 #include "ffmpeg.h"
 #include "YVideoParameters.h"
 #include "YAudioParameters.h"
+#include "YAsyncQueue.h"
 #include "YPacket.h"
 
 #include <string>
@@ -31,13 +32,13 @@ public:
     AVStream*           stream(int64_t index);                          //
     int64_t             duration() const;								// Функция возвращает длительность медиа-файла в секундах.
 
+    void                push(YPacket packet);
+    bool                pop(YPacket &packet);
+
 protected:
 
     virtual void        run() = 0;
     void                stopThread();
-
-    void                queuePacket(YPacket packet);
-    bool                getPacket(YPacket &packet);
 
     void                parseFormatContext();
     std::string         guessFormatShortName();
@@ -61,9 +62,7 @@ protected:
     int64_t             _close_timeout;
     int64_t             _artificial_delay;
 
-    std::queue<YPacket>     _packet_queue;
-    std::mutex              _packet_queue_mutex;
-    uint64_t                _packet_queue_capacity;
+    YAsyncQueue<YPacket>    _packet_queue;
 
 	// FFmpeg 
     AVFormatContext*	_media_format_context;

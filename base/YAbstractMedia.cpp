@@ -11,7 +11,6 @@ YAbstractMedia::YAbstractMedia(const std::string & mrl) :
     _close_after_failure(false),
     _close_timeout(-1),             //TODO
     _artificial_delay(0),
-    _packet_queue_capacity(100),
     _media_format_context(nullptr)
 {
     //
@@ -25,7 +24,7 @@ YAbstractMedia::~YAbstractMedia()
 bool YAbstractMedia::close()
 {
     if (!_opened) { return false; }
-    _packet_queue = std::queue<YPacket>();
+    _packet_queue.clear();
     avformat_free_context(_media_format_context);
     _opened = false;
     return true;
@@ -122,19 +121,14 @@ AVStream *YAbstractMedia::stream(int64_t index)
     return _media_format_context->streams[index];
 }
 
-void YAbstractMedia::queuePacket(YPacket packet)
+void YAbstractMedia::push(YPacket packet)
 {
-    std::lock_guard<std::mutex> lock(_packet_queue_mutex);
     _packet_queue.push(packet);
 }
 
-bool YAbstractMedia::getPacket(YPacket &packet)
+bool YAbstractMedia::pop(YPacket &packet)
 {
-    std::lock_guard<std::mutex> lock(_packet_queue_mutex);
-    if (_packet_queue.empty()) { return false; }
-    packet = _packet_queue.front();
-    _packet_queue.pop();
-    return true;
+    return _packet_queue.pop(packet);
 }
 
 void YAbstractMedia::stopThread()

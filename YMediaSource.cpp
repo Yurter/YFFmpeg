@@ -43,11 +43,6 @@ bool YMediaSource::close()
     return true;
 }
 
-bool YMediaSource::readPacket(YPacket &packet)
-{
-    return getPacket(packet);
-}
-
 bool YMediaSource::guessInputFromat()
 {
     AVInputFormat* input_format = av_find_input_format(guessFormatShortName().c_str());
@@ -86,7 +81,7 @@ void YMediaSource::run()
     _running = true;
     _thread = std::thread([this](){
         while (_running) {
-            if (_packet_queue.size() >= _packet_queue_capacity) { continue; }
+            if (_packet_queue.full()) { continue; }
             YPacket packet;
             if (av_read_frame(_media_format_context, &packet.raw()) != 0) {
                 std::cerr << "[YMediaSource] Cannot read source: \"" << _media_resource_locator << "\". Error or EOF." << std::endl;
@@ -96,7 +91,7 @@ void YMediaSource::run()
                 analyzePacket(packet);
                 if (packet.isVideo() && video_parameters.ignore()) { continue; }
                 if (packet.isAudio() && audio_parameters.ignore()) { continue; }
-                queuePacket(packet);
+                _packet_queue.push(packet);
                 if (_artificial_delay > 0) { utils::sleep_for(_artificial_delay); }
             }
         }

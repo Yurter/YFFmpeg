@@ -13,8 +13,6 @@ public:
     bool            open();
     bool            close();
 
-    bool            readPacket(YPacket &packet);
-
     AVInputFormat*  inputFormat() const;
 
 private:

@@ -9,7 +9,7 @@ class YAsyncQueue
 
 public:
 
-    YAsyncQueue() {}
+    YAsyncQueue() : _queue_capacity(100) {}
     ~YAsyncQueue() {}
 
     void push(Type data)
@@ -29,6 +29,16 @@ public:
     {
         std::lock_guard<std::mutex> lock(_queue_mutex);
         return _queue.empty();
+    }
+    bool full()
+    {
+        std::lock_guard<std::mutex> lock(_queue_mutex);
+        return _queue.size() >= _queue_capacity;
+    }
+    void clear()
+    {
+        std::queue<Type> empty;
+        std::swap(_queue, empty);
     }
 
 private:

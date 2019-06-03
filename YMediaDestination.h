@@ -14,8 +14,6 @@ public:
     bool open();
     bool close();
 
-    void writePacket(YPacket packet);
-
     AVOutputFormat*     outputFrormat() const;
 
     bool                guessOutputFromat();

@@ -111,11 +111,6 @@ bool YMediaDestination::close()
     return true;
 }
 
-void YMediaDestination::writePacket(YPacket packet)
-{
-    queuePacket(packet);
-}
-
 AVOutputFormat *YMediaDestination::outputFrormat() const
 {
     return _output_format;
@@ -184,7 +179,7 @@ void YMediaDestination::run()
     _thread = std::thread([this]() {
         while (_running) {
             YPacket packet;
-            if (!getPacket(packet)) {
+            if (!_packet_queue.pop(packet)) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(10));
                 continue;
             }

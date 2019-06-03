@@ -63,7 +63,7 @@ bool YMediaChain::start()
             while (_running) {
                 /*------------------------------- Чтение -------------------------------*/
                 YPacket source_packet;
-                if (!_source->readPacket(source_packet)) {
+                if (!_source->pop(source_packet)) {
                     if (_source->closed()) {
                         _running = false;
                         break;
@@ -130,7 +130,7 @@ bool YMediaChain::start()
                 }
 
                 /*-------------------------------- Запись ------------------------------*/
-                _destination->writePacket(processed_packet);
+                _destination->push(processed_packet);
 
                 /*--------------------------------- TODO -------------------------------*/
 //                if (contingencyAudioSourceRequired()) {
