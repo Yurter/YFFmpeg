@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ffmpeg.h"
 #include <thread>
 
 class YThread
@@ -15,7 +16,7 @@ public:
 
 protected:
 
-    virtual void        run() = 0;
+    virtual YCode       run() = 0;
 
 private:
 

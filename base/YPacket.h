@@ -4,7 +4,7 @@
 #include "utils.h"
 #include <iostream>
 
-class YPacket : YData<AVPacket>
+class YPacket : public YData<AVPacket>
 {
 
 public:

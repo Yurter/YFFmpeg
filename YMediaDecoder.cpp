@@ -34,35 +34,45 @@ bool YMediaDecoder::init()
     return true;
 }
 
-YCode YMediaDecoder::decodePacket(YPacket& packet, AVFrame** decoded_frame)
+//YCode YMediaDecoder::decodePacket(YPacket& packet, AVFrame** decoded_frame)
+//{
+//    AVCodecContext *codec_context = nullptr;
+//    if (packet.isVideo()) { codec_context = _video_codec_context; }
+//    if (packet.isAudio()) { codec_context = _audio_codec_context; }
+//    if (codec_context == nullptr) {
+//        std::cerr << "[YMediaDecoder] codec_context is null" << std::endl;
+//        return YCode::ERR;
+//    }
+//    if (!packet.empty()) {
+//        if (avcodec_send_packet(codec_context, packet.raw()) != 0) {
+//            std::cerr << "[YMediaDecoder] Could not send packet" << std::endl;
+//            return YCode::ERR;
+//        }
+//    }
+//    *decoded_frame = av_frame_alloc(); //TODO ! ! !
+//    int ret = avcodec_receive_frame(codec_context, *decoded_frame);
+//    switch (ret) {
+//    case 0:
+//        return YCode::OK;
+//    case AVERROR(EAGAIN):
+//        return YCode::AGAIN;
+//    case AVERROR_EOF:
+//        return YCode::END_OF_FILE;
+//    case AVERROR(EINVAL):
+//        return YCode::INVALID_INPUT;
+//    default:
+//        return YCode::ERR;
+//    }
+//}
+
+void YMediaDecoder::pushPacket(YPacket &packet)
 {
-    AVCodecContext *codec_context = nullptr;
-    if (packet.isVideo()) { codec_context = _video_codec_context; }
-    if (packet.isAudio()) { codec_context = _audio_codec_context; }
-    if (codec_context == nullptr) {
-        std::cerr << "[YMediaDecoder] codec_context is null" << std::endl;
-        return YCode::ERR;
-    }
-    if (!packet.empty()) {
-        if (avcodec_send_packet(codec_context, packet.raw()) != 0) {
-            std::cerr << "[YMediaDecoder] Could not send packet" << std::endl;
-            return YCode::ERR;
-        }
-    }
-    *decoded_frame = av_frame_alloc(); //TODO ! ! !
-    int ret = avcodec_receive_frame(codec_context, *decoded_frame);
-    switch (ret) {
-    case 0:
-        return YCode::OK;
-    case AVERROR(EAGAIN):
-        return YCode::AGAIN;
-    case AVERROR_EOF:
-        return YCode::END_OF_FILE;
-    case AVERROR(EINVAL):
-        return YCode::INVALID_INPUT;
-    default:
-        return YCode::ERR;
-    }
+    _packet_queue.push(packet);
+}
+
+bool YMediaDecoder::popFrame(YFrame &frame)
+{
+    return _frame_queue.pop(frame);
 }
 
 bool YMediaDecoder::initVideoCodec()
@@ -110,7 +120,41 @@ bool YMediaDecoder::copyCodecPar(AVFormatContext *input_format_context, AVMediaT
     return true;
 }
 
-void YMediaDecoder::run()
+YCode YMediaDecoder::run()
 {
-    if ()
+    YPacket packet;
+    if (!_packet_queue.pop(packet)) {
+        //utils::sleep_for(10); //TODO
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        return YCode::AGAIN;
+    }
+    AVCodecContext *codec_context = nullptr;
+    if (packet.isVideo()) { codec_context = _video_codec_context; }
+    if (packet.isAudio()) { codec_context = _audio_codec_context; }
+    if (codec_context == nullptr) {
+        std::cerr << "[YMediaDecoder] codec_context is null" << std::endl;
+        return YCode::ERR;
+    }
+    if (!packet.empty()) {
+        if (avcodec_send_packet(codec_context, packet.raw()) != 0) {
+            std::cerr << "[YMediaDecoder] Could not send packet" << std::endl;
+            return YCode::ERR;
+        }
+    }
+    YFrame decoded_frame;
+    decoded_frame.alloc();
+    int ret = avcodec_receive_frame(codec_context, decoded_frame.raw());
+    switch (ret) {
+    case 0:
+        _frame_queue.push(decoded_frame);
+        return YCode::OK;
+    case AVERROR(EAGAIN):
+        return YCode::AGAIN;
+    case AVERROR_EOF:
+        return YCode::END_OF_FILE;
+    case AVERROR(EINVAL):
+        return YCode::INVALID_INPUT;
+    default:
+        return YCode::ERR;
+    }
 }

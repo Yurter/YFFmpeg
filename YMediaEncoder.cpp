@@ -34,26 +34,26 @@ bool YMediaEncoder::init()
     return true;
 }
 
-bool YMediaEncoder::encodeFrames(YPacket& encoded_packet, std::list<AVFrame*>& decoded_frames) //TODO
-{
-    AVCodecContext *codec_context = nullptr;
-    if (encoded_packet.isVideo()) { codec_context = _video_codec_context; }
-    if (encoded_packet.isAudio()) { codec_context = _audio_codec_context; }
-    int ret;
-    for (auto&& decoded_frame : decoded_frames) {
-        if ((ret = avcodec_send_frame(codec_context, decoded_frame)) != 0) {
-            std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
-            return false;
-        }
-    }
-    if ((ret = avcodec_receive_packet(codec_context, encoded_packet.raw())) != 0) {
-        char* text_error = new char[AV_ERROR_MAX_STRING_SIZE]; //TODO
-        av_strerror(ret, text_error, AV_ERROR_MAX_STRING_SIZE);
-        std::cerr << "[YMediaEncoder] Could not receive packet " << ret << " " << AVERROR(EAGAIN) << " " << std::string(text_error) << std::endl;
-        return false;
-    }
-    return true;
-}
+//bool YMediaEncoder::encodeFrames(YPacket& encoded_packet, std::list<AVFrame*>& decoded_frames) //TODO
+//{
+//    AVCodecContext *codec_context = nullptr;
+//    if (encoded_packet.isVideo()) { codec_context = _video_codec_context; }
+//    if (encoded_packet.isAudio()) { codec_context = _audio_codec_context; }
+//    int ret;
+//    for (auto&& decoded_frame : decoded_frames) {
+//        if ((ret = avcodec_send_frame(codec_context, decoded_frame)) != 0) {
+//            std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
+//            return false;
+//        }
+//    }
+//    if ((ret = avcodec_receive_packet(codec_context, encoded_packet.raw())) != 0) {
+//        char* text_error = new char[AV_ERROR_MAX_STRING_SIZE]; //TODO
+//        av_strerror(ret, text_error, AV_ERROR_MAX_STRING_SIZE);
+//        std::cerr << "[YMediaEncoder] Could not receive packet " << ret << " " << AVERROR(EAGAIN) << " " << std::string(text_error) << std::endl;
+//        return false;
+//    }
+//    return true;
+//}
 
 bool YMediaEncoder::initVideoCodec()
 {
@@ -144,7 +144,30 @@ bool YMediaEncoder::initAudioCodec()
     return true;
 }
 
-void YMediaEncoder::run()
+YCode YMediaEncoder::run()
 {
-    //
+    YFrame frame;
+    YPacket encoded_packet;
+    if (!_frame_queue.pop(frame)) { return YCode::AGAIN; }
+    encoded_packet.setType(frame.type());
+    AVCodecContext *codec_context = nullptr;
+    if (encoded_packet.isVideo()) { codec_context = _video_codec_context; }
+    if (encoded_packet.isAudio()) { codec_context = _audio_codec_context; }
+    if (codec_context == nullptr) {
+        std::cerr << "[YMediaEncoder] codec_context is null" << std::endl;
+        return YCode::ERR;
+    }
+    int ret;
+    if ((ret = avcodec_send_frame(codec_context, frame.raw())) != 0) {
+        std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
+        return YCode::ERR;
+    }
+    if ((ret = avcodec_receive_packet(codec_context, encoded_packet.raw())) != 0) {
+        char* text_error = new char[AV_ERROR_MAX_STRING_SIZE]; //TODO
+        av_strerror(ret, text_error, AV_ERROR_MAX_STRING_SIZE);
+        std::cerr << "[YMediaEncoder] Could not receive packet " << ret << ", " << std::string(text_error) << std::endl;
+        return YCode::ERR;
+    }
+    _packet_queue.push(encoded_packet);
+    return YCode::OK;
 }

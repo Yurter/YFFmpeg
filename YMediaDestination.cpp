@@ -194,7 +194,7 @@ void YMediaDestination::run()
                 break;
             }
             {
-                std::cout << "[YMediaDestination] " << packet << std::endl;
+                std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
             }
             if (av_interleaved_write_frame(_media_format_context, packet.raw()) < 0) {
 //            if (av_write_frame(_media_format_context, packet.raw()) < 0) {

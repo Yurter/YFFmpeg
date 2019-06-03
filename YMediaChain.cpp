@@ -96,7 +96,7 @@ bool YMediaChain::start()
                     AVFrame* decoded_frame;
                     YCode ret;
                     do {
-                        ret = _decoder->decodePacket(source_packet, &decoded_frame);
+//                        ret = _decoder->decodePacket(source_packet, &decoded_frame);
                     } while (ret == YCode::AGAIN);
 //                    if
 //                    if (!_decoder->decodePacket(source_packet, decoded_frame)) {

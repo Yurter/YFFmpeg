@@ -9,21 +9,26 @@ class YAsyncQueue
 
 public:
 
-    YAsyncQueue();
-    ~YAsyncQueue();
+    YAsyncQueue() {}
+    ~YAsyncQueue() {}
 
-    void pushData(Type data)
+    void push(Type data)
     {
         std::lock_guard<std::mutex> lock(_queue_mutex);
         _queue.push(data);
     }
-    bool popData(Type data)
+    bool pop(Type data)
     {
         std::lock_guard<std::mutex> lock(_queue_mutex);
         if (_queue.empty()) { return false; }
         data = _queue.front();
         _queue.pop();
         return true;
+    }
+    bool empty()
+    {
+        std::lock_guard<std::mutex> lock(_queue_mutex);
+        return _queue.empty();
     }
 
 private:

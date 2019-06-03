@@ -10,17 +10,17 @@ public:
 
     YMediaEncoder() = delete;
     YMediaEncoder(YMediaDestination *destination);
-    virtual ~YMediaEncoder();
+    virtual ~YMediaEncoder() override;
 
-    bool init();
+    bool init() override;
 
-    bool encodeFrames(YPacket& encoded_packet, std::list<AVFrame*>& decoded_frames);
+    //bool encodeFrames(YPacket& encoded_packet, std::list<AVFrame*>& decoded_frames);
 
 private:
 
-    bool initVideoCodec();
-    bool initAudioCodec();
-    void run();
+    bool initVideoCodec() override;
+    bool initAudioCodec() override;
+    YCode run() override;
 
 private:
 

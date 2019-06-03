@@ -4,6 +4,7 @@
 #include "YThread.h"
 #include "YAsyncQueue.h"
 #include "YPacket.h"
+#include "YFrame.h"
 #include <string>
 #include <list>
 
@@ -33,7 +34,8 @@ protected:
     int64_t             _video_stream_index;
     int64_t             _audio_stream_index;
 
-    YAsyncQueue<YPacket>    _packet_queue;
+    YAsyncQueue<YFrame>    _frame_queue;
+    YAsyncQueue<YPacket>   _packet_queue;
 
     // FFmpeg
     AVCodecContext*     _video_codec_context;
