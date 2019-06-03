@@ -3,7 +3,8 @@
 YFrame::YFrame() :
     YData<AVFrame*>()
 {
-    _data = av_frame_alloc();
+//    _data = av_frame_alloc();
+    alloc();
 }
 
 YFrame::YFrame(AVFrame *frame)
@@ -14,7 +15,9 @@ YFrame::YFrame(AVFrame *frame)
 YFrame::~YFrame()
 {
     // TODO ffmpeg ф-ии на отчистку
-    av_frame_free(&_data);
+//    if (_data != nullptr) {
+//        av_frame_free(&_data);
+//    }
 }
 
 bool YFrame::alloc() //TODO
