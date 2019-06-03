@@ -124,8 +124,7 @@ YCode YMediaDecoder::run()
 {
     YPacket packet;
     if (!_packet_queue.pop(packet)) {
-        //utils::sleep_for(10); //TODO
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        utils::sleep_for(10);
         return YCode::AGAIN;
     }
     AVCodecContext *codec_context = nullptr;

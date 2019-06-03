@@ -3,7 +3,7 @@
 YFrame::YFrame() :
     YData<AVFrame>()
 {
-    //
+    _data = *av_frame_alloc();
 }
 
 YFrame::YFrame(AVFrame *frame)

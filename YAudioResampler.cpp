@@ -87,12 +87,14 @@ YCode YAudioResampler::run()
     }
 //    YFrame output_frame;
 //    AVFrame *out_frame = output_frame.raw();
-    AVFrame *out_frame = av_frame_alloc();
-    if (!initOutputFrame(&out_frame, _output_codec_context->frame_size)) {
+//    AVFrame *out_frame = av_frame_alloc();
+//    YFrame output_frame;
+    AVFrame* raw_frame = nullptr;
+    if (!initOutputFrame(&raw_frame, _output_codec_context->frame_size)) {
         std::cerr << "[YAudioResampler] initOutputFrame failed" << std::endl;
         return YCode::ERR;
     }
-    YFrame output_frame(out_frame);
+    YFrame output_frame(raw_frame);
     output_frame.setType(MEDIA_TYPE_AUDIO);
 
     if (configChanged(input_frame.raw(), output_frame.raw())) {
@@ -111,6 +113,8 @@ YCode YAudioResampler::run()
 //    (*frame) = output_frame;
 
     _output_frame_queue.push(output_frame);
+
+    std::cout << "[YAudioResampler] swr_convert_frame success " << std::endl;
 
     return YCode::OK;
 }

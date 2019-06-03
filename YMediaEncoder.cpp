@@ -158,6 +158,7 @@ YCode YMediaEncoder::run()
 {
     YFrame frame;
     YPacket encoded_packet;
+    encoded_packet.init();
     if (!_frame_queue.pop(frame)) { return YCode::AGAIN; }
     encoded_packet.setType(frame.type());
     AVCodecContext *codec_context = nullptr;
