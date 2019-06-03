@@ -53,7 +53,9 @@ int main()
 
 
     chain.start();
-    while (chain.active()) {}
+    while (chain.active()) {
+        utils::sleep_for(1000);
+    }
 
     cout << "Program finished." << endl;
     return 0;

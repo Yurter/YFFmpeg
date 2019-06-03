@@ -78,7 +78,7 @@ bool YMediaSource::openInput()
 YCode YMediaSource::run()
 {
     if (_packet_queue.full()) {
-        utils::sleep_for(10);
+        utils::sleep_for(100);
         return YCode::OK;
     }
     YPacket packet;

@@ -14,7 +14,7 @@ YThread::~YThread()
 void YThread::start()
 {
     _running = true;
-    _thread = std::thread([this](){
+    _thread = std::thread([this]() {
         while (_running) { run(); }
     });
 }

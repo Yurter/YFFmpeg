@@ -61,8 +61,6 @@ bool YMediaChain::start()
         _running = true;
         _thread = std::thread([this]() {
             while (_running) {
-                utils::sleep_for(100);
-                continue;
                 /*------------------------------- Чтение -------------------------------*/
                 YPacket source_packet;
                 if (!_source->pop(source_packet)) {
@@ -70,6 +68,7 @@ bool YMediaChain::start()
                         _running = false;
                         break;
                     }
+                    utils::sleep_for(100);
                     continue;
                 }
                 if (skipPacket(source_packet)) { continue; }
@@ -233,12 +232,12 @@ bool YMediaChain::init()
                               , _encoder->audioCodecContext())) { return false; }
     }
 
-//  _source->start();
-    _decoder->start();
-//  _rescaler->start();
-    _resampler->start();
-    _encoder->start();
-//  _destination->start();
+    _source->start();
+//    _decoder->start();
+////    _rescaler->start();
+//    _resampler->start();
+//    _encoder->start();
+//    _destination->start();
 
     return true;
 }
