@@ -83,6 +83,7 @@ YCode YAudioResampler::run()
     }
     YFrame input_frame;
     if (!_input_frame_queue.pop(input_frame)) {
+        input_frame.free();
         return YCode::AGAIN;
     }
     AVFrame *output_frame = nullptr;

@@ -219,7 +219,7 @@ bool YMediaChain::init()
     _source->start();
     _decoder->start();
 //    _rescaler->start();
-//    _resampler->start();
+    _resampler->start();
     _encoder->start();
     _destination->start();
 
