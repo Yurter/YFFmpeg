@@ -50,7 +50,6 @@ public:
 protected:
 
 	// General parameters
-    std::thread         _thread;
 	std::string			_media_resource_locator;
     bool				_opened;
     bool                _reopening_after_failure;
