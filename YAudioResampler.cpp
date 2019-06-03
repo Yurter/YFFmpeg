@@ -99,7 +99,7 @@ YCode YAudioResampler::run()
     }
 
     int ret = 0;
-    if ((ret = swr_convert_frame(_resampler_context, output_frame, input_frame.raw())) != 0) {
+    if ((ret = swr_convert_frame(_resampler_context, output_frame.raw(), input_frame.raw())) != 0) {
         std::cerr << "[YAudioResampler] swr_convert_frame failed " << ret << std::endl;
         return YCode::ERR;
     }
