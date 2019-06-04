@@ -1,5 +1,7 @@
 #include "YThread.h"
 
+#include "utils.h"
+
 YThread::YThread() :
     _running(false)
 {
@@ -11,11 +13,13 @@ YThread::~YThread()
     quit();
 }
 
-void YThread::start() //TODO убрать возможность запуска более одного потока
+void YThread::start()
 {
+    if (_running) { return; }
     _running = true;
     _thread = std::thread([this]() {
-        while (_running) { run(); }
+//        while (_running) { run(); }
+        while (_running && !utils::exit_code(run())) {}
     });
     _thread.detach();
 }
