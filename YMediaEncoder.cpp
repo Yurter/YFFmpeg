@@ -181,7 +181,7 @@ YCode YMediaEncoder::run()
 //        char* text_error = new char[AV_ERROR_MAX_STRING_SIZE]; //TODO
 //        av_strerror(ret, text_error, AV_ERROR_MAX_STRING_SIZE);
 //        std::cerr << "[YMediaEncoder] Could not receive packet " << ret << ", " << std::string(text_error) << std::endl;
-        return YCode::ERR;
+        return YCode::AGAIN;
     }
     _packet_queue.push(encoded_packet);
     frame.free(); //TODO
