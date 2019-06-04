@@ -6,6 +6,7 @@ CONFIG += c++17
 
 SOURCES += \
     YStreamMap.cpp \
+    base/YStream.cpp \
     base/YThread.cpp \
     base/utils.cpp \
     main.cpp \
@@ -33,6 +34,7 @@ HEADERS += \
     YStreamMap.h \
     base/YAsyncQueue.h \
     base/YData.h \
+    base/YStream.h \
     base/YThread.h \
     base/utils.h \
     base\ffmpeg.h \

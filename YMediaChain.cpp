@@ -200,7 +200,7 @@ YCode YMediaChain::run()
         if (!_encoder->popPacket(processed_packet)) {
             return YCode::AGAIN;
         }
-        if (!mapStreamIndex(source_packet, processed_packet)) {
+        if (!mapStreamIndex(processed_packet, processed_packet.type())) {
             std::cerr << "[YMediaChain] mapStreamIndex failed" << std::endl;
             return YCode::ERR;
         }
@@ -251,19 +251,19 @@ bool YMediaChain::skipPacket(YPacket &packet)
     return skip_packet;
 }
 
-bool YMediaChain::mapStreamIndex(YPacket& src_packet, YPacket& dst_packet)
+bool YMediaChain::mapStreamIndex(YPacket &packet, YMediaType type)
 {
-    if (src_packet.isVideo()) {
-        dst_packet.raw().stream_index = static_cast<int>(_destination_video_stream_index);
+    switch (type) {
+    case YMediaType::MEDIA_TYPE_VIDEO:
+        packet.raw().stream_index = static_cast<int>(_destination_video_stream_index);
         return true;
-    }
-    if (src_packet.isAudio()) {
-        dst_packet.raw().stream_index = static_cast<int>(_destination_audio_stream_index);
+    case YMediaType::MEDIA_TYPE_AUDIO:
+        packet.raw().stream_index = static_cast<int>(_destination_audio_stream_index);
         return true;
+    default:
+        return false;
     }
-    return false;
 }
-
 bool YMediaChain::optionInstalled(YOptions option)
 {
     return _options & option;

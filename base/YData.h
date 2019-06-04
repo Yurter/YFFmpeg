@@ -9,7 +9,11 @@ class YData
 
 public:
 
-    YData() : _type(YMediaType::MEDIA_TYPE_UNKNOWN) {}
+    YData() :
+        _type(YMediaType::MEDIA_TYPE_UNKNOWN) {}
+    YData(Type data, YMediaType type) :
+        _type(type),
+        _data(data){}
     virtual ~YData() {}
 
     Type&           raw() { return _data; }

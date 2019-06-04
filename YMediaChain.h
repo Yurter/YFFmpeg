@@ -56,7 +56,7 @@ private:
     bool contingencyAudioSourceRequired();
 
     bool skipPacket(YPacket& packet);
-    bool mapStreamIndex(YPacket& src_packet, YPacket& dst_packet);
+    bool mapStreamIndex(YPacket& packet, YMediaType type);
 
     bool optionInstalled(YOptions option);
     void parseInstalledOptions();

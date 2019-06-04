@@ -6,6 +6,7 @@
 #include "YAsyncQueue.h"
 #include "YPacket.h"
 #include "YThread.h"
+#include "YStream.h"
 
 #include <string>
 #include <thread>
@@ -30,7 +31,8 @@ public:
 
     std::string         mediaResourceLocator() const;                   // Функция возвращает mrl.
     AVFormatContext*    mediaFormatContext() const;                     // Функция возвращает медиа-контекст.
-    AVStream*           stream(int64_t index);                          //
+    YStream             stream(uint64_t index);                         //
+    std::vector<YStream>* streams();                         //
     int64_t             duration() const;								// Функция возвращает длительность медиа-файла в секундах.
 
     void                push(YPacket packet);
@@ -46,6 +48,8 @@ public:
     // Media
     YVideoParameters    video_parameters;
     YAudioParameters    audio_parameters;
+
+    std::vector<YStream>    _streams;
 
 protected:
 
