@@ -24,6 +24,14 @@ bool YStreamMap::init(YMediaSource* source, YMediaDestination* destination)
     return false;
 }
 
+bool YStreamMap::map(YStream src_stream, YStream dst_stream)
+{
+    if (src_stream.raw() == dst_stream.raw()) { return false; }
+    if медиа тайп
+    _map.insert(src_stream, dst_stream);
+    return true;
+}
+
 bool YStreamMap::map(YPacket& packet) //TODO
 {
 //    for (auto&& src_idx : _map) {

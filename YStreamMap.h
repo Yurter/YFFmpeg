@@ -14,11 +14,13 @@ public:
     ~YStreamMap();
 
     bool init(YMediaSource* source, YMediaDestination* destination);
+    bool map(YStream src_stream, YStream dst_stream);
     bool map(YPacket& packet);
 
 private:
 
     // General
-    std::map<int64_t, int64_t>      _map;
+//    std::map<int64_t, int64_t>      _map;
+    std::map<YStream, YStream>      _map;
 
 };

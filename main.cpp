@@ -82,7 +82,7 @@ int main()
 
 }
 
-/* - Консольный FFmpeg -
+/* - Консольный FFmpeg - vcopy + resample = 1-4%, 4000-6000K
 Output #0, flv, to 'rtmp://a.rtmp.youtube.com/live2/tvtx-ap3v-s388-ddza':
   Metadata:
     title           : Media Server
@@ -96,8 +96,18 @@ Output #0, flv, to 'rtmp://a.rtmp.youtube.com/live2/tvtx-ap3v-s388-ddza':
     Metadata:
       encoder         : Lavc58.35.100 libmp3lame
 */
+/*
+Output #0, flv, to 'rtmp://a.rtmp.youtube.com/live2/tvtx-ap3v-s388-ddza':
+  Metadata:
+    title           : Media Server
+    encoder         : Lavf58.20.100
+    Stream #0:0: Video: h264 (Main) ([7][0][0][0] / 0x0007), yuvj420p(pc, bt709, progressive), 1920x1080 [SAR 1:1 DAR 16:9], q=2-31, 23 fps, 25 tbr, 1k tbn, 90k tbc
+    Stream #0:1: Audio: aac (LC) ([10][0][0][0] / 0x000A), 44100 Hz, mono, fltp, 69 kb/s
+    Metadata:
+      encoder         : Lavc58.35.100 aac
+*/
 
-/* - YFFmpeg -
+/* - YFFmpeg - vcopy + resample = 25-27%, 25000-40000K
 Output #0, flv, to 'rtmp://a.rtmp.youtube.com/live2/tvtx-ap3v-s388-ddza':
   Metadata:
     encoder         : Lavf58.23.102
