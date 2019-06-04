@@ -20,9 +20,18 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         video_parameters.setAspectRatio({16,9});
 //        video_parameters.setFrameRate(24);        //TODO rescaler
         video_parameters.setBitrate(400'000);
-//        video_parameters.setCodec("libx264");     //TODO rescaler
+//        video_parameters.setCodec("libx264");     //TODO rescaler ?
         video_parameters.setAvailable(true);
         /* Audio */
+        /* mp3 */
+//        audio_parameters.setSampleRate(44'100);
+//        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_S16P);
+//        audio_parameters.setBitrate(128'000);
+//        audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
+//        audio_parameters.setChanels(2);
+//        audio_parameters.setCodec("mp3");
+//        audio_parameters.setAvailable(true);
+        /* aac */
         audio_parameters.setSampleRate(44'100);
         audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
         audio_parameters.setBitrate(128'000);
@@ -37,8 +46,6 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
         std::cerr << "[YMediaDestination] Invalid preset." << std::endl;
         break;
     }
-
-    //
     if (!createOutput()) {
         std::cerr << "[YMediaDestination] Failed to create output context." << std::endl;
         return;
@@ -93,7 +100,6 @@ bool YMediaDestination::open()
     _opened = openOutput();
     if (_opened) {
         parseFormatContext();
-//        start();
     }
     return _opened;
 }
@@ -183,24 +189,11 @@ YCode YMediaDestination::run()
         std::cerr << "[YMediaDestination] stampPacket failed" << std::endl;
         return YCode::ERR;
     }
-    auto debug_dts = packet.raw().dts;
-    auto debug_pkt = packet;
-    auto debug_sti = packet.raw().stream_index;
-    auto debug_typ = packet.type();
-    if (debug_sti == 0 && debug_typ == MEDIA_TYPE_AUDIO) {
-        int stop = 0;
-//        packet.raw().stream_index = 1;
-    }
     {
         std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
     }
     if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
-//    if (av_write_frame(_media_format_context, &packet.raw()) < 0) {
-        std::cerr << "[YMediaDestination] this_thread " << std::this_thread::get_id()
-                  << " stream_index: " << debug_sti
-                  << " type: " << utils::media_type_to_string(debug_typ)
-                  << std::endl;
-        std::cerr << "[YMediaDestination] Error muxing packet " << " dts: " << debug_dts/*packet.toString()*/ << " " << (debug_dts == AV_NOPTS_VALUE) << std::endl;
+        std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
         return YCode::ERR;
     }
     return YCode::OK;
@@ -210,8 +203,6 @@ bool YMediaDestination::stampPacket(YPacket &packet)
 {
     if (packet.isVideo()) {
         auto&& raw_packet = packet.raw();
-//        auto frame_rate = stream(packet.raw()->stream_index)->avg_frame_rate; //TODO : проверить (!)
-//        auto duration = (1000 * frame_rate.den) / frame_rate.num;
         auto frame_rate = video_parameters.frameRate();
         int64_t duration = static_cast<int64_t>(1000 / frame_rate);
         raw_packet.pts = _video_packet_index * duration;

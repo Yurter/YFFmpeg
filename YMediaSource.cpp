@@ -29,7 +29,6 @@ bool YMediaSource::open()
 {
     if (_opened) { return false; }
     _opened = openInput();
-//    if (_opened) { start(); }
     return _opened;
 }
 
