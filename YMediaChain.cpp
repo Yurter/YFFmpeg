@@ -166,6 +166,9 @@ YCode YMediaChain::run()
     if (source_packet.isAudio() && optionInstalled(COPY_AUDIO)) {
         process_packet = false;
     }
+    if (source_packet.isVideo()) {
+        int deb = 0;
+    }
 
     YPacket processed_packet;
     processed_packet.setType(source_packet.type()); //TODO refactoring <-
@@ -178,8 +181,10 @@ YCode YMediaChain::run()
             return YCode::AGAIN;
         }
 
-        /*------------------------------ Рескейлинг ----------------------------*/
         //
+
+        /*------------------------------ Рескейлинг ----------------------------*/
+        // TODO
 
         /*------------------------------ Ресемплинг ----------------------------*/
         if (_resampler != nullptr) {
@@ -199,8 +204,9 @@ YCode YMediaChain::run()
         }
         if (!mapStreamIndex(source_packet, processed_packet)) {
             std::cerr << "[YMediaChain] mapStreamIndex failed" << std::endl;
+            return YCode::ERR;
         }
-    } else {
+    } else { //TODO
         processed_packet = source_packet;
     }
 

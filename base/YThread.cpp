@@ -11,7 +11,7 @@ YThread::~YThread()
     quit();
 }
 
-void YThread::start()
+void YThread::start() //TODO убрать возможность запуска более одного потока
 {
     _running = true;
     _thread = std::thread([this]() {

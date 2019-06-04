@@ -93,7 +93,7 @@ bool YMediaDestination::open()
     _opened = openOutput();
     if (_opened) {
         parseFormatContext();
-        start();
+//        start();
     }
     return _opened;
 }
@@ -184,11 +184,11 @@ YCode YMediaDestination::run()
         return YCode::ERR;
     }
     {
-        std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
+//        std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
     }
-//    if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
-    if (av_write_frame(_media_format_context, &packet.raw()) < 0) {
-        std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
+    if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
+//    if (av_write_frame(_media_format_context, &packet.raw()) < 0) {
+        std::cerr << "[YMediaDestination] Error muxing packet " << std::this_thread::get_id() << " " << packet.toString() << std::endl;
         return YCode::ERR;
     }
     return YCode::OK;

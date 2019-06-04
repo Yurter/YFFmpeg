@@ -82,7 +82,6 @@ YCode YMediaSource::run()
         return YCode::OK;
     }
     YPacket packet;
-    std::cout << "[YMediaSource] thread id: " << std::this_thread::get_id() << std::endl;
     if (av_read_frame(_media_format_context, &packet.raw()) != 0) {
         std::cerr << "[YMediaSource] Cannot read source: \"" << _media_resource_locator << "\". Error or EOF." << std::endl;
         return YCode::ERR;
