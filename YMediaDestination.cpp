@@ -189,7 +189,7 @@ YCode YMediaDestination::run()
     auto debug_typ = packet.type();
     if (debug_sti == 0 && debug_typ == MEDIA_TYPE_AUDIO) {
         int stop = 0;
-        packet.raw().stream_index = 1;
+//        packet.raw().stream_index = 1;
     }
     {
         std::cout << "[YMediaDestination] " << packet.toString() << std::endl;

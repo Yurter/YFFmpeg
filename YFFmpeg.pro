@@ -5,6 +5,7 @@ CONFIG -= qt
 CONFIG += c++17
 
 SOURCES += \
+    YStreamMap.cpp \
     base/YThread.cpp \
     base/utils.cpp \
     main.cpp \
@@ -29,6 +30,7 @@ SOURCES += \
     YMediaFilter.cpp \
 
 HEADERS += \
+    YStreamMap.h \
     base/YAsyncQueue.h \
     base/YData.h \
     base/YThread.h \
