@@ -222,30 +222,14 @@ bool YMediaChain::resamplerRequired()
 {
     auto& src = _source->audio_parameters;
     auto& dst = _destination->audio_parameters;
-    if (!src.available()) {
-        return false;
-    }
-    if (!dst.available()) {
-        return false;
-    }
-    if (src.ignore()) {
-        return false;
-    }
-    if (optionInstalled(COPY_AUDIO)) {
-        return false;
-    }
-    if (src.sampleRate() != dst.sampleRate()) {
-        return true;
-    }
-    if (src.sampleFormat() != dst.sampleFormat()) {
-        return true;
-    }
-    if (src.chanels() != dst.chanels()) {
-        return true;
-    }
-    if (src.chanelsLayout() != dst.chanelsLayout()) {
-        return true;
-    }
+    if (!src.available())               { return false; }
+    if (!dst.available())               { return false; }
+    if (src.ignore())                   { return false; }
+    if (optionInstalled(COPY_AUDIO))    { return false; }
+    if (src.sampleRate() != dst.sampleRate())       { return true; }
+    if (src.sampleFormat() != dst.sampleFormat())   { return true; }
+    if (src.chanels() != dst.chanels())             { return true; }
+    if (src.chanelsLayout() != dst.chanelsLayout()) { return true; }
     return false;
 }
 

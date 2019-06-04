@@ -8,6 +8,7 @@
 #include "YMediaDestination.h"
 #include "YVideoRescaler.h"
 #include "YAudioResampler.h"
+#include "YStreamMap.h"
 
 #include <thread>
 #include <iostream>
@@ -64,7 +65,7 @@ private:
 
 private:
 
-	//YMedia
+    // Media
     YMediaSource*       _source;
     YMediaDecoder*      _decoder;
     YMediaFilter*       _video_filter;
@@ -73,11 +74,12 @@ private:
     YMediaDestination*  _destination;
     YVideoRescaler*     _rescaler;
     YAudioResampler*    _resampler;
+    YStreamMap*         _stream_map;
 
     YMediaSource*       _contingency_video_source;
     YMediaSource*       _contingency_audio_source;
 
-    //General parameters
+    // General
     volatile bool       _paused; 
 
     int64_t             _options;
