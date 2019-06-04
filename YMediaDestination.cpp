@@ -184,11 +184,22 @@ YCode YMediaDestination::run()
         return YCode::ERR;
     }
     auto debug_dts = packet.raw().dts;
+    auto debug_pkt = packet;
+    auto debug_sti = packet.raw().stream_index;
+    auto debug_typ = packet.type();
+    if (debug_sti == 0 && debug_typ == MEDIA_TYPE_AUDIO) {
+        int stop = 0;
+        packet.raw().stream_index = 1;
+    }
     {
         std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
     }
     if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
 //    if (av_write_frame(_media_format_context, &packet.raw()) < 0) {
+        std::cerr << "[YMediaDestination] this_thread " << std::this_thread::get_id()
+                  << " stream_index: " << debug_sti
+                  << " type: " << utils::media_type_to_string(debug_typ)
+                  << std::endl;
         std::cerr << "[YMediaDestination] Error muxing packet " << " dts: " << debug_dts/*packet.toString()*/ << " " << (debug_dts == AV_NOPTS_VALUE) << std::endl;
         return YCode::ERR;
     }
@@ -198,7 +209,7 @@ YCode YMediaDestination::run()
 bool YMediaDestination::stampPacket(YPacket &packet)
 {
     if (packet.isVideo()) {
-        auto raw_packet = packet.raw();
+        auto&& raw_packet = packet.raw();
 //        auto frame_rate = stream(packet.raw()->stream_index)->avg_frame_rate; //TODO : проверить (!)
 //        auto duration = (1000 * frame_rate.den) / frame_rate.num;
         auto frame_rate = video_parameters.frameRate();
