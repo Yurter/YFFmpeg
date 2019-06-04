@@ -13,12 +13,17 @@ YStreamMap::~YStreamMap()
     //
 }
 
-bool YStreamMap::map(YPacket &packet) //TODO
+bool YStreamMap::init(YMediaSource* source, YMediaDestination* destination)
+{
+//    source->
+}
+
+bool YStreamMap::map(YPacket& packet) //TODO
 {
 //    for (auto&& src_idx : _map) {
 //        if ()
 //    }
 //    auto src_str_index = packet.raw().s
-    auto result = std::find_if(_map.begin(), _map.end(), [](){});
+//    auto result = std::find_if(_map.begin(), _map.end(), [](){});
     return true;
 }

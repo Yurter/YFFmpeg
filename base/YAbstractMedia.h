@@ -43,13 +43,13 @@ protected:
 
 public:
 
-    // Media parameters
+    // Media
     YVideoParameters    video_parameters;
     YAudioParameters    audio_parameters;
 
 protected:
 
-	// General parameters
+    // General
 	std::string			_media_resource_locator;
     bool				_opened;
     bool                _reopening_after_failure;
