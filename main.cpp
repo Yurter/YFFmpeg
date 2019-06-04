@@ -81,3 +81,26 @@ int main()
     return 0;
 
 }
+
+/* - Консольный FFmpeg -
+Output #0, flv, to 'rtmp://a.rtmp.youtube.com/live2/tvtx-ap3v-s388-ddza':
+  Metadata:
+    title           : Media Server
+    encoder         : Lavf58.20.100
+    Stream #0:0: Video: flv1 (flv) ([2][0][0][0] / 0x0002), yuv420p, 1920x1080 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 25 fps, 1k tbn, 25 tbc
+    Metadata:
+      encoder         : Lavc58.35.100 flv
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/200000 buffer size: 0 vbv_delay: -1
+    Stream #0:1: Audio: mp3 (libmp3lame) ([2][0][0][0] / 0x0002), 44100 Hz, mono, s16p
+    Metadata:
+      encoder         : Lavc58.35.100 libmp3lame
+*/
+
+/* - YFFmpeg -
+Output #0, flv, to 'rtmp://a.rtmp.youtube.com/live2/tvtx-ap3v-s388-ddza':
+  Metadata:
+    encoder         : Lavf58.23.102
+    Stream #0:0: Video: h264 (libx264) ([7][0][0][0] / 0x0007), yuv420p, 1920x1080 [SAR 1:1 DAR 16:9], q=-1--1, 400 kb/s, 23 fps, 23 tbr, 1k tbn
+    Stream #0:1: Audio: aac (LC) ([10][0][0][0] / 0x000A), 44100 Hz, stereo, fltp, 128 kb/s
+ */
