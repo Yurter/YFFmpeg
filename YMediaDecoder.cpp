@@ -93,7 +93,7 @@ YCode YMediaDecoder::run()
 {
     YPacket packet;
     if (!_packet_queue.pop(packet)) {
-        utils::sleep_for(10);
+        utils::sleep_for(SHORT_DELAY_MS);
         return YCode::AGAIN;
     }
     AVCodecContext *codec_context = nullptr;

@@ -153,22 +153,15 @@ YCode YMediaChain::run()
         if (_source->closed()) {
             return YCode::END_OF_FILE;
         }
-        utils::sleep_for(10);
+        utils::sleep_for(SHORT_DELAY_MS);
         return YCode::AGAIN;
     }
     if (skipPacket(source_packet)) { return YCode::AGAIN; }
 
-    /*-------------------------- Сверка с опциями --------------------------*/
+    /*-------------------- Необходимость обработки пакета ------------------*/
     bool process_packet = true;
-    if (source_packet.isVideo() && optionInstalled(COPY_VIDEO)) {
-        process_packet = false;
-    }
-    if (source_packet.isAudio() && optionInstalled(COPY_AUDIO)) {
-        process_packet = false;
-    }
-    if (source_packet.isVideo()) {
-        int deb = 0;
-    }
+    if (source_packet.isVideo() && optionInstalled(COPY_VIDEO)) { process_packet = false; }
+    if (source_packet.isAudio() && optionInstalled(COPY_AUDIO)) { process_packet = false; }
 
     YPacket processed_packet;
     processed_packet.setType(source_packet.type()); //TODO refactoring <-
@@ -181,24 +174,29 @@ YCode YMediaChain::run()
             return YCode::AGAIN;
         }
 
-        //
+        /*-------------------- Необходимость обработки фрейма ------------------*/
+        bool process_frame = true;
+        if (decoded_frame.isVideo() && _rescaler  == nullptr) { process_frame = false; }
+        if (decoded_frame.isAudio() && _resampler == nullptr) { process_frame = false; }
+        YFrame processed_frame;
 
-        /*------------------------------ Рескейлинг ----------------------------*/
-        // TODO
+        if (process_frame) {
+            /*------------------------------ Рескейлинг ----------------------------*/
+            // TODO
 
-        /*------------------------------ Ресемплинг ----------------------------*/
-        if (_resampler != nullptr) {
+            /*------------------------------ Ресемплинг ----------------------------*/
             if (decoded_frame.isAudio()) {
                 _resampler->push(decoded_frame);
             }
-        }
-        YFrame resampled_frame;
-        if (!_resampler->pop(resampled_frame)) {
-            return YCode::AGAIN;
+            if (!_resampler->pop(processed_frame)) {
+                return YCode::AGAIN;
+            }
+        } else { //TODO ?
+            processed_frame = decoded_frame;
         }
 
         /*------------------------------ Кодирование ---------------------------*/
-        _encoder->pushFrame(resampled_frame);
+        _encoder->pushFrame(processed_frame);
         if (!_encoder->popPacket(processed_packet)) {
             return YCode::AGAIN;
         }
@@ -206,7 +204,7 @@ YCode YMediaChain::run()
             std::cerr << "[YMediaChain] mapStreamIndex failed" << std::endl;
             return YCode::ERR;
         }
-    } else { //TODO
+    } else { //TODO ?
         processed_packet = source_packet;
     }
 

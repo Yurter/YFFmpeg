@@ -86,3 +86,8 @@ enum YLogLevel {
     /* Сообщения об ошибках */
     Error
 };
+
+/* Значение для задержек в коде в мс */
+#define SHORT_DELAY_MS          10
+#define MEDIUM_DELAY_MS         100
+#define LONG_DELAY_MS           1000

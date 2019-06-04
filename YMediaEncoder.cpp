@@ -159,7 +159,7 @@ YCode YMediaEncoder::run()
     YFrame frame;
     if (!_frame_queue.pop(frame)) {
         frame.free();
-        utils::sleep_for(100);
+        utils::sleep_for(MEDIUM_DELAY_MS);
         return YCode::AGAIN;
     }
     YPacket encoded_packet;

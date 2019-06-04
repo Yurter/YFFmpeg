@@ -183,12 +183,13 @@ YCode YMediaDestination::run()
         std::cerr << "[YMediaDestination] stampPacket failed" << std::endl;
         return YCode::ERR;
     }
+    auto debug_dts = packet.raw().dts;
     {
-//        std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
+        std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
     }
     if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
 //    if (av_write_frame(_media_format_context, &packet.raw()) < 0) {
-        std::cerr << "[YMediaDestination] Error muxing packet " << std::this_thread::get_id() << " " << packet.toString() << std::endl;
+        std::cerr << "[YMediaDestination] Error muxing packet " << " dts: " << debug_dts/*packet.toString()*/ << " " << (debug_dts == AV_NOPTS_VALUE) << std::endl;
         return YCode::ERR;
     }
     return YCode::OK;

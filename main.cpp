@@ -76,7 +76,7 @@ int main()
 
     chain.start();
     while (chain.active()) {
-        utils::sleep_for(1000);
+        utils::sleep_for(LONG_DELAY_MS);
     }
 
     cout << "Program finished." << endl;
