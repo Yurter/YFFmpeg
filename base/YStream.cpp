@@ -1,13 +1,15 @@
 #include "YStream.h"
 
 YStream::YStream() :
-    YData<AVStream*>()
+    YData<AVStream*>(),
+    _duration(0)
 {
     //
 }
 
 YStream::YStream(AVStream *stream, YMediaType type) :
-    YData<AVStream*>(stream, type)
+    YData<AVStream*>(stream, type),
+    _duration(0)
 {
     //
 }
@@ -30,4 +32,14 @@ std::string YStream::toString() const
 int64_t YStream::index() const
 {
     return _data->index;
+}
+
+int64_t YStream::duration() const
+{
+    return _duration;
+}
+
+void YStream::increaseDuration(int64_t value)
+{
+    _duration += value;
 }

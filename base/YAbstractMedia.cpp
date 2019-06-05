@@ -117,9 +117,9 @@ AVFormatContext *YAbstractMedia::mediaFormatContext() const
     return _media_format_context;
 }
 
-YStream YAbstractMedia::stream(uint64_t index)
+YStream* YAbstractMedia::stream(uint64_t index)
 {
-    return _streams[index];
+    return &_streams[index];
 }
 
 std::vector<YStream>* YAbstractMedia::streams()

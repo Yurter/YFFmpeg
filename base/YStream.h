@@ -15,10 +15,13 @@ public:
     bool empty() const;
     std::string toString() const;
 
-    int64_t             index() const;
+    int64_t             index()     const;
+    int64_t             duration()  const;
+    void                increaseDuration(int64_t value);
 
 private:
 
     // General
+    int64_t             _duration;
 
 };
