@@ -191,8 +191,10 @@ YCode YMediaDestination::run()
     }
     {
         std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
+        std::cout << "[YMediaDestination] stream duration " << stream(packet.streamIndex())->duration() << std::endl << std::endl;
     }
     if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
+//    if (av_write_frame(_media_format_context, &packet.raw()) < 0) {
         std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
         return YCode::ERR;
     }
@@ -201,6 +203,7 @@ YCode YMediaDestination::run()
 
 bool YMediaDestination::stampPacket(YPacket &packet) //TODO перенести код в YStream
 {
+    std::cout << "[DEBUG] " << _video_packet_index << " " << _audio_packet_index << std::endl;
 //    if (packet.isVideo()) {
 //        auto&& raw_packet = packet.raw();
 //        auto frame_rate = video_parameters.frameRate();
@@ -229,14 +232,37 @@ bool YMediaDestination::stampPacket(YPacket &packet) //TODO перенести �
         return true;
     }
     if (packet.isAudio()) {
-        int64_t duration = 22;//packet.duration();
+////        int64_t duration = 1000 / 23;//44;//packet.duration();
+//        int64_t duration = av_rescale_q(packet.duration(), {1,44100}, {1,1000});
+////        std::cout << "[DEBUG] duration: " << duration << std::endl;
+//        auto audio_stream = stream(static_cast<uint64_t>(packet.streamIndex()));
+//        audio_stream->increaseDuration(duration);
+//        packet.setPts(audio_stream->duration());
+//        packet.setDts(audio_stream->duration());
+//        packet.setDuration(duration);
+        //
+//        packet.setPts(av_rescale_q(packet.pts(), {1,44100}, {1,1000}));
+//        packet.setDts(av_rescale_q(packet.dts(), {1,44100}, {1,1000}));
+//        packet.setDuration(av_rescale_q(packet.duration(), {1,44100}, {1,1000}));
+//        packet.setDuration(duration);
+//        std::cout << "[DEBUG] " << packet.toString() << std::endl;
+        //
+//        auto video_stream = stream(static_cast<uint64_t>(0));
+////        packet.setPts(video_stream->duration());
+////        packet.setDts(video_stream->duration());
+////        packet.setDuration(duration);
+//        //
+//        packet.setPos(-1);
+        //
+        int64_t duration = 43;//23;
         auto audio_stream = stream(static_cast<uint64_t>(packet.streamIndex()));
-        audio_stream->increaseDuration(duration);
-        packet.setPts(audio_stream->duration());
+//        packet.setPts(audio_stream->duration());
         packet.setDts(audio_stream->duration());
-        packet.setDuration(duration);
+//        packet.setDuration(duration);
         packet.setPos(-1);
         _audio_packet_index++;
+//        audio_stream->increaseDuration(duration);
+        audio_stream->increaseDuration(duration);
         return true;
     }
     return false;

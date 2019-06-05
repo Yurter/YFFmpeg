@@ -6,7 +6,7 @@ using namespace std;
 int main()
 {
 
-//    av_log_set_level(AV_LOG_VERBOSE);
+    av_log_set_level(AV_LOG_VERBOSE);
 //    av_log_set_level(AV_LOG_DEBUG);
     cout << "Program started..." << endl;
 
@@ -16,14 +16,12 @@ int main()
     std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
 //    std::string mrl_src = "rtsp://192.168.0.14:8080/h264";
 
-    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/tvtx-ap3v-s388-ddza";
+    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/ru4e-u68r-0u9a-fyf5";
 //    std::string mrl_dst = "remuxed.flv";
-
 
     YMediaSource source(mrl_src);
 //    source.audio_parameters.setIgnore(true);
     YMediaDestination destination(mrl_dst, YMediaPreset::YouTube);
-
 
     YMediaChain chain(&source, &destination, COPY_VIDEO);
 
