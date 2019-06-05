@@ -11,7 +11,7 @@ int main()
     cout << "Program started..." << endl;
 
 
-    /* Запись rtsp с камеры в flv */
+    /* Запись rtsp с камеры в flv/YouTube */
 //    std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
     std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
 //    std::string mrl_src = "rtsp://192.168.0.14:8080/h264";

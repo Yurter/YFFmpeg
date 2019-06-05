@@ -229,7 +229,7 @@ bool YMediaDestination::stampPacket(YPacket &packet) //TODO перенести �
         return true;
     }
     if (packet.isAudio()) {
-        int64_t duration = packet.duration();
+        int64_t duration = 22;//packet.duration();
         auto audio_stream = stream(static_cast<uint64_t>(packet.streamIndex()));
         audio_stream->increaseDuration(duration);
         packet.setPts(audio_stream->duration());
