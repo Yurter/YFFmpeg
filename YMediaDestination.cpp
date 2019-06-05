@@ -190,7 +190,7 @@ YCode YMediaDestination::run()
         return YCode::ERR;
     }
     {
-//        std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
+        std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
     }
     if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
         std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;

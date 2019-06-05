@@ -26,9 +26,9 @@ bool YStreamMap::init(YMediaSource* source, YMediaDestination* destination)
 
 bool YStreamMap::map(YStream src_stream, YStream dst_stream)
 {
-    if (src_stream.raw() == dst_stream.raw()) { return false; }
-    if медиа тайп
-    _map.insert(src_stream, dst_stream);
+    if (src_stream.raw() == dst_stream.raw())   { return false; }
+    if (src_stream.type() != dst_stream.type()) { return false; }
+//    _map.insert(src_stream, dst_stream);
     return true;
 }
 

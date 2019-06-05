@@ -88,7 +88,7 @@ YCode YMediaSource::run()
         analyzePacket(packet);
         if (packet.isVideo() && video_parameters.ignore()) { return YCode::OK; }
         if (packet.isAudio() && audio_parameters.ignore()) { return YCode::OK; }
-        std::cout << "[YMediaSource] " << packet.toString() << std::endl;
+//        std::cout << "[YMediaSource] " << packet.toString() << std::endl;
         _packet_queue.push(packet);
         if (_artificial_delay > 0) { utils::sleep_for(_artificial_delay); }
     }
