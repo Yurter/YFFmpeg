@@ -1,4 +1,4 @@
-#include "YMediaDecoder.h"
+#include "YDecoder.h"
 #include <iostream>
 
 YMediaDecoder::YMediaDecoder(YMediaSource *source) :

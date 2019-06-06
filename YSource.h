@@ -10,7 +10,7 @@ public:
     YMediaSource(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
     virtual ~YMediaSource() override;
 
-    bool            open() override;
+    bool            open()  override;
     bool            close() override;
 
     AVInputFormat*  inputFormat() const;

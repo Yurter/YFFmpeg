@@ -1,14 +1,12 @@
 #pragma once
 
 #include "ffmpeg.h"
-#include "YThread.h"
-#include "YAsyncQueue.h"
 #include "YPacket.h"
 #include "YFrame.h"
 #include <string>
 #include <list>
 
-class YAbstractCoder : public YThread
+class YAbstractCoder
 {
 
 public:
@@ -33,9 +31,6 @@ protected:
     // General parameters
     int64_t             _video_stream_index;
     int64_t             _audio_stream_index;
-
-    YAsyncQueue<YFrame>    _frame_queue;
-    YAsyncQueue<YPacket>   _packet_queue;
 
     // FFmpeg
     AVCodecContext*     _video_codec_context;

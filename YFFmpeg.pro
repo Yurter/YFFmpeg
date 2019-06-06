@@ -5,7 +5,14 @@ CONFIG -= qt
 CONFIG += c++17
 
 SOURCES += \
+    YDecoder.cpp \
+    YDestination.cpp \
+    YEncoder.cpp \
+    YResampler.cpp \
+    YRescaler.cpp \
+    YSource.cpp \
     YStreamMap.cpp \
+    base/YAbstractFrameProcessor.cpp \
     base/YStream.cpp \
     base/YThread.cpp \
     base/utils.cpp \
@@ -18,21 +25,20 @@ SOURCES += \
     base\YParameters.cpp \
     YVideoParameters.cpp \
     YAudioParameters.cpp \
-    YVideoRescaler.cpp \
-    YAudioResampler.cpp \
-    YMediaSource.cpp \
-    YMediaDestination.cpp \
     YMediaChain.cpp \
-    YMediaDecoder.cpp \
-    YMediaDestination.cpp \
-    YMediaEncoder.cpp \
     YVideoFilter.cpp \
     YAudioFilter.cpp \
     YMediaFilter.cpp \
 
 HEADERS += \
+    YDecoder.h \
+    YDestination.h \
+    YEncoder.h \
     YResampler.h \
+    YRescaler.h \
+    YSource.h \
     YStreamMap.h \
+    base/YAbstractFrameProcessor.h \
     base/YAsyncQueue.h \
     base/YData.h \
     base/YDataProcessor.h \
@@ -48,13 +54,7 @@ HEADERS += \
     base\YParameters.h \
     YVideoParameters.h \
     YAudioParameters.h \
-    YVideoRescaler.h \
-    YMediaSource.h \
-    YMediaDestination.h \
     YMediaChain.h \
-    YMediaDecoder.h \
-    YMediaDestination.h \
-    YMediaEncoder.h \
     YMediaFilter.h \
     YAudioFilter.h \
     YVideoFilter.h \

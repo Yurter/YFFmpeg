@@ -1,9 +1,10 @@
 #pragma once
 
 #include "base/YAbstractCoder.h"
-#include "YMediaDestination.h"
+#include "base/YDataProcessor.h"
+#include "YDestination.h"
 
-class YMediaEncoder : public YAbstractCoder
+class YMediaEncoder : public YAbstractCoder, public YDataProcessor<YFrame,YPacket>
 {
 
 public:
@@ -13,11 +14,6 @@ public:
     virtual ~YMediaEncoder() override;
 
     bool init() override;
-
-    void pushFrame(YFrame& frame);
-    bool popPacket(YPacket& packet);
-
-    //bool encodeFrames(YPacket& encoded_packet, std::list<AVFrame*>& decoded_frames);
 
 private:
 

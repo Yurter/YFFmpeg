@@ -1,4 +1,4 @@
-#include "YMediaEncoder.h"
+#include "YEncoder.h"
 #include <iostream>
 
 YMediaEncoder::YMediaEncoder(YMediaDestination *destination) :

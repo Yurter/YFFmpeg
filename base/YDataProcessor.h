@@ -5,7 +5,7 @@
 #include "YAsyncQueue.h"
 
 template <class inType, class outType>
-class YDataProcessor
+class YDataProcessor : public YThread
 {
 
 public:
@@ -26,8 +26,15 @@ public:
 
 protected:
 
-    void                    push(inType input_data);
-    bool                    pop(outType &output_data);
+    void push(inType input_data)
+    {
+        _input_queue.push(input_data);
+    }
+
+    bool pop(outType &output_data)
+    {
+        return _output_queue.pop(output_data);
+    }
 
 protected:
 

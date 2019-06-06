@@ -1,11 +1,10 @@
 #pragma once
 
 #include "ffmpeg.h"
+#include "YDataProcessor.h"
 #include "YVideoParameters.h"
 #include "YAudioParameters.h"
-#include "YAsyncQueue.h"
 #include "YPacket.h"
-#include "YThread.h"
 #include "YStream.h"
 
 #include <string>
@@ -13,7 +12,7 @@
 #include <mutex>
 #include <queue>
 
-class YAbstractMedia : public YThread
+class YAbstractMedia : public YDataProcessor<YPacket, YPacket>
 {
 
 public:
@@ -31,12 +30,8 @@ public:
 
     std::string         mediaResourceLocator() const;                   // Функция возвращает mrl.
     AVFormatContext*    mediaFormatContext() const;                     // Функция возвращает медиа-контекст.
-    YStream*            stream(uint64_t index);                         //
-    std::vector<YStream>* streams();                         //
     int64_t             duration() const;								// Функция возвращает длительность медиа-файла в секундах.
-
-    void                push(YPacket packet);
-    bool                pop(YPacket &packet);
+    YStream*            stream(uint64_t index);                         //
 
 protected:
 
@@ -61,7 +56,6 @@ protected:
     int64_t             _artificial_delay;
 
     std::vector<YStream>    _streams;
-    YAsyncQueue<YPacket>    _packet_queue;
 
 	// FFmpeg 
     AVFormatContext*	_media_format_context;

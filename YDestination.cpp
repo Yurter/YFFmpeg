@@ -1,4 +1,4 @@
-#include "YMediaDestination.h"
+#include "YDestination.h"
 #include <iostream>
 #include <exception>
 

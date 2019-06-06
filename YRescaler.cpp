@@ -1,4 +1,4 @@
-#include "YVideoRescaler.h"
+#include "YRescaler.h"
 
 YVideoRescaler::YVideoRescaler()
 {

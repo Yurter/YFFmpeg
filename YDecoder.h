@@ -1,9 +1,10 @@
 #pragma once
 
 #include "base/YAbstractCoder.h"
-#include "YMediaSource.h"
+#include "base/YDataProcessor.h"
+#include "YSource.h"
 
-class YMediaDecoder : public YAbstractCoder
+class YMediaDecoder : public YAbstractCoder, public YDataProcessor<YPacket,YFrame>
 {
 
 public:
@@ -13,11 +14,6 @@ public:
     virtual ~YMediaDecoder() override;
 
     bool init() override;
-
-//    YCode decodePacket(YPacket& packet, AVFrame** decoded_frame);
-
-    void pushPacket(YPacket& packet);
-    bool popFrame(YFrame& frame);
 
 private:
 

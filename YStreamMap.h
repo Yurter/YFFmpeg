@@ -1,8 +1,8 @@
 #pragma once
 
 #include "base/YPacket.h"
-#include "YMediaSource.h"
-#include "YMediaDestination.h"
+#include "YSource.h"
+#include "YDestination.h"
 #include <map>
 
 class YStreamMap
