@@ -1,4 +1,4 @@
-#include "YAudioResampler.h"
+#include "YResampler.h"
 #include <iostream>
 
 YAudioResampler::YAudioResampler() :

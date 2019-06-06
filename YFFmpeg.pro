@@ -31,6 +31,7 @@ SOURCES += \
     YMediaFilter.cpp \
 
 HEADERS += \
+    YResampler.h \
     YStreamMap.h \
     base/YAsyncQueue.h \
     base/YData.h \
@@ -48,7 +49,6 @@ HEADERS += \
     YVideoParameters.h \
     YAudioParameters.h \
     YVideoRescaler.h \
-    YAudioResampler.h \
     YMediaSource.h \
     YMediaDestination.h \
     YMediaChain.h \
