@@ -193,7 +193,7 @@ YCode YMediaChain::run()
             }
         } else { //TODO ?
             processed_frame = decoded_frame;
-        }
+        }//
 
         /*------------------------------ Кодирование ---------------------------*/
         _encoder->pushFrame(processed_frame);
