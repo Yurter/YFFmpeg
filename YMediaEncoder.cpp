@@ -173,6 +173,7 @@ YCode YMediaEncoder::run()
         return YCode::ERR;
     }
     int ret;
+    auto test = AVERROR_EOF;
     if ((ret = avcodec_send_frame(codec_context, frame.raw())) != 0) {
         std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
         return YCode::ERR;
