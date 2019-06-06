@@ -1,13 +1,13 @@
 #pragma once
 
 #include "base/YThread.h"
-#include "YMediaSource.h"
-#include "YMediaDecoder.h"
+#include "YSource.h"
+#include "YDecoder.h"
 #include "YMediaFilter.h"
-#include "YMediaEncoder.h"
-#include "YMediaDestination.h"
-#include "YVideoRescaler.h"
-#include "YAudioResampler.h"
+#include "YEncoder.h"
+#include "YDestination.h"
+#include "YRescaler.h"
+#include "YResampler.h"
 #include "YStreamMap.h"
 
 #include <thread>
