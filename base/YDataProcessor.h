@@ -1,11 +1,12 @@
 #pragma once
 
 #include "ffmpeg.h"
+#include "utils.h"
 #include "YThread.h"
 #include "YAsyncQueue.h"
 
 template <class inType, class outType>
-class YDataProcessor : public YThread
+class YDataProcessor /*: public YThread*/
 {
 
 public:
@@ -26,6 +27,8 @@ public:
 
 protected:
 
+    virtual YCode processInputData(inType input_data) = 0;
+
     void push(inType input_data)
     {
         _input_queue.push(input_data);
@@ -36,6 +39,17 @@ protected:
         return _output_queue.pop(output_data);
     }
 
+    YCode run() override
+    {
+        inType input_data;
+        if (!_input_queue.pop(input_data)) {
+            utils::sleep_for(SHORT_DELAY_MS);
+            return YCode::AGAIN;
+        }
+        auto ret = processInputData(input_data);
+        if (ret != YCode::OK) { return ret; }
+    }
+
 protected:
 
     YAsyncQueue<inType>     _input_queue;
@@ -44,5 +58,8 @@ protected:
 private:
 
     YDataProcessor*         _next_processor;
+
+    YThread                 _input_thread;
+    YThread                 _output_thread;
 
 };
