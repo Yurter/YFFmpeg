@@ -34,6 +34,7 @@ HEADERS += \
     YStreamMap.h \
     base/YAsyncQueue.h \
     base/YData.h \
+    base/YDataProcessor.h \
     base/YStream.h \
     base/YThread.h \
     base/utils.h \
