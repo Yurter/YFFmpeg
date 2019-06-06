@@ -86,31 +86,35 @@ YCode YAudioResampler::run()
         input_frame.free();
         return YCode::AGAIN;
     }
-    AVFrame *output_frame = nullptr;
-    if (!initOutputFrame(&output_frame, _output_codec_context->frame_size)) {
-        std::cerr << "[YAudioResampler] initOutputFrame failed" << std::endl;
+    if (swr_convert_frame(_resampler_context, nullptr, input_frame.raw()) != 0) {
+        std::cerr << "[YAudioResampler] PUSH swr_convert_frame failed " << std::endl;
         return YCode::ERR;
     }
-    if (configChanged(input_frame.raw(), output_frame)) {
-        std::cerr << "[YAudioResampler] configChanged" << std::endl;
-        return YCode::ERR;
-    }
+    //
+    do {
+        AVFrame *output_frame = nullptr;
+        if (!initOutputFrame(&output_frame, _output_codec_context->frame_size)) {
+            std::cerr << "[YAudioResampler] initOutputFrame failed" << std::endl;
+            return YCode::ERR;
+        }
+        if (configChanged(input_frame.raw(), output_frame)) {
+            std::cerr << "[YAudioResampler] configChanged" << std::endl;
+            return YCode::ERR;
+        }
+        if (swr_convert_frame(_resampler_context, output_frame, nullptr) != 0) {
+            std::cerr << "[YAudioResampler] swr_convert_frame failed " << std::endl;
+            return YCode::ERR;
+        }
 
-    int ret = 0;
-    if ((ret = swr_convert_frame(_resampler_context, output_frame, input_frame.raw())) != 0) {
-        std::cerr << "[YAudioResampler] swr_convert_frame failed " << ret << std::endl;
-        return YCode::ERR;
-    }
+
+        YFrame result_frame(output_frame);
+        result_frame.setType(MEDIA_TYPE_AUDIO);
+        _output_frame_queue.push(result_frame);
+        auto aaa1 = swr_get_out_samples(_resampler_context, 0);
+        auto aaa2 = _output_codec_context->frame_size;
+    } while (swr_get_out_samples(_resampler_context, 0) >= _output_codec_context->frame_size);
 
     std::cout << "[DEBUG]" << swr_get_out_samples(_resampler_context, 0) << std::endl;
-
-    //    stampFrame(output_frame); // output_frame->pts = AV_NOPTS_VALUE;
-
-    YFrame result_frame(output_frame);
-    result_frame.setType(MEDIA_TYPE_AUDIO);
-//    (*frame) = output_frame;
-    _output_frame_queue.push(result_frame);
-
     return YCode::OK;
 }
 

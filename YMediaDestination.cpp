@@ -191,6 +191,8 @@ YCode YMediaDestination::run()
     }
     {
         std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
+        std::cout << "[YMediaDestination] v: " << stream(0)->duration() << ", a: " << stream(1)->duration() << std::endl << std::endl;
+        std::cout << "[YMediaDestination] v: " << _video_packet_index << ", a: " << _audio_packet_index << std::endl << std::endl;
     }
     if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
 //    if (av_write_frame(_media_format_context, &packet.raw()) < 0) {
@@ -252,7 +254,7 @@ bool YMediaDestination::stampPacket(YPacket &packet) //TODO перенести �
 //        //
 //        packet.setPos(-1);
         //
-        int64_t duration = 40;//23;//43;//23;
+        int64_t duration = 23;//43;//23;
         auto audio_stream = stream(static_cast<uint64_t>(packet.streamIndex()));
 //        packet.setPts(audio_stream->duration());
         packet.setDts(audio_stream->duration());
