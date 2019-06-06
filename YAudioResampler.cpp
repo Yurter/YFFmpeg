@@ -102,6 +102,8 @@ YCode YAudioResampler::run()
         return YCode::ERR;
     }
 
+    std::cout << "[DEBUG]" << swr_get_out_samples(_resampler_context, 0) << std::endl;
+
     //    stampFrame(output_frame); // output_frame->pts = AV_NOPTS_VALUE;
 
     YFrame result_frame(output_frame);

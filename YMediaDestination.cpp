@@ -190,7 +190,6 @@ YCode YMediaDestination::run()
         return YCode::ERR;
     }
     {
-        if (packet.isAudio())
         std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
     }
     if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
@@ -253,18 +252,14 @@ bool YMediaDestination::stampPacket(YPacket &packet) //TODO перенести �
 //        //
 //        packet.setPos(-1);
         //
-        int64_t duration = 23;//43;//23;
+        int64_t duration = 40;//23;//43;//23;
         auto audio_stream = stream(static_cast<uint64_t>(packet.streamIndex()));
-        auto video_stream = stream(static_cast<uint64_t>(0));
-//        packet.setPts(video_stream->duration());
-//        packet.setDts(video_stream->duration());
-        std::cerr << "[DEBUG] " << _audio_packet_index << " " << _video_packet_index << std::endl;
-        packet.setDts(video_stream->duration() * ((float)_audio_packet_index/(float)_video_packet_index));
-//        packet.setDuration(1); // ни на что не влияет, ни 1, ни 23, ни 1024 - нет разнцы в результативном звуке
+//        packet.setPts(audio_stream->duration());
+        packet.setDts(audio_stream->duration());
+//        packet.setDuration(duration);
         packet.setPos(-1);
-        _audio_packet_index++;
-//        audio_stream->increaseDuration(duration);
         audio_stream->increaseDuration(duration);
+        _audio_packet_index++;
         return true;
     }
     return false;
