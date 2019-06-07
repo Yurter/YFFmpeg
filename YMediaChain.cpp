@@ -1,6 +1,6 @@
   #include "YMediaChain.h"
 
-YMediaChain::YMediaChain(YMediaSource*      source,
+YMediaChain::YMediaChain(YSource*      source,
                          YMediaDestination* destination,
                          int64_t            options) :
     YMediaChain(source,
@@ -12,7 +12,7 @@ YMediaChain::YMediaChain(YMediaSource*      source,
     //
 }
 
-YMediaChain::YMediaChain(YMediaSource*      source,
+YMediaChain::YMediaChain(YSource*      source,
                          YMediaFilter*      video_filter,
                          YMediaFilter*      audio_filter,
                          YMediaDestination* destination,
@@ -83,12 +83,12 @@ bool YMediaChain::active()
     return running();
 }
 
-void YMediaChain::setContingencyVideoSource(YMediaSource *contingency_video_source)
+void YMediaChain::setContingencyVideoSource(YSource *contingency_video_source)
 {
     _contingency_video_source = contingency_video_source;
 }
 
-void YMediaChain::setContingencyAudioSource(YMediaSource *contingency_audio_source)
+void YMediaChain::setContingencyAudioSource(YSource *contingency_audio_source)
 {
     _contingency_audio_source = contingency_audio_source;
 }

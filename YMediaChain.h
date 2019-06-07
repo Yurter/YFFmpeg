@@ -18,11 +18,11 @@ class YMediaChain : public YThread
 
 public:
 
-    YMediaChain(YMediaSource*       source,
+    YMediaChain(YSource*       source,
                 YMediaDestination*  destination,
                 int64_t             options = 0);
 
-    YMediaChain(YMediaSource*       source,
+    YMediaChain(YSource*       source,
                 YMediaFilter*       video_filter,
                 YMediaFilter*       audio_filter,
                 YMediaDestination*  destination,
@@ -36,9 +36,9 @@ public:
     void unpause();
     bool active();
 
-//    void setContingencySource(YMediaSource* contingency_source);
-    void setContingencyVideoSource(YMediaSource* contingency_video_source);
-    void setContingencyAudioSource(YMediaSource* contingency_audio_source);
+//    void setContingencySource(YSource* contingency_source);
+    void setContingencyVideoSource(YSource* contingency_video_source);
+    void setContingencyAudioSource(YSource* contingency_audio_source);
 
     //TODO
     void setVideoFilter(std::string video_filter);
@@ -66,7 +66,7 @@ private:
 private:
 
     // Media
-    YMediaSource*       _source;
+    YSource*       _source;
     YMediaDecoder*      _decoder;
     YMediaFilter*       _video_filter;
     YMediaFilter*       _audio_filter;
@@ -76,8 +76,8 @@ private:
     YAudioResampler*    _resampler;
     YStreamMap*         _stream_map;
 
-    YMediaSource*       _contingency_video_source;
-    YMediaSource*       _contingency_audio_source;
+    YSource*       _contingency_video_source;
+    YSource*       _contingency_audio_source;
 
     // General
     volatile bool       _paused; 

@@ -10,14 +10,14 @@ public:
     YMediaFilter(AVMediaType filter_type, std::string filter_description);
     ~YMediaFilter();
 
-    bool init(YMediaSource *source, YMediaDecoder *decoder);
+    bool init(YSource *source, YMediaDecoder *decoder);
 
     bool filterFrames(std::list<AVFrame*> &frames);
 
 private:
 
-    bool initVideoFilter(YMediaSource *source, YMediaDecoder *decoder);
-    bool initAudioFilter(YMediaSource *source, YMediaDecoder *decoder);
+    bool initVideoFilter(YSource *source, YMediaDecoder *decoder);
+    bool initAudioFilter(YSource *source, YMediaDecoder *decoder);
 
 private:
 

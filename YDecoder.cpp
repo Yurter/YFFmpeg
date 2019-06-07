@@ -1,7 +1,7 @@
 #include "YDecoder.h"
 #include <iostream>
 
-YMediaDecoder::YMediaDecoder(YMediaSource *source) :
+YMediaDecoder::YMediaDecoder(YSource *source) :
     _source(source)
 {
     //

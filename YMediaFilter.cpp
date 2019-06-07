@@ -14,7 +14,7 @@ YMediaFilter::~YMediaFilter()
     //
 }
 
-bool YMediaFilter::init(YMediaSource *source, YMediaDecoder *decoder)
+bool YMediaFilter::init(YSource *source, YMediaDecoder *decoder)
 {
     std::cout << "[YMediaFilter] Initializing" << std::endl;
     switch (_filter_type) {
@@ -68,7 +68,7 @@ bool YMediaFilter::filterFrames(std::list<AVFrame*> &frames)
     return true;
 }
 
-bool YMediaFilter::initVideoFilter(YMediaSource *source, YMediaDecoder *decoder)
+bool YMediaFilter::initVideoFilter(YSource *source, YMediaDecoder *decoder)
 {
     AVFormatContext *fmt_ctx = source->mediaFormatContext();
     AVCodecContext *dec_ctx = decoder->videoCodecContext();
@@ -165,7 +165,7 @@ bool YMediaFilter::initVideoFilter(YMediaSource *source, YMediaDecoder *decoder)
     return true;
 }
 
-bool YMediaFilter::initAudioFilter(YMediaSource *source, YMediaDecoder *decoder)
+bool YMediaFilter::initAudioFilter(YSource *source, YMediaDecoder *decoder)
 {
 
     AVFormatContext *fmt_ctx = source->mediaFormatContext();

@@ -8,9 +8,6 @@
 #include "YStream.h"
 
 #include <string>
-#include <thread>
-#include <mutex>
-#include <queue>
 
 class YAbstractMedia : public YDataProcessor<YPacket, YPacket>
 {

@@ -10,7 +10,7 @@ class YMediaDecoder : public YAbstractCoder, public YDataProcessor<YPacket,YFram
 public:
 
     YMediaDecoder() = delete;
-    YMediaDecoder(YMediaSource *source);
+    YMediaDecoder(YSource *source);
     virtual ~YMediaDecoder() override;
 
     bool init() override;
@@ -25,6 +25,6 @@ private:
 private:
 
     //General parametres
-    YMediaSource*       _source;
+    YSource*       _source;
 
 };

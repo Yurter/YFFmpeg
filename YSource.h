@@ -2,13 +2,13 @@
 
 #include "base/YAbstractMedia.h"
 
-class YMediaSource : public YAbstractMedia
+class YSource : public YAbstractMedia
 {
 
 public:
 
-    YMediaSource(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
-    virtual ~YMediaSource() override;
+    YSource(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
+    virtual ~YSource() override;
 
     bool            open()  override;
     bool            close() override;
@@ -20,10 +20,11 @@ private:
     bool            guessInputFromat();
     bool            openInput();
 
+    YCode           read();
+
     YCode           processInputData(YPacket& input_data) override;
 
     void            parseInputFormat(); //TODO : YAbstractMedia::parseIOFormat
-    void            analyzePacket(YPacket& packet);
 
 private:
 

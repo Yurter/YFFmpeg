@@ -13,7 +13,7 @@ YStreamMap::~YStreamMap()
     //
 }
 
-bool YStreamMap::init(YMediaSource* source, YMediaDestination* destination)
+bool YStreamMap::init(YSource* source, YMediaDestination* destination)
 {
 //    // упрощенная схема - [0,1] видео- и аудио потоки у источника и деста
 //    for (auto src_stream : *source->streams()) {

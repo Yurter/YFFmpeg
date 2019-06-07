@@ -15,6 +15,24 @@ YThread::YThread(std::function<YCode(void)> loop_function) :
     //
 }
 
+//YThread::YThread(const YThread&& other) //:
+////    _thread(other._thread)
+//{
+//    auto&& test = other._thread;
+//    _thread = std::thread(std::move(test));
+//    _thread         = std::thread(other._thread);
+//    _running        = other._running;
+//    _loop_function  = other._loop_function;
+//}
+
+YThread &YThread::operator=(YThread&& other)
+{
+    _thread         = std::move(other._thread);
+    _running        = other._running;
+    _loop_function  = other._loop_function;
+    return *this;
+}
+
 YThread::~YThread()
 {
     quit();

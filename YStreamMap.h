@@ -13,7 +13,7 @@ public:
     YStreamMap();
     ~YStreamMap();
 
-    bool init(YMediaSource* source, YMediaDestination* destination);
+    bool init(YSource* source, YMediaDestination* destination);
     bool map(YStream src_stream, YStream dst_stream);
     bool map(YPacket& packet);
 

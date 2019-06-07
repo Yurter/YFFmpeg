@@ -10,6 +10,10 @@ public:
 
     YThread();
     YThread(std::function<YCode(void)> loop_function);
+//    YThread(const YThread&& other);
+    YThread& operator=(YThread&& other);
+    YThread(const YThread&)             = delete;
+    YThread& operator=(const YThread&)  = delete;
     virtual ~YThread();
 
     virtual void        start()     final;

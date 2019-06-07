@@ -23,7 +23,9 @@ private:
     bool createOutput();
     bool openOutput();
 
-    YCode run() override;
+    YCode write();
+
+    YCode processInputData(YPacket& input_data) override;
 
     void parseOutputFormat();
     bool stampPacket(YPacket &packet);
