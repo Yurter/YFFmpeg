@@ -13,31 +13,29 @@ YStreamMap::~YStreamMap()
     //
 }
 
-bool YStreamMap::init(YSource* source, YMediaDestination* destination)
-{
-//    // упрощенная схема - [0,1] видео- и аудио потоки у источника и деста
-//    for (auto src_stream : *source->streams()) {
-//        _map.insert({});
-//    }
-//    auto
-//    source->stream()
-    return false;
-}
-
-bool YStreamMap::map(YStream src_stream, YStream dst_stream)
+bool YStreamMap::addMap(YStream src_stream, YStream dst_stream)
 {
     if (src_stream.raw() == dst_stream.raw())   { return false; }
     if (src_stream.type() != dst_stream.type()) { return false; }
-//    _map.insert(src_stream, dst_stream);
+    _map.insert(src_stream, dst_stream);
+    setInited(true);
     return true;
 }
 
-bool YStreamMap::map(YPacket& packet) //TODO
+YCode YStreamMap::processInputData(YPacket &input_data)
 {
-//    for (auto&& src_idx : _map) {
-//        if ()
-//    }
-//    auto src_str_index = packet.raw().s
-//    auto result = std::find_if(_map.begin(), _map.end(), [](){});
-    return true;
+    if (!inited()) { return YCode::NOT_INITED; }
+
+    auto result = std::find_if(_map.begin(), _map.end(),
+        [input_data](const std::pair<YStream, YStream>& it) {
+        return it.first.index() == input_data.streamIndex();
+    });
+
+    if (result == _map.end()) {
+        input_data.setStreamIndex(INVALID_INT);
+        return YCode::INVALID_INPUT;
+    }
+
+    input_data.setStreamIndex(result->second.index());
+    return YCode::OK;
 }

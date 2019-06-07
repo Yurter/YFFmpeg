@@ -10,7 +10,7 @@ class YEncoder : public YAbstractCoder, public YDataProcessor<YFrame,YPacket>
 public:
 
     YEncoder() = delete;
-    YEncoder(YMediaDestination *destination);
+    YEncoder(YDestination *destination);
     virtual ~YEncoder() override;
 
     bool init() override;
@@ -24,6 +24,6 @@ private:
 private:
 
     // General
-    YMediaDestination*  _destination;
+    YDestination*  _destination;
 
 };

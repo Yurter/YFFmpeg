@@ -1,26 +1,25 @@
 #pragma once
 
 #include "base/YPacket.h"
+#include "base/YDataProcessor.h"
 #include "YSource.h"
 #include "YDestination.h"
 #include <map>
 
-class YStreamMap
+class YStreamMap : public YDataProcessor<YPacket,YPacket>
 {
 
 public:
 
     YStreamMap();
-    ~YStreamMap();
+    virtual ~YStreamMap();
 
-    bool init(YSource* source, YMediaDestination* destination);
-    bool map(YStream src_stream, YStream dst_stream);
-    bool map(YPacket& packet);
+    bool addMap(YStream src_stream, YStream dst_stream);
+    YCode processInputData(YPacket& input_data);
 
 private:
 
     // General
-//    std::map<int64_t, int64_t>      _map;
     std::map<YStream, YStream>      _map;
 
 };

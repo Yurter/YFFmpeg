@@ -1,7 +1,7 @@
 #include "YEncoder.h"
 #include <iostream>
 
-YEncoder::YEncoder(YMediaDestination *destination) :
+YEncoder::YEncoder(YDestination *destination) :
     _destination(destination)
 {
     //

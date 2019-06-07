@@ -26,3 +26,8 @@ bool utils::exit_code(YCode code)
     if (code == YCode::INVALID_INPUT)   { return true; }
     return false;
 }
+
+std::string utils::code_to_string(YCode code)
+{
+    return "TODO";
+}

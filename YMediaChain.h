@@ -19,13 +19,13 @@ class YMediaChain : public YThread
 public:
 
     YMediaChain(YSource*       source,
-                YMediaDestination*  destination,
+                YDestination*  destination,
                 int64_t             options = 0);
 
     YMediaChain(YSource*       source,
                 YMediaFilter*       video_filter,
                 YMediaFilter*       audio_filter,
-                YMediaDestination*  destination,
+                YDestination*  destination,
                 int64_t             options);
 
     ~YMediaChain() override;
@@ -71,7 +71,7 @@ private:
     YMediaFilter*       _video_filter;
     YMediaFilter*       _audio_filter;
     YEncoder*      _encoder;
-    YMediaDestination*  _destination;
+    YDestination*  _destination;
     YVideoRescaler*     _rescaler;
     YAudioResampler*    _resampler;
     YStreamMap*         _stream_map;

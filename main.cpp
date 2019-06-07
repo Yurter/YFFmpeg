@@ -21,7 +21,7 @@ int main()
 
     YSource source(mrl_src);
 //    source.audio_parameters.setIgnore(true);
-    YMediaDestination destination(mrl_dst, YMediaPreset::YouTube);
+    YDestination destination(mrl_dst, YMediaPreset::YouTube);
 
     YMediaChain chain(&source, &destination, COPY_VIDEO);
 
@@ -34,7 +34,7 @@ int main()
 //    std::string mrl_dst = "remuxed.aac";
 
 //    YSource source(mrl_src, YMediaPreset::Virtual);
-//    YMediaDestination destination(mrl_dst);
+//    YDestination destination(mrl_dst);
 
 //    destination.audio_parameters.setSampleRate(44'100);
 //    destination.audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
@@ -54,7 +54,7 @@ int main()
 //    std::string mrl_dst = "remuxed.aac";
 
 //    YSource source(mrl_src);
-//    YMediaDestination destination(mrl_dst);
+//    YDestination destination(mrl_dst);
 
 //    source.video_parameters.setIgnore(true);
 //    destination.audio_parameters.setSampleRate(44'100);

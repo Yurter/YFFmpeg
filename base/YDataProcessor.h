@@ -14,29 +14,24 @@ class YDataProcessor : public YThread, public YAsyncQueue<inType>
 public:
 
     YDataProcessor() :
-        _next_processor(nullptr) {}
+        _next_processor(nullptr),
+        _last_error(YCode::OK),
+        _inited(false) {}
 
     virtual ~YDataProcessor()
     {
         //
     }
 
-//    void connectOutputTo(YAsyncQueue<inType>* next_processor)
-//    {
-//        _next_processor = next_processor;
-//    }
     virtual void connectOutputTo(YAsyncQueue<outType>* next_processor) final
     {
         _next_processor = next_processor;
     }
-//    virtual void connectOutputTo(YAsyncQueue<inType>* next_processor) final
-//    {
-//        _next_processor = next_processor;
-//    }
-//    virtual void connectOutputTo(YAsyncQueue<outType>* next_processor) final
-//    {
-//        _next_processor = next_processor;
-//    }
+
+    YCode   lastError() const { return _last_error; }
+
+    void    setInited(bool inited) { _inited = inited; }
+    bool    inited() const { return _inited; }
 
 protected:
 
@@ -63,9 +58,13 @@ private:
         return YCode::ERR;
     }
 
-protected:
+//protected:
+private:
 
 
     YAsyncQueue<outType>*                _next_processor;
+
+    YCode       _last_error;
+    bool        _inited;
 
 };

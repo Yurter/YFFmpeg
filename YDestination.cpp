@@ -2,7 +2,7 @@
 #include <iostream>
 #include <exception>
 
-YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset) :
+YDestination::YDestination(const std::string &mrl, YMediaPreset preset) :
 	YAbstractMedia(mrl),
     _video_packet_index(0),
     _audio_packet_index(0),
@@ -43,30 +43,30 @@ YMediaDestination::YMediaDestination(const std::string &mrl, YMediaPreset preset
     case Timelapse:
         break;
     default:
-        std::cerr << "[YMediaDestination] Invalid preset." << std::endl;
+        std::cerr << "[YDestination] Invalid preset." << std::endl;
         break;
     }
     if (!createOutput()) {
-        std::cerr << "[YMediaDestination] Failed to create output context." << std::endl;
+        std::cerr << "[YDestination] Failed to create output context." << std::endl;
         return;
     }
 }
 
-YMediaDestination::~YMediaDestination()
+YDestination::~YDestination()
 {
     close();
 }
 
-bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
+bool YDestination::addStream(AVCodecContext *stream_codec_context)
 {
     AVStream* out_stream = avformat_new_stream(_media_format_context, stream_codec_context->codec);
     if (out_stream == nullptr) {
-        std::cerr << "[YMediaDestination] Failed allocating output stream" << std::endl;
+        std::cerr << "[YDestination] Failed allocating output stream" << std::endl;
         return false;
     }
 
     if (avcodec_parameters_from_context(out_stream->codecpar, stream_codec_context) < 0) {
-        std::cerr << "[YMediaDestination] Failed to copy context input to output stream codec context" << std::endl;
+        std::cerr << "[YDestination] Failed to copy context input to output stream codec context" << std::endl;
         return false;
     }
 
@@ -86,15 +86,15 @@ bool YMediaDestination::addStream(AVCodecContext *stream_codec_context)
         audio_parameters.setStreamIndex(_media_format_context->nb_streams - 1);
         break;
     default:
-        std::cerr << "[YMediaDestination] Unsupported media type added: " << av_get_media_type_string(codec_type) << std::endl;
+        std::cerr << "[YDestination] Unsupported media type added: " << av_get_media_type_string(codec_type) << std::endl;
         break;
     }
 
-    std::cout << "[YMediaDestination] Created stream: " << stream_codec_context->codec->name << std::endl;
+    std::cout << "[YDestination] Created stream: " << stream_codec_context->codec->name << std::endl;
     return true;
 }
 
-bool YMediaDestination::open()
+bool YDestination::open()
 {
     if (_opened) { return false; }
     _opened = openOutput();
@@ -104,25 +104,25 @@ bool YMediaDestination::open()
     return _opened;
 }
 
-bool YMediaDestination::close()
+bool YDestination::close()
 {
     if (!_opened) { return false; }
     quit();
     if (av_write_trailer(_media_format_context) != 0) {
-        std::cerr << "[YMediaDestination] Failed to write the stream trailer to an output media file" << std::endl;
+        std::cerr << "[YDestination] Failed to write the stream trailer to an output media file" << std::endl;
         return false;
     }
     if (!YAbstractMedia::close()) { return false; }
-    std::cout << "[YMediaDestination] Destination: \"" << _media_resource_locator << "\" closed." << std::endl;
+    std::cout << "[YDestination] Destination: \"" << _media_resource_locator << "\" closed." << std::endl;
     return true;
 }
 
-AVOutputFormat *YMediaDestination::outputFrormat() const
+AVOutputFormat *YDestination::outputFrormat() const
 {
     return _output_format;
 }
 
-bool YMediaDestination::guessOutputFromat()
+bool YDestination::guessOutputFromat()
 {
     AVOutputFormat* output_format = av_guess_format(nullptr, _media_resource_locator.c_str(), nullptr);
     if (output_format == nullptr) {
@@ -133,55 +133,55 @@ bool YMediaDestination::guessOutputFromat()
     return true;
 }
 
-bool YMediaDestination::createOutput()
+bool YDestination::createOutput()
 {
     std::string output_format_name = guessFormatShortName();
     const char *format_name = output_format_name.empty() ? nullptr : output_format_name.c_str();
     if (avformat_alloc_output_context2(&_media_format_context, nullptr, format_name, _media_resource_locator.c_str()) < 0) {
-        std::cerr << "[YMediaDestination] Failed to alloc output context." << std::endl;
+        std::cerr << "[YDestination] Failed to alloc output context." << std::endl;
 		return false;
     }
     _output_format = _media_format_context->oformat;
 	return true;
 }
 
-bool YMediaDestination::openOutput()
+bool YDestination::openOutput()
 {
 	if (!(_media_format_context->flags & AVFMT_NOFILE)) {
 		if (avio_open(&_media_format_context->pb, _media_resource_locator.c_str(), AVIO_FLAG_WRITE) < 0) {
-            std::cerr << "[YMediaDestination] Could not open output: " << _media_resource_locator << std::endl;
+            std::cerr << "[YDestination] Could not open output: " << _media_resource_locator << std::endl;
 			return false;
 		}
 	}
 	if (avformat_write_header(_media_format_context, nullptr) < 0) {
-        std::cerr << "[YMediaDestination] Error occurred when opening output" << std::endl;
+        std::cerr << "[YDestination] Error occurred when opening output" << std::endl;
 		return false;
 	}
 	{
 		av_dump_format(_media_format_context, 0, _media_resource_locator.c_str(), 1);
-        std::cout << "[YMediaDestination] Destination: \"" << _media_resource_locator << "\" opened." << std::endl;
+        std::cout << "[YDestination] Destination: \"" << _media_resource_locator << "\" opened." << std::endl;
 	}
     return true;
 }
 
-YCode YMediaDestination::write()
+YCode YDestination::write()
 {
 //    { // debug
-//        std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
-//        std::cout << "[YMediaDestination] v: " << stream(0)->duration() << ", a: " << stream(1)->duration() << std::endl << std::endl;
-//        std::cout << "[YMediaDestination] v: " << _video_packet_index << ", a: " << _audio_packet_index << std::endl << std::endl;
+//        std::cout << "[YDestination] " << packet.toString() << std::endl;
+//        std::cout << "[YDestination] v: " << stream(0)->duration() << ", a: " << stream(1)->duration() << std::endl << std::endl;
+//        std::cout << "[YDestination] v: " << _video_packet_index << ", a: " << _audio_packet_index << std::endl << std::endl;
 //    }
 //    if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
-//        std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
+//        std::cerr << "[YDestination] Error muxing packet" << std::endl;
 //        return YCode::ERR;
 //    }
     return YCode::OK;
 }
 
-YCode YMediaDestination::processInputData(YPacket& input_data)
+YCode YDestination::processInputData(YPacket& input_data)
 {
     if (!stampPacket(input_data)) {
-        std::cerr << "[YMediaDestination] stampPacket failed" << std::endl;
+        std::cerr << "[YDestination] stampPacket failed" << std::endl;
         return YCode::ERR;
     }
     if (input_data.isVideo() && video_parameters.ignore()) { return YCode::AGAIN; }
@@ -189,7 +189,7 @@ YCode YMediaDestination::processInputData(YPacket& input_data)
     return YCode::OK;
 }
 
-void YMediaDestination::parseOutputFormat()
+void YDestination::parseOutputFormat()
 {
     if (_output_format == nullptr) { return; }
     //TODO: mp3 AVOutputFormat дает видео кодек PNG
@@ -203,7 +203,7 @@ void YMediaDestination::parseOutputFormat()
     }
 }
 
-bool YMediaDestination::stampPacket(YPacket &packet) //TODO перенести код в YStream
+bool YDestination::stampPacket(YPacket &packet) //TODO перенести код в YStream
 {
 //    if (packet.isVideo()) {
 //        auto&& raw_packet = packet.raw();

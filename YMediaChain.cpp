@@ -1,7 +1,7 @@
   #include "YMediaChain.h"
 
 YMediaChain::YMediaChain(YSource*      source,
-                         YMediaDestination* destination,
+                         YDestination* destination,
                          int64_t            options) :
     YMediaChain(source,
                 nullptr,
@@ -15,7 +15,7 @@ YMediaChain::YMediaChain(YSource*      source,
 YMediaChain::YMediaChain(YSource*      source,
                          YMediaFilter*      video_filter,
                          YMediaFilter*      audio_filter,
-                         YMediaDestination* destination,
+                         YDestination* destination,
                          int64_t            options) :
     _source(source),
     _decoder(new YDecoder(source)),
@@ -135,21 +135,13 @@ bool YMediaChain::init()
                               , _encoder->audioCodecContext())) { return false; }
     }
 
-
-    YAsyncQueue<YFrame>*   aaa = _resampler;
-
-    _decoder->connectOutputTo(aaa);
-
     _source->connectOutputTo(_decoder);
     _decoder->connectOutputTo(_resampler);
     _resampler->connectOutputTo(_encoder);
     _encoder->connectOutputTo(_destination);
 
-
-
     _source->start();
     _decoder->start();
-//    _rescaler->start();
     _resampler->start();
     _encoder->start();
     _destination->start();
@@ -159,6 +151,16 @@ bool YMediaChain::init()
 
 YCode YMediaChain::run()
 {
+    if (_source->running() == false)        { return YCode::ERR; } //TODO return lastError
+    if (_decoder->running() == false)       { return YCode::ERR; }
+    if (_resampler->running() == false)     { return YCode::ERR; }
+    if (_encoder->running() == false)       { return YCode::ERR; }
+    if (_destination->running() == false)   { return YCode::ERR; }
+
+    utils::sleep_for(LONG_DELAY_MS);
+    return YCode::OK;
+
+
 //    /*------------------------------- Чтение -------------------------------*/
 //    YPacket source_packet;
 //    if (!_source->pop(source_packet)) {
@@ -222,7 +224,7 @@ YCode YMediaChain::run()
 
 //    /*-------------------------------- Запись ------------------------------*/
 //    _destination->push(processed_packet);
-    return YCode::OK;
+//    return YCode::OK;
 }
 
 bool YMediaChain::rescalerRequired()

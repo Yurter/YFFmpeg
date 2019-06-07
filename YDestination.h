@@ -2,13 +2,13 @@
 
 #include "base/YAbstractMedia.h"
 
-class YMediaDestination : public YAbstractMedia
+class YDestination : public YAbstractMedia
 {
 
 public:
 
-    YMediaDestination(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
-    virtual ~YMediaDestination() override;
+    YDestination(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
+    virtual ~YDestination() override;
 
     bool addStream(AVCodecContext *stream_codec_context);
     bool open() override;
