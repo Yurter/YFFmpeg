@@ -20,7 +20,7 @@ private:
     bool initVideoCodec() override;
     bool initAudioCodec() override;
     bool copyCodecPar(AVFormatContext* input_format_context, AVMediaType media_tipe, int64_t stream_index, AVCodecContext** codec_context); //TODO arg list
-    YCode processInputData(YPacket& input_data, YFrame& output_data) override;
+    YCode processInputData(YPacket& input_data) override;
 
 private:
 

@@ -19,7 +19,7 @@ private:
 
     bool initVideoCodec() override;
     bool initAudioCodec() override;
-    YCode processInputData(YFrame& input_data, YPacket& output_data) override;
+    YCode processInputData(YFrame& input_data) override;
 
 private:
 

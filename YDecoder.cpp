@@ -79,7 +79,7 @@ bool YMediaDecoder::copyCodecPar(AVFormatContext *input_format_context, AVMediaT
     return true;
 }
 
-YCode YMediaDecoder::processInputData(YPacket& input_data, YFrame& output_data)
+YCode YMediaDecoder::processInputData(YPacket& input_data)
 {
     AVCodecContext *codec_context = nullptr;
     if (input_data.isVideo()) { codec_context = _video_codec_context; }
@@ -94,11 +94,12 @@ YCode YMediaDecoder::processInputData(YPacket& input_data, YFrame& output_data)
             return YCode::ERR;
         }
     }
-    output_data.alloc();
+    YFrame output_data;
     int ret = avcodec_receive_frame(codec_context, output_data.raw());
     switch (ret) {
     case 0:
         output_data.setType(input_data.type());
+        sendOutputData(output_data);
         return YCode::OK;
     case AVERROR(EAGAIN):
         return YCode::AGAIN;

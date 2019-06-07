@@ -6,7 +6,7 @@
 #include "YAsyncQueue.h"
 
 template <class inType, class outType>
-class YDataProcessor : YThread
+class YDataProcessor : public YThread
 {
 
 public:
@@ -32,7 +32,7 @@ public:
 protected:
 
     virtual YCode processInputData(inType& input_data) = 0;
-    virtual YCode sendOutputData(outType& output_data) final
+    virtual YCode sendOutputData(outType output_data) final
     {
         if (_next_processor == nullptr) {
             return YCode::NOT_INITED;

@@ -152,8 +152,9 @@ bool YMediaEncoder::initAudioCodec()
     return true;
 }
 
-YCode YMediaEncoder::processInputData(YFrame &input_data, YPacket &output_data)
+YCode YMediaEncoder::processInputData(YFrame& input_data)
 {
+    YPacket output_data;
     output_data.init();
     output_data.setType(input_data.type());
     AVCodecContext *codec_context = nullptr;
@@ -172,5 +173,6 @@ YCode YMediaEncoder::processInputData(YFrame &input_data, YPacket &output_data)
         return YCode::AGAIN;
     }
     input_data.free(); //TODO
+    sendOutputData(output_data);
     return YCode::OK;
 }

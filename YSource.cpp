@@ -29,6 +29,9 @@ bool YMediaSource::open()
 {
     if (_opened) { return false; }
     _opened = openInput();
+    _io_thread = [](){
+        return YCode::OK;
+    };
     return _opened;
 }
 
@@ -74,7 +77,7 @@ bool YMediaSource::openInput()
     }
 }
 
-YCode YMediaSource::processInputData(YPacket input_data)
+YCode YMediaSource::processInputData(YPacket& input_data)
 {
     if (_packet_queue.full()) {
         utils::sleep_for(MEDIUM_DELAY_MS);

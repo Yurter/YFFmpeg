@@ -55,6 +55,8 @@ protected:
     int64_t             _close_timeout;
     int64_t             _artificial_delay;
 
+    YThread             _io_thread;
+
     std::vector<YStream>    _streams;
 
 	// FFmpeg 
