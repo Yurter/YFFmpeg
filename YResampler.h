@@ -16,7 +16,7 @@ public:
 
 private:
 
-    YCode processInputData(YFrame& input_data, YFrame& output_data) override;
+    virtual YCode processInputData(YFrame& input_data) override;
     bool initOutputFrame(AVFrame **frame, int frame_size);
     bool configChanged(AVFrame *in, AVFrame *out);
     void stampFrame(AVFrame *frame);

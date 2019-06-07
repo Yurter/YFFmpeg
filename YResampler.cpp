@@ -75,7 +75,7 @@ bool YAudioResampler::init(AVCodecContext *input_codec_context, AVCodecContext *
     return true;
 }
 
-YCode YAudioResampler::processInputData(YFrame& input_data, YFrame& output_data)
+YCode YAudioResampler::processInputData(YFrame &input_data)
 {
     if (!_inited) {
         return YCode::NOT_INITED;
@@ -98,8 +98,9 @@ YCode YAudioResampler::processInputData(YFrame& input_data, YFrame& output_data)
             std::cerr << "[YAudioResampler] swr_convert_frame failed " << std::endl;
             return YCode::ERR;
         }
-        output_data = YFrame(output_frame);
+        YFrame output_data(output_frame);
         output_data.setType(MEDIA_TYPE_AUDIO);
+        sendOutputData(output_data);
     } while (swr_get_out_samples(_resampler_context, 0) >= _output_codec_context->frame_size);
 
     return YCode::OK;
