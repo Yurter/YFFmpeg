@@ -1,7 +1,6 @@
 #pragma once
 
 #include "base/ffmpeg.h"
-#include "base/YFrame.h"
 #include "base/YAbstractFrameProcessor.h"
 
 class YResampler : public YAbstractFrameProcessor

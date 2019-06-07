@@ -1,6 +1,8 @@
 #pragma once
 
-class YAudioFilter
+#include "base/YAbstractFilter.h"
+
+class YAudioFilter : public YAbstractFilter
 {
 public:
     YAudioFilter();

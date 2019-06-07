@@ -1,8 +1,9 @@
 #pragma once
 
 #include "base/ffmpeg.h"
+#include "base/YAbstractFrameProcessor.h"
 
-class YRescaler
+class YRescaler : public YAbstractFrameProcessor
 {
 
 public:

@@ -11,6 +11,7 @@ public:
     YAbstractFrameProcessor();
     virtual ~YAbstractFrameProcessor();
 
+    YCode processInputData(YFrame& input_data);
 protected:
 
     //
@@ -19,5 +20,8 @@ private:
 
     //
 
+
+    // YDataProcessor interface
+protected:
 };
 

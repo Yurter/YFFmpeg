@@ -124,11 +124,11 @@ bool YMediaChain::init()
         std::cout << "[YMediaChain] Contingency audio source required" << std::endl;
         if (!_contingency_audio_source->open()) { return false; }
     }
-//    if (rescalerRequired()) {
-//        _rescaler = new YRescaler();
-//        if (!_rescaler->init(_decoder->videoCodecContext()
-//                              , _encoder->videoCodecContext())) { return false; }
-//    }
+    if (rescalerRequired()) {
+        _rescaler = new YRescaler();
+        if (!_rescaler->init(_decoder->videoCodecContext()
+                              , _encoder->videoCodecContext())) { return false; }
+    }
     if (resamplerRequired()) {
         _resampler = new YResampler();
         if (!_resampler->init(_decoder->audioCodecContext()
@@ -144,16 +144,21 @@ bool YMediaChain::init()
     _stream_map->addRoute(inAudStr, ouAudStr);
     //
 
-    /*-------------------- Необходимость обработки пакета ------------------*/
-    bool process_packet = true;
-    if (source_packet.isVideo() && optionInstalled(COPY_VIDEO)) { process_packet = false; }
-    if (source_packet.isAudio() && optionInstalled(COPY_AUDIO)) { process_packet = false; }
+    if (optionInstalled(COPY_VIDEO)) {
+        _decoder->setSkipType(YMediaType::MEDIA_TYPE_VIDEO);
+        _rescaler->setSkipType(YMediaType::MEDIA_TYPE_VIDEO);
+        _video_filter->setSkipType(YMediaType::MEDIA_TYPE_VIDEO);
+    }
 
+    if (optionInstalled(COPY_AUDIO)) {
+        _decoder->setSkipType(YMediaType::MEDIA_TYPE_AUDIO);
+        _resampler->setSkipType(YMediaType::MEDIA_TYPE_AUDIO);
+        _audio_filter->setSkipType(YMediaType::MEDIA_TYPE_AUDIO);
+    }
 
-    /*-------------------- Необходимость обработки фрейма ------------------*/
-    bool process_frame = true;
-    if (decoded_frame.isVideo() && _rescaler  == nullptr) { process_frame = false; }
-    if (decoded_frame.isAudio() && _resampler == nullptr) { process_frame = false; }
+    _resampler->connectOutputTo(_encoder);
+    _encoder->connectOutputTo(_stream_map);
+    _stream_map->connectOutputTo(_destination);
 
     _source->connectOutputTo(_decoder);
     _decoder->connectOutputTo(_resampler);

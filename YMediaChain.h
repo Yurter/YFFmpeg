@@ -3,7 +3,8 @@
 #include "base/YThread.h"
 #include "YSource.h"
 #include "YDecoder.h"
-#include "YMediaFilter.h"
+#include "YVideoFilter.h"
+#include "YAudioFilter.h"
 #include "YEncoder.h"
 #include "YDestination.h"
 #include "YRescaler.h"
@@ -69,8 +70,8 @@ private:
     YDecoder*           _decoder;
     YRescaler*          _rescaler;
     YResampler*         _resampler;
-    YMediaFilter*       _video_filter;
-    YMediaFilter*       _audio_filter;
+    YVideoFilter*       _video_filter;
+    YAudioFilter*       _audio_filter;
     YEncoder*           _encoder;
     YStreamMap*         _stream_map;
     YDestination*       _destination;

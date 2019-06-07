@@ -1,6 +1,9 @@
 #pragma once
 
-class YAbstractFilter
+#include "YFrame.h"
+#include "YDataProcessor.h"
+
+class YAbstractFilter : public YDataProcessor<YFrame,YFrame>
 {
 public:
     YAbstractFilter();
