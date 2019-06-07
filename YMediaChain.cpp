@@ -135,15 +135,26 @@ bool YMediaChain::init()
                               , _encoder->audioCodecContext())) { return false; }
     }
 
+    //TODO
+    YStream* inVidStr = _source->stream(_source->video_parameters.streamIndex());
+    YStream* inAudStr = _source->stream(_source->video_parameters.streamIndex());
+    YStream* ouVidStr = _destination->stream(_destination->video_parameters.streamIndex());
+    YStream* ouAudStr = _destination->stream(_destination->video_parameters.streamIndex());
+    _stream_map->addRoute(inVidStr, ouVidStr);
+    _stream_map->addRoute(inAudStr, ouAudStr);
+    //
+
     _source->connectOutputTo(_decoder);
     _decoder->connectOutputTo(_resampler);
     _resampler->connectOutputTo(_encoder);
-    _encoder->connectOutputTo(_destination);
+    _encoder->connectOutputTo(_stream_map);
+    _stream_map->connectOutputTo(_destination);
 
     _source->start();
     _decoder->start();
     _resampler->start();
     _encoder->start();
+    _stream_map->start();
     _destination->start();
 
     return true;

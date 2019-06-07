@@ -10,7 +10,6 @@
 #include "YResampler.h"
 #include "YStreamMap.h"
 
-#include <thread>
 #include <iostream>
 
 class YMediaChain : public YThread
@@ -68,13 +67,13 @@ private:
     // Media
     YSource*            _source;
     YDecoder*           _decoder;
+    YRescaler*          _rescaler;
+    YResampler*         _resampler;
     YMediaFilter*       _video_filter;
     YMediaFilter*       _audio_filter;
     YEncoder*           _encoder;
-    YDestination*       _destination;
-    YRescaler*          _rescaler;
-    YResampler*         _resampler;
     YStreamMap*         _stream_map;
+    YDestination*       _destination;
 
     YSource*       _contingency_video_source;
     YSource*       _contingency_audio_source;

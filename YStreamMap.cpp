@@ -13,10 +13,10 @@ YStreamMap::~YStreamMap()
     //
 }
 
-bool YStreamMap::addMap(YStream src_stream, YStream dst_stream)
+bool YStreamMap::addRoute(YStream* src_stream, YStream* dst_stream)
 {
-    if (src_stream.raw() == dst_stream.raw())   { return false; }
-    if (src_stream.type() != dst_stream.type()) { return false; }
+    if (src_stream->raw() == dst_stream->raw())   { return false; }
+    if (src_stream->type() != dst_stream->type()) { return false; }
     _map.insert(src_stream, dst_stream);
     setInited(true);
     return true;
@@ -36,6 +36,6 @@ YCode YStreamMap::processInputData(YPacket &input_data)
         return YCode::INVALID_INPUT;
     }
 
-    input_data.setStreamIndex(result->second.index());
+    input_data.setStreamIndex(result->second->index());
     return YCode::OK;
 }

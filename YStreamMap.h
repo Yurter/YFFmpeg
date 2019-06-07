@@ -14,12 +14,12 @@ public:
     YStreamMap();
     virtual ~YStreamMap();
 
-    bool addMap(YStream src_stream, YStream dst_stream);
+    bool addRoute(YStream* src_stream, YStream* dst_stream);
     YCode processInputData(YPacket& input_data);
 
 private:
 
     // General
-    std::map<YStream, YStream>      _map;
+    std::map<YStream*, YStream*>    _map;
 
 };
