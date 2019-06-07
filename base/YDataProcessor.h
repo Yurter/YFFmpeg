@@ -8,7 +8,7 @@
 #include "base/YPacket.h"
 
 template <class inType, class outType>
-class YDataProcessor : public YThread
+class YDataProcessor : public YThread, public YAsyncQueue<inType>
 {
 
 public:
