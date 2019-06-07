@@ -39,15 +39,39 @@ protected:
         return _output_queue.pop(output_data);
     }
 
-    YCode run() //TODO
+    virtual YCode start() final
     {
-        inType input_data;
-        if (!_input_queue.pop(input_data)) {
-            utils::sleep_for(SHORT_DELAY_MS);
-            return YCode::AGAIN;
+        if (_next_processor == nullptr) {
+            return YCode::NOT_INITED;
         }
-        auto ret = processInputData(input_data);
-        if (ret != YCode::OK) { return ret; }
+
+        _input_thread = YThread([this](){
+            inType input_data;
+            if (!_input_queue.pop(input_data)) {
+                utils::sleep_for(SHORT_DELAY_MS);
+                return YCode::AGAIN;
+            }
+            return processInputData(input_data);
+        });
+
+        _output_thread = YThread([this](){
+            outType output_data;
+            if (!_output_queue.pop(output_data)) {
+                utils::sleep_for(SHORT_DELAY_MS);
+                return YCode::AGAIN;
+            }
+            _next_processor->push(output_data);
+            return YCode::OK;
+        });
+
+        _input_thread.start();
+        _output_thread.start();
+
+        if (_input_thread.running() && _output_thread.running()) {
+            return YCode::OK;
+        } else {
+            return YCode::ERR;
+        }
     }
 
 protected:
