@@ -4,7 +4,8 @@
 #include "base/YDataProcessor.h"
 #include "YSource.h"
 #include "YDestination.h"
-#include <map>
+
+#include <vector>
 
 class YStreamMap : public YDataProcessor<YPacket,YPacket>
 {
@@ -20,6 +21,6 @@ public:
 private:
 
     // General
-    std::map<YStream*, YStream*>    _map;
+    std::vector<std::pair<YStream*,YStream*>>   _map;
 
 };
