@@ -2,12 +2,12 @@
 
 #include "base/ffmpeg.h"
 
-class YVideoRescaler
+class YRescaler
 {
 
 public:
 
-    YVideoRescaler();
+    YRescaler();
 
     bool init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context);
 

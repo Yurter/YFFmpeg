@@ -125,12 +125,12 @@ bool YMediaChain::init()
         if (!_contingency_audio_source->open()) { return false; }
     }
 //    if (rescalerRequired()) {
-//        _rescaler = new YVideoRescaler();
+//        _rescaler = new YRescaler();
 //        if (!_rescaler->init(_decoder->videoCodecContext()
 //                              , _encoder->videoCodecContext())) { return false; }
 //    }
     if (resamplerRequired()) {
-        _resampler = new YAudioResampler();
+        _resampler = new YResampler();
         if (!_resampler->init(_decoder->audioCodecContext()
                               , _encoder->audioCodecContext())) { return false; }
     }

@@ -4,13 +4,13 @@
 #include "base/YFrame.h"
 #include "base/YAbstractFrameProcessor.h"
 
-class YAudioResampler : public YAbstractFrameProcessor
+class YResampler : public YAbstractFrameProcessor
 {
 
 public:
 
-    YAudioResampler();
-    ~YAudioResampler() override;
+    YResampler();
+    ~YResampler() override;
 
     bool init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context);
 

@@ -1,16 +1,16 @@
 #include "YRescaler.h"
 
-YVideoRescaler::YVideoRescaler()
+YRescaler::YRescaler()
 {
     //
 }
 
-bool YVideoRescaler::init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context)
+bool YRescaler::init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context)
 {
     return false;
 }
 
-bool YVideoRescaler::rescale(AVFrame *frame)
+bool YRescaler::rescale(AVFrame *frame)
 {
     return false;
 }

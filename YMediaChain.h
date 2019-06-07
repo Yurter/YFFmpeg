@@ -70,10 +70,10 @@ private:
     YDecoder*           _decoder;
     YMediaFilter*       _video_filter;
     YMediaFilter*       _audio_filter;
-    YEncoder*      _encoder;
-    YDestination*  _destination;
-    YVideoRescaler*     _rescaler;
-    YAudioResampler*    _resampler;
+    YEncoder*           _encoder;
+    YDestination*       _destination;
+    YRescaler*          _rescaler;
+    YResampler*         _resampler;
     YStreamMap*         _stream_map;
 
     YSource*       _contingency_video_source;
