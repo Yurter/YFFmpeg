@@ -126,8 +126,6 @@ bool YMediaEncoder::initAudioCodec()
 
     _audio_codec_context = avcodec_alloc_context3(encoder);
 
-//    _audio_codec_context->codec_tag = 0;
-
     if (not_inited_smp_fmt(_destination->audio_parameters.sampleFormat())) {
         _destination->audio_parameters.setSampleFormat(encoder->sample_fmts[0]);
     }
@@ -154,37 +152,25 @@ bool YMediaEncoder::initAudioCodec()
     return true;
 }
 
-YCode YMediaEncoder::run()
+YCode YMediaEncoder::processInputData(YFrame &input_data, YPacket &output_data)
 {
-    YFrame frame;
-    if (!_frame_queue.pop(frame)) {
-        frame.free();
-        utils::sleep_for(MEDIUM_DELAY_MS);
-        return YCode::AGAIN;
-    }
-    YPacket encoded_packet;
-    encoded_packet.init();
-    encoded_packet.setType(frame.type());
+    output_data.init();
+    output_data.setType(input_data.type());
     AVCodecContext *codec_context = nullptr;
-    if (encoded_packet.isVideo()) { codec_context = _video_codec_context; }
-    if (encoded_packet.isAudio()) { codec_context = _audio_codec_context; }
+    if (input_data.isVideo()) { codec_context = _video_codec_context; }
+    if (input_data.isAudio()) { codec_context = _audio_codec_context; }
     if (codec_context == nullptr) {
         std::cerr << "[YMediaEncoder] codec_context is null" << std::endl;
         return YCode::ERR;
     }
     int ret;
-    auto test = AVERROR_EOF;
-    if ((ret = avcodec_send_frame(codec_context, frame.raw())) != 0) {
+    if ((ret = avcodec_send_frame(codec_context, input_data.raw())) != 0) {
         std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
         return YCode::ERR;
     }
-    if ((ret = avcodec_receive_packet(codec_context, &encoded_packet.raw())) != 0) {
-//        char* text_error = new char[AV_ERROR_MAX_STRING_SIZE]; //TODO
-//        av_strerror(ret, text_error, AV_ERROR_MAX_STRING_SIZE);
-//        std::cerr << "[YMediaEncoder] Could not receive packet " << ret << ", " << std::string(text_error) << std::endl;
+    if ((ret = avcodec_receive_packet(codec_context, &output_data.raw())) != 0) {
         return YCode::AGAIN;
     }
-    _packet_queue.push(encoded_packet);
-    frame.free(); //TODO
+    input_data.free(); //TODO
     return YCode::OK;
 }

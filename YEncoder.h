@@ -19,11 +19,11 @@ private:
 
     bool initVideoCodec() override;
     bool initAudioCodec() override;
-    YCode run() override;
+    YCode processInputData(YFrame& input_data, YPacket& output_data) override;
 
 private:
 
-    //General parametres
+    //General
     YMediaDestination*  _destination;
 
 };
