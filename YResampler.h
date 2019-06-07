@@ -16,7 +16,7 @@ public:
 
 private:
 
-    YCode run() override;
+    YCode processInputData(YFrame& input_data, YFrame& output_data) override;
     bool initOutputFrame(AVFrame **frame, int frame_size);
     bool configChanged(AVFrame *in, AVFrame *out);
     void stampFrame(AVFrame *frame);
@@ -33,8 +33,5 @@ protected:
     AVCodecContext*     _output_codec_context;
     SwrContext*         _resampler_context;
     AVAudioFifo*        _audio_fifo;
-
-    // Media parameters
-    //
 
 };

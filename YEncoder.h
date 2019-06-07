@@ -23,7 +23,7 @@ private:
 
 private:
 
-    //General
+    // General
     YMediaDestination*  _destination;
 
 };
