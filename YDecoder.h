@@ -4,6 +4,8 @@
 #include "base/YDataProcessor.h"
 #include "YSource.h"
 
+class YSource; //TODO
+
 class YDecoder : public YAbstractCoder, public YDataProcessor<YPacket,YFrame>
 {
 

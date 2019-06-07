@@ -13,26 +13,30 @@ class YDataProcessor : public YThread, public YAsyncQueue<inType>
 
 public:
 
-//    YDataProcessor() :
-//        _next_processor(nullptr) {}
+    YDataProcessor() :
+        _next_processor(nullptr) {}
 
     virtual ~YDataProcessor()
     {
-        _input_queue.clear();
+        //
     }
 
-//    template <class nextInType, class nextOutType>
-//    virtual void connectOutputTo(YDataProcessor<inType2,outType3>* next_processor) = 0;
+//    void connectOutputTo(YAsyncQueue<inType>* next_processor)
 //    {
 //        _next_processor = next_processor;
 //    }
-
-    virtual void connectOutputTo(YThread* next_processor) = 0;
-
-    virtual void push(inType input_data) final
+    virtual void connectOutputTo(YAsyncQueue<outType>* next_processor) final
     {
-        _input_queue.push(input_data);
+        _next_processor = next_processor;
     }
+//    virtual void connectOutputTo(YAsyncQueue<inType>* next_processor) final
+//    {
+//        _next_processor = next_processor;
+//    }
+//    virtual void connectOutputTo(YAsyncQueue<outType>* next_processor) final
+//    {
+//        _next_processor = next_processor;
+//    }
 
 protected:
 
@@ -50,21 +54,18 @@ private:
 
     YCode run() override final
     {
-        inType input_data;
-        if (!_input_queue.pop(input_data)) {
-            utils::sleep_for(SHORT_DELAY_MS);
-            return YCode::AGAIN;
-        }
-        return processInputData(input_data);
+//        inType input_data;
+//        if (!_input_queue.pop(input_data)) {
+//            utils::sleep_for(SHORT_DELAY_MS);
+//            return YCode::AGAIN;
+//        }
+//        return processInputData(input_data);
+        return YCode::ERR;
     }
-
-private:
-
-    YAsyncQueue<inType>     _input_queue;
 
 protected:
 
 
-    YThread*                _next_processor;
+    YAsyncQueue<outType>*                _next_processor;
 
 };

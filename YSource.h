@@ -14,8 +14,6 @@ public:
     bool            open()  override;
     bool            close() override;
 
-    void    connectOutputTo(YDecoder *next_processor);
-
     AVInputFormat*  inputFormat() const;
 
 private:

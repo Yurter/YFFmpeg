@@ -34,16 +34,6 @@ bool YEncoder::init()
     return true;
 }
 
-void YEncoder::pushFrame(YFrame &frame)
-{
-    _frame_queue.push(frame);
-}
-
-bool YEncoder::popPacket(YPacket &packet)
-{
-    return _packet_queue.pop(packet);
-}
-
 //bool YEncoder::encodeFrames(YPacket& encoded_packet, std::list<AVFrame*>& decoded_frames) //TODO
 //{
 //    AVCodecContext *codec_context = nullptr;

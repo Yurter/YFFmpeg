@@ -166,15 +166,15 @@ bool YMediaDestination::openOutput()
 
 YCode YMediaDestination::write()
 {
-    { // debug
-        std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
-        std::cout << "[YMediaDestination] v: " << stream(0)->duration() << ", a: " << stream(1)->duration() << std::endl << std::endl;
-        std::cout << "[YMediaDestination] v: " << _video_packet_index << ", a: " << _audio_packet_index << std::endl << std::endl;
-    }
-    if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
-        std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
-        return YCode::ERR;
-    }
+//    { // debug
+//        std::cout << "[YMediaDestination] " << packet.toString() << std::endl;
+//        std::cout << "[YMediaDestination] v: " << stream(0)->duration() << ", a: " << stream(1)->duration() << std::endl << std::endl;
+//        std::cout << "[YMediaDestination] v: " << _video_packet_index << ", a: " << _audio_packet_index << std::endl << std::endl;
+//    }
+//    if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
+//        std::cerr << "[YMediaDestination] Error muxing packet" << std::endl;
+//        return YCode::ERR;
+//    }
     return YCode::OK;
 }
 

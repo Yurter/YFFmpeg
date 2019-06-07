@@ -10,7 +10,7 @@ class YAsyncQueue
 public:
 
     YAsyncQueue() : _queue_capacity(100) {}
-    ~YAsyncQueue() {}
+    ~YAsyncQueue() { clear(); }
 
     void push(Type data)
     {

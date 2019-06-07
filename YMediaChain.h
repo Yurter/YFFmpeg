@@ -30,7 +30,7 @@ public:
 
     ~YMediaChain() override;
 
-    void start() override;
+//    void start() override;
     bool stop();
     void pause();
     void unpause();

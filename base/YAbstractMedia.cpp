@@ -23,7 +23,6 @@ YAbstractMedia::~YAbstractMedia()
 bool YAbstractMedia::close()
 {
     if (!_opened) { return false; }
-    _packet_queue.clear();
     avformat_free_context(_media_format_context);
     _opened = false;
     return true;
