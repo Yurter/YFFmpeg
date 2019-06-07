@@ -35,11 +35,12 @@ enum YCode {
     OK,
     ERR,
     AGAIN,
+    NOT_INITED,
     END_OF_FILE,
-    INVALID_INPUT
+    INVALID_INPUT,
 };
 
-/* Опции для настройки  */
+/* Опции для настройки */
 enum YOptions {
     COPY_VIDEO      = 0x0001,
     COPY_AUDIO      = 0x0002,

@@ -4,12 +4,12 @@
 
 YThread::YThread() :
     _running(false),
-    _loop_function(nullptr)
+    _loop_function(std::bind(&YThread::run,this))
 {
     //
 }
 
-YThread::YThread(std::function<YCode(void)>* loop_function) :
+YThread::YThread(std::function<YCode(void)> loop_function) :
     _loop_function(loop_function)
 {
     //
@@ -25,11 +25,7 @@ void YThread::start()
     if (_running) { return; }
     _running = true;
     _thread = std::thread([this]() {
-//        auto test = &
-        std::function<YCode(void)>* run_function = (_loop_function == nullptr)
-                                    ? &YThread::run
-                                    : _loop_function;
-        while (_running && !utils::exit_code(_test())) {}
+        while (_running && !utils::exit_code(_loop_function())) {}
         _running = false;
     });
     _thread.detach();
@@ -49,14 +45,5 @@ bool YThread::running()
 
 YCode YThread::run()
 {
-    if (_running) { return YCode::ERR; }
-    _running = true;
-    YCode ret;
-    _thread = std::thread([this,loop_function,ret]() {
-        ret =
-        while (_running && !utils::exit_code(loop_function())) {}
-        _running = false;
-    });
-    _thread.detach();
-    return ret;
+    return YCode::NOT_INITED;
 }
