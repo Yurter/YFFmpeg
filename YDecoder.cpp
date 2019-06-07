@@ -34,16 +34,6 @@ bool YMediaDecoder::init()
     return true;
 }
 
-void YMediaDecoder::pushPacket(YPacket &packet)
-{
-    _packet_queue.push(packet);
-}
-
-bool YMediaDecoder::popFrame(YFrame &frame)
-{
-    return _frame_queue.pop(frame);
-}
-
 bool YMediaDecoder::initVideoCodec()
 {
     bool copied = copyCodecPar(_source->mediaFormatContext(), AVMEDIA_TYPE_VIDEO, _source->video_parameters.streamIndex(), &_video_codec_context);
@@ -89,33 +79,26 @@ bool YMediaDecoder::copyCodecPar(AVFormatContext *input_format_context, AVMediaT
     return true;
 }
 
-YCode YMediaDecoder::run()
+YCode YMediaDecoder::processInputData(YPacket& input_data, YFrame& output_data)
 {
-    YPacket packet;
-    if (!_packet_queue.pop(packet)) {
-        utils::sleep_for(SHORT_DELAY_MS);
-        return YCode::AGAIN;
-    }
     AVCodecContext *codec_context = nullptr;
-    if (packet.isVideo()) { codec_context = _video_codec_context; }
-    if (packet.isAudio()) { codec_context = _audio_codec_context; }
+    if (input_data.isVideo()) { codec_context = _video_codec_context; }
+    if (input_data.isAudio()) { codec_context = _audio_codec_context; }
     if (codec_context == nullptr) {
         std::cerr << "[YMediaDecoder] codec_context is null" << std::endl;
         return YCode::ERR;
     }
-    if (!packet.empty()) {
-        if (avcodec_send_packet(codec_context, &packet.raw()) != 0) {
+    if (!input_data.empty()) {
+        if (avcodec_send_packet(codec_context, &input_data.raw()) != 0) {
             std::cerr << "[YMediaDecoder] Could not send packet" << std::endl;
             return YCode::ERR;
         }
     }
-    YFrame decoded_frame;
-    decoded_frame.alloc();
-    int ret = avcodec_receive_frame(codec_context, decoded_frame.raw());
+    output_data.alloc();
+    int ret = avcodec_receive_frame(codec_context, output_data.raw());
     switch (ret) {
     case 0:
-        decoded_frame.setType(packet.type());
-        _frame_queue.push(decoded_frame);
+        output_data.setType(input_data.type());
         return YCode::OK;
     case AVERROR(EAGAIN):
         return YCode::AGAIN;

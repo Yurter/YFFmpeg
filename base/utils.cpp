@@ -21,6 +21,7 @@ void utils::sleep_for(int64_t milliseconds)
 bool utils::exit_code(YCode code)
 {
     if (code == YCode::ERR)             { return true; }
+    if (code == YCode::NOT_INITED)      { return true; }
     if (code == YCode::END_OF_FILE)     { return true; }
     if (code == YCode::INVALID_INPUT)   { return true; }
     return false;

@@ -74,7 +74,7 @@ bool YMediaSource::openInput()
     }
 }
 
-YCode YMediaSource::run()
+YCode YMediaSource::processInputData(YPacket input_data)
 {
     if (_packet_queue.full()) {
         utils::sleep_for(MEDIUM_DELAY_MS);

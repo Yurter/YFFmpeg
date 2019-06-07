@@ -20,7 +20,7 @@ private:
     bool            guessInputFromat();
     bool            openInput();
 
-    YCode           run() override;
+    YCode           processInputData(YPacket input_data) override;
 
     void            parseInputFormat(); //TODO : YAbstractMedia::parseIOFormat
     void            analyzePacket(YPacket& packet);

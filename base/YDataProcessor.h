@@ -31,7 +31,7 @@ public:
 
 protected:
 
-    virtual YCode processInputData(inType& input_data, inType& output_data) = 0;
+    virtual YCode processInputData(inType& input_data, outType& output_data) = 0;
 
 private:
 
