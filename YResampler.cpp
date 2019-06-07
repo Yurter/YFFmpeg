@@ -19,16 +19,6 @@ YAudioResampler::~YAudioResampler()
     }
 }
 
-void YAudioResampler::push(YFrame frame)
-{
-    _input_frame_queue.push(frame);
-}
-
-bool YAudioResampler::pop(YFrame &frame)
-{
-    return _output_frame_queue.pop(frame);
-}
-
 bool YAudioResampler::init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context)
 {
     if (_inited) {

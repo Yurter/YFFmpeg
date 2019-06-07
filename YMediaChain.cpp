@@ -135,6 +135,11 @@ bool YMediaChain::init()
                               , _encoder->audioCodecContext())) { return false; }
     }
 
+    _source ->connectOutputTo(&_decoder);
+    _decoder->connectOutputTo(&_resampler);
+    _resampler->connectOutputTo(&_encoder);
+    _encoder->connectOutputTo(&_destination);
+
     _source->start();
     _decoder->start();
 //    _rescaler->start();

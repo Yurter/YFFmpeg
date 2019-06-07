@@ -203,17 +203,6 @@ void YMediaDestination::parseOutputFormat()
     }
 }
 
-YCode YMediaDestination::run()
-{
-    YPacket packet;
-    if (!_packet_queue.pop(packet)) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        return YCode::AGAIN;
-    }
-
-
-}
-
 bool YMediaDestination::stampPacket(YPacket &packet) //TODO перенести код в YStream
 {
 //    if (packet.isVideo()) {

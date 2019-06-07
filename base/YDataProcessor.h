@@ -24,7 +24,7 @@ public:
         _next_processor = next_processor;
     }
 
-    void push(inType input_data)
+    virtual void push(inType input_data)
     {
         _input_queue.push(input_data);
     }

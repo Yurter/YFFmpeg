@@ -29,6 +29,11 @@ std::string YStream::toString() const
     return "TODO";
 }
 
+bool YStream::stampPacket(YPacket &packet)
+{
+    return false;
+}
+
 int64_t YStream::index() const
 {
     return _data->index;
