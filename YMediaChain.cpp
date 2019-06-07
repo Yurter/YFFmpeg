@@ -174,6 +174,7 @@ bool YMediaChain::init()
 
 YCode YMediaChain::run()
 {
+//    if (!_inited)
     if (_source->running() == false)        { return YCode::ERR; } //TODO return lastError
     if (_decoder->running() == false)       { return YCode::ERR; }
     if (_resampler->running() == false)     { return YCode::ERR; }

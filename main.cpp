@@ -70,6 +70,7 @@ int main()
 
 
 
+    chain.init();
     chain.start();
     while (chain.active()) {
         utils::sleep_for(LONG_DELAY_MS);

@@ -7,6 +7,8 @@ YSource::YSource(const std::string &mrl, YMediaPreset preset) :
     _input_format(nullptr)
 {
     switch (preset) {
+    case Auto:
+        break;
     case Virtual:
         avdevice_register_all();
         guessInputFromat();

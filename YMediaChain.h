@@ -44,9 +44,9 @@ public:
     void setVideoFilter(std::string video_filter);
     void setAudioFilter(std::string audio_filter);
 
-private:
 
     bool init();
+private:
     YCode run() override;
 
     bool rescalerRequired();

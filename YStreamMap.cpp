@@ -15,9 +15,11 @@ YStreamMap::~YStreamMap()
 
 bool YStreamMap::addRoute(YStream* src_stream, YStream* dst_stream)
 {
+    if (src_stream == nullptr) { return false; }
+    if (dst_stream == nullptr) { return false; }
     if (src_stream->raw() == dst_stream->raw())   { return false; }
     if (src_stream->type() != dst_stream->type()) { return false; }
-    _map.push_back({src_stream, dst_stream});
+    _map.push_back(std::pair(src_stream, dst_stream));
     setInited(true);
     return true;
 }

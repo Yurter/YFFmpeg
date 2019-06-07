@@ -118,5 +118,9 @@ AVFormatContext *YAbstractMedia::mediaFormatContext() const
 
 YStream* YAbstractMedia::stream(uint64_t index)
 {
-    return &_streams[index];
+    if (index < _streams.size()) {
+        return &_streams[index];
+    } else {
+        return nullptr;
+    }
 }
