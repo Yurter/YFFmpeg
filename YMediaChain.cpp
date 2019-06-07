@@ -144,6 +144,17 @@ bool YMediaChain::init()
     _stream_map->addRoute(inAudStr, ouAudStr);
     //
 
+    /*-------------------- Необходимость обработки пакета ------------------*/
+    bool process_packet = true;
+    if (source_packet.isVideo() && optionInstalled(COPY_VIDEO)) { process_packet = false; }
+    if (source_packet.isAudio() && optionInstalled(COPY_AUDIO)) { process_packet = false; }
+
+
+    /*-------------------- Необходимость обработки фрейма ------------------*/
+    bool process_frame = true;
+    if (decoded_frame.isVideo() && _rescaler  == nullptr) { process_frame = false; }
+    if (decoded_frame.isAudio() && _resampler == nullptr) { process_frame = false; }
+
     _source->connectOutputTo(_decoder);
     _decoder->connectOutputTo(_resampler);
     _resampler->connectOutputTo(_encoder);

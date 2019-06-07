@@ -16,7 +16,9 @@ public:
     YDataProcessor() :
         _next_processor(nullptr),
         _last_error(YCode::OK),
-        _inited(false) {}
+        _inited(false),
+        _skip_types(0),
+        _ignore_types(0) {}
 
     virtual ~YDataProcessor()
     {
@@ -32,6 +34,12 @@ public:
 
     void    setInited(bool inited) { _inited = inited; }
     bool    inited() const { return _inited; }
+
+    void    setSkipType(YMediaType type) { _skip_types |= type; }
+    bool    skipType(YMediaType type) { return _skip_types &= type; }
+
+    void    setIgnoreType(YMediaType type) { _ignore_types |= type; }
+    bool    ignoreType(YMediaType type) { return _ignore_types &= type; }
 
 protected:
 
@@ -66,5 +74,8 @@ private:
 
     YCode       _last_error;
     bool        _inited;
+
+    int64_t     _skip_types;
+    int64_t     _ignore_types;
 
 };

@@ -49,9 +49,9 @@ enum YOptions {
 
 /* Медиа тип потока/пакета/фрейма */
 enum YMediaType {
-    MEDIA_TYPE_UNKNOWN,
-    MEDIA_TYPE_VIDEO,
-    MEDIA_TYPE_AUDIO
+    MEDIA_TYPE_UNKNOWN  = 0x0001,
+    MEDIA_TYPE_VIDEO    = 0x0002,
+    MEDIA_TYPE_AUDIO    = 0x0004
 };
 
 /* Значения по умолчанию для видео- и аудиопараметров */
