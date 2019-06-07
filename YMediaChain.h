@@ -23,10 +23,10 @@ public:
                 int64_t             options = 0);
 
     YMediaChain(YSource*       source,
-                YMediaFilter*       video_filter,
-                YMediaFilter*       audio_filter,
+                YVideoFilter*  video_filter,
+                YAudioFilter*  audio_filter,
                 YDestination*  destination,
-                int64_t             options);
+                int64_t        options);
 
     ~YMediaChain() override;
 

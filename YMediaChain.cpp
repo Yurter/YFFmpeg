@@ -13,18 +13,18 @@ YMediaChain::YMediaChain(YSource*      source,
 }
 
 YMediaChain::YMediaChain(YSource*      source,
-                         YMediaFilter*      video_filter,
-                         YMediaFilter*      audio_filter,
+                         YVideoFilter* video_filter,
+                         YAudioFilter* audio_filter,
                          YDestination* destination,
-                         int64_t            options) :
+                         int64_t       options) :
     _source(source),
     _decoder(new YDecoder(source)),
+    _rescaler(nullptr),
+    _resampler(nullptr),
     _video_filter(video_filter),
     _audio_filter(audio_filter),
     _encoder(new YEncoder(destination)),
     _destination(destination),
-    _rescaler(nullptr),
-    _resampler(nullptr),
     _contingency_video_source(nullptr),
     _contingency_audio_source(nullptr),
     _paused(false),
@@ -155,10 +155,6 @@ bool YMediaChain::init()
         _resampler->setSkipType(YMediaType::MEDIA_TYPE_AUDIO);
         _audio_filter->setSkipType(YMediaType::MEDIA_TYPE_AUDIO);
     }
-
-    _resampler->connectOutputTo(_encoder);
-    _encoder->connectOutputTo(_stream_map);
-    _stream_map->connectOutputTo(_destination);
 
     _source->connectOutputTo(_decoder);
     _decoder->connectOutputTo(_resampler);
