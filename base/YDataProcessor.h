@@ -6,7 +6,7 @@
 #include "YAsyncQueue.h"
 
 template <class inType, class outType>
-class YDataProcessor : YThread
+class YDataProcessor
 {
 
 public:
@@ -16,6 +16,8 @@ public:
 
     virtual ~YDataProcessor()
     {
+        _input_thread.quit();
+        _output_thread.quit();
         _input_queue.clear();
     }
 
@@ -27,6 +29,36 @@ public:
     void push(inType input_data)
     {
         _input_queue.push(input_data);
+    }
+
+    YCode start()
+    {
+        if (_next_processor == nullptr) {
+            return YCode::NOT_INITED;
+        }
+
+        _input_thread = [this](){
+            inType input_data;
+            if (!_input_queue.pop(input_data)) {
+                utils::sleep_for(SHORT_DELAY_MS);
+                return YCode::AGAIN;
+            }
+            auto ret = processInputData(input_data)
+        };
+
+        _output_thread = [this](){
+            //
+        };
+
+        _input_thread.start();
+        _output_thread.start();
+
+        if (!_input_thread.running() || !_output_thread.running()) {
+            _input_thread.quit();
+            _output_thread.quit();
+            return YCode::ERR;
+        }
+        return YCode::OK;
     }
 
 protected:
@@ -55,7 +87,10 @@ private:
 
 private:
 
+    YThread                 _input_thread;
+    YThread                 _output_thread;
     YAsyncQueue<inType>     _input_queue;
+    YAsyncQueue<outType>    _output_queue;
     YDataProcessor*         _next_processor;
 
 };
