@@ -14,4 +14,6 @@ public:
 
     bool rescale(AVFrame* frame);
 
+    YCode processInputData(YFrame& input_data);
 };
+

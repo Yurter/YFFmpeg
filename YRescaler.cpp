@@ -14,3 +14,8 @@ bool YRescaler::rescale(AVFrame *frame)
 {
     return false;
 }
+
+YCode YRescaler::processInputData(YFrame& input_data)
+{
+    return YCode::ERR;
+}
