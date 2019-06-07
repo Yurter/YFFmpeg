@@ -66,11 +66,11 @@ private:
 private:
 
     // Media
-    YSource*       _source;
-    YMediaDecoder*      _decoder;
+    YSource*            _source;
+    YDecoder*           _decoder;
     YMediaFilter*       _video_filter;
     YMediaFilter*       _audio_filter;
-    YMediaEncoder*      _encoder;
+    YEncoder*      _encoder;
     YMediaDestination*  _destination;
     YVideoRescaler*     _rescaler;
     YAudioResampler*    _resampler;

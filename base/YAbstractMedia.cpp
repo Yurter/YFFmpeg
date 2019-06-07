@@ -121,18 +121,3 @@ YStream* YAbstractMedia::stream(uint64_t index)
 {
     return &_streams[index];
 }
-
-std::vector<YStream>* YAbstractMedia::streams()
-{
-    return &_streams;
-}
-
-void YAbstractMedia::push(YPacket packet)
-{
-    _packet_queue.push(packet);
-}
-
-bool YAbstractMedia::pop(YPacket &packet)
-{
-    return _packet_queue.pop(packet);
-}

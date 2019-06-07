@@ -1,50 +1,50 @@
 #include "YEncoder.h"
 #include <iostream>
 
-YMediaEncoder::YMediaEncoder(YMediaDestination *destination) :
+YEncoder::YEncoder(YMediaDestination *destination) :
     _destination(destination)
 {
     //
 }
 
-YMediaEncoder::~YMediaEncoder()
+YEncoder::~YEncoder()
 {
     //
 }
 
-bool YMediaEncoder::init()
+bool YEncoder::init()
 {
     if (_destination->video_parameters.available()) {
         if (!initVideoCodec()) {
-            std::cerr << "[YMediaDecoder] Failed to init video codec" << std::endl;
+            std::cerr << "[YDecoder] Failed to init video codec" << std::endl;
             return false;
         }
     }
     if (_destination->audio_parameters.available()) {
         if (!initAudioCodec()) {
-            std::cerr << "[YMediaDecoder] Failed to init audio codec" << std::endl;
+            std::cerr << "[YDecoder] Failed to init audio codec" << std::endl;
             return false;
         }
     }
     if (_destination->mediaFormatContext()->nb_streams == 0) {
-        std::cerr << "[YMediaEncoder] Failed to initialize destination." << std::endl;
+        std::cerr << "[YEncoder] Failed to initialize destination." << std::endl;
         return false;
     }
-    std::cout << "[YMediaEncoder] Inited" << std::endl;
+    std::cout << "[YEncoder] Inited" << std::endl;
     return true;
 }
 
-void YMediaEncoder::pushFrame(YFrame &frame)
+void YEncoder::pushFrame(YFrame &frame)
 {
     _frame_queue.push(frame);
 }
 
-bool YMediaEncoder::popPacket(YPacket &packet)
+bool YEncoder::popPacket(YPacket &packet)
 {
     return _packet_queue.pop(packet);
 }
 
-//bool YMediaEncoder::encodeFrames(YPacket& encoded_packet, std::list<AVFrame*>& decoded_frames) //TODO
+//bool YEncoder::encodeFrames(YPacket& encoded_packet, std::list<AVFrame*>& decoded_frames) //TODO
 //{
 //    AVCodecContext *codec_context = nullptr;
 //    if (encoded_packet.isVideo()) { codec_context = _video_codec_context; }
@@ -52,25 +52,25 @@ bool YMediaEncoder::popPacket(YPacket &packet)
 //    int ret;
 //    for (auto&& decoded_frame : decoded_frames) {
 //        if ((ret = avcodec_send_frame(codec_context, decoded_frame)) != 0) {
-//            std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
+//            std::cerr << "[YEncoder] Could not send frame " << ret << std::endl;
 //            return false;
 //        }
 //    }
 //    if ((ret = avcodec_receive_packet(codec_context, encoded_packet.raw())) != 0) {
 //        char* text_error = new char[AV_ERROR_MAX_STRING_SIZE]; //TODO
 //        av_strerror(ret, text_error, AV_ERROR_MAX_STRING_SIZE);
-//        std::cerr << "[YMediaEncoder] Could not receive packet " << ret << " " << AVERROR(EAGAIN) << " " << std::string(text_error) << std::endl;
+//        std::cerr << "[YEncoder] Could not receive packet " << ret << " " << AVERROR(EAGAIN) << " " << std::string(text_error) << std::endl;
 //        return false;
 //    }
 //    return true;
 //}
 
-bool YMediaEncoder::initVideoCodec()
+bool YEncoder::initVideoCodec()
 {
 //    AVCodec *decoder = avcodec_find_encoder_by_name(_destination->videoCodecName().c_str());
     AVCodec *decoder = avcodec_find_encoder(_destination->video_parameters.codecId());
     if (decoder == nullptr) {
-        std::cerr << "[YMediaEncoder] Could not find video encoder " << _destination->video_parameters.codecName() << std::endl;
+        std::cerr << "[YEncoder] Could not find video encoder " << _destination->video_parameters.codecName() << std::endl;
         return false;
     }
     _video_codec_context = avcodec_alloc_context3(decoder);
@@ -105,7 +105,7 @@ bool YMediaEncoder::initVideoCodec()
 
 
     if (avcodec_open2(_video_codec_context, decoder, nullptr) < 0) {
-        std::cerr << "[YMediaEncoder] Could not open video encoder" << std::endl;
+        std::cerr << "[YEncoder] Could not open video encoder" << std::endl;
         return false;
     }
 
@@ -116,11 +116,11 @@ bool YMediaEncoder::initVideoCodec()
     return true;
 }
 
-bool YMediaEncoder::initAudioCodec()
+bool YEncoder::initAudioCodec()
 {
     AVCodec *encoder = avcodec_find_encoder(_destination->audio_parameters.codecId());
     if (encoder == nullptr) {
-        std::cerr << "[YMediaEncoder] Could not find audio encoder " << _destination->audio_parameters.codecName() << std::endl;
+        std::cerr << "[YEncoder] Could not find audio encoder " << _destination->audio_parameters.codecName() << std::endl;
         return false;
     }
 
@@ -141,7 +141,7 @@ bool YMediaEncoder::initAudioCodec()
     _audio_codec_context->time_base =       { 1, _audio_codec_context->sample_rate };
 
     if (avcodec_open2(_audio_codec_context, encoder, nullptr) < 0) {
-        std::cerr << "[YMediaEncoder] Could not open audio encoder" << std::endl;
+        std::cerr << "[YEncoder] Could not open audio encoder" << std::endl;
         return false;
     }
 
@@ -152,7 +152,7 @@ bool YMediaEncoder::initAudioCodec()
     return true;
 }
 
-YCode YMediaEncoder::processInputData(YFrame& input_data)
+YCode YEncoder::processInputData(YFrame& input_data)
 {
     YPacket output_data;
     output_data.init();
@@ -161,12 +161,12 @@ YCode YMediaEncoder::processInputData(YFrame& input_data)
     if (input_data.isVideo()) { codec_context = _video_codec_context; }
     if (input_data.isAudio()) { codec_context = _audio_codec_context; }
     if (codec_context == nullptr) {
-        std::cerr << "[YMediaEncoder] codec_context is null" << std::endl;
+        std::cerr << "[YEncoder] codec_context is null" << std::endl;
         return YCode::ERR;
     }
     int ret;
     if ((ret = avcodec_send_frame(codec_context, input_data.raw())) != 0) {
-        std::cerr << "[YMediaEncoder] Could not send frame " << ret << std::endl;
+        std::cerr << "[YEncoder] Could not send frame " << ret << std::endl;
         return YCode::ERR;
     }
     if ((ret = avcodec_receive_packet(codec_context, &output_data.raw())) != 0) {

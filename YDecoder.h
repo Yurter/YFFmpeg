@@ -4,14 +4,14 @@
 #include "base/YDataProcessor.h"
 #include "YSource.h"
 
-class YMediaDecoder : public YAbstractCoder, public YDataProcessor<YPacket,YFrame>
+class YDecoder : public YAbstractCoder, public YDataProcessor<YPacket,YFrame>
 {
 
 public:
 
-    YMediaDecoder() = delete;
-    YMediaDecoder(YSource *source);
-    virtual ~YMediaDecoder() override;
+    YDecoder() = delete;
+    YDecoder(YSource *source);
+    virtual ~YDecoder() override;
 
     bool init() override;
 
@@ -20,7 +20,7 @@ private:
     bool initVideoCodec() override;
     bool initAudioCodec() override;
     bool copyCodecPar(AVFormatContext* input_format_context, AVMediaType media_tipe, int64_t stream_index, AVCodecContext** codec_context); //TODO arg list
-    YCode processInputData(YPacket& input_data) override;
+    virtual YCode processInputData(YPacket& input_data) override;
 
 private:
 

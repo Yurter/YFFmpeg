@@ -4,14 +4,14 @@
 #include "base/YDataProcessor.h"
 #include "YDestination.h"
 
-class YMediaEncoder : public YAbstractCoder, public YDataProcessor<YFrame,YPacket>
+class YEncoder : public YAbstractCoder, public YDataProcessor<YFrame,YPacket>
 {
 
 public:
 
-    YMediaEncoder() = delete;
-    YMediaEncoder(YMediaDestination *destination);
-    virtual ~YMediaEncoder() override;
+    YEncoder() = delete;
+    YEncoder(YMediaDestination *destination);
+    virtual ~YEncoder() override;
 
     bool init() override;
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "base/YAbstractMedia.h"
+#include "YDecoder.h"
 
 class YSource : public YAbstractMedia
 {
@@ -12,6 +13,8 @@ public:
 
     bool            open()  override;
     bool            close() override;
+
+    void    connectOutputTo(YDecoder *next_processor);
 
     AVInputFormat*  inputFormat() const;
 

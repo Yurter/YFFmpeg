@@ -43,6 +43,15 @@ bool YSource::close()
     return true;
 }
 
+void YSource::connectOutputTo(YDecoder *next_processor)
+{
+    auto func = std::bind(&YDecoder::push, next_processor);
+    YPacket pkt;
+    next_processor->push(pkt);
+    next_processor->push(pkt);
+//    _next_processor = next_processor;
+}
+
 bool YSource::guessInputFromat()
 {
     AVInputFormat* input_format = av_find_input_format(guessFormatShortName().c_str());

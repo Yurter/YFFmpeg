@@ -18,10 +18,10 @@ YMediaChain::YMediaChain(YSource*      source,
                          YMediaDestination* destination,
                          int64_t            options) :
     _source(source),
-    _decoder(new YMediaDecoder(source)),
+    _decoder(new YDecoder(source)),
     _video_filter(video_filter),
     _audio_filter(audio_filter),
-    _encoder(new YMediaEncoder(destination)),
+    _encoder(new YEncoder(destination)),
     _destination(destination),
     _rescaler(nullptr),
     _resampler(nullptr),
@@ -124,24 +124,29 @@ bool YMediaChain::init()
         std::cout << "[YMediaChain] Contingency audio source required" << std::endl;
         if (!_contingency_audio_source->open()) { return false; }
     }
-    if (rescalerRequired()) {
-        _rescaler = new YVideoRescaler();
-        if (!_rescaler->init(_decoder->videoCodecContext()
-                              , _encoder->videoCodecContext())) { return false; }
-    }
-    if (resamplerRequired()) {
-        _resampler = new YAudioResampler();
-        if (!_resampler->init(_decoder->audioCodecContext()
-                              , _encoder->audioCodecContext())) { return false; }
-    }
+//    if (rescalerRequired()) {
+//        _rescaler = new YVideoRescaler();
+//        if (!_rescaler->init(_decoder->videoCodecContext()
+//                              , _encoder->videoCodecContext())) { return false; }
+//    }
+//    if (resamplerRequired()) {
+//        _resampler = new YAudioResampler();
+//        if (!_resampler->init(_decoder->audioCodecContext()
+//                              , _encoder->audioCodecContext())) { return false; }
+//    }
 
-    _source ->connectOutputTo(&_decoder);
-    _decoder->connectOutputTo(&_resampler);
-    _resampler->connectOutputTo(&_encoder);
-    _encoder->connectOutputTo(&_destination);
+
+    YThread* test_ptr = new YEncoder(_destination);
+
+    _source->connectOutputTo(_decoder);
+    _decoder->connectOutputTo(_resampler);
+    _resampler->connectOutputTo(_encoder);
+    _encoder->connectOutputTo(_destination);
+
+
 
     _source->start();
-    _decoder->start();
+//    _decoder->start();
 //    _rescaler->start();
     _resampler->start();
     _encoder->start();

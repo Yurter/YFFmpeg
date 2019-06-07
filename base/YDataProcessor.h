@@ -4,6 +4,8 @@
 #include "utils.h"
 #include "YThread.h"
 #include "YAsyncQueue.h"
+#include "base/YData.h"
+#include "base/YPacket.h"
 
 template <class inType, class outType>
 class YDataProcessor : public YThread
@@ -11,20 +13,23 @@ class YDataProcessor : public YThread
 
 public:
 
-    YDataProcessor() :
-        _next_processor(nullptr) {}
+//    YDataProcessor() :
+//        _next_processor(nullptr) {}
 
     virtual ~YDataProcessor()
     {
         _input_queue.clear();
     }
 
-    void connectOutputTo(YDataProcessor* next_processor)
-    {
-        _next_processor = next_processor;
-    }
+//    template <class nextInType, class nextOutType>
+//    virtual void connectOutputTo(YDataProcessor<inType2,outType3>* next_processor) = 0;
+//    {
+//        _next_processor = next_processor;
+//    }
 
-    virtual void push(inType input_data)
+    virtual void connectOutputTo(YThread* next_processor) = 0;
+
+    virtual void push(inType input_data) final
     {
         _input_queue.push(input_data);
     }
@@ -56,6 +61,10 @@ private:
 private:
 
     YAsyncQueue<inType>     _input_queue;
-    YDataProcessor*         _next_processor;
+
+protected:
+
+
+    YThread*                _next_processor;
 
 };
