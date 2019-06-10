@@ -92,3 +92,6 @@ enum YLogLevel {
 #define SHORT_DELAY_MS          10
 #define MEDIUM_DELAY_MS         100
 #define LONG_DELAY_MS           1000
+
+//удалить
+#define print_func std::cout << __FUNCTION__ << std::endl;

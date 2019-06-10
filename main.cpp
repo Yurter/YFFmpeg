@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-    av_log_set_level(AV_LOG_VERBOSE);
+//    av_log_set_level(AV_LOG_VERBOSE);
 //    av_log_set_level(AV_LOG_DEBUG);
     cout << "Program started..." << endl;
 

@@ -163,7 +163,7 @@ bool YMediaChain::init()
     _stream_map->connectOutputTo(_destination);
 
     _source->start();
-//    _decoder->start();
+    _decoder->start();
 //    _resampler->start();
 //    _encoder->start();
 //    _stream_map->start();
