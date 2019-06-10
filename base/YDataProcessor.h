@@ -35,7 +35,10 @@ public:
     void    setInited(bool inited) { _inited = inited; }
     bool    inited() const { return _inited; }
 
-    void    setSkipType(YMediaType type) { _skip_types |= type; }
+    void    setSkipType(YMediaType type) {
+        auto aaa = _skip_types;
+        _skip_types |= type;
+    }
     bool    skipType(YMediaType type) { return _skip_types &= type; }
 
     void    setIgnoreType(YMediaType type) { _ignore_types |= type; }
@@ -57,13 +60,12 @@ private:
 
     YCode run() override final
     {
-//        inType input_data;
-//        if (!_input_queue.pop(input_data)) {
-//            utils::sleep_for(SHORT_DELAY_MS);
-//            return YCode::AGAIN;
-//        }
-//        return processInputData(input_data);
-        return YCode::ERR;
+        inType input_data;
+        if (!pop(input_data)) {
+            utils::sleep_for(SHORT_DELAY_MS);
+            return YCode::AGAIN;
+        }
+        return processInputData(input_data);
     }
 
 //protected:

@@ -140,20 +140,20 @@ bool YMediaChain::init()
     YStream* inAudStr = _source->stream(_source->video_parameters.streamIndex());
     YStream* ouVidStr = _destination->stream(_destination->video_parameters.streamIndex());
     YStream* ouAudStr = _destination->stream(_destination->video_parameters.streamIndex());
-    _stream_map->addRoute(inVidStr, ouVidStr);
-    _stream_map->addRoute(inAudStr, ouAudStr);
+//    _stream_map->addRoute(inVidStr, ouVidStr);
+//    _stream_map->addRoute(inAudStr, ouAudStr);
     //
 
     if (optionInstalled(COPY_VIDEO)) {
         _decoder->setSkipType(YMediaType::MEDIA_TYPE_VIDEO);
         _rescaler->setSkipType(YMediaType::MEDIA_TYPE_VIDEO);
-        _video_filter->setSkipType(YMediaType::MEDIA_TYPE_VIDEO);
+//        _video_filter->setSkipType(YMediaType::MEDIA_TYPE_VIDEO);
     }
 
     if (optionInstalled(COPY_AUDIO)) {
         _decoder->setSkipType(YMediaType::MEDIA_TYPE_AUDIO);
         _resampler->setSkipType(YMediaType::MEDIA_TYPE_AUDIO);
-        _audio_filter->setSkipType(YMediaType::MEDIA_TYPE_AUDIO);
+//        _audio_filter->setSkipType(YMediaType::MEDIA_TYPE_AUDIO);
     }
 
     _source->connectOutputTo(_decoder);
@@ -163,23 +163,23 @@ bool YMediaChain::init()
     _stream_map->connectOutputTo(_destination);
 
     _source->start();
-    _decoder->start();
-    _resampler->start();
-    _encoder->start();
-    _stream_map->start();
-    _destination->start();
+//    _decoder->start();
+//    _resampler->start();
+//    _encoder->start();
+//    _stream_map->start();
+//    _destination->start();
 
     return true;
 }
 
 YCode YMediaChain::run()
 {
-//    if (!_inited)
-    if (_source->running() == false)        { return YCode::ERR; } //TODO return lastError
-    if (_decoder->running() == false)       { return YCode::ERR; }
-    if (_resampler->running() == false)     { return YCode::ERR; }
-    if (_encoder->running() == false)       { return YCode::ERR; }
-    if (_destination->running() == false)   { return YCode::ERR; }
+//    if (!_inited) //TODO
+//    if (_source->running() == false)        { return YCode::ERR; } //TODO return lastError
+//    if (_decoder->running() == false)       { return YCode::ERR; }
+//    if (_resampler->running() == false)     { return YCode::ERR; }
+//    if (_encoder->running() == false)       { return YCode::ERR; }
+//    if (_destination->running() == false)   { return YCode::ERR; }
 
     utils::sleep_for(LONG_DELAY_MS);
     return YCode::OK;
@@ -187,7 +187,8 @@ YCode YMediaChain::run()
 
 bool YMediaChain::rescalerRequired()
 {
-    return false;
+    return true;
+//    return false;
 }
 
 bool YMediaChain::resamplerRequired()

@@ -3,27 +3,17 @@
 #include "utils.h"
 
 YThread::YThread() :
-    _running(false),
-    _loop_function(std::bind(&YThread::run,this))
+    YThread(std::bind(&YThread::run,this))
 {
     //
 }
 
 YThread::YThread(std::function<YCode(void)> loop_function) :
+    _running(false),
     _loop_function(loop_function)
 {
     //
 }
-
-//YThread::YThread(const YThread&& other) //:
-////    _thread(other._thread)
-//{
-//    auto&& test = other._thread;
-//    _thread = std::thread(std::move(test));
-//    _thread         = std::thread(other._thread);
-//    _running        = other._running;
-//    _loop_function  = other._loop_function;
-//}
 
 YThread &YThread::operator=(YThread&& other)
 {
