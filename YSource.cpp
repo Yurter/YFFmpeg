@@ -32,7 +32,7 @@ bool YSource::open()
     if (_opened) { return false; }
     _opened = openInput();
     if (_opened) {
-        _io_thread = YThread(std::bind(&YSource::read, this));\
+        _io_thread = YThread(std::bind(&YSource::read, this));
         _io_thread.start();
 //        while (!running()) {
 //            utils::sleep_for(10);
