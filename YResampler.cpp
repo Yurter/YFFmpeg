@@ -70,6 +70,10 @@ YCode YResampler::processInputData(YFrame &input_data)
     if (!_inited) {
         return YCode::NOT_INITED;
     }
+    if (ignoreType(input_data.type())) { //TODO
+        sendOutputData(input_data);
+        return YCode::OK;
+    }
     if (swr_convert_frame(_resampler_context, nullptr, input_data.raw()) != 0) {
         std::cerr << "[YResampler] PUSH swr_convert_frame failed " << std::endl;
         return YCode::ERR;

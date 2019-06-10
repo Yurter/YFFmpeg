@@ -42,6 +42,7 @@ public:
     }
     void clear()
     {
+        std::lock_guard<std::mutex> lock(_queue_mutex);
         std::queue<Type> empty;
         std::swap(_queue, empty);
     }

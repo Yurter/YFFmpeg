@@ -36,10 +36,8 @@ public:
     bool    inited() const { return _inited; }
 
     void    setSkipType(YMediaType type) {
-        auto aaa = _skip_types;
-        _skip_types |= type;
-    }
-    bool    skipType(YMediaType type) { return _skip_types &= type; }
+        _skip_types |= type; }
+    bool    skipType(YMediaType type) { return _skip_types & type; }
 
     void    setIgnoreType(YMediaType type) { _ignore_types |= type; }
     bool    ignoreType(YMediaType type) { return _ignore_types &= type; }
@@ -72,7 +70,7 @@ private:
 private:
 
 
-    YAsyncQueue<outType>*                _next_processor;
+    YAsyncQueue<outType>*   _next_processor;
 
     YCode       _last_error;
     bool        _inited;

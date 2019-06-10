@@ -173,7 +173,7 @@ YCode YDestination::write()
         utils::sleep_for(SHORT_DELAY_MS);
         return YCode::AGAIN;
     }
-    std::cout << "WRITE_WRITE_WRITE" << std::endl;
+    print_func
 //    { // debug
 //        std::cout << "[YDestination] " << packet.toString() << std::endl;
 //        std::cout << "[YDestination] v: " << stream(0)->duration() << ", a: " << stream(1)->duration() << std::endl << std::endl;
@@ -188,6 +188,7 @@ YCode YDestination::write()
 
 YCode YDestination::processInputData(YPacket& input_data)
 {
+    print_func
     if (!stampPacket(input_data)) {
         std::cerr << "[YDestination] stampPacket failed" << std::endl;
         return YCode::ERR;

@@ -133,6 +133,7 @@ bool YMediaChain::init()
         _resampler = new YResampler();
         if (!_resampler->init(_decoder->audioCodecContext()
                               , _encoder->audioCodecContext())) { return false; }
+        _resampler->setIgnoreType(YMediaType::MEDIA_TYPE_VIDEO); //TODO
     }
 
     //TODO
@@ -164,10 +165,11 @@ bool YMediaChain::init()
 
     _source->start();
     _decoder->start();
-//    _resampler->start();
-//    _encoder->start();
-//    _stream_map->start();
-//    _destination->start();
+    _resampler->start();
+    _resampler->setIgnoreType(YMediaType::MEDIA_TYPE_VIDEO); //TODO!!!
+    _encoder->start();
+    _stream_map->start();
+    _destination->start();
 
     return true;
 }
@@ -175,11 +177,11 @@ bool YMediaChain::init()
 YCode YMediaChain::run()
 {
 //    if (!_inited) //TODO
-//    if (_source->running() == false)        { return YCode::ERR; } //TODO return lastError
-//    if (_decoder->running() == false)       { return YCode::ERR; }
-//    if (_resampler->running() == false)     { return YCode::ERR; }
-//    if (_encoder->running() == false)       { return YCode::ERR; }
-//    if (_destination->running() == false)   { return YCode::ERR; }
+    if (_source->running() == false)        { return YCode::ERR; } //TODO return lastError
+    if (_decoder->running() == false)       { return YCode::ERR; }
+    if (_resampler->running() == false)     { return YCode::ERR; }
+    if (_encoder->running() == false)       { return YCode::ERR; }
+    if (_destination->running() == false)   { return YCode::ERR; }
 
     utils::sleep_for(LONG_DELAY_MS);
     return YCode::OK;

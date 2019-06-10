@@ -31,6 +31,7 @@ std::string utils::code_to_string(YCode code)
 {
     if (code == YCode::OK)              { return "OK";              }
     if (code == YCode::ERR)             { return "Error";           }
+    if (code == YCode::AGAIN)           { return "Again";           }
     if (code == YCode::NOT_INITED)      { return "Not inited";      }
     if (code == YCode::END_OF_FILE)     { return "EOF";             }
     if (code == YCode::INVALID_INPUT)   { return "Invalid input";   }
