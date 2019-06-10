@@ -101,6 +101,8 @@ YCode YSource::read()
 {
     print_func
     YPacket packet;
+    static int tt = 0;
+    tt++;
     if (av_read_frame(mediaFormatContext(), &packet.raw()) != 0) { //TODO parse return value
         std::cerr << "[YSource] Cannot read source: \"" << _media_resource_locator << "\". Error or EOF." << std::endl;
         return YCode::ERR;

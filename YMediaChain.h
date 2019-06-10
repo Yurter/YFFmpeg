@@ -81,6 +81,7 @@ private:
 
     // General
     volatile bool       _paused; 
+    bool                _inited;
 
     int64_t             _options;
 

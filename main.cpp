@@ -25,6 +25,11 @@ int main()
     YMediaChain chain(&source, &destination, COPY_VIDEO);
 
 
+//    source.open();
+//    source.start();
+//    while (true) {
+//        //
+//    }
 
 
 
@@ -68,7 +73,7 @@ int main()
 
 
 
-    chain.init();
+//    chain.init();
     chain.start();
     while (chain.active()) {
         utils::sleep_for(LONG_DELAY_MS);

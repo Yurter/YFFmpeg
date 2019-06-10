@@ -29,6 +29,7 @@ YMediaChain::YMediaChain(YSource*      source,
     _contingency_video_source(nullptr),
     _contingency_audio_source(nullptr),
     _paused(false),
+    _inited(false),
     _options(options),
     _source_video_stream_index(-1),
     _source_audio_stream_index(-1),
@@ -106,12 +107,14 @@ void YMediaChain::setAudioFilter(std::string audio_filter)
 
 bool YMediaChain::init()
 {
+
     std::cout << "[YMediaChain] Initialization started..." << std::endl;
 
     if (!_source->open())       { return false; }
 
     parseInstalledOptions();
     completeDestinationParametres();
+
 
     if (!_decoder->init())      { return false; }
     if (!_encoder->init())      { return false; }
@@ -125,11 +128,13 @@ bool YMediaChain::init()
         std::cout << "[YMediaChain] Contingency audio source required" << std::endl;
         if (!_contingency_audio_source->open()) { return false; }
     }
+
     if (rescalerRequired()) {
         _rescaler = new YRescaler();
         if (!_rescaler->init(_decoder->videoCodecContext()
                               , _encoder->videoCodecContext())) { return false; }
     }
+
     if (resamplerRequired()) {
         _resampler = new YResampler();
         if (!_resampler->init(_decoder->audioCodecContext()
@@ -137,11 +142,14 @@ bool YMediaChain::init()
         _resampler->setIgnoreType(YMediaType::MEDIA_TYPE_VIDEO); //TODO
     }
 
+
+
     //TODO
     YStream* inVidStr = _source->stream(_source->video_parameters.streamIndex());
     YStream* inAudStr = _source->stream(_source->video_parameters.streamIndex());
     YStream* ouVidStr = _destination->stream(_destination->video_parameters.streamIndex());
     YStream* ouAudStr = _destination->stream(_destination->video_parameters.streamIndex());
+
 //    _stream_map->addRoute(inVidStr, ouVidStr);
 //    _stream_map->addRoute(inAudStr, ouAudStr);
     //
@@ -164,6 +172,12 @@ bool YMediaChain::init()
 //    _encoder->connectOutputTo(_stream_map);
 //    _stream_map->connectOutputTo(_destination);
 
+//    _source->open();
+//    _source->start();
+//    while (true) {
+//        //
+//    }
+
     _source->start();
 //    _decoder->start();
 //    _resampler->start();
@@ -172,12 +186,19 @@ bool YMediaChain::init()
 //    _stream_map->start();
 //    _destination->start();
 
+//    while (true) {
+//        //
+//    }
+
+    _inited = true;
     return true;
 }
 
 YCode YMediaChain::run()
 {
-//    if (!_inited) //TODO
+    if (!_inited) { //TODO
+        init();
+    }
     if (_source->running() == false)        { return YCode::ERR; } //TODO return lastError
     if (_decoder->running() == false)       { return YCode::ERR; }
     if (_resampler->running() == false)     { return YCode::ERR; }
