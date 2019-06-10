@@ -100,6 +100,8 @@ bool YDestination::open()
     _opened = openOutput();
     if (_opened) {
         parseFormatContext();
+        _io_thread = YThread(std::bind(&YDestination::write, this));
+        _io_thread.start();
     }
     return _opened;
 }
@@ -166,6 +168,12 @@ bool YDestination::openOutput()
 
 YCode YDestination::write()
 {
+    YPacket packet;
+    if (!pop(packet)) {
+        utils::sleep_for(SHORT_DELAY_MS);
+        return YCode::AGAIN;
+    }
+    std::cout << "WRITE_WRITE_WRITE" << std::endl;
 //    { // debug
 //        std::cout << "[YDestination] " << packet.toString() << std::endl;
 //        std::cout << "[YDestination] v: " << stream(0)->duration() << ", a: " << stream(1)->duration() << std::endl << std::endl;

@@ -29,5 +29,10 @@ bool utils::exit_code(YCode code)
 
 std::string utils::code_to_string(YCode code)
 {
-    return "TODO";
+    if (code == YCode::OK)              { return "OK";              }
+    if (code == YCode::ERR)             { return "Error";           }
+    if (code == YCode::NOT_INITED)      { return "Not inited";      }
+    if (code == YCode::END_OF_FILE)     { return "EOF";             }
+    if (code == YCode::INVALID_INPUT)   { return "Invalid input";   }
+    return "Unknown error code: " + std::to_string(code);
 }

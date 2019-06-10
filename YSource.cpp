@@ -82,7 +82,6 @@ bool YSource::openInput()
 
 YCode YSource::read()
 {
-    std::cout << "###########################################################################READ" << std::endl;
     YPacket packet;
     if (av_read_frame(_media_format_context, &packet.raw()) != 0) { //TODO parse return value
         std::cerr << "[YSource] Cannot read source: \"" << _media_resource_locator << "\". Error or EOF." << std::endl;
@@ -94,7 +93,6 @@ YCode YSource::read()
 
 YCode YSource::processInputData(YPacket& input_data)
 {
-    std::cout << "###########################################################################SOURCE PROCESS" << std::endl;
     if (input_data.raw().stream_index == video_parameters.streamIndex()) {
         input_data.setType(YMediaType::MEDIA_TYPE_VIDEO);
     }
