@@ -24,6 +24,7 @@ YMediaChain::YMediaChain(YSource*      source,
     _video_filter(video_filter),
     _audio_filter(audio_filter),
     _encoder(new YEncoder(destination)),
+    _stream_map(new YStreamMap),
     _destination(destination),
     _contingency_video_source(nullptr),
     _contingency_audio_source(nullptr),
@@ -158,18 +159,18 @@ bool YMediaChain::init()
     }
 
     _source->connectOutputTo(_decoder);
-    _decoder->connectOutputTo(_resampler);
-    _resampler->connectOutputTo(_encoder);
-    _encoder->connectOutputTo(_stream_map);
-    _stream_map->connectOutputTo(_destination);
+//    _decoder->connectOutputTo(_resampler);
+//    _resampler->connectOutputTo(_encoder);
+//    _encoder->connectOutputTo(_stream_map);
+//    _stream_map->connectOutputTo(_destination);
 
     _source->start();
-    _decoder->start();
-    _resampler->start();
-    _resampler->setIgnoreType(YMediaType::MEDIA_TYPE_VIDEO); //TODO!!!
-    _encoder->start();
-    _stream_map->start();
-    _destination->start();
+//    _decoder->start();
+//    _resampler->start();
+//    _resampler->setIgnoreType(YMediaType::MEDIA_TYPE_VIDEO); //TODO!!!
+//    _encoder->start();
+//    _stream_map->start();
+//    _destination->start();
 
     return true;
 }

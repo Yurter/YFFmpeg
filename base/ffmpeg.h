@@ -94,4 +94,4 @@ enum YLogLevel {
 #define LONG_DELAY_MS           1000
 
 //удалить
-#define print_func std::cout << __FUNCTION__ << std::endl;
+#define print_func std::cout << "[" << std::this_thread::get_id() << "] " <<  __FUNCTION__ << std::endl;

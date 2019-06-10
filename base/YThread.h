@@ -31,5 +31,6 @@ private:
     volatile bool               _running;
     std::function<YCode(void)>  _loop_function;
 
+
 };
 

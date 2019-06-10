@@ -113,6 +113,8 @@ std::string YAbstractMedia::mediaResourceLocator() const
 
 AVFormatContext *YAbstractMedia::mediaFormatContext() const
 {
+    std::lock_guard<std::mutex> lock(_media_format_context_mutex);
+    print_func
     return _media_format_context;
 }
 

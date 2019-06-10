@@ -32,11 +32,28 @@ bool YSource::open()
     if (_opened) { return false; }
     _opened = openInput();
     if (_opened) {
-        _io_thread = YThread(std::bind(&YSource::read, this));
+        _io_thread = YThread(std::bind(&YSource::read, this));\
         _io_thread.start();
+//        while (!running()) {
+//            utils::sleep_for(10);
+//        }
     }
     return _opened;
 }
+
+//bool YSource::open()
+//{
+//    if (_opened) { return false; }
+//    _opened = openInput();
+//    if (_opened) {
+//        _io_thread = YThread(std::bind(&YSource::read, this));\
+//        _io_thread.start();
+////        while (!running()) {
+////            utils::sleep_for(10);
+////        }
+//    }
+//    return _opened;
+//}
 
 bool YSource::close()
 {
@@ -82,9 +99,9 @@ bool YSource::openInput()
 
 YCode YSource::read()
 {
-//    print_func
+    print_func
     YPacket packet;
-    if (av_read_frame(_media_format_context, &packet.raw()) != 0) { //TODO parse return value
+    if (av_read_frame(mediaFormatContext(), &packet.raw()) != 0) { //TODO parse return value
         std::cerr << "[YSource] Cannot read source: \"" << _media_resource_locator << "\". Error or EOF." << std::endl;
         return YCode::ERR;
     }
@@ -97,6 +114,7 @@ YCode YSource::read()
 
 YCode YSource::processInputData(YPacket& input_data)
 {
+    return YCode::OK;
 //    print_func
     if (input_data.raw().stream_index == video_parameters.streamIndex()) {
         input_data.setType(YMediaType::MEDIA_TYPE_VIDEO);

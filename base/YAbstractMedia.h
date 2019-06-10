@@ -56,7 +56,8 @@ protected:
 
     std::vector<YStream>    _streams;
 
-	// FFmpeg 
+    // FFmpeg
+    mutable std::mutex          _media_format_context_mutex;
     AVFormatContext*	_media_format_context;
 
 };
