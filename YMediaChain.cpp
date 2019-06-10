@@ -199,11 +199,11 @@ YCode YMediaChain::run()
     if (!_inited) { //TODO
         init();
     }
-    if (_source->running() == false)        { return YCode::ERR; } //TODO return lastError
-    if (_decoder->running() == false)       { return YCode::ERR; }
-    if (_resampler->running() == false)     { return YCode::ERR; }
-    if (_encoder->running() == false)       { return YCode::ERR; }
-    if (_destination->running() == false)   { return YCode::ERR; }
+//    if (_source->running() == false)        { return YCode::ERR; } //TODO return lastError
+//    if (_decoder->running() == false)       { return YCode::ERR; }
+//    if (_resampler->running() == false)     { return YCode::ERR; }
+//    if (_encoder->running() == false)       { return YCode::ERR; }
+//    if (_destination->running() == false)   { return YCode::ERR; }
 
     utils::sleep_for(LONG_DELAY_MS);
     return YCode::OK;
