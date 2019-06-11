@@ -36,7 +36,7 @@ YMediaChain::YMediaChain(YSource*      source,
     _destination_video_stream_index(-1),
     _destination_audio_stream_index(-1)
 {
-    //
+    setName("YMediaChain");
 }
 
 YMediaChain::~YMediaChain()
@@ -44,29 +44,11 @@ YMediaChain::~YMediaChain()
     stop();
 }
 
-//void YMediaChain::start()
-//{
-//    if (!init()) {
-//        std::cout << "[YMediaChain] Start failed" << std::endl;
-//        stop();
-//        return;
-//    }
-//    {
-//        _source_video_stream_index = _source->video_parameters.streamIndex();
-//        _source_audio_stream_index = _source->audio_parameters.streamIndex();
-//        _destination_video_stream_index = _destination->video_parameters.streamIndex();
-//        _destination_audio_stream_index = _destination->audio_parameters.streamIndex();
-//    }
-
-//    YThread::start();
-//    return;
-//}
-
 bool YMediaChain::stop()
 {
     _source->close();
     _destination->close();
-    std::cout << "[YMediaChain] Stopped" << std::endl;
+    log_info("Stopped");
     return true;
 }
 
@@ -107,8 +89,7 @@ void YMediaChain::setAudioFilter(std::string audio_filter)
 
 bool YMediaChain::init()
 {
-
-    std::cout << "[YMediaChain] Initialization started..." << std::endl;
+    log_info("Initialization started...");
 
     if (!_source->open())       { return false; }
 
@@ -121,11 +102,11 @@ bool YMediaChain::init()
     if (!_destination->open())  { return false; }
 
     if (contingencyVideoSourceRequired()) {
-        std::cout << "[YMediaChain] Contingency video source required" << std::endl;
+        log_info("Contingency video source required");
         if (!_contingency_video_source->open()) { return false; }
     }
     if (contingencyAudioSourceRequired()) {
-        std::cout << "[YMediaChain] Contingency audio source required" << std::endl;
+        log_info("Contingency audio source required");
         if (!_contingency_audio_source->open()) { return false; }
     }
 
