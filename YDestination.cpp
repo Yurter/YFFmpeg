@@ -8,6 +8,7 @@ YDestination::YDestination(const std::string &mrl, YMediaPreset preset) :
     _audio_packet_index(0),
     _output_format(nullptr)
 {
+    setName("YDestination");
     switch (preset) {
     case Auto:
          guessOutputFromat();
@@ -43,11 +44,11 @@ YDestination::YDestination(const std::string &mrl, YMediaPreset preset) :
     case Timelapse:
         break;
     default:
-        std::cerr << "[YDestination] Invalid preset." << std::endl;
+        log_error("Invalid preset");
         break;
     }
     if (!createOutput()) {
-        std::cerr << "[YDestination] Failed to create output context." << std::endl;
+        log_error("Failed to create output context");
         return;
     }
 }
@@ -61,12 +62,12 @@ bool YDestination::addStream(AVCodecContext *stream_codec_context)
 {
     AVStream* out_stream = avformat_new_stream(_media_format_context, stream_codec_context->codec);
     if (out_stream == nullptr) {
-        std::cerr << "[YDestination] Failed allocating output stream" << std::endl;
+        log_error("Failed allocating output stream");
         return false;
     }
 
     if (avcodec_parameters_from_context(out_stream->codecpar, stream_codec_context) < 0) {
-        std::cerr << "[YDestination] Failed to copy context input to output stream codec context" << std::endl;
+        log_error("Failed to copy context input to output stream codec context");
         return false;
     }
 
@@ -86,11 +87,11 @@ bool YDestination::addStream(AVCodecContext *stream_codec_context)
         audio_parameters.setStreamIndex(_media_format_context->nb_streams - 1);
         break;
     default:
-        std::cerr << "[YDestination] Unsupported media type added: " << av_get_media_type_string(codec_type) << std::endl;
+        log_error("Unsupported media type added: " << av_get_media_type_string(codec_type));
         break;
     }
 
-    std::cout << "[YDestination] Created stream: " << stream_codec_context->codec->name << std::endl;
+    log_info("Created stream: " << stream_codec_context->codec->name);
     return true;
 }
 
@@ -111,11 +112,11 @@ bool YDestination::close()
     if (!_opened) { return false; }
     quit();
     if (av_write_trailer(_media_format_context) != 0) {
-        std::cerr << "[YDestination] Failed to write the stream trailer to an output media file" << std::endl;
+        log_error("Failed to write the stream trailer to an output media file");
         return false;
     }
     if (!YAbstractMedia::close()) { return false; }
-    std::cout << "[YDestination] Destination: \"" << _media_resource_locator << "\" closed." << std::endl;
+    log_info("Destination: \"" << _media_resource_locator << "\" closed.");
     return true;
 }
 
@@ -140,7 +141,7 @@ bool YDestination::createOutput()
     std::string output_format_name = guessFormatShortName();
     const char *format_name = output_format_name.empty() ? nullptr : output_format_name.c_str();
     if (avformat_alloc_output_context2(&_media_format_context, nullptr, format_name, _media_resource_locator.c_str()) < 0) {
-        std::cerr << "[YDestination] Failed to alloc output context." << std::endl;
+        log_error("Failed to alloc output context.");
 		return false;
     }
     _output_format = _media_format_context->oformat;
@@ -151,17 +152,17 @@ bool YDestination::openOutput()
 {
 	if (!(_media_format_context->flags & AVFMT_NOFILE)) {
 		if (avio_open(&_media_format_context->pb, _media_resource_locator.c_str(), AVIO_FLAG_WRITE) < 0) {
-            std::cerr << "[YDestination] Could not open output: " << _media_resource_locator << std::endl;
+            log_error("Could not open output: " << _media_resource_locator);
 			return false;
 		}
 	}
 	if (avformat_write_header(_media_format_context, nullptr) < 0) {
-        std::cerr << "[YDestination] Error occurred when opening output" << std::endl;
+        log_error("Error occurred when opening output");
 		return false;
 	}
 	{
 		av_dump_format(_media_format_context, 0, _media_resource_locator.c_str(), 1);
-        std::cout << "[YDestination] Destination: \"" << _media_resource_locator << "\" opened." << std::endl;
+        log_info("Destination: \"" << _media_resource_locator << "\" opened.");
 	}
     return true;
 }
@@ -193,7 +194,7 @@ YCode YDestination::processInputData(YPacket& input_data)
         int debuf_stop = 0;
     }
     if (!stampPacket(input_data)) {
-        std::cerr << "[YDestination] stampPacket failed" << std::endl;
+        log_error("stampPacket failed");
         return YCode::ERR;
     }
     if (input_data.isVideo() && video_parameters.ignore()) { return YCode::AGAIN; }
@@ -205,7 +206,7 @@ YCode YDestination::processInputData(YPacket& input_data)
 //        std::cout << "[YDestination] v: " << _video_packet_index << ", a: " << _audio_packet_index << std::endl << std::endl;
     }
     if (av_interleaved_write_frame(_media_format_context, &input_data.raw()) < 0) {
-        std::cerr << "[YDestination] Error muxing packet" << std::endl;
+        log_error("Error muxing packet");
         return YCode::ERR;
     }
     return YCode::OK;
@@ -281,9 +282,9 @@ bool YDestination::stampPacket(YPacket &packet) //TODO перенести код
         int64_t duration = 8;//23;//43;//23;
         auto audio_stream = stream(static_cast<uint64_t>(packet.streamIndex()));
         audio_stream->increaseDuration(duration);
-        packet.setPts(audio_stream->duration());
-        packet.setDts(audio_stream->duration());
-        packet.setDuration(duration);
+//        packet.setPts(audio_stream->duration());
+//        packet.setDts(audio_stream->duration());
+//        packet.setDuration(duration);
         packet.setPos(-1);
         audio_stream->increaseDuration(duration);
         _audio_packet_index++;
