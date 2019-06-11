@@ -43,7 +43,7 @@ YCode YStreamMap::processInputData(YPacket &input_data)
         return YCode::INVALID_INPUT;
     }
 
-    std::cout << "map: " << utils::media_type_to_string(input_data.type()) << " -> " << result->second->index() << std::endl;
+    log_debug("map: " << utils::media_type_to_string(input_data.type()) << " -> " + result->second->index());
 
     input_data.setStreamIndex(result->second->index());
     sendOutputData(input_data);

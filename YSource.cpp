@@ -20,7 +20,6 @@ YSource::YSource(const std::string &mrl, YMediaPreset preset) :
         std::cerr << "[YSource] Invalid preset." << std::endl;
         break;
     }
-    log_debug("QWert");
 }
 
 
