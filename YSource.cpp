@@ -17,7 +17,7 @@ YSource::YSource(const std::string &mrl, YMediaPreset preset) :
         _artificial_delay = 1024; //TODO: 1024 для аудио, для видео - ?
         break;
     default:
-        std::cerr << "[YSource] Invalid preset." << std::endl;
+        log_error("Invalid preset");
         break;
     }
 }
@@ -46,7 +46,7 @@ bool YSource::close()
     quit();
     if (_media_format_context != nullptr) { avformat_close_input(&_media_format_context); }
     if (!YAbstractMedia::close()) { return false; }
-    std::cout << "[YSource] Source: \"" << _media_resource_locator << "\" closed." << std::endl;
+    log_info("Source: \"" << _media_resource_locator << "\" closed.");
     return true;
 }
 
@@ -54,7 +54,7 @@ bool YSource::guessInputFromat()
 {
     AVInputFormat* input_format = av_find_input_format(guessFormatShortName().c_str());
     if (input_format == nullptr) {
-        std::cerr << "[YAbstractMedia] Failed guess input format: " << _media_resource_locator << std::endl;
+        log_error("Failed guess input format: " << _media_resource_locator);
         return false;
     }
     _input_format = input_format;
@@ -63,21 +63,21 @@ bool YSource::guessInputFromat()
 
 bool YSource::openInput()
 {
-    std::cout << "[YSource] Source: \"" << _media_resource_locator << "\" is opening..." << std::endl;
+    log_info("Source: \"" << _media_resource_locator << "\" is opening...");
     if (_media_resource_locator.empty()) { return false; }
     if (avformat_open_input(&_media_format_context, _media_resource_locator.c_str(), _input_format, nullptr) < 0) {
-        std::cerr << "[YSource] Failed to open input context." << std::endl;
+        log_error("Failed to open input context.");
         return false;
     }
     if (avformat_find_stream_info(_media_format_context, nullptr) < 0) {
-        std::cerr << "[YSource] Failed to retrieve input video stream information." << std::endl;
+        log_error("Failed to retrieve input video stream information.");
         return false;
     }
     {
         _input_format = _media_format_context->iformat;
         parseFormatContext();
         av_dump_format(_media_format_context, 0, _media_resource_locator.c_str(), 0);
-        std::cout << "[YSource] Source: \"" << _media_resource_locator << "\" opened." << std::endl;
+        log_info("Source: \"" << _media_resource_locator << "\" opened.");
         return true;
     }
 }
@@ -86,7 +86,7 @@ YCode YSource::read()
 {
     YPacket packet;
     if (av_read_frame(mediaFormatContext(), &packet.raw()) != 0) { //TODO parse return value
-        std::cerr << "[YSource] Cannot read source: \"" << _media_resource_locator << "\". Error or EOF." << std::endl;
+        log_error("Cannot read source: \"" << _media_resource_locator << "\". Error or EOF.");
         return YCode::ERR;
     }
     push(packet);
