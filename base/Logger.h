@@ -10,6 +10,7 @@
 #define log_warning(x)      Logger::instance().print(this, YLogLevel::Warning, x)
 #define log_error(x)        Logger::instance().print(this, YLogLevel::Error, x)
 #define log_debug(x)        Logger::instance().print(this, YLogLevel::Debug, x)
+//#define log_debug(x)        Logger::instance().print(this, YLogLevel::Debug, std::string(__FUNCTION__) + x)
 
 class Logger : public YThread
 {

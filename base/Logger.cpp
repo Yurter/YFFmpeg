@@ -86,21 +86,6 @@ void Logger::print(YObject* caller, YLogLevel log_level, std::string message)
         ss << "[" << current_thread_id() << "]";
     }
 
-//    switch (log_level) {
-//    case YLogLevel::Quiet:
-//        [[fallthrough]];
-//    case YLogLevel::Info:
-//        ss << "[" << caller->name() << "] ";
-//        [[fallthrough]];
-//    case YLogLevel::Warning:
-//        [[fallthrough]];
-//    case YLogLevel::Error:
-//        [[fallthrough]];
-//    case YLogLevel::Debug:
-//        ss << "[" << current_thread_id() << "] ";
-//        break;
-//    }
-
     ss << " " << message;
     _messages.push({log_level, ss.str()});
 }

@@ -20,11 +20,7 @@ YSource::YSource(const std::string &mrl, YMediaPreset preset) :
         std::cerr << "[YSource] Invalid preset." << std::endl;
         break;
     }
-
-    log_info("123456");
-    log_warning("123456");
-    log_error("123456");
-    log_debug("123456");
+    log_debug("QWert");
 }
 
 
@@ -40,26 +36,9 @@ bool YSource::open()
     if (_opened) {
         _io_thread = YThread(std::bind(&YSource::read, this));
         _io_thread.start();
-//        while (!running()) {
-//            utils::sleep_for(10);
-//        }
     }
     return _opened;
 }
-
-//bool YSource::open()
-//{
-//    if (_opened) { return false; }
-//    _opened = openInput();
-//    if (_opened) {
-//        _io_thread = YThread(std::bind(&YSource::read, this));\
-//        _io_thread.start();
-////        while (!running()) {
-////            utils::sleep_for(10);
-////        }
-//    }
-//    return _opened;
-//}
 
 bool YSource::close()
 {
