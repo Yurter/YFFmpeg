@@ -28,10 +28,6 @@ YCode YStreamMap::processInputData(YPacket &input_data)
 {
     if (!inited()) { return YCode::NOT_INITED; }
 
-//    auto result = std::find_if(_map.begin(), _map.end(),
-//        [input_data](std::pair<YStream*,YStream*>& it) {
-//        return it.first->index() == input_data.streamIndex();
-//    });
     //TODO
     auto result = std::find_if(_map.begin(), _map.end(),
         [input_data](std::pair<YStream*,YStream*>& it) {
@@ -42,8 +38,6 @@ YCode YStreamMap::processInputData(YPacket &input_data)
         input_data.setStreamIndex(INVALID_INT);
         return YCode::INVALID_INPUT;
     }
-
-    log_debug("map: " << utils::media_type_to_string(input_data.type()) << " -> " + result->second->index());
 
     input_data.setStreamIndex(result->second->index());
     sendOutputData(input_data);

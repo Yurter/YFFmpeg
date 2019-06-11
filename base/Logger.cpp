@@ -39,7 +39,7 @@ YCode Logger::run()
         SetConsoleTextAttribute(hStdout, FOREGROUND_RED|FOREGROUND_INTENSITY);
         break;
     case YLogLevel::Debug:
-        SetConsoleTextAttribute(hStdout, 9);
+        SetConsoleTextAttribute(hStdout, FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_INTENSITY);
         break;
     }
 
