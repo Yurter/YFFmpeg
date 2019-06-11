@@ -75,8 +75,8 @@ bool YPacket::empty() const
 std::string YPacket::toString() const
 {
     /* Video packet: 33123 byte, dts 460, pts 460, duration 33 */
-    auto dts_str = _data.dts == AV_NOPTS_VALUE ? "AV_NOPTS_VALUE" : std::to_string(_data.dts);
-    auto pts_str = _data.pts == AV_NOPTS_VALUE ? "AV_NOPTS_VALUE" : std::to_string(_data.pts);
+    auto dts_str = _data.dts == AV_NOPTS_VALUE ? "NOPTS" : std::to_string(_data.dts);
+    auto pts_str = _data.pts == AV_NOPTS_VALUE ? "NOPTS" : std::to_string(_data.pts);
     std::string str = utils::media_type_to_string(_type) + " packet: "
             + std::to_string(_data.size) + " bytes, "
             + "dts " + dts_str + ", "

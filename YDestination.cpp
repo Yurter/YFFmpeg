@@ -197,15 +197,16 @@ YCode YDestination::processInputData(YPacket& input_data)
         log_error("stampPacket failed");
         return YCode::ERR;
     }
+    //TODO это д.б. в датапроцессоре
     if (input_data.isVideo() && video_parameters.ignore()) { return YCode::AGAIN; }
     if (input_data.isAudio() && audio_parameters.ignore()) { return YCode::AGAIN; }
-    //TODO
     { // debug
-//        std::cout << "[YDestination] " << input_data.toString() << std::endl;
+        log_debug(input_data.toString());
 //        std::cout << "[YDestination] packets v: " << stream(0)->duration() << ", a: " << stream(1)->duration() << std::endl << std::endl;
 //        std::cout << "[YDestination] v: " << _video_packet_index << ", a: " << _audio_packet_index << std::endl << std::endl;
     }
-    if (av_interleaved_write_frame(_media_format_context, &input_data.raw()) < 0) {
+//    if (av_interleaved_write_frame(_media_format_context, &input_data.raw()) < 0) {
+    if (av_write_frame(_media_format_context, &input_data.raw()) < 0) {
         log_error("Error muxing packet");
         return YCode::ERR;
     }
