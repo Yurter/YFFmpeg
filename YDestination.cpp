@@ -201,8 +201,8 @@ YCode YDestination::processInputData(YPacket& input_data)
     if (input_data.isVideo() && video_parameters.ignore()) { return YCode::AGAIN; }
     if (input_data.isAudio() && audio_parameters.ignore()) { return YCode::AGAIN; }
     { // debug
-        log_debug(input_data.toString());
-//        std::cout << "[YDestination] packets v: " << stream(0)->duration() << ", a: " << stream(1)->duration() << std::endl << std::endl;
+//        log_debug(input_data.toString());
+        log_debug("packets v: " << stream(0)->duration() << ", a: " << stream(1)->duration());
 //        std::cout << "[YDestination] v: " << _video_packet_index << ", a: " << _audio_packet_index << std::endl << std::endl;
     }
 //    if (av_interleaved_write_frame(_media_format_context, &input_data.raw()) < 0) {
@@ -280,12 +280,15 @@ bool YDestination::stampPacket(YPacket &packet) //TODO перенести код
 //        packet.setPos(-1);
         //
 //        return true;
-        int64_t duration = 8;//23;//43;//23;
+        int64_t duration = 43;//23;//43;//23;
+        auto video_stream = stream(static_cast<uint64_t>(0));
         auto audio_stream = stream(static_cast<uint64_t>(packet.streamIndex()));
+        log_error(video_stream->raw()->time_base.num << "/" << video_stream->raw()->time_base.den);
         audio_stream->increaseDuration(duration);
-//        packet.setPts(audio_stream->duration());
-//        packet.setDts(audio_stream->duration());
-//        packet.setDuration(duration);
+        packet.setPts(audio_stream->duration());
+        packet.setDts(audio_stream->duration());
+//        packet.setDts(video_stream->duration());
+        packet.setDuration(duration);
         packet.setPos(-1);
         audio_stream->increaseDuration(duration);
         _audio_packet_index++;
