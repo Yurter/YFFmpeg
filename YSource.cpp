@@ -6,6 +6,7 @@ YSource::YSource(const std::string &mrl, YMediaPreset preset) :
     YAbstractMedia(mrl),
     _input_format(nullptr)
 {
+    setName("YSource");
     switch (preset) {
     case Auto:
         break;
@@ -19,6 +20,11 @@ YSource::YSource(const std::string &mrl, YMediaPreset preset) :
         std::cerr << "[YSource] Invalid preset." << std::endl;
         break;
     }
+
+    log_info("123456");
+    log_warning("123456");
+    log_error("123456");
+    log_debug("123456");
 }
 
 

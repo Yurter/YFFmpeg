@@ -146,13 +146,16 @@ bool YMediaChain::init()
 
     //TODO
     YStream* inVidStr = _source->stream(_source->video_parameters.streamIndex());
-    YStream* inAudStr = _source->stream(_source->video_parameters.streamIndex());
+    YStream* inAudStr = _source->stream(_source->audio_parameters.streamIndex());
     YStream* ouVidStr = _destination->stream(_destination->video_parameters.streamIndex());
-    YStream* ouAudStr = _destination->stream(_destination->video_parameters.streamIndex());
+    YStream* ouAudStr = _destination->stream(_destination->audio_parameters.streamIndex());
 
-//    _stream_map->addRoute(inVidStr, ouVidStr);
-//    _stream_map->addRoute(inAudStr, ouAudStr);
-    //
+    if (!_stream_map->addRoute(inVidStr, ouVidStr)) {
+        int debug_stop = 0;
+    }
+    if (!_stream_map->addRoute(inAudStr, ouAudStr)) {
+        int debug_stop = 1;
+    }
 
     if (optionInstalled(COPY_VIDEO)) {
         _decoder->setSkipType(YMediaType::MEDIA_TYPE_VIDEO);
@@ -172,19 +175,13 @@ bool YMediaChain::init()
     _encoder->connectOutputTo(_stream_map);
     _stream_map->connectOutputTo(_destination);
 
-//    _source->open();
-//    _source->start();
-//    while (true) {
-//        //
-//    }
-
     _source->start();
     _decoder->start();
     _resampler->start();
 //    _resampler->setIgnoreType(YMediaType::MEDIA_TYPE_VIDEO); //TODO!!!
     _encoder->start();
     _stream_map->start();
-//    _destination->start();
+    _destination->start();
 
 //    while (true) {
 //        //
@@ -204,7 +201,7 @@ YCode YMediaChain::run()
     if (_resampler->running() == false)     { return YCode::ERR; }
     if (_encoder->running() == false)       { return YCode::ERR; }
     if (_stream_map->running() == false)    { return YCode::ERR; }
-//    if (_destination->running() == false)   { return YCode::ERR; }
+    if (_destination->running() == false)   { return YCode::ERR; }
 
     utils::sleep_for(LONG_DELAY_MS);
     return YCode::OK;

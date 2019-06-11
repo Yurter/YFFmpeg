@@ -168,12 +168,12 @@ bool YDestination::openOutput()
 
 YCode YDestination::write()
 {
-    YPacket packet;
-    if (!pop(packet)) {
-        utils::sleep_for(SHORT_DELAY_MS);
-        return YCode::AGAIN;
-    }
-    print_func
+//    YPacket packet;
+//    if (!pop(packet)) {
+//        utils::sleep_for(SHORT_DELAY_MS);
+//        return YCode::AGAIN;
+//    }
+//    print_func
 //    { // debug
 //        std::cout << "[YDestination] " << packet.toString() << std::endl;
 //        std::cout << "[YDestination] v: " << stream(0)->duration() << ", a: " << stream(1)->duration() << std::endl << std::endl;
@@ -188,13 +188,26 @@ YCode YDestination::write()
 
 YCode YDestination::processInputData(YPacket& input_data)
 {
-    print_func
+//    print_func
+    if (input_data.isAudio()) {
+        int debuf_stop = 0;
+    }
     if (!stampPacket(input_data)) {
         std::cerr << "[YDestination] stampPacket failed" << std::endl;
         return YCode::ERR;
     }
     if (input_data.isVideo() && video_parameters.ignore()) { return YCode::AGAIN; }
     if (input_data.isAudio() && audio_parameters.ignore()) { return YCode::AGAIN; }
+    //TODO
+    { // debug
+//        std::cout << "[YDestination] " << input_data.toString() << std::endl;
+//        std::cout << "[YDestination] packets v: " << stream(0)->duration() << ", a: " << stream(1)->duration() << std::endl << std::endl;
+//        std::cout << "[YDestination] v: " << _video_packet_index << ", a: " << _audio_packet_index << std::endl << std::endl;
+    }
+    if (av_interleaved_write_frame(_media_format_context, &input_data.raw()) < 0) {
+        std::cerr << "[YDestination] Error muxing packet" << std::endl;
+        return YCode::ERR;
+    }
     return YCode::OK;
 }
 
@@ -264,11 +277,13 @@ bool YDestination::stampPacket(YPacket &packet) //TODO перенести код
 //        //
 //        packet.setPos(-1);
         //
-        int64_t duration = 23;//43;//23;
+//        return true;
+        int64_t duration = 8;//23;//43;//23;
         auto audio_stream = stream(static_cast<uint64_t>(packet.streamIndex()));
-//        packet.setPts(audio_stream->duration());
+        audio_stream->increaseDuration(duration);
+        packet.setPts(audio_stream->duration());
         packet.setDts(audio_stream->duration());
-//        packet.setDuration(duration);
+        packet.setDuration(duration);
         packet.setPos(-1);
         audio_stream->increaseDuration(duration);
         _audio_packet_index++;

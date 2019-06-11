@@ -92,7 +92,7 @@ enum YLogLevel {
 };
 
 /* ? */
-#define thread_id std::this_thread::get_id()
+#define current_thread_id() std::this_thread::get_id()
 
 /* Значение для задержек в коде в мс */
 #define SHORT_DELAY_MS          10

@@ -2,29 +2,41 @@
 
 #include "ffmpeg.h"
 #include "YAsyncQueue.h"
-
+#include "YThread.h"
 #include <string>
 
-#define info_log(x)     Logger::print(YLogLevel::Info, x)
-#define warning_log(x)  Logger::print(YLogLevel::Warning, x)
-#define error_log(x)    Logger::print(YLogLevel::Error, x)
-#define debug_log(x)    Logger::print(YLogLevel::Debug, x)
+#define set_log_level(x)    Logger::instance().setLogLevel(x)
+#define log_info(x)         Logger::instance().print(this, YLogLevel::Info, x)
+#define log_warning(x)      Logger::instance().print(this, YLogLevel::Warning, x)
+#define log_error(x)        Logger::instance().print(this, YLogLevel::Error, x)
+#define log_debug(x)        Logger::instance().print(this, YLogLevel::Debug, x)
 
-class Logger
+class Logger : public YThread
 {
 
 public:
 
-    Logger(); //TODO singletone
+    static Logger& instance();
+
+    void setLogLevel(YLogLevel log_level);
+    void print(YObject* caller, YLogLevel log_level, std::string message);
+
+private:
+
+    Logger();
     ~Logger();
 
-    static void setLogLevel(YLogLevel log_level);
-    static void print(YLogLevel log_level, std::string message);
+    Logger(Logger const&)               = delete;
+    Logger& operator=(Logger const&)    = delete;
+
+    YCode run();
+
+    bool ignoreMessage(YLogLevel message_log_level);
 
 private:
 
     // General
-    YAsyncQueue<std::string>    _messages;
+    YAsyncQueue<std::pair<YLogLevel,std::string>>    _messages;
     YLogLevel                   _log_level;
 
 };

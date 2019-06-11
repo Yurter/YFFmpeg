@@ -1,9 +1,10 @@
 #pragma once
 
 #include "ffmpeg.h"
+#include "YObject.h"
 #include <thread>
 
-class YThread
+class YThread : public YObject
 {
 
 public:

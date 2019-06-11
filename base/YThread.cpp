@@ -6,7 +6,7 @@
 YThread::YThread() :
     YThread(std::bind(&YThread::run,this))
 {
-    //
+    setName("YThread");
 }
 
 YThread::YThread(std::function<YCode(void)> loop_function) :

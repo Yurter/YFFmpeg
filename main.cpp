@@ -9,14 +9,16 @@ int main()
 //    av_log_set_level(AV_LOG_DEBUG);
     cout << "Program started..." << endl;
 
+    set_log_level(YLogLevel::Debug);
+
 
     /* Запись rtsp с камеры в flv/YouTube */
 //    std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
     std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
 //    std::string mrl_src = "rtsp://192.168.0.14:8080/h264";
 
-//    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/ryyg-4xst-30h5-5g7z";
-    std::string mrl_dst = "remuxed.flv";
+    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/wav4-yk9m-2x6a-ade2";
+//    std::string mrl_dst = "remuxed.flv";
 
     YSource source(mrl_src);
 //    source.audio_parameters.setIgnore(true);

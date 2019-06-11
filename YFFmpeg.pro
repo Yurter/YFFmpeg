@@ -14,6 +14,7 @@ SOURCES += \
     YStreamMap.cpp \
     base/Logger.cpp \
     base/YAbstractFrameProcessor.cpp \
+    base/YObject.cpp \
     base/YStream.cpp \
     base/YThread.cpp \
     base/utils.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
     base/YAsyncQueue.h \
     base/YData.h \
     base/YDataProcessor.h \
+    base/YObject.h \
     base/YStream.h \
     base/YThread.h \
     base/utils.h \
