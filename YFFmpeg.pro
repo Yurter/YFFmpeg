@@ -12,11 +12,11 @@ SOURCES += \
     YRescaler.cpp \
     YSource.cpp \
     YStreamMap.cpp \
-    base/Logger.cpp \
     base/YAbstractFrameProcessor.cpp \
     base/YObject.cpp \
     base/YStream.cpp \
     base/YThread.cpp \
+    base/logger.cpp \
     base/utils.cpp \
     main.cpp \
     base\YAbstractCoder.cpp \
@@ -40,7 +40,6 @@ HEADERS += \
     YRescaler.h \
     YSource.h \
     YStreamMap.h \
-    base/Logger.h \
     base/YAbstractFrameProcessor.h \
     base/YAsyncQueue.h \
     base/YData.h \
@@ -48,6 +47,7 @@ HEADERS += \
     base/YObject.h \
     base/YStream.h \
     base/YThread.h \
+    base/logger.h \
     base/utils.h \
     base\ffmpeg.h \
     base\YAbstractCoder.h \
