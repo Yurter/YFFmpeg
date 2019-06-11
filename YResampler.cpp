@@ -2,7 +2,6 @@
 #include <iostream>
 
 YResampler::YResampler() :
-    _inited(false),
     _frame_pts(0),
     _input_codec_context(nullptr),
     _output_codec_context(nullptr),
@@ -21,7 +20,7 @@ YResampler::~YResampler()
 
 bool YResampler::init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context)
 {
-    if (_inited) {
+    if (inited()) {
         std::cerr << "[YResampler] Already inited" << std::endl;
         return false;
     }
@@ -59,7 +58,7 @@ bool YResampler::init(AVCodecContext *input_codec_context, AVCodecContext *outpu
         return false;
     }
 
-    _inited = true;
+    setInited(true);
 
     std::cout << "[YResampler] Inited" << std::endl;
     return true;
@@ -67,12 +66,18 @@ bool YResampler::init(AVCodecContext *input_codec_context, AVCodecContext *outpu
 
 YCode YResampler::processInputData(YFrame &input_data)
 {
-    if (!_inited) {
+    if (!inited()) {
         return YCode::NOT_INITED;
     }
     if (ignoreType(input_data.type())) { //TODO
-        sendOutputData(input_data);
-        return YCode::OK;
+        return sendOutputData(input_data);
+    }
+    if (skipType(input_data.type())) { //TODO
+        return sendOutputData(input_data);
+    }
+    // crutch
+    if (input_data.isVideo()) { //TODO
+        return sendOutputData(input_data);
     }
     if (swr_convert_frame(_resampler_context, nullptr, input_data.raw()) != 0) {
         std::cerr << "[YResampler] PUSH swr_convert_frame failed " << std::endl;

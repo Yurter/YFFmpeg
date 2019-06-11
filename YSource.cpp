@@ -58,6 +58,7 @@ bool YSource::open()
 bool YSource::close()
 {
     if (!_opened) { return false; }
+    _io_thread.quit();
     quit();
     if (_media_format_context != nullptr) { avformat_close_input(&_media_format_context); }
     if (!YAbstractMedia::close()) { return false; }
@@ -99,25 +100,17 @@ bool YSource::openInput()
 
 YCode YSource::read()
 {
-    print_func
     YPacket packet;
-    static int tt = 0;
-    tt++;
     if (av_read_frame(mediaFormatContext(), &packet.raw()) != 0) { //TODO parse return value
         std::cerr << "[YSource] Cannot read source: \"" << _media_resource_locator << "\". Error or EOF." << std::endl;
         return YCode::ERR;
     }
     push(packet);
-
-//    std::cout << "size " << size() << std::endl;
-
     return YCode::OK;
 }
 
 YCode YSource::processInputData(YPacket& input_data)
 {
-    return YCode::OK;
-//    print_func
     if (input_data.raw().stream_index == video_parameters.streamIndex()) {
         input_data.setType(YMediaType::MEDIA_TYPE_VIDEO);
     }
@@ -129,7 +122,7 @@ YCode YSource::processInputData(YPacket& input_data)
     }
     if (input_data.isVideo() && video_parameters.ignore()) { return YCode::AGAIN; }
     if (input_data.isAudio() && audio_parameters.ignore()) { return YCode::AGAIN; }
-    sendOutputData(input_data);
+    sendOutputData(input_data); //TODO ret unused
     if (_artificial_delay > 0) { utils::sleep_for(_artificial_delay); } //TODO
     return YCode::OK;
 }

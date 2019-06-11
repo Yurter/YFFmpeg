@@ -1,4 +1,5 @@
 #include "YFrame.h"
+#include "utils.h"
 
 YFrame::YFrame() :
     YData<AVFrame*>()
@@ -44,7 +45,10 @@ bool YFrame::empty() const //TODO frame sizes...
     }
 }
 
-std::string YFrame::toString() const
+std::string YFrame::toString() const //TODO
 {
-    return "TODO"; //TODO
+    /* Video frame: 33123 byte, dts 460, pts 460, duration 33 */
+    std::string str = utils::media_type_to_string(_type) + " frame: "
+            + "TODO info";
+    return str;
 }

@@ -33,10 +33,6 @@ void YThread::start()
 {
     if (_running) { return; }
     _running = true;
-//    _thread = std::thread([this]() {
-//        while (_running && !utils::exit_code(_loop_function())) {}
-//        _running = false;
-//    });
     _thread = std::thread([this]() {
         YCode ret = YCode::OK;
         while (_running && !utils::exit_code(ret = _loop_function())) {}

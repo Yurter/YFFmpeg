@@ -23,6 +23,7 @@ YAbstractMedia::~YAbstractMedia()
 bool YAbstractMedia::close()
 {
     if (!_opened) { return false; }
+//    _io_thread.quit(); //TODO вызывать в абстрактном класса
     avformat_free_context(_media_format_context);
     _opened = false;
     return true;
@@ -113,8 +114,7 @@ std::string YAbstractMedia::mediaResourceLocator() const
 
 AVFormatContext *YAbstractMedia::mediaFormatContext() const
 {
-    std::lock_guard<std::mutex> lock(_media_format_context_mutex);
-    print_func
+    std::lock_guard<std::mutex> lock(_media_format_context_mutex); //TODO
     return _media_format_context;
 }
 

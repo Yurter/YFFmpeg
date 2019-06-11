@@ -23,7 +23,7 @@ private:
 protected:
 
     // General parameters
-    bool                _inited;
+//    bool                _inited;
 
     int64_t             _frame_pts;
 

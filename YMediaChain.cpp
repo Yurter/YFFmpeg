@@ -167,10 +167,10 @@ bool YMediaChain::init()
     }
 
     _source->connectOutputTo(_decoder);
-//    _decoder->connectOutputTo(_resampler);
-//    _resampler->connectOutputTo(_encoder);
-//    _encoder->connectOutputTo(_stream_map);
-//    _stream_map->connectOutputTo(_destination);
+    _decoder->connectOutputTo(_resampler);
+    _resampler->connectOutputTo(_encoder);
+    _encoder->connectOutputTo(_stream_map);
+    _stream_map->connectOutputTo(_destination);
 
 //    _source->open();
 //    _source->start();
@@ -179,11 +179,11 @@ bool YMediaChain::init()
 //    }
 
     _source->start();
-//    _decoder->start();
-//    _resampler->start();
+    _decoder->start();
+    _resampler->start();
 //    _resampler->setIgnoreType(YMediaType::MEDIA_TYPE_VIDEO); //TODO!!!
-//    _encoder->start();
-//    _stream_map->start();
+    _encoder->start();
+    _stream_map->start();
 //    _destination->start();
 
 //    while (true) {
@@ -199,10 +199,11 @@ YCode YMediaChain::run()
     if (!_inited) { //TODO
         init();
     }
-//    if (_source->running() == false)        { return YCode::ERR; } //TODO return lastError
-//    if (_decoder->running() == false)       { return YCode::ERR; }
-//    if (_resampler->running() == false)     { return YCode::ERR; }
-//    if (_encoder->running() == false)       { return YCode::ERR; }
+    if (_source->running() == false)        { return YCode::ERR; } //TODO return lastError
+    if (_decoder->running() == false)       { return YCode::ERR; }
+    if (_resampler->running() == false)     { return YCode::ERR; }
+    if (_encoder->running() == false)       { return YCode::ERR; }
+    if (_stream_map->running() == false)    { return YCode::ERR; }
 //    if (_destination->running() == false)   { return YCode::ERR; }
 
     utils::sleep_for(LONG_DELAY_MS);

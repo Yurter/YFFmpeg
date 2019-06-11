@@ -75,7 +75,8 @@ enum YMediaType {
 #define not_inited_smp_fmt(x)   ((x) == DEFAULT_SAMPLE_FORMAT)
 #define not_inited_ch_layout(x) ((x) == DEFAULT_CHANEL_LAYOUT)
 
-/* Категории сообщений, которые выводятся в консоль */
+/* Категории сообщений, которые выводятся в консоль.
+ * Каждый последующий уровень включает в себя предыдущий */
 enum YLogLevel {
     /* Сообщения не выводится */
     Quiet,
@@ -85,8 +86,13 @@ enum YLogLevel {
      * которые могут привести к проблемам */
     Warning,
     /* Сообщения об ошибках */
-    Error
+    Error,
+    /* Сообщения, используемые при отладке кода */
+    Debug
 };
+
+/* ? */
+#define thread_id std::this_thread::get_id()
 
 /* Значение для задержек в коде в мс */
 #define SHORT_DELAY_MS          10

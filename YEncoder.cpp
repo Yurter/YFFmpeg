@@ -163,6 +163,6 @@ YCode YEncoder::processInputData(YFrame& input_data)
         return YCode::AGAIN;
     }
     input_data.free(); //TODO
-//    sendOutputData(output_data);
+    sendOutputData(output_data);
     return YCode::OK;
 }
