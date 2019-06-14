@@ -8,7 +8,7 @@ YResampler::YResampler() :
     _resampler_context(nullptr),
     _audio_fifo(nullptr)
 {
-    //
+    setName("YResampler");
 }
 
 YResampler::~YResampler()
@@ -99,6 +99,10 @@ YCode YResampler::processInputData(YFrame &input_data)
         }
         YFrame output_data(output_frame);
         output_data.setType(MEDIA_TYPE_AUDIO);
+
+//        stampFrame(output_frame);
+//        log_error("--> " << output_data.raw()->pts << " " << output_data.raw()->pkt_dts);
+
         sendOutputData(output_data);
     } while (swr_get_out_samples(_resampler_context, 0) >= _output_codec_context->frame_size);
 
@@ -153,6 +157,7 @@ bool YResampler::configChanged(AVFrame *in, AVFrame *out)
 
 void YResampler::stampFrame(AVFrame *frame)
 {
-    //frame->pts = _frame_pts;
+//    frame->pts = _frame_pts * 23;
+//    frame->pkt_duration = 23;
     _frame_pts++;
 }

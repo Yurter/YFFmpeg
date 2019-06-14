@@ -4,7 +4,7 @@
 YDecoder::YDecoder(YSource *source) :
     _source(source)
 {
-    //
+    setName("YDecoder");
 }
 
 YDecoder::~YDecoder()
@@ -81,6 +81,9 @@ bool YDecoder::copyCodecPar(AVFormatContext *input_format_context, AVMediaType m
 
 YCode YDecoder::processInputData(YPacket& input_data)
 {
+//    if (ignoreType(input_data.type())) {
+//        return sendOutputData(input_data);
+//    }
     AVCodecContext *codec_context = nullptr;
     if (input_data.isVideo()) { codec_context = _video_codec_context; }
     if (input_data.isAudio()) { codec_context = _audio_codec_context; }
@@ -99,8 +102,7 @@ YCode YDecoder::processInputData(YPacket& input_data)
     switch (ret) {
     case 0:
         output_data.setType(input_data.type());
-        sendOutputData(output_data);
-        return YCode::OK;
+        return sendOutputData(output_data);
     case AVERROR(EAGAIN):
         return YCode::AGAIN;
     case AVERROR_EOF:
