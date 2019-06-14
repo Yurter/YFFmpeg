@@ -13,5 +13,6 @@ public:
     static void         sleep_for(int64_t milliseconds);
     static bool         exit_code(YCode code);
     static std::string  code_to_string(YCode code);
+    static std::string  rational_to_string(AVRational rational);
 
 };

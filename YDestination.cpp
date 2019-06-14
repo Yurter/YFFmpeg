@@ -230,31 +230,19 @@ void YDestination::parseOutputFormat()
 bool YDestination::stampPacket(YPacket &packet) //TODO перенести код в YStream
 {
 //    if (packet.isVideo()) {
-//        auto&& raw_packet = packet.raw();
 //        auto frame_rate = video_parameters.frameRate();
 //        int64_t duration = static_cast<int64_t>(1000 / frame_rate);
-//        raw_packet.pts = _video_packet_index * duration;
-//        raw_packet.dts = _video_packet_index * duration;
-//        raw_packet.duration = duration;
-//        raw_packet.pos = -1;
+//        auto video_stream = stream(static_cast<uint64_t>(packet.streamIndex()));
+//        video_stream->increaseDuration(duration);
+//        packet.setPts(video_stream->duration());
+//        packet.setDts(video_stream->duration());
+//        packet.setDuration(duration);
+//        packet.setPos(-1);
 //        _video_packet_index++;
 //        return true;
 //    }
-//    if (packet.isAudio()) {
-//        _audio_packet_index++;
-//        return true;
-//    }
     if (packet.isVideo()) {
-        auto frame_rate = video_parameters.frameRate();
-        int64_t duration = static_cast<int64_t>(1000 / frame_rate);
-        auto video_stream = stream(static_cast<uint64_t>(packet.streamIndex()));
-        video_stream->increaseDuration(duration);
-        packet.setPts(video_stream->duration());
-        packet.setDts(video_stream->duration());
-        packet.setDuration(duration);
-        packet.setPos(-1);
-        _video_packet_index++;
-        return true;
+        return stream(static_cast<uint64_t>(packet.streamIndex()))->stampPacket(packet);
     }
     if (packet.isAudio()) {
 ////        int64_t duration = 1000 / 23;//44;//packet.duration();

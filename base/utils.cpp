@@ -37,3 +37,11 @@ std::string utils::code_to_string(YCode code)
     if (code == YCode::INVALID_INPUT)   { return "Invalid input";   }
     return "Unknown error code: " + std::to_string(code);
 }
+
+std::string utils::rational_to_string(AVRational rational)
+{
+    std::string str = std::to_string(rational.num)
+                        + "/"
+                        + std::to_string(rational.den);
+    return str;
+}

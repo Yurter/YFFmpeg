@@ -5,6 +5,7 @@ CONFIG -= qt
 CONFIG += c++17
 
 SOURCES += \
+    YAudioStream.cpp \
     YDecoder.cpp \
     YDestination.cpp \
     YEncoder.cpp \
@@ -12,6 +13,7 @@ SOURCES += \
     YRescaler.cpp \
     YSource.cpp \
     YStreamMap.cpp \
+    YVideoStream.cpp \
     base/YAbstractFrameProcessor.cpp \
     base/YObject.cpp \
     base/YStream.cpp \
@@ -33,6 +35,7 @@ SOURCES += \
     YMediaFilter.cpp \
 
 HEADERS += \
+    YAudioStream.h \
     YDecoder.h \
     YDestination.h \
     YEncoder.h \
@@ -40,6 +43,7 @@ HEADERS += \
     YRescaler.h \
     YSource.h \
     YStreamMap.h \
+    YVideoStream.h \
     base/YAbstractFrameProcessor.h \
     base/YAsyncQueue.h \
     base/YData.h \

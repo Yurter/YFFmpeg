@@ -1,14 +1,12 @@
 #include "YParameters.h"
 
 YParameters::YParameters() :
-    _available(false),
     _codec_id(DEFAULT_CODEC_ID),
     _codec_name(DEFAULT_STRING),
     _bitrate(DEFAULT_FLOAT),
     _duration(DEFAULT_INT),
     _stream_index(INVALID_INT),
-    _time_base(DEFAULT_RATIONAL),
-    _ignore(false)
+    _time_base(DEFAULT_RATIONAL)
 {
     //
 }
@@ -16,11 +14,6 @@ YParameters::YParameters() :
 YParameters::~YParameters()
 {
     //
-}
-
-void YParameters::setAvailable(bool available)
-{
-    _available = available;
 }
 
 void YParameters::setCodec(AVCodecID codec_id)
@@ -59,16 +52,6 @@ void YParameters::setTimeBase(AVRational time_base)
     _time_base = time_base;
 }
 
-void YParameters::setIgnore(bool ignore)
-{
-    _ignore = ignore;
-}
-
-bool YParameters::available() const
-{
-    return _available;
-}
-
 AVCodecID YParameters::codecId() const
 {
     return _codec_id;
@@ -99,32 +82,23 @@ AVRational YParameters::timeBase() const
     return _time_base;
 }
 
-bool YParameters::ignore() const
-{
-    return _ignore;
-}
-
 void YParameters::softCopy(YParameters& other_parametrs)
 {
-//    _available = other_parametrs.available(); // ? Find out
     if (not_inited_codec_id(_codec_id)) { _codec_id = other_parametrs.codecId();            }
     if (not_inited_string(_codec_name)) { _codec_name = other_parametrs.codecName();        }
     if (not_inited_int(_bitrate))       { _bitrate = other_parametrs.bitrate();             }
     if (not_inited_int(_duration))      { _duration = other_parametrs.duration();           }
     if (invalid_int(_stream_index))     { _stream_index = other_parametrs.streamIndex();    }
     if (not_inited_q(_time_base))       { _time_base = other_parametrs.timeBase();          }
-    _ignore = other_parametrs.ignore();
 }
 
 YParameters &YParameters::operator=(const YParameters &rhs)
 {
-    _available =    rhs.available();
     _codec_id =     rhs.codecId();
     _codec_name =   rhs.codecName();
     _bitrate =      rhs.bitrate();
     _duration =     rhs.duration();
     _stream_index = rhs.streamIndex();
     _time_base =    rhs.timeBase();
-    _ignore =       rhs.ignore();
     return *this;
 }

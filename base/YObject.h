@@ -8,10 +8,10 @@ class YObject
 public:
 
     YObject();
-    ~YObject() = default;
+    virtual ~YObject() = default;
 
-    void            setName(std::string name);
-    std::string     name() const;
+    void                setName(std::string name);
+    virtual std::string name() const final;
 
 private:
 

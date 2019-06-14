@@ -1,19 +1,20 @@
 #pragma once
 
 #include "ffmpeg.h"
+#include "YObject.h"
 #include <string>
 
 template <typename Type>
-class YData
+class YData : public YObject
 {
 
 public:
 
     YData() :
-        _type(YMediaType::MEDIA_TYPE_UNKNOWN) {}
+        _type(YMediaType::MEDIA_TYPE_UNKNOWN) { setName("YData"); }
     YData(Type data, YMediaType type) :
         _type(type),
-        _data(data){}
+        _data(data){ setName("YData"); }
     virtual ~YData() {}
 
     Type&           raw() { return _data; }
@@ -24,9 +25,9 @@ public:
     bool            isVideo() const { return _type == YMediaType::MEDIA_TYPE_VIDEO; }
     bool            isAudio() const { return _type == YMediaType::MEDIA_TYPE_AUDIO; }
 
-    virtual bool    empty() const = 0;
-
-    virtual std::string toString() const = 0;
+    virtual bool        init() {}
+    virtual bool        inited()    const = 0;
+    virtual std::string toString()  const = 0;
 
 protected:
 
