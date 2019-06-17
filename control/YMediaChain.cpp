@@ -1,4 +1,5 @@
-  #include "YMediaChain.h"
+#include "YMediaChain.h"
+#include <algorithm>
 
 YMediaChain::YMediaChain()
 {
@@ -41,26 +42,6 @@ YCode YMediaChain::addSource(const std::string &mrl, YMediaPreset preset)
 YCode YMediaChain::addDestination(const std::string &mrl, YMediaPreset preset)
 {
     return YCode::OK;
-}
-
-void YMediaChain::setContingencyVideoSource(YSource *contingency_video_source)
-{
-    _contingency_video_source = contingency_video_source;
-}
-
-void YMediaChain::setContingencyAudioSource(YSource *contingency_audio_source)
-{
-    _contingency_audio_source = contingency_audio_source;
-}
-
-void YMediaChain::setVideoFilter(std::string video_filter)
-{
-    video_filter = ""; //TODO
-}
-
-void YMediaChain::setAudioFilter(std::string audio_filter)
-{
-    audio_filter = ""; //TODO
 }
 
 bool YMediaChain::init()
@@ -216,6 +197,7 @@ bool YMediaChain::mapStreamIndex(YPacket &packet, YMediaType type)
         return false;
     }
 }
+
 bool YMediaChain::optionInstalled(YOptions option)
 {
     return _options & option;
@@ -235,4 +217,18 @@ void YMediaChain::completeDestinationParametres()
 {
     _destination->video_parameters.softCopy(_source->video_parameters);
     _destination->audio_parameters.softCopy(_source->audio_parameters);
+}
+
+void YMediaChain::startProcesors()
+{
+    std::for_each(_data_processors.begin()
+                  , _data_processors.end()
+                  , [](YThread* proc){ proc->start(); });
+}
+
+void YMediaChain::stopProcesors()
+{
+    std::for_each(_data_processors.begin()
+                  , _data_processors.end()
+                  , [](YThread* proc){ proc->quit(); });
 }

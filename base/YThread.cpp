@@ -55,6 +55,13 @@ bool YThread::running()
     return _running;
 }
 
+void YThread::join()
+{
+    while (running()) {
+        utils::sleep_for(MEDIUM_DELAY_MS);
+    }
+}
+
 YCode YThread::run()
 {
     return YCode::NOT_INITED;

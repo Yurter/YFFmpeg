@@ -19,6 +19,7 @@ public:
     YMediaChain();
     ~YMediaChain() override;
 
+    bool init();
     bool stop();
     void pause();
     void unpause();
@@ -28,16 +29,6 @@ public:
     YCode   addDestination(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
 //    YCode   addVideoFiler();
 //    YCode   addAudioFiler();
-
-//    void setContingencySource(YSource* contingency_source);
-    void setContingencyVideoSource(YSource* contingency_video_source);
-    void setContingencyAudioSource(YSource* contingency_audio_source);
-
-    //TODO
-    void setVideoFilter(std::string video_filter);
-    void setAudioFilter(std::string audio_filter);
-
-    bool init();
 
 private:
 
@@ -57,23 +48,13 @@ private:
 
     void completeDestinationParametres();
 
+    void startProcesors();
+    void stopProcesors();
+
 private:
 
     // Media
-    YSource*            _source;
-    YDecoder*           _decoder;
-    YRescaler*          _rescaler;
-    YResampler*         _resampler;
-    YVideoFilter*       _video_filter;
-    YAudioFilter*       _audio_filter;
-    YEncoder*           _encoder;
-    YStreamMap*         _stream_map;
-    YDestination*       _destination;
-
     std::list<YThread*> _data_processors;
-
-    YSource*       _contingency_video_source;
-    YSource*       _contingency_audio_source;
 
     // General
     volatile bool       _paused; 
