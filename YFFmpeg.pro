@@ -41,8 +41,6 @@ SOURCES += \
 
 HEADERS += \
     base/YAbstractDecoder.h \
-    codec/YAudioDecoder.h \
-    codec/YAudioEncoder.h \
     codec/YDecoder.h \
     codec/YEncoder.h \
     control/YAudioStream.h \
@@ -51,8 +49,6 @@ HEADERS += \
     refi/YRescaler.h \
     context/YSource.h \
     control/YStreamMap.h \
-    codec/YVideoDecoder.h \
-    codec/YVideoEncoder.h \
     control/YVideoStream.h \
     base/YAbstractFrameProcessor.h \
     base/YAsyncQueue.h \
