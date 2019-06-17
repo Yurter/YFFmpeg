@@ -19,37 +19,33 @@ public:
     YMediaChain();
     ~YMediaChain() override;
 
-    bool init();
-    bool stop();
-    void pause();
-    void unpause();
+    bool    init();
+    bool    stop();
+    void    pause();
+    void    unpause();
 
     void    setOptions(int64_t options);
-    YCode   addSource(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
-    YCode   addDestination(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
-//    YCode   addVideoFiler();
-//    YCode   addAudioFiler();
+    void    addSource(const std::string& mrl, YMediaPreset preset = YMediaPreset::Auto);
+    void    addDestination(const std::string& mrl, YMediaPreset preset = YMediaPreset::Auto);
 
 private:
 
-    YCode run() override;
+    YCode   run() override;
 
-    bool rescalerRequired();
-    bool resamplerRequired();
+    bool    rescalerRequired();
+    bool    resamplerRequired();
 
     bool contingencyVideoSourceRequired();
     bool contingencyAudioSourceRequired();
 
-    bool skipPacket(YPacket& packet);
-    bool mapStreamIndex(YPacket& packet, YMediaType type);
-
-    bool optionInstalled(YOptions option);
-    void parseInstalledOptions();
+    bool    option(YOptions option);
+    void parseOptions();
 
     void completeDestinationParametres();
 
-    void startProcesors();
-    void stopProcesors();
+    void    startProcesors();
+    void    stopProcesors();
+    void    freeProcesors();
 
 private:
 

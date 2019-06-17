@@ -75,16 +75,15 @@ private:
         return lastError();
     }
 
-//protected:
 private:
 
+    // General
+    YCode                   _last_error;
+    bool                    _inited;
 
+    // Media
     YAsyncQueue<outType>*   _next_processor;
-
-    YCode       _last_error;
-    bool        _inited;
-
-    int64_t     _skip_types;
-    int64_t     _ignore_types;
+    int64_t                 _skip_types;
+    int64_t                 _ignore_types;
 
 };

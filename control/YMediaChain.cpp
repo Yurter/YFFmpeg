@@ -34,14 +34,14 @@ void YMediaChain::setOptions(int64_t options)
     _options = options;
 }
 
-YCode YMediaChain::addSource(const std::string &mrl, YMediaPreset preset)
+void YMediaChain::addSource(const std::string& mrl, YMediaPreset preset)
 {
-    return YCode::OK;
+    _data_processors.push_back(new YSource(mrl, preset));
 }
 
-YCode YMediaChain::addDestination(const std::string &mrl, YMediaPreset preset)
+void YMediaChain::addDestination(const std::string &mrl, YMediaPreset preset)
 {
-    return YCode::OK;
+    _data_processors.push_back(new YDestination(mrl, preset));
 }
 
 bool YMediaChain::init()
@@ -177,38 +177,17 @@ bool YMediaChain::contingencyAudioSourceRequired()
             || _source->audio_parameters.ignore();
 }
 
-bool YMediaChain::skipPacket(YPacket &packet)
-{
-    bool skip_packet = (!_destination->video_parameters.available() && packet.isVideo())
-                    || (!_destination->audio_parameters.available() && packet.isAudio());
-    return skip_packet;
-}
-
-bool YMediaChain::mapStreamIndex(YPacket &packet, YMediaType type)
-{
-    switch (type) {
-    case YMediaType::MEDIA_TYPE_VIDEO:
-        packet.raw().stream_index = static_cast<int>(_destination_video_stream_index);
-        return true;
-    case YMediaType::MEDIA_TYPE_AUDIO:
-        packet.raw().stream_index = static_cast<int>(_destination_audio_stream_index);
-        return true;
-    default:
-        return false;
-    }
-}
-
-bool YMediaChain::optionInstalled(YOptions option)
+bool YMediaChain::option(YOptions option)
 {
     return _options & option;
 }
 
-void YMediaChain::parseInstalledOptions()
+void YMediaChain::parseOptions()
 {
-    if (optionInstalled(COPY_VIDEO)) {
+    if (option(COPY_VIDEO)) {
         _destination->video_parameters = _source->video_parameters;
     }
-    if (optionInstalled(COPY_AUDIO)) {
+    if (option(COPY_AUDIO)) {
         _destination->audio_parameters = _source->audio_parameters;
     }
 }
@@ -231,4 +210,11 @@ void YMediaChain::stopProcesors()
     std::for_each(_data_processors.begin()
                   , _data_processors.end()
                   , [](YThread* proc){ proc->quit(); });
+}
+
+void YMediaChain::freeProcesors() //TODO
+{
+    std::for_each(_data_processors.begin()
+                  , _data_processors.end()
+                  , [](YThread* proc){ delete proc; });
 }

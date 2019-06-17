@@ -40,18 +40,19 @@ enum YCode {
     INVALID_INPUT,
 };
 
-/* Опции для настройки */
+/* Опции для YMediaChain */
 enum YOptions {
     COPY_VIDEO      = 0x0001,
     COPY_AUDIO      = 0x0002,
-    DUMMY_ENUM      = 0x0004
+    VIDEO_REQUIRED  = 0x0004,
+    AUDIO_REQUIRED  = 0x0008,
 };
 
 /* Медиа тип потока/пакета/фрейма */
 enum YMediaType {
     MEDIA_TYPE_UNKNOWN  = 0x0001,
     MEDIA_TYPE_VIDEO    = 0x0002,
-    MEDIA_TYPE_AUDIO    = 0x0004
+    MEDIA_TYPE_AUDIO    = 0x0004,
 };
 
 /* Значения по умолчанию для видео- и аудиопараметров */
