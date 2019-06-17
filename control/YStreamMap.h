@@ -4,9 +4,9 @@
 #include "base/YDataProcessor.h"
 #include "../context/YSource.h"
 #include "../context/YDestination.h"
-#include <vector>
+#include <map>
 
-typedef std::pair<YStream*,YStream*> YMap;
+typedef std::map<YStream*,YAsyncQueue<YPacket>> YMap;
 
 class YStreamMap : public YDataProcessor<YPacket,YPacket>
 {
@@ -16,12 +16,12 @@ public:
     YStreamMap();
     virtual ~YStreamMap() override = default;
 
-    bool        addRoute(YStream* src_stream, YStream* dst_stream);
+    bool        addRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_processor);
     YCode       processInputData(YPacket& input_data) override;
 
 private:
 
     // General
-    std::vector<YMap>   _map; //TODO change vector to map
+    YMap        _map;
 
 };

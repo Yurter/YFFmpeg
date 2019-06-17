@@ -48,6 +48,7 @@ YCode YAbstractCodec::copyCodecParameters(YStream* stream)
         return YCode::ERR;
     }
     {
+        setName(name() + " " + codec->name);
         _type = stream->type();
     }
     {
