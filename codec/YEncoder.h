@@ -15,9 +15,5 @@ private:
 
     YCode processInputData(YFrame& input_data) override;
 
-private:
-
-    // General
-
 };
 

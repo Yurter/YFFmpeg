@@ -15,8 +15,4 @@ private:
 
     YCode processInputData(YPacket& input_data) override;
 
-private:
-
-    // General
-
 };
