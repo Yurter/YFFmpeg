@@ -1,40 +1,6 @@
   #include "YMediaChain.h"
 
-YMediaChain::YMediaChain(YSource*      source,
-                         YDestination* destination,
-                         int64_t            options) :
-    YMediaChain(source,
-                nullptr,
-                nullptr,
-                destination,
-                options)
-{
-    //
-}
-
-YMediaChain::YMediaChain(YSource*      source,
-                         YVideoFilter* video_filter,
-                         YAudioFilter* audio_filter,
-                         YDestination* destination,
-                         int64_t       options) :
-    _source(source),
-    _decoder(new YDecoder(source)),
-    _rescaler(nullptr),
-    _resampler(nullptr),
-    _video_filter(video_filter),
-    _audio_filter(audio_filter),
-    _encoder(new YEncoder(destination)),
-    _stream_map(new YStreamMap),
-    _destination(destination),
-    _contingency_video_source(nullptr),
-    _contingency_audio_source(nullptr),
-    _paused(false),
-    _inited(false),
-    _options(options),
-    _source_video_stream_index(-1),
-    _source_audio_stream_index(-1),
-    _destination_video_stream_index(-1),
-    _destination_audio_stream_index(-1)
+YMediaChain::YMediaChain()
 {
     setName("YMediaChain");
 }
@@ -62,9 +28,19 @@ void YMediaChain::unpause()
     _paused = false;
 }
 
-bool YMediaChain::active()
+void YMediaChain::setOptions(int64_t options)
 {
-    return running();
+    _options = options;
+}
+
+YCode YMediaChain::addSource(const std::string &mrl, YMediaPreset preset)
+{
+    return YCode::OK;
+}
+
+YCode YMediaChain::addDestination(const std::string &mrl, YMediaPreset preset)
+{
+    return YCode::OK;
 }
 
 void YMediaChain::setContingencyVideoSource(YSource *contingency_video_source)

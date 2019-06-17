@@ -19,12 +19,12 @@ extern "C" {
 }
 
 /* Варианты для быстрой преднастройки */
-/* параметров медиа-ресурсa           */
+/* параметров медиа-контекстов        */
 enum YMediaPreset {
     Auto,
     /* Input */
     Virtual,
-//    Silence,
+    Memory,
     /* Output */
     YouTube,
     Timelapse
@@ -91,13 +91,10 @@ enum YLogLevel {
     Debug
 };
 
-/* ? */
+/* Функция возвращает id потока, в котором вызвана */
 #define current_thread_id() std::this_thread::get_id()
 
 /* Значение для задержек в коде в мс */
 #define SHORT_DELAY_MS          10
 #define MEDIUM_DELAY_MS         100
 #define LONG_DELAY_MS           1000
-
-//удалить
-#define print_func std::cout << "[" << std::this_thread::get_id() << "] " <<  __FUNCTION__ << std::endl;

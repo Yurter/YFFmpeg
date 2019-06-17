@@ -16,22 +16,18 @@ class YMediaChain : public YThread
 
 public:
 
-    YMediaChain(YSource*       source,
-                YDestination*  destination,
-                int64_t             options = 0);
-
-    YMediaChain(YSource*       source,
-                YVideoFilter*  video_filter,
-                YAudioFilter*  audio_filter,
-                YDestination*  destination,
-                int64_t        options);
-
+    YMediaChain();
     ~YMediaChain() override;
 
     bool stop();
     void pause();
     void unpause();
-    bool active();
+
+    void    setOptions(int64_t options);
+    YCode   addSource(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
+    YCode   addDestination(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
+//    YCode   addVideoFiler();
+//    YCode   addAudioFiler();
 
 //    void setContingencySource(YSource* contingency_source);
     void setContingencyVideoSource(YSource* contingency_video_source);
@@ -41,9 +37,10 @@ public:
     void setVideoFilter(std::string video_filter);
     void setAudioFilter(std::string audio_filter);
 
-
     bool init();
+
 private:
+
     YCode run() override;
 
     bool rescalerRequired();
@@ -72,6 +69,8 @@ private:
     YEncoder*           _encoder;
     YStreamMap*         _stream_map;
     YDestination*       _destination;
+
+    std::list<YThread*> _data_processors;
 
     YSource*       _contingency_video_source;
     YSource*       _contingency_audio_source;
