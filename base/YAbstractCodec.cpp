@@ -50,5 +50,13 @@ YCode YAbstractCodec::copyCodecParameters(YStream* stream)
     {
         _type = stream->type();
     }
+    {
+        /* Crutch */ //TODO
+        if (stream->isAudio()) {
+            _codec_context->channel_layout = static_cast<uint64_t>(
+                        av_get_default_channel_layout(_codec_context->channels)
+            );
+        }
+    }
     return YCode::OK;
 }
