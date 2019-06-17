@@ -8,15 +8,14 @@
 #include "YPacket.h"
 
 template <class inType, class outType>
-class [[nodiscard]] YDataProcessor : public YThread
-                                    , public YAsyncQueue<inType>
+class YDataProcessor : public YThread
+                        , public YAsyncQueue<inType>
 {
 
 public:
 
     YDataProcessor() :
         _next_processor(nullptr),
-        _last_error(YCode::OK),
         _inited(false),
         _skip_types(0),
         _ignore_types(0)
@@ -30,9 +29,6 @@ public:
     {
         _next_processor = next_processor;
     }
-
-    void    setLastError(YCode last_error) { _last_error = last_error; }
-    YCode   lastError() const { return _last_error; }
 
     void    setInited(bool inited) { _inited = inited; }
     bool    inited() const { return _inited; }
@@ -71,14 +67,12 @@ private:
         if (ignoreType(input_data.type())) {
             return YCode::AGAIN;
         }
-        setLastError(processInputData(input_data));
-        return lastError();
+        return processInputData(input_data);
     }
 
 private:
 
     // General
-    YCode                   _last_error;
     bool                    _inited;
 
     // Media

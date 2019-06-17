@@ -9,9 +9,9 @@ class YResampler : public YAbstractFrameProcessor
 public:
 
     YResampler();
-    ~YResampler() override;
+    virtual ~YResampler() override;
 
-    bool init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context);
+    virtual bool init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context) override;
 
 private:
 

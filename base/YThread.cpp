@@ -11,6 +11,7 @@ YThread::YThread() :
 
 YThread::YThread(std::function<YCode(void)> loop_function) :
     _running(false),
+    _exit_code(YCode::OK),
     _loop_function(loop_function)
 {
     setName("YThread");
@@ -34,11 +35,10 @@ void YThread::start()
     if (_running) { return; }
     _running = true;
     _thread = std::thread([this]() {
-        YCode ret = YCode::OK;
-        while (_running && !utils::exit_code(ret = _loop_function())) {}
+        while (_running && !utils::exit_code(_exit_code = _loop_function())) {}
         _running = false;
-        log_debug("Thread finished with code: " << ret
-                  << " - " << utils::code_to_string(ret));
+        log_debug("Thread finished with code: " << _exit_code
+                  << " - " << utils::code_to_string(_exit_code));
     });
     _thread.detach();
 }
@@ -60,6 +60,16 @@ void YThread::join()
     while (running()) {
         utils::sleep_for(MEDIUM_DELAY_MS);
     }
+}
+
+void YThread::setExitCode(YCode exit_code)
+{
+    _exit_code = exit_code;
+}
+
+YCode YThread::exitCode() const
+{
+    return _exit_code;
 }
 
 YCode YThread::run()

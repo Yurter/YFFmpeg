@@ -21,6 +21,9 @@ public:
     virtual bool        running()   final;
     virtual void        join()      final;
 
+    void    setExitCode(YCode exit_code);
+    YCode   exitCode() const;
+
 protected:
 
     virtual YCode       run();
@@ -30,8 +33,8 @@ private:
     // General
     std::thread                 _thread;
     volatile bool               _running;
+    YCode                       _exit_code;
     std::function<YCode(void)>  _loop_function;
-
 
 };
 

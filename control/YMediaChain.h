@@ -43,9 +43,13 @@ private:
 
     void completeDestinationParametres();
 
-    void    startProcesors();
-    void    stopProcesors();
-    void    closeProcesors();
+    YCode   startProcesors();
+    YCode   stopProcesors();
+    YCode   openProcesors();
+    YCode   closeProcesors();
+    YCode   createProcessors();
+    YCode   initProcesors();
+    YCode   connectProcessors();
     void    freeProcesors();
 
 private:

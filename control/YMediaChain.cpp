@@ -48,24 +48,11 @@ bool YMediaChain::init()
 {
     log_info("Initialization started...");
 
-    if (!_source->open())       { return false; }
-
-    parseInstalledOptions();
-    completeDestinationParametres();
-
-
-    if (!_decoder->init())      { return false; }
-    if (!_encoder->init())      { return false; }
-    if (!_destination->open())  { return false; }
-
-    if (contingencyVideoSourceRequired()) {
-        log_info("Contingency video source required");
-        if (!_contingency_video_source->open()) { return false; }
-    }
-    if (contingencyAudioSourceRequired()) {
-        log_info("Contingency audio source required");
-        if (!_contingency_audio_source->open()) { return false; }
-    }
+    createProcessors();
+    initProcesors();
+    openProcesors();
+    connectProcessors();
+    startProcesors();
 
     if (rescalerRequired()) {
         _rescaler = new YRescaler();
@@ -134,6 +121,13 @@ YCode YMediaChain::run()
     if (!_inited) { //TODO
         init();
     }
+
+    for (auto&& proc : _data_processors) {
+        if (proc->running() == false) {
+            return proc->las
+        }
+    }
+
     if (_source->running() == false)        { return YCode::ERR; } //TODO return lastError
     if (_decoder->running() == false)       { return YCode::ERR; }
     if (_resampler->running() == false)     { return YCode::ERR; }
@@ -198,21 +192,33 @@ void YMediaChain::completeDestinationParametres()
     _destination->audio_parameters.softCopy(_source->audio_parameters);
 }
 
-void YMediaChain::startProcesors()
+YCode YMediaChain::startProcesors()
 {
     std::for_each(_data_processors.begin()
                   , _data_processors.end()
                   , [](YThread* proc){ proc->start(); });
 }
 
-void YMediaChain::stopProcesors()
+YCode YMediaChain::stopProcesors()
 {
     std::for_each(_data_processors.begin()
                   , _data_processors.end()
                   , [](YThread* proc){ proc->quit(); });
 }
 
-void YMediaChain::closeProcesors()
+YCode YMediaChain::openProcesors()
+{
+    std::for_each(_data_processors.begin()
+                  , _data_processors.end()
+                  , [](YThread* proc){
+        YSource* ptrs = dynamic_cast<YSource*>(proc);
+        if (ptrs != nullptr) { ptrs->open(); }
+        YDestination* ptrd = dynamic_cast<YDestination*>(proc);
+        if (ptrd != nullptr) { ptrd->open(); }
+    });
+}
+
+YCode YMediaChain::closeProcesors()
 {
     std::for_each(_data_processors.begin()
                   , _data_processors.end()
@@ -222,6 +228,28 @@ void YMediaChain::closeProcesors()
         YDestination* ptrd = dynamic_cast<YDestination*>(proc);
         if (ptrd != nullptr) { ptrd->close(); }
     });
+}
+
+YCode YMediaChain::createProcessors()
+{
+    //
+}
+
+YCode YMediaChain::initProcesors()
+{
+    std::for_each(_data_processors.begin()
+                  , _data_processors.end()
+                  , [](YThread* proc){
+        YAbstractFrameProcessor* ptrs = dynamic_cast<YAbstractFrameProcessor*>(proc);
+        if (ptrs != nullptr) { ptrs->init(); }
+        YDestination* ptrd = dynamic_cast<YDestination*>(proc);
+        if (ptrd != nullptr) { ptrd->init(); }
+    });
+}
+
+YCode YMediaChain::connectProcessors()
+{
+    return YCode::OK;
 }
 
 void YMediaChain::freeProcesors() //TODO
