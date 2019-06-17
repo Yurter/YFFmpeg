@@ -8,7 +8,8 @@
 #include "YPacket.h"
 
 template <class inType, class outType>
-class YDataProcessor : public YThread, public YAsyncQueue<inType>
+class [[nodiscard]] YDataProcessor : public YThread
+                                    , public YAsyncQueue<inType>
 {
 
 public:
@@ -18,12 +19,12 @@ public:
         _last_error(YCode::OK),
         _inited(false),
         _skip_types(0),
-        _ignore_types(0) {}
-
-    virtual ~YDataProcessor()
+        _ignore_types(0)
     {
-        //
+        setName("YDataProcessor");
     }
+
+    virtual ~YDataProcessor() = default;
 
     virtual void connectOutputTo(YAsyncQueue<outType>* next_processor) final
     {
@@ -59,9 +60,15 @@ private:
 
     YCode run() override final
     {
+        if (!inited()) {
+            return YCode::NOT_INITED;
+        }
         inType input_data;
         if (!pop(input_data)) {
             utils::sleep_for(SHORT_DELAY_MS);
+            return YCode::AGAIN;
+        }
+        if (ignoreType(input_data.type())) {
             return YCode::AGAIN;
         }
         setLastError(processInputData(input_data));

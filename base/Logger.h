@@ -18,6 +18,8 @@
 #define log_error(x)        { std::stringstream log_ss; log_ss << x; print_error(log_ss.str());     }
 #define log_debug(x)        { std::stringstream log_ss; log_ss << x; print_debug(log_ss.str());     }
 
+typedef std::pair<YLogLevel,std::string> YMessage;
+
 class Logger : public YThread
 {
 
@@ -43,7 +45,7 @@ private:
 private:
 
     // General
-    YAsyncQueue<std::pair<YLogLevel,std::string>>    _messages;
-    YLogLevel                   _log_level;
+    YAsyncQueue<YMessage>   _messages;
+    YLogLevel               _log_level;
 
 };

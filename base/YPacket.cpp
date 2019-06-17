@@ -18,6 +18,11 @@ bool YPacket::init()
     return true;
 }
 
+bool YPacket::inited() const
+{
+    return true; //TODO
+}
+
 void YPacket::setPts(int64_t pts)
 {
     _data.pts = pts;

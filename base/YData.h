@@ -25,7 +25,7 @@ public:
     bool            isVideo() const { return _type == YMediaType::MEDIA_TYPE_VIDEO; }
     bool            isAudio() const { return _type == YMediaType::MEDIA_TYPE_AUDIO; }
 
-    virtual bool        init() {}
+    virtual bool        init() { return true; }
     virtual bool        inited()    const = 0;
     virtual std::string toString()  const = 0;
 

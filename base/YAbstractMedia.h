@@ -2,8 +2,8 @@
 
 #include "ffmpeg.h"
 #include "YDataProcessor.h"
-#include "YVideoParameters.h"
-#include "YAudioParameters.h"
+#include "../control/YVideoParameters.h"
+#include "../control/YAudioParameters.h"
 #include "YPacket.h"
 #include "YStream.h"
 #include <string>

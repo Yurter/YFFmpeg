@@ -18,7 +18,7 @@ Logger::~Logger()
 
 YCode Logger::run()
 {
-    std::pair<YLogLevel,std::string> message;
+    YMessage message;
     if (!_messages.pop(message)) {
         utils::sleep_for(SHORT_DELAY_MS);
         return YCode::AGAIN;

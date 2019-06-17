@@ -13,6 +13,7 @@ public:
     virtual ~YPacket() override;
 
     bool            init() override;
+    bool            inited() const override;
 
     void            setPts(int64_t pts);
     void            setDts(int64_t dts);
@@ -32,7 +33,5 @@ public:
 private:
 
     // General
-
-    // FFmpeg
 
 };

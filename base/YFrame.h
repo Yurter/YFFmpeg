@@ -10,18 +10,17 @@ public:
 
     YFrame();
     YFrame(AVFrame* frame);
-    ~YFrame();
+    virtual ~YFrame() override;
 
     bool            alloc();
     void            free();
 
-    bool            empty() const;
-    std::string     toString() const;
+    bool            empty()     const;
+    bool            inited()    const override;
+    std::string     toString()  const override;
 
 private:
 
     // General
-
-    // FFmpeg
 
 };

@@ -104,8 +104,8 @@ YCode YSource::processInputData(YPacket& input_data)
     if (input_data.type() == YMediaType::MEDIA_TYPE_UNKNOWN) {
         return YCode::INVALID_INPUT;
     }
-    if (input_data.isVideo() && video_parameters.ignore()) { return YCode::AGAIN; }
-    if (input_data.isAudio() && audio_parameters.ignore()) { return YCode::AGAIN; }
+//    if (input_data.isVideo() && video_parameters.ignore()) { return YCode::AGAIN; }
+//    if (input_data.isAudio() && audio_parameters.ignore()) { return YCode::AGAIN; }
     sendOutputData(input_data); //TODO ret unused
     if (_artificial_delay > 0) { utils::sleep_for(_artificial_delay); } //TODO
     return YCode::OK;

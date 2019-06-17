@@ -198,8 +198,8 @@ YCode YDestination::processInputData(YPacket& input_data)
         return YCode::ERR;
     }
     //TODO это д.б. в датапроцессоре
-    if (input_data.isVideo() && video_parameters.ignore()) { return YCode::AGAIN; }
-    if (input_data.isAudio() && audio_parameters.ignore()) { return YCode::AGAIN; }
+//    if (input_data.isVideo() && video_parameters.ignore()) { return YCode::AGAIN; }
+//    if (input_data.isAudio() && audio_parameters.ignore()) { return YCode::AGAIN; }
     { // debug
 //        log_debug(input_data.toString());
 //        log_debug("packets v: " << stream(0)->duration() << ", a: " << stream(1)->duration());

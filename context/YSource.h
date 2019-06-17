@@ -1,7 +1,7 @@
 #pragma once
 
 #include "base/YAbstractMedia.h"
-#include "YVideoDecoder.h"
+#include "../codec/YVideoDecoder.h"
 
 class YSource : public YAbstractMedia
 {
