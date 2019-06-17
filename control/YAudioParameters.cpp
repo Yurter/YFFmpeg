@@ -6,7 +6,7 @@ YAudioParameters::YAudioParameters() :
     _chanels_layout(DEFAULT_CHANEL_LAYOUT),
     _chanels(DEFAULT_INT)
 {
-    //
+    setName("YAudioParameters");
 }
 
 YAudioParameters::~YAudioParameters()

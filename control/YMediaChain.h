@@ -1,17 +1,15 @@
 #pragma once
 
 #include "base/YThread.h"
-#include "YSource.h"
-#include "YDecoder.h"
-#include "YVideoFilter.h"
-#include "YAudioFilter.h"
-#include "YEncoder.h"
-#include "YDestination.h"
-#include "YRescaler.h"
-#include "YResampler.h"
+#include "context/YSource.h"
+#include "codec/YVideoDecoder.h"
+#include "refi/YVideoFilter.h"
+#include "refi/YAudioFilter.h"
+#include "codec/YVideoEncoder.h"
+#include "context/YDestination.h"
+#include "refi/YRescaler.h"
+#include "refi/YResampler.h"
 #include "YStreamMap.h"
-
-#include <iostream>
 
 class YMediaChain : public YThread
 {
@@ -30,7 +28,6 @@ public:
 
     ~YMediaChain() override;
 
-//    void start() override;
     bool stop();
     void pause();
     void unpause();

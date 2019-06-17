@@ -8,7 +8,7 @@ YParameters::YParameters() :
     _stream_index(INVALID_INT),
     _time_base(DEFAULT_RATIONAL)
 {
-    //
+    setName("YParameters");
 }
 
 YParameters::~YParameters()

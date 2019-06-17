@@ -1,19 +1,21 @@
 TEMPLATE = app
-CONFIG += console #c++14
+CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 CONFIG += c++17
 
 SOURCES += \
-    YAudioStream.cpp \
-    YDecoder.cpp \
-    YDestination.cpp \
-    YEncoder.cpp \
-    YResampler.cpp \
-    YRescaler.cpp \
-    YSource.cpp \
-    YStreamMap.cpp \
-    YVideoStream.cpp \
+    codec/YAudioDecoder.cpp \
+    codec/YAudioEncoder.cpp \
+    control/YAudioStream.cpp \
+    context/YDestination.cpp \
+    refi/YResampler.cpp \
+    refi/YRescaler.cpp \
+    context/YSource.cpp \
+    control/YStreamMap.cpp \
+    codec/YVideoDecoder.cpp \
+    codec/YVideoEncoder.cpp \
+    control/YVideoStream.cpp \
     base/YAbstractFrameProcessor.cpp \
     base/YObject.cpp \
     base/YStream.cpp \
@@ -27,23 +29,25 @@ SOURCES += \
     base\YFrame.cpp \
     base\YPacket.cpp \
     base\YParameters.cpp \
-    YVideoParameters.cpp \
-    YAudioParameters.cpp \
-    YMediaChain.cpp \
-    YVideoFilter.cpp \
-    YAudioFilter.cpp \
-    YMediaFilter.cpp \
+    control/YVideoParameters.cpp \
+    control/YAudioParameters.cpp \
+    control/YMediaChain.cpp \
+    refi/YVideoFilter.cpp \
+    refi/YAudioFilter.cpp \
+    refi/YMediaFilter.cpp \
 
 HEADERS += \
-    YAudioStream.h \
-    YDecoder.h \
-    YDestination.h \
-    YEncoder.h \
-    YResampler.h \
-    YRescaler.h \
-    YSource.h \
-    YStreamMap.h \
-    YVideoStream.h \
+    codec/YAudioDecoder.h \
+    codec/YAudioEncoder.h \
+    control/YAudioStream.h \
+    context/YDestination.h \
+    refi/YResampler.h \
+    refi/YRescaler.h \
+    context/YSource.h \
+    control/YStreamMap.h \
+    codec/YVideoDecoder.h \
+    codec/YVideoEncoder.h \
+    control/YVideoStream.h \
     base/YAbstractFrameProcessor.h \
     base/YAsyncQueue.h \
     base/YData.h \
@@ -60,12 +64,12 @@ HEADERS += \
     base\YFrame.h \
     base\YPacket.h \
     base\YParameters.h \
-    YVideoParameters.h \
-    YAudioParameters.h \
-    YMediaChain.h \
-    YMediaFilter.h \
-    YAudioFilter.h \
-    YVideoFilter.h \
+    control/YVideoParameters.h \
+    control/YAudioParameters.h \
+    control/YMediaChain.h \
+    refi/YMediaFilter.h \
+    refi/YAudioFilter.h \
+    refi/YVideoFilter.h \
 
 #-- Home --
 INCLUDEPATH += G:\dev\FFmpeg\ffmpeg-4.1.1-win64-dev\include

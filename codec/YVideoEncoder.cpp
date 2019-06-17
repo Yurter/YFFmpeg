@@ -1,4 +1,4 @@
-#include "YEncoder.h"
+#include "YVideoEncoder.h"
 #include <iostream>
 
 YEncoder::YEncoder(YDestination *destination) :

@@ -1,4 +1,4 @@
-#include "YDecoder.h"
+#include "YVideoDecoder.h"
 #include <iostream>
 
 YDecoder::YDecoder(YSource *source) :

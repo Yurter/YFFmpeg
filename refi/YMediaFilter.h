@@ -1,6 +1,6 @@
 #pragma once
 
-#include "YDecoder.h"
+#include "YVideoDecoder.h"
 
 class YMediaFilter
 {

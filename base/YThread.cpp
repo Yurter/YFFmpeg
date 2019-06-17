@@ -6,14 +6,14 @@
 YThread::YThread() :
     YThread(std::bind(&YThread::run,this))
 {
-    setName("YThread");
+    //
 }
 
 YThread::YThread(std::function<YCode(void)> loop_function) :
     _running(false),
     _loop_function(loop_function)
 {
-    //
+    setName("YThread");
 }
 
 YThread &YThread::operator=(YThread&& other)
@@ -37,8 +37,8 @@ void YThread::start()
         YCode ret = YCode::OK;
         while (_running && !utils::exit_code(ret = _loop_function())) {}
         _running = false;
-        std::cout << "[YThread] Thread finished with code: " << ret
-                  << " - " << utils::code_to_string(ret) << std::endl;
+        log_debug("Thread finished with code: " << ret
+                  << " - " << utils::code_to_string(ret));
     });
     _thread.detach();
 }

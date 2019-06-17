@@ -8,7 +8,7 @@ YVideoParameters::YVideoParameters() :
     _frame_rate(DEFAULT_FLOAT),
     _pixel_format(DEFAULT_PIXEL_FORMAT)
 {
-    //
+    setName("YVideoParameters");
 }
 
 YVideoParameters::~YVideoParameters()

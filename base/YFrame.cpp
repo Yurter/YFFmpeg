@@ -2,15 +2,17 @@
 #include "utils.h"
 
 YFrame::YFrame() :
-    YData<AVFrame*>()
+    YFrame(nullptr)
 {
-//    _data = av_frame_alloc();
-    alloc();
+    //
 }
 
-YFrame::YFrame(AVFrame *frame)
+YFrame::YFrame(AVFrame *frame) :
+    YData<AVFrame*>()
 {
+    setName("YFrame");
     _data = frame;
+    if (_data == nullptr) { alloc(); }
 }
 
 YFrame::~YFrame()

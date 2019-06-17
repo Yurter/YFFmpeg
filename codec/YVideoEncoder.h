@@ -2,7 +2,7 @@
 
 #include "base/YAbstractCoder.h"
 #include "base/YDataProcessor.h"
-#include "YDestination.h"
+#include "../context/YDestination.h"
 
 class YEncoder : public YAbstractCoder, public YDataProcessor<YFrame,YPacket>
 {

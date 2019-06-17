@@ -3,7 +3,7 @@
 YPacket::YPacket() :
     YData<AVPacket>()
 {
-    //
+    setName("YPacket");
 }
 
 YPacket::~YPacket()
@@ -12,9 +12,10 @@ YPacket::~YPacket()
     //avpacket_unref(&m_raw);
 }
 
-void YPacket::init()
+bool YPacket::init()
 {
     av_init_packet(&_data);
+    return true;
 }
 
 void YPacket::setPts(int64_t pts)
