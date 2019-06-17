@@ -45,6 +45,7 @@ private:
 
     void    startProcesors();
     void    stopProcesors();
+    void    closeProcesors();
     void    freeProcesors();
 
 private:

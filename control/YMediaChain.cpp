@@ -8,6 +8,7 @@ YMediaChain::YMediaChain()
 
 YMediaChain::~YMediaChain()
 {
+    freeProcesors();
     stop();
 }
 
@@ -155,10 +156,10 @@ bool YMediaChain::resamplerRequired()
 {
     auto& src = _source->audio_parameters;
     auto& dst = _destination->audio_parameters;
-    if (!src.available())               { return false; }
-    if (!dst.available())               { return false; }
-    if (src.ignore())                   { return false; }
-    if (optionInstalled(COPY_AUDIO))    { return false; }
+    if (!src.available())   { return false; }
+    if (!dst.available())   { return false; }
+    if (src.ignore())       { return false; }
+    if (option(COPY_AUDIO)) { return false; }
     if (src.sampleRate() != dst.sampleRate())       { return true; }
     if (src.sampleFormat() != dst.sampleFormat())   { return true; }
     if (src.chanels() != dst.chanels())             { return true; }
@@ -210,6 +211,18 @@ void YMediaChain::stopProcesors()
     std::for_each(_data_processors.begin()
                   , _data_processors.end()
                   , [](YThread* proc){ proc->quit(); });
+}
+
+void YMediaChain::closeProcesors()
+{
+    std::for_each(_data_processors.begin()
+                  , _data_processors.end()
+                  , [](YThread* proc){
+        YSource* ptrs = dynamic_cast<YSource*>(proc);
+        if (ptrs != nullptr) { ptrs->close(); }
+        YDestination* ptrd = dynamic_cast<YDestination*>(proc);
+        if (ptrd != nullptr) { ptrd->close(); }
+    });
 }
 
 void YMediaChain::freeProcesors() //TODO

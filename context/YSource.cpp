@@ -14,7 +14,7 @@ YSource::YSource(const std::string &mrl, YMediaPreset preset) :
         avdevice_register_all();
         guessInputFromat();
         parseInputFormat();
-        _artificial_delay = 1024; //TODO: 1024 для аудио, для видео - ?
+        _artificial_delay = 1024; //TODO: 1024 для аудио, для видео - ? (1000 / frame_rate)
         break;
     default:
         log_error("Invalid preset");
@@ -104,8 +104,6 @@ YCode YSource::processInputData(YPacket& input_data)
     if (input_data.type() == YMediaType::MEDIA_TYPE_UNKNOWN) {
         return YCode::INVALID_INPUT;
     }
-//    if (input_data.isVideo() && video_parameters.ignore()) { return YCode::AGAIN; }
-//    if (input_data.isAudio() && audio_parameters.ignore()) { return YCode::AGAIN; }
     sendOutputData(input_data); //TODO ret unused
     if (_artificial_delay > 0) { utils::sleep_for(_artificial_delay); } //TODO
     return YCode::OK;
