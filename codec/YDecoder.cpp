@@ -9,7 +9,8 @@ YCode YDecoder::processInputData(YPacket& input_data)
 {
     if (!input_data.empty()) {
         if (avcodec_send_packet(_codec_context, &input_data.raw()) != 0) {
-            std::cerr << "[YVideoDecoder] Could not send packet" << std::endl;
+            Logger::instance().print(this, YLogLevel::Error, "");
+            log_error("Could not send packet");
             return YCode::ERR;
         }
     }
