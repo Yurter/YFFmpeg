@@ -1,54 +1,58 @@
 #include "YVideoDecoder.h"
-#include <iostream>
 
-YDecoder::YDecoder(YSource *source) :
+YVideoDecoder::YVideoDecoder(YSource *source) :
     _source(source)
 {
-    setName("YDecoder");
+    YAbstractCodec::setName("YVideoDecoder");
 }
 
-YDecoder::~YDecoder()
+YVideoDecoder::~YVideoDecoder()
 {
     //
 }
 
-bool YDecoder::init()
+bool YVideoDecoder::init(YStream *stream)
+{
+    //
+}
+
+bool YVideoDecoder::init()
 {
     if (_source->video_parameters.available() && !_source->video_parameters.ignore()) {
         if (!initVideoCodec()) {
-            std::cerr << "[YDecoder] Failed to init video codec" << std::endl;
+            std::cerr << "[YVideoDecoder] Failed to init video codec" << std::endl;
             return false;
         }
     }
     if (_source->audio_parameters.available() && !_source->audio_parameters.ignore()) {
         if (!initAudioCodec()) {
-            std::cerr << "[YDecoder] Failed to init audio codec" << std::endl;
+            std::cerr << "[YVideoDecoder] Failed to init audio codec" << std::endl;
             return false;
         }
     }
     if (_source->mediaFormatContext()->nb_streams == 0) {
-        std::cerr << "[YDecoder] Source wasn't inited" << std::endl;
+        std::cerr << "[YVideoDecoder] Source wasn't inited" << std::endl;
         return false;
     }
-    std::cout << "[YDecoder] Inited" << std::endl;
+    std::cout << "[YVideoDecoder] Inited" << std::endl;
     return true;
 }
 
-bool YDecoder::initVideoCodec()
+bool YVideoDecoder::initVideoCodec()
 {
     bool copied = copyCodecPar(_source->mediaFormatContext(), AVMEDIA_TYPE_VIDEO, _source->video_parameters.streamIndex(), &_video_codec_context);
     if (!copied) {
-        std::cerr << "[YDecoder] Video codec copy error" << std::endl;
+        std::cerr << "[YVideoDecoder] Video codec copy error" << std::endl;
     }
     _video_stream_index = _source->video_parameters.streamIndex();
     return copied;
 }
 
-bool YDecoder::initAudioCodec()
+bool YVideoDecoder::initAudioCodec()
 {
     bool copied = copyCodecPar(_source->mediaFormatContext(), AVMEDIA_TYPE_AUDIO, _source->audio_parameters.streamIndex(), &_audio_codec_context);
     if (!copied) {
-        std::cerr << "[YDecoder] Audio codec copy error" << std::endl;
+        std::cerr << "[YVideoDecoder] Audio codec copy error" << std::endl;
     }
     _audio_stream_index = _source->audio_parameters.streamIndex();
     /* Crutch */ //TODO
@@ -56,30 +60,30 @@ bool YDecoder::initAudioCodec()
     return copied;
 }
 
-bool YDecoder::copyCodecPar(AVFormatContext *input_format_context, AVMediaType media_tipe, int64_t stream_index, AVCodecContext **codec_context)
+bool YVideoDecoder::copyCodecPar(AVFormatContext *input_format_context, AVMediaType media_tipe, int64_t stream_index, AVCodecContext **codec_context)
 {
     AVCodec *codec;
     if (av_find_best_stream(input_format_context, media_tipe, -1, -1, &codec, 0) < 0) {
-        std::cerr << "[YDecoder] Cannot find an av stream in the input file" << std::endl;
+        std::cerr << "[YVideoDecoder] Cannot find an av stream in the input file" << std::endl;
         return false;
     }
     *codec_context = avcodec_alloc_context3(codec);
     if (!codec_context) {
-        std::cerr << "[YDecoder] Failed to alloc context" << std::endl;
+        std::cerr << "[YVideoDecoder] Failed to alloc context" << std::endl;
         return false;
     }
     if (avcodec_parameters_to_context(*codec_context, input_format_context->streams[stream_index]->codecpar) < 0) {
-        std::cerr << "[YDecoder] avcodec_parameters_to_context failed" << std::endl;
+        std::cerr << "[YVideoDecoder] avcodec_parameters_to_context failed" << std::endl;
         return false;
     }
     if (avcodec_open2(*codec_context, codec, nullptr) < 0) {
-        std::cerr << "[YDecoder] Cannot open av decoder" << std::endl;
+        std::cerr << "[YVideoDecoder] Cannot open av decoder" << std::endl;
         return false;
     }
     return true;
 }
 
-YCode YDecoder::processInputData(YPacket& input_data)
+YCode YVideoDecoder::processInputData(YPacket& input_data)
 {
 //    if (ignoreType(input_data.type())) {
 //        return sendOutputData(input_data);
@@ -88,12 +92,12 @@ YCode YDecoder::processInputData(YPacket& input_data)
     if (input_data.isVideo()) { codec_context = _video_codec_context; }
     if (input_data.isAudio()) { codec_context = _audio_codec_context; }
     if (codec_context == nullptr) {
-        std::cerr << "[YDecoder] codec_context is null" << std::endl;
+        std::cerr << "[YVideoDecoder] codec_context is null" << std::endl;
         return YCode::ERR;
     }
     if (!input_data.empty()) {
         if (avcodec_send_packet(codec_context, &input_data.raw()) != 0) {
-            std::cerr << "[YDecoder] Could not send packet" << std::endl;
+            std::cerr << "[YVideoDecoder] Could not send packet" << std::endl;
             return YCode::ERR;
         }
     }

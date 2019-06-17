@@ -45,3 +45,25 @@ std::string utils::rational_to_string(AVRational rational)
                         + std::to_string(rational.den);
     return str;
 }
+
+bool utils::compatibleWithSampleFormat(AVCodecContext *codec_context, AVSampleFormat sample_format)
+{
+    auto smp_fmt = codec_context->codec->sample_fmts;
+    while (smp_fmt[0] != AV_SAMPLE_FMT_NONE) {
+        if (smp_fmt[0] == sample_format) { return true; }
+        smp_fmt++;
+    }
+    return false;
+}
+
+AVMediaType utils::ymedia_type_to_avmedia_type(YMediaType media_type)
+{
+    switch (media_type) {
+    case YMediaType::MEDIA_TYPE_UNKNOWN:
+        return AVMEDIA_TYPE_UNKNOWN;
+    case YMediaType::MEDIA_TYPE_VIDEO:
+        return AVMEDIA_TYPE_VIDEO;
+    case YMediaType::MEDIA_TYPE_AUDIO:
+        return AVMEDIA_TYPE_AUDIO;
+    }
+}

@@ -9,7 +9,7 @@ class YStream : public YData<AVStream*>
 public:
 
     YStream();
-    YStream(AVStream* stream, YMediaType type);
+    YStream(AVFormatContext* format_context, AVStream* stream, YMediaType type);
     virtual ~YStream() override = default;
 
     virtual bool        inited() const override final;
@@ -19,9 +19,14 @@ public:
     int64_t             index()     const;
     int64_t             duration()  const;
     AVRational          timeBase()  const;
+    AVCodecParameters*  codecParameters();
+    AVFormatContext*    formatContext();
     void                increaseDuration(int64_t value);
 
 protected:
+
+    // FFmpeg
+    AVFormatContext*    _format_context;
 
     // General
     int64_t             _duration;

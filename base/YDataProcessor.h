@@ -45,8 +45,7 @@ protected:
     virtual YCode sendOutputData(outType output_data) final
     {
         if (_next_processor == nullptr) {
-            setLastError(YCode::NOT_INITED);
-            return lastError();
+            return YCode::NOT_INITED;
         }
         _next_processor->push(output_data);
         return YCode::OK;

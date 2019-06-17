@@ -1,13 +1,14 @@
 #include "YStream.h"
 
 YStream::YStream() :
-    YStream(nullptr, YMediaType::MEDIA_TYPE_UNKNOWN)
+    YStream(nullptr, nullptr, YMediaType::MEDIA_TYPE_UNKNOWN)
 {
     //
 }
 
-YStream::YStream(AVStream* stream, YMediaType type) :
+YStream::YStream(AVFormatContext* format_context, AVStream* stream, YMediaType type) :
     YData<AVStream*>(stream, type),
+    _format_context(format_context),
     _duration(DEFAULT_INT),
     _prev_dts(DEFAULT_INT),
     _prev_pts(DEFAULT_INT),
@@ -70,6 +71,16 @@ int64_t YStream::duration() const
 AVRational YStream::timeBase() const
 {
     return _data->time_base;
+}
+
+AVCodecParameters* YStream::codecParameters()
+{
+    return _data->codecpar;
+}
+
+AVFormatContext* YStream::formatContext()
+{
+    return _format_context;
 }
 
 void YStream::increaseDuration(int64_t value)

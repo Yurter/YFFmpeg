@@ -14,5 +14,7 @@ public:
     static bool         exit_code(YCode code);
     static std::string  code_to_string(YCode code);
     static std::string  rational_to_string(AVRational rational);
+    static bool         compatibleWithSampleFormat(AVCodecContext* codec_context, AVSampleFormat sample_format);
+    static AVMediaType  ymedia_type_to_avmedia_type(YMediaType media_type);
 
 };
