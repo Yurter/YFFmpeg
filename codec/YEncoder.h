@@ -3,7 +3,7 @@
 #include "../base/YAbstractCodec.h"
 #include "../base/YDataProcessor.h"
 
-class YEncoder : YAbstractCodec, public YDataProcessor<YFrame,YPacket>
+class YEncoder : public YAbstractCodec, public YDataProcessor<YFrame,YPacket>
 {
 
 public:

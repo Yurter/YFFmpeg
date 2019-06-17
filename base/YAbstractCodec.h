@@ -6,7 +6,7 @@
 #include "../base/YStream.h"
 #include <string>
 
-class YAbstractCodec : public YObject
+class YAbstractCodec : virtual public YObject
 {
 
 public:

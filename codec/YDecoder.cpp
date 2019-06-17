@@ -2,14 +2,13 @@
 
 YDecoder::YDecoder()
 {
-    YAbstractCodec::setName("YDecoder");
+    setName("YDecoder");
 }
 
 YCode YDecoder::processInputData(YPacket& input_data)
 {
     if (!input_data.empty()) {
         if (avcodec_send_packet(_codec_context, &input_data.raw()) != 0) {
-            Logger::instance().print(this, YLogLevel::Error, "");
             log_error("Could not send packet");
             return YCode::ERR;
         }

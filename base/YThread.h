@@ -4,7 +4,7 @@
 #include "YObject.h"
 #include <thread>
 
-class YThread : public YObject
+class YThread : virtual public YObject
 {
 
 public:
