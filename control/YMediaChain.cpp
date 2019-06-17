@@ -14,8 +14,7 @@ YMediaChain::~YMediaChain()
 
 bool YMediaChain::stop()
 {
-    _source->close();
-    _destination->close();
+    stopProcesors();
     log_info("Stopped");
     return true;
 }
