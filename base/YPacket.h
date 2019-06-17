@@ -10,9 +10,9 @@ class YPacket : public YData<AVPacket>
 public:
 
     YPacket();
-    ~YPacket();
+    virtual ~YPacket() override;
 
-    void            init();
+    bool            init() override;
 
     void            setPts(int64_t pts);
     void            setDts(int64_t dts);
@@ -27,7 +27,7 @@ public:
     int64_t         streamIndex()   const;
 
     bool            empty()         const;
-    std::string     toString()      const;
+    std::string     toString()      const override;
 
 private:
 

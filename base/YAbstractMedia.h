@@ -6,7 +6,6 @@
 #include "YAudioParameters.h"
 #include "YPacket.h"
 #include "YStream.h"
-
 #include <string>
 
 class YAbstractMedia : public YDataProcessor<YPacket, YPacket>
@@ -46,10 +45,13 @@ protected:
     // General
 	std::string			_media_resource_locator;
     bool				_opened;
+
     bool                _reopening_after_failure;
     int64_t             _reopening_timeout;
-    bool                _close_after_failure;
+
+    bool                _close_after_failure; //TODO нужно?
     int64_t             _close_timeout;
+
     int64_t             _artificial_delay;
 
     YThread             _io_thread;
@@ -57,7 +59,6 @@ protected:
     std::vector<YStream>    _streams;
 
     // FFmpeg
-    mutable std::mutex          _media_format_context_mutex;
     AVFormatContext*	_media_format_context;
 
 };

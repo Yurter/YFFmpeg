@@ -6,10 +6,10 @@ YAbstractMedia::YAbstractMedia(const std::string & mrl) :
 	_media_resource_locator(mrl),
     _opened(false),
     _reopening_after_failure(false),
-    _reopening_timeout(-1),         //TODO
+    _reopening_timeout(INVALID_INT),
     _close_after_failure(false),
-    _close_timeout(-1),             //TODO
-    _artificial_delay(0),
+    _close_timeout(INVALID_INT),
+    _artificial_delay(DEFAULT_INT),
     _media_format_context(nullptr)
 {
     //
@@ -114,7 +114,6 @@ std::string YAbstractMedia::mediaResourceLocator() const
 
 AVFormatContext *YAbstractMedia::mediaFormatContext() const
 {
-    std::lock_guard<std::mutex> lock(_media_format_context_mutex); //TODO
     return _media_format_context;
 }
 

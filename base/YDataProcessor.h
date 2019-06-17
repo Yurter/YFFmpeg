@@ -4,8 +4,8 @@
 #include "utils.h"
 #include "YThread.h"
 #include "YAsyncQueue.h"
-#include "base/YData.h"
-#include "base/YPacket.h"
+#include "YData.h"
+#include "YPacket.h"
 
 template <class inType, class outType>
 class YDataProcessor : public YThread, public YAsyncQueue<inType>

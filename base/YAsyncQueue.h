@@ -51,7 +51,7 @@ private:
 
     std::queue<Type>        _queue;
     std::mutex              _queue_mutex;
-    uint64_t                _queue_capacity;
+    uint64_t                _queue_capacity;  //TODO
 
 };
 
