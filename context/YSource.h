@@ -1,14 +1,14 @@
 #pragma once
 
 #include "base/YAbstractMedia.h"
-#include "../codec/YVideoDecoder.h"
+#include "../codec/YDecoder.h"
 
 class YSource : public YAbstractMedia
 {
 
 public:
 
-    YSource(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
+    YSource(const std::string& mrl, YMediaPreset preset = YMediaPreset::Auto);
     virtual ~YSource() override;
 
     bool            open()  override;

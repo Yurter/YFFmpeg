@@ -5,10 +5,10 @@ using namespace std;
 
 int main()
 {
+
     cout << "Program started..." << endl;
 
     set_log_level(YLogLevel::Debug);
-
 
     /* Запись rtsp с камеры в flv/YouTube */
     std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
@@ -18,8 +18,8 @@ int main()
 //    std::string mrl_dst = "remuxed.flv";
 
     YMediaChain chain;
-    chain.addSource(mrl_src);
-    chain.addDestination(mrl_dst, YMediaPreset::YouTube);
+    chain.addElement(new YSource(mrl_src));
+    chain.addElement(new YDestination(mrl_dst, YMediaPreset::YouTube));
     chain.setOptions(COPY_VIDEO);
 
     chain.start();

@@ -1,12 +1,13 @@
 #pragma once
 
 #include "ffmpeg.h"
-#include "YPacket.h"
-#include "YFrame.h"
+//#include "YPacket.h"
+//#include "YFrame.h"
+#include "YThread.h"
 #include "../base/YStream.h"
 #include <string>
 
-class YAbstractCodec : virtual public YObject
+class YAbstractCodec : virtual public YThread
 {
 
 public:

@@ -1,8 +1,6 @@
 #include "YSource.h"
-#include <exception>
-#include <iostream>
 
-YSource::YSource(const std::string &mrl, YMediaPreset preset) :
+YSource::YSource(const std::string& mrl, YMediaPreset preset) :
     YAbstractMedia(mrl),
     _input_format(nullptr)
 {
@@ -21,7 +19,6 @@ YSource::YSource(const std::string &mrl, YMediaPreset preset) :
         break;
     }
 }
-
 
 YSource::~YSource()
 {

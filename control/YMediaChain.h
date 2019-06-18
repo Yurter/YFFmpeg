@@ -2,13 +2,13 @@
 
 #include "base/YThread.h"
 #include "context/YSource.h"
-#include "codec/YVideoDecoder.h"
-#include "refi/YVideoFilter.h"
-#include "refi/YAudioFilter.h"
-#include "codec/YVideoEncoder.h"
 #include "context/YDestination.h"
+#include "codec/YDecoder.h"
+#include "codec/YEncoder.h"
 #include "refi/YRescaler.h"
 #include "refi/YResampler.h"
+#include "refi/YVideoFilter.h"
+#include "refi/YAudioFilter.h"
 #include "YStreamMap.h"
 
 class YMediaChain : public YThread
@@ -25,8 +25,7 @@ public:
     void    unpause();
 
     void    setOptions(int64_t options);
-    void    addSource(const std::string& mrl, YMediaPreset preset = YMediaPreset::Auto);
-    void    addDestination(const std::string& mrl, YMediaPreset preset = YMediaPreset::Auto);
+    void    addElement(YObject* element);
 
 private:
 
@@ -54,8 +53,10 @@ private:
 
 private:
 
-    // Media
-    std::list<YThread*> _data_processors;
+    // ?
+    std::list<YAbstractMedia*>          _data_processors_context;
+    std::list<YAbstractCodec*>          _data_processors_codec;
+    std::list<YAbstractFrameProcessor*> _data_processors_refi;
 
     // General
     volatile bool       _paused; 

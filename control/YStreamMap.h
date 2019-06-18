@@ -22,6 +22,6 @@ public:
 private:
 
     // General
-    YMap        _map;
+    YMap        _route_map;
 
 };

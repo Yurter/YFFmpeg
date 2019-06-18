@@ -2,10 +2,16 @@
 
 #include <algorithm>
 #include <iterator>
+#include <exception>
 
 YStreamMap::YStreamMap()
 {
     setName("YStreamMap");
+}
+
+bool YStreamMap::addRoute(YStream *src_stream, YAsyncQueue<YPacket> *next_processor)
+{
+    //
 }
 
 bool YStreamMap::addRoute(YStream* src_stream, YStream* dst_stream)
@@ -21,6 +27,11 @@ bool YStreamMap::addRoute(YStream* src_stream, YStream* dst_stream)
 
 YCode YStreamMap::processInputData(YPacket& input_data) //TODO
 {
+    try {
+//        auto&& route = _route_map.at("")
+    } catch (std::out_of_range) {
+        log_error(utils::code_to_string(YCode::INVALID_INPUT));
+    }
     auto result = std::find_if(_map.begin(), _map.end(),
         [input_data](YMap& it) {
         return it.second->type() == input_data.type();

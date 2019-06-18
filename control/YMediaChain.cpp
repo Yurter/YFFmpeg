@@ -34,14 +34,23 @@ void YMediaChain::setOptions(int64_t options)
     _options = options;
 }
 
-void YMediaChain::addSource(const std::string& mrl, YMediaPreset preset)
+void YMediaChain::addElement(YObject *element)
 {
-    _data_processors.push_back(new YSource(mrl, preset));
-}
-
-void YMediaChain::addDestination(const std::string &mrl, YMediaPreset preset)
-{
-    _data_processors.push_back(new YDestination(mrl, preset));
+    auto context = dynamic_cast<YAbstractMedia*>(element);
+    if (context != nullptr) {
+        _data_processors_context.push_back(context);
+        return;
+    }
+    auto codec = dynamic_cast<YAbstractCodec*>(element);
+    if (codec != nullptr) {
+        _data_processors_codec.push_back(codec);
+        return;
+    }
+    auto refi = dynamic_cast<YAbstractFrameProcessor*>(element);
+    if (refi != nullptr) {
+        _data_processors_refi.push_back(refi);
+        return;
+    }
 }
 
 bool YMediaChain::init()
@@ -194,40 +203,24 @@ void YMediaChain::completeDestinationParametres()
 
 YCode YMediaChain::startProcesors()
 {
-    std::for_each(_data_processors.begin()
-                  , _data_processors.end()
-                  , [](YThread* proc){ proc->start(); });
+    for (auto&& context : _data_processors_context) { context->start(); }
+    for (auto&& codec : _data_processors_codec) { codec->start(); }
+    for (auto&& refi : _data_processors_refi) { refi->start(); }
 }
 
 YCode YMediaChain::stopProcesors()
 {
-    std::for_each(_data_processors.begin()
-                  , _data_processors.end()
-                  , [](YThread* proc){ proc->quit(); });
+    for (auto&& context : _data_processors_context) { context->quit(); }
 }
 
 YCode YMediaChain::openProcesors()
 {
-    std::for_each(_data_processors.begin()
-                  , _data_processors.end()
-                  , [](YThread* proc){
-        YSource* ptrs = dynamic_cast<YSource*>(proc);
-        if (ptrs != nullptr) { ptrs->open(); }
-        YDestination* ptrd = dynamic_cast<YDestination*>(proc);
-        if (ptrd != nullptr) { ptrd->open(); }
-    });
+    for (auto&& context : _data_processors_context) { context->open(); }
 }
 
 YCode YMediaChain::closeProcesors()
 {
-    std::for_each(_data_processors.begin()
-                  , _data_processors.end()
-                  , [](YThread* proc){
-        YSource* ptrs = dynamic_cast<YSource*>(proc);
-        if (ptrs != nullptr) { ptrs->close(); }
-        YDestination* ptrd = dynamic_cast<YDestination*>(proc);
-        if (ptrd != nullptr) { ptrd->close(); }
-    });
+    for (auto&& context : _data_processors_context) { context->close(); }
 }
 
 YCode YMediaChain::createProcessors()
@@ -237,14 +230,8 @@ YCode YMediaChain::createProcessors()
 
 YCode YMediaChain::initProcesors()
 {
-    std::for_each(_data_processors.begin()
-                  , _data_processors.end()
-                  , [](YThread* proc){
-        YAbstractFrameProcessor* ptrs = dynamic_cast<YAbstractFrameProcessor*>(proc);
-        if (ptrs != nullptr) { ptrs->init(); }
-        YDestination* ptrd = dynamic_cast<YDestination*>(proc);
-        if (ptrd != nullptr) { ptrd->init(); }
-    });
+    for (auto&& codec : _data_processors_codec) { codec->init(); }
+    for (auto&& refi : _data_processors_refi) { refi->init(); }
 }
 
 YCode YMediaChain::connectProcessors()
