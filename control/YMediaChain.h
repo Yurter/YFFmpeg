@@ -49,6 +49,7 @@ private:
     YCode   createProcessors();
     YCode   initProcesors();
     YCode   connectProcessors();
+    YCode   ckeckProcessors();
     void    freeProcesors();
 
 private:

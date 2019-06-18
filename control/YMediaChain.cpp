@@ -133,7 +133,7 @@ YCode YMediaChain::run()
 
     for (auto&& proc : _data_processors) {
         if (proc->running() == false) {
-            return proc->las
+            return proc->erro
         }
     }
 
@@ -236,6 +236,21 @@ YCode YMediaChain::initProcesors()
 
 YCode YMediaChain::connectProcessors()
 {
+    return YCode::OK;
+}
+
+YCode YMediaChain::ckeckProcessors()
+{
+    for (auto&& context : _data_processors_context) {
+        if (!context->running()) { return context->exitCode(); }
+    }
+    for (auto&& codec : _data_processors_codec) {
+        if (!codec->running()) { return codec->exitCode(); }
+    }
+
+    for (auto&& refi : _data_processors_refi) {
+        if (!refi->running()) { return refi->exitCode(); }
+    }
     return YCode::OK;
 }
 
