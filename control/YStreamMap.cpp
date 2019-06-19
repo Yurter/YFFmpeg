@@ -4,9 +4,17 @@
 #include <iterator>
 #include <exception>
 
-YStreamMap::YStreamMap()
+YStreamMap::YStreamMap() :
+    _source_uid(DEFAULT_INT)
 {
     setName("YStreamMap");
+}
+
+YCode YStreamMap::addRoute(YStream *src_stream, YStream *dst_stream)
+{
+    src_stream->mediaContext()->setUid(_source_uid++);
+    auto packet_index = utils::gen_packet_index(src_stream->mediaContext()->uid(), src_stream->index());
+    _route_map.insert({packet_index,});
 }
 
 bool YStreamMap::addRoute(YStream *src_stream, YAsyncQueue<YPacket> *next_processor)

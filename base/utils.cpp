@@ -67,3 +67,8 @@ AVMediaType utils::ymedia_type_to_avmedia_type(YMediaType media_type)
         return AVMEDIA_TYPE_AUDIO;
     }
 }
+
+int64_t utils::gen_packet_index(int64_t source_index, int64_t stream_index)
+{
+    return (source_index * 10) + stream_index;
+}

@@ -2,7 +2,6 @@
 
 #include "YData.h"
 #include "utils.h"
-#include <iostream>
 
 class YPacket : public YData<AVPacket>
 {

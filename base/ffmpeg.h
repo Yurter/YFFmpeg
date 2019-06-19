@@ -38,6 +38,7 @@ enum YCode {
     NOT_INITED,
     END_OF_FILE,
     INVALID_INPUT,
+    DOUBT
 };
 
 /* Опции для YMediaChain */

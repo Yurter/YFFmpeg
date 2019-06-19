@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ffmpeg.h"
+#include "YAbstractMedia.h"
 #include "YPacket.h"
 
 class YStream : public YData<AVStream*>
@@ -9,7 +10,7 @@ class YStream : public YData<AVStream*>
 public:
 
     YStream();
-    YStream(AVFormatContext* format_context, AVStream* stream, YMediaType type);
+    YStream(YAbstractMedia* media_context, AVStream* stream, YMediaType type);
     virtual ~YStream() override = default;
 
     virtual bool        inited() const override final;
@@ -20,13 +21,13 @@ public:
     int64_t             duration()  const;
     AVRational          timeBase()  const;
     AVCodecParameters*  codecParameters();
-    AVFormatContext*    formatContext();
+    YAbstractMedia*     mediaContext();
     void                increaseDuration(int64_t value);
 
 protected:
 
-    // FFmpeg
-    AVFormatContext*    _format_context;
+    // Media
+    YAbstractMedia*     _media_context;
 
     // General
     int64_t             _duration;

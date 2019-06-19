@@ -57,7 +57,9 @@ bool YMediaChain::init()
 {
     log_info("Initialization started...");
 
-    createProcessors();
+    determineSequence();
+
+
     initProcesors();
     openProcesors();
     connectProcessors();
@@ -223,9 +225,26 @@ YCode YMediaChain::closeProcesors()
     for (auto&& context : _data_processors_context) { context->close(); }
 }
 
-YCode YMediaChain::createProcessors()
+YCode YMediaChain::defaultRelation(std::list<io_stream_relation>* relation_list)
 {
+    std::list<YSource*> source_list;
+    for (auto& elem : _data_processors_context) {
+        auto ptr = dynamic_cast<YSource*>(elem);
+        if (ptr != nullptr) {
+            source_list.push_back(ptr);
+        }
+    }
+    if (source_list.size() > 1) {
+        return YCode::DOUBT;
+    }
     //
+    return YCode::OK;
+}
+
+YCode YMediaChain::determineSequence(YStream* src_stream, YStream* dst_stream)
+{
+    std::list<YObject*> sequence;
+    _processor_sequences.push_back();
 }
 
 YCode YMediaChain::initProcesors()

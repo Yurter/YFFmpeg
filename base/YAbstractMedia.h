@@ -21,9 +21,11 @@ public:
     virtual bool        opened() const final;                           //
     virtual bool        closed() const final;                           //
 
+    void                setUid(int64_t uid);                            //
     void                setReopeingAfterFailure(bool reopening);        //
     void                setReopeningTimeout(uint64_t timeout);          //
 
+    int64_t             uid() const;
     std::string         mediaResourceLocator() const;                   // Функция возвращает mrl.
     AVFormatContext*    mediaFormatContext() const;                     // Функция возвращает медиа-контекст.
     int64_t             duration() const;								// Функция возвращает длительность медиа-файла в секундах.
@@ -43,6 +45,7 @@ public:
 protected:
 
     // General
+    int64_t             _uid;
 	std::string			_media_resource_locator;
     bool				_opened;
 
@@ -56,7 +59,7 @@ protected:
 
     YThread             _io_thread;
 
-    std::vector<YStream>    _streams;
+    std::vector<YStream>_streams;
 
     // FFmpeg
     AVFormatContext*	_media_format_context;

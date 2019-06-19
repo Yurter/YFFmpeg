@@ -6,9 +6,9 @@ YStream::YStream() :
     //
 }
 
-YStream::YStream(AVFormatContext* format_context, AVStream* stream, YMediaType type) :
+YStream::YStream(YAbstractMedia* media_context, AVStream* stream, YMediaType type) :
     YData<AVStream*>(stream, type),
-    _format_context(format_context),
+    _media_context(media_context),
     _duration(DEFAULT_INT),
     _prev_dts(DEFAULT_INT),
     _prev_pts(DEFAULT_INT),
@@ -78,9 +78,9 @@ AVCodecParameters* YStream::codecParameters()
     return _data->codecpar;
 }
 
-AVFormatContext* YStream::formatContext()
+YAbstractMedia* YStream::mediaContext()
 {
-    return _format_context;
+    return _media_context;
 }
 
 void YStream::increaseDuration(int64_t value)

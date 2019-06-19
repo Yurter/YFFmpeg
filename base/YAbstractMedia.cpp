@@ -3,6 +3,7 @@
 #include <iostream>
 
 YAbstractMedia::YAbstractMedia(const std::string & mrl) :
+    _uid(DEFAULT_INT),
 	_media_resource_locator(mrl),
     _opened(false),
     _reopening_after_failure(false),
@@ -37,6 +38,16 @@ bool YAbstractMedia::opened() const
 bool YAbstractMedia::closed() const
 {
     return !_opened;
+}
+
+void YAbstractMedia::setUid(int64_t uid)
+{
+    _uid = uid;
+}
+
+int64_t YAbstractMedia::uid() const
+{
+    return _uid;
 }
 
 void YAbstractMedia::parseFormatContext()

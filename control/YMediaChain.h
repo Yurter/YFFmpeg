@@ -11,6 +11,8 @@
 #include "refi/YAudioFilter.h"
 #include "YStreamMap.h"
 
+typedef std::pair<YStream*,YStream*> io_stream_relation;
+
 class YMediaChain : public YThread
 {
 
@@ -26,6 +28,7 @@ public:
 
     void    setOptions(int64_t options);
     void    addElement(YObject* element);
+    void    setMap(std::vector<);
 
 private:
 
@@ -46,7 +49,10 @@ private:
     YCode   stopProcesors();
     YCode   openProcesors();
     YCode   closeProcesors();
-    YCode   createProcessors();
+
+    YCode   defaultRelation(std::list<io_stream_relation>* relation_list);
+    YCode   determineSequence(YStream* src_stream, YStream* dst_stream);
+
     YCode   initProcesors();
     YCode   connectProcessors();
     YCode   ckeckProcessors();
@@ -58,6 +64,8 @@ private:
     std::list<YAbstractMedia*>          _data_processors_context;
     std::list<YAbstractCodec*>          _data_processors_codec;
     std::list<YAbstractFrameProcessor*> _data_processors_refi;
+
+    std::list<std::list<YObject*>>      _processor_sequences;
 
     // General
     volatile bool       _paused; 
