@@ -8,7 +8,7 @@ class YEncoder : public YAbstractCodec, public YDataProcessor<YFrame,YPacket>
 
 public:
 
-    YEncoder();
+    YEncoder(YStream* stream);
     virtual ~YEncoder() override;
 
 private:

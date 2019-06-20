@@ -16,8 +16,8 @@ public:
     YAbstractMedia(const std::string &mrl);                             // mrl - media resource locator.
     virtual ~YAbstractMedia();
 
-    virtual bool        open() = 0;                                     // Функция открывает медиа-ресурс.
-    virtual bool        close();                                        // Функция закрывает медиа-ресурс.
+    virtual YCode       open() = 0;                                     // Функция открывает медиа-ресурс.
+    virtual YCode       close();                                        // Функция закрывает медиа-ресурс.
     virtual bool        opened() const final;                           //
     virtual bool        closed() const final;                           //
 

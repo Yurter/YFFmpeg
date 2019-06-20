@@ -2,16 +2,17 @@
 
 #include "base/ffmpeg.h"
 #include "base/YAbstractFrameProcessor.h"
+#include "../control/YAudioStream.h"
 
 class YResampler : public YAbstractFrameProcessor
 {
 
 public:
 
-    YResampler();
+    YResampler(streams_pair audio_streams);
     virtual ~YResampler() override;
 
-    virtual bool init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context) override;
+    virtual YCode init() override;
 
 private:
 
@@ -23,14 +24,10 @@ private:
 protected:
 
     // General parameters
-//    bool                _inited;
-
+    streams_pair        _audio_streams;
     int64_t             _frame_pts;
 
     // FFmpeg
-    AVCodecContext*     _input_codec_context;
-    AVCodecContext*     _output_codec_context;
     SwrContext*         _resampler_context;
-    AVAudioFifo*        _audio_fifo;
 
 };

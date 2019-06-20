@@ -1,7 +1,8 @@
 #include "YMediaChain.h"
 #include <algorithm>
 
-YMediaChain::YMediaChain()
+YMediaChain::YMediaChain() :
+    _stream_map(new YStreamMap)
 {
     setName("YMediaChain");
 }
@@ -53,78 +54,24 @@ void YMediaChain::addElement(YObject *element)
     }
 }
 
-bool YMediaChain::init()
+void YMediaChain::addRoute(streams_pair streams)
+{
+    _stream_map->addRoute(streams);
+}
+
+YCode YMediaChain::init()
 {
     log_info("Initialization started...");
 
-    determineSequence();
+    try_to(determineSequences());
+    try_to(initRefi());
+    try_to(initCodec());
+    try_to(openContext());
+    try_to(connectProcessors());
+    try_to(startProcesors());
 
-
-    initProcesors();
-    openProcesors();
-    connectProcessors();
-    startProcesors();
-
-    if (rescalerRequired()) {
-        _rescaler = new YRescaler();
-        if (!_rescaler->init(_decoder->videoCodecContext()
-                              , _encoder->videoCodecContext())) { return false; }
-    }
-
-    if (resamplerRequired()) {
-        _resampler = new YResampler();
-        if (!_resampler->init(_decoder->audioCodecContext()
-                              , _encoder->audioCodecContext())) { return false; }
-        _resampler->setIgnoreType(YMediaType::MEDIA_TYPE_VIDEO); //TODO
-    }
-
-
-
-    //TODO
-    YStream* inVidStr = _source->stream(_source->video_parameters.streamIndex());
-    YStream* inAudStr = _source->stream(_source->audio_parameters.streamIndex());
-    YStream* ouVidStr = _destination->stream(_destination->video_parameters.streamIndex());
-    YStream* ouAudStr = _destination->stream(_destination->audio_parameters.streamIndex());
-
-    if (!_stream_map->addRoute(inVidStr, ouVidStr)) {
-        int debug_stop = 0;
-    }
-    if (!_stream_map->addRoute(inAudStr, ouAudStr)) {
-        int debug_stop = 1;
-    }
-
-    if (optionInstalled(COPY_VIDEO)) {
-        _decoder->setSkipType(YMediaType::MEDIA_TYPE_VIDEO);
-        _rescaler->setSkipType(YMediaType::MEDIA_TYPE_VIDEO);
-//        _video_filter->setSkipType(YMediaType::MEDIA_TYPE_VIDEO);
-    }
-
-    if (optionInstalled(COPY_AUDIO)) {
-        _decoder->setSkipType(YMediaType::MEDIA_TYPE_AUDIO);
-        _resampler->setSkipType(YMediaType::MEDIA_TYPE_AUDIO);
-//        _audio_filter->setSkipType(YMediaType::MEDIA_TYPE_AUDIO);
-    }
-
-    _source->connectOutputTo(_decoder);
-    _decoder->connectOutputTo(_resampler);
-    _resampler->connectOutputTo(_encoder);
-    _encoder->connectOutputTo(_stream_map);
-    _stream_map->connectOutputTo(_destination);
-
-    _source->start();
-    _decoder->start();
-    _resampler->start();
-//    _resampler->setIgnoreType(YMediaType::MEDIA_TYPE_VIDEO); //TODO!!!
-    _encoder->start();
-    _stream_map->start();
-    _destination->start();
-
-//    while (true) {
-//        //
-//    }
-
-    _inited = true;
-    return true;
+    setInited(true);
+    return YCode::OK;
 }
 
 YCode YMediaChain::run()
@@ -150,13 +97,13 @@ YCode YMediaChain::run()
     return YCode::OK;
 }
 
-bool YMediaChain::rescalerRequired()
+bool YMediaChain::rescalerRequired(streams_pair streams)
 {
     return true;
 //    return false;
 }
 
-bool YMediaChain::resamplerRequired()
+bool YMediaChain::resamplerRequired(streams_pair streams)
 {
     auto& src = _source->audio_parameters;
     auto& dst = _destination->audio_parameters;
@@ -203,6 +150,48 @@ void YMediaChain::completeDestinationParametres()
     _destination->audio_parameters.softCopy(_source->audio_parameters);
 }
 
+bool YMediaChain::inited() const
+{
+    return _inited;
+}
+
+void YMediaChain::setInited(bool inited)
+{
+    _inited = inited;
+}
+
+YCode YMediaChain::initRefi()
+{
+    for (auto&& refi : _data_processors_refi) {
+        try_to(refi->init());
+    }
+    return YCode::OK;
+}
+
+YCode YMediaChain::initCodec()
+{
+    for (auto&& refi : _data_processors_codec) {
+        try_to(refi->init());
+    }
+    return YCode::OK;
+}
+
+YCode YMediaChain::openContext()
+{
+    for (auto&& context : _data_processors_context) {
+        try_to(context->open());
+    }
+    return YCode::OK;
+}
+
+YCode YMediaChain::closeContext()
+{
+    for (auto&& context : _data_processors_context) {
+        try_to(context->close());
+    }
+    return YCode::OK;
+}
+
 YCode YMediaChain::startProcesors()
 {
     for (auto&& context : _data_processors_context) { context->start(); }
@@ -225,6 +214,53 @@ YCode YMediaChain::closeProcesors()
     for (auto&& context : _data_processors_context) { context->close(); }
 }
 
+YCode YMediaChain::determineSequences()
+{
+    for (auto&& route : _stream_map->map()) {
+        if (route.first->type() != route.second->type()) {
+            return YCode::INVALID_INPUT;
+        }
+        if (route.first->mediaContext() == route.second->mediaContext()) {
+            return YCode::INVALID_INPUT;
+        }
+        std::list<YObject*> sequence;
+        if (!option(YOption::COPY_VIDEO) && rescalerRequired(route)) {
+            //
+            auto video_decoder = new YDecoder(route.first);
+            sequence.push_back(video_decoder);
+            _data_processors_codec.push_back(video_decoder);
+            //
+            auto rescaler = new YRescaler(route);
+            sequence.push_back(rescaler);
+            _data_processors_refi.push_back(rescaler);
+            //
+            auto video_encoder = new YEncoder(route.second);
+            sequence.push_back(video_encoder);
+            _data_processors_codec.push_back(video_encoder);
+        }
+        if (!option(YOption::COPY_AUDIO) && resamplerRequired(route)) {
+            //
+            auto audio_decoder = new YDecoder(route.first);
+            sequence.push_back(audio_decoder);
+            _data_processors_codec.push_back(audio_decoder);
+            //
+            auto resampler = new YResampler(route);
+            sequence.push_back(resampler);
+            _data_processors_refi.push_back(resampler);
+            //
+            auto audio_encoder = new YEncoder(route.second);
+            sequence.push_back(audio_encoder);
+            _data_processors_codec.push_back(audio_encoder);
+        }
+        sequence.push_back(route.second->mediaContext());
+
+        _stream_map->setRoute(route.first, dynamic_cast<YAsyncQueue<YPacket>*>(*sequence.begin()));
+        sequence.push_front(_stream_map);
+        sequence.push_front(route.first->mediaContext());
+        _processor_sequences.push_back(sequence);
+    }
+}
+
 YCode YMediaChain::defaultRelation(std::list<io_stream_relation>* relation_list)
 {
     std::list<YSource*> source_list;
@@ -241,20 +277,15 @@ YCode YMediaChain::defaultRelation(std::list<io_stream_relation>* relation_list)
     return YCode::OK;
 }
 
-YCode YMediaChain::determineSequence(YStream* src_stream, YStream* dst_stream)
-{
-    std::list<YObject*> sequence;
-    _processor_sequences.push_back();
-}
-
-YCode YMediaChain::initProcesors()
-{
-    for (auto&& codec : _data_processors_codec) { codec->init(); }
-    for (auto&& refi : _data_processors_refi) { refi->init(); }
-}
 
 YCode YMediaChain::connectProcessors()
 {
+    for (auto&& sequence : _processor_sequences) {
+        auto it = sequence.begin();
+        while (it != sequence.end()) {
+            it->connectOutputTo(++it);
+        }
+    }
     return YCode::OK;
 }
 

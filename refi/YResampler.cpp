@@ -1,14 +1,13 @@
 #include "YResampler.h"
 #include <iostream>
 
-YResampler::YResampler() :
+YResampler::YResampler(streams_pair audio_streams) :
+    _audio_streams(audio_streams),
     _frame_pts(0),
-    _input_codec_context(nullptr),
-    _output_codec_context(nullptr),
-    _resampler_context(nullptr),
-    _audio_fifo(nullptr)
+    _resampler_context(nullptr)
 {
     setName("YResampler");
+    setSkipType(YMediaType::MEDIA_TYPE_VIDEO);
 }
 
 YResampler::~YResampler()

@@ -10,6 +10,11 @@ YStreamMap::YStreamMap() :
     setName("YStreamMap");
 }
 
+YMap& YStreamMap::map()
+{
+    return _route_map;
+}
+
 YCode YStreamMap::addRoute(YStream *src_stream, YStream *dst_stream)
 {
     src_stream->mediaContext()->setUid(_source_uid++);

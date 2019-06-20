@@ -12,7 +12,7 @@ YAbstractCodec::~YAbstractCodec()
     avcodec_close(_codec_context);
 }
 
-YCode YAbstractCodec::init(YStream* stream)
+YCode YAbstractCodec::init()
 {
     return copyCodecParameters(stream);
 }

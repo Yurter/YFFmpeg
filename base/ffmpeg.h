@@ -42,7 +42,7 @@ enum YCode {
 };
 
 /* Опции для YMediaChain */
-enum YOptions {
+enum YOption {
     COPY_VIDEO      = 0x0001,
     COPY_AUDIO      = 0x0002,
     VIDEO_REQUIRED  = 0x0004,
@@ -95,6 +95,9 @@ enum YLogLevel {
 
 /* Функция возвращает id потока, в котором вызвана */
 #define current_thread_id() std::this_thread::get_id()
+
+/* ? */
+#define try_to(x) { YCode ret; ret = x; if (utils::exit_code(ret)) { return ret; } }
 
 /* Значение для задержек в коде в мс */
 #define SHORT_DELAY_MS          10

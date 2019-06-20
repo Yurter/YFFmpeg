@@ -17,10 +17,23 @@ int main()
     std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/ytub-8t5w-asjj-avyf";
 //    std::string mrl_dst = "remuxed.flv";
 
+//    YMediaChain chain;
+//    chain.addElement(new YSource(mrl_src));
+//    chain.addElement(new YDestination(mrl_dst, YMediaPreset::YouTube));
+//    chain.setOptions(COPY_VIDEO);
+
+//    chain.addMap({0,0}, {0,0});
+//    chain.addMap({0,1}, {0,1});
+
     YMediaChain chain;
-    chain.addElement(new YSource(mrl_src));
-    chain.addElement(new YDestination(mrl_dst, YMediaPreset::YouTube));
+    auto source = new YSource(mrl_src);
+    auto destination = new YDestination(mrl_dst, YMediaPreset::YouTube);
+    chain.addElement(source);
+    chain.addElement(destination);
     chain.setOptions(COPY_VIDEO);
+
+    chain.addRoute(source->stream(0), destination->stream(0));
+    chain.addRoute(source->stream(1), destination->stream(1));
 
     chain.start();
     chain.join();

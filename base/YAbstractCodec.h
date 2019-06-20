@@ -1,10 +1,10 @@
 #pragma once
 
 #include "ffmpeg.h"
-//#include "YPacket.h"
-//#include "YFrame.h"
 #include "YThread.h"
 #include "../base/YStream.h"
+#include "../base/YFrame.h"
+#include "../base/YPacket.h"
 #include <string>
 
 class YAbstractCodec : virtual public YThread
@@ -12,10 +12,10 @@ class YAbstractCodec : virtual public YThread
 
 public:
 
-    YAbstractCodec();
+    YAbstractCodec(YStream* stream);
     virtual ~YAbstractCodec();
 
-    virtual YCode       init(YStream* stream) final;
+    virtual YCode       init() final;
 
     AVCodecContext*     codecContext();
 

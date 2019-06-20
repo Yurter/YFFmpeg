@@ -11,8 +11,6 @@
 #include "refi/YAudioFilter.h"
 #include "YStreamMap.h"
 
-typedef std::pair<YStream*,YStream*> io_stream_relation;
-
 class YMediaChain : public YThread
 {
 
@@ -21,42 +19,56 @@ public:
     YMediaChain();
     ~YMediaChain() override;
 
-    bool    init();
     bool    stop();
     void    pause();
     void    unpause();
 
     void    setOptions(int64_t options);
     void    addElement(YObject* element);
-    void    setMap(std::vector<);
+    void    addRoute(streams_pair streams);
 
 private:
 
+    YCode   init();
+
     YCode   run() override;
 
-    bool    rescalerRequired();
-    bool    resamplerRequired();
+    bool    rescalerRequired(streams_pair streams);
+    bool    resamplerRequired(streams_pair streams);
 
     bool contingencyVideoSourceRequired();
     bool contingencyAudioSourceRequired();
 
-    bool    option(YOptions option);
+    bool    option(YOption option);
     void parseOptions();
 
     void completeDestinationParametres();
 
+
+    bool    inited() const;
+    void    setInited(bool inited);
+
+
+
+    YCode   initRefi();
+    YCode   initCodec();
+
+    YCode   openContext();
+    YCode   closeContext();
+
+    YCode   connectProcessors();
+
     YCode   startProcesors();
     YCode   stopProcesors();
-    YCode   openProcesors();
-    YCode   closeProcesors();
 
-    YCode   defaultRelation(std::list<io_stream_relation>* relation_list);
-    YCode   determineSequence(YStream* src_stream, YStream* dst_stream);
+    YCode   defaultRelation(std::list<streams_pair>* relation_list);
+    YCode   determineSequences();
 
-    YCode   initProcesors();
-    YCode   connectProcessors();
     YCode   ckeckProcessors();
     void    freeProcesors();
+
+
+
 
 private:
 
@@ -66,6 +78,8 @@ private:
     std::list<YAbstractFrameProcessor*> _data_processors_refi;
 
     std::list<std::list<YObject*>>      _processor_sequences;
+
+    YStreamMap*         _stream_map;
 
     // General
     volatile bool       _paused; 

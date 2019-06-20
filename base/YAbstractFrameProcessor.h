@@ -2,6 +2,7 @@
 
 #include "YDataProcessor.h"
 #include "YFrame.h"
+#include "YStream.h"
 
 //TODO class name
 class YAbstractFrameProcessor : public YDataProcessor<YFrame,YFrame>
@@ -9,10 +10,10 @@ class YAbstractFrameProcessor : public YDataProcessor<YFrame,YFrame>
 
 public:
 
-    YAbstractFrameProcessor();
+    YAbstractFrameProcessor(streams_pair audio_streams);
     virtual ~YAbstractFrameProcessor() override;
 
-    virtual bool init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context) = 0;
+    virtual YCode init() = 0;
 
 protected:
 

@@ -40,3 +40,5 @@ protected:
     int64_t             _packet_duration;
 
 };
+
+typedef std::pair<YStream*,YStream*> streams_pair;

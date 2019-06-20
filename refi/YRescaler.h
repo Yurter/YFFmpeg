@@ -2,18 +2,19 @@
 
 #include "base/ffmpeg.h"
 #include "base/YAbstractFrameProcessor.h"
+#include "../control/YVideoStream.h"
 
 class YRescaler : public YAbstractFrameProcessor
 {
 
 public:
 
-    YRescaler();
+    YRescaler(streams_pair audio_streams);
 
-    bool init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context);
+    YCode init() override;
 
     bool rescale(AVFrame* frame);
 
-    YCode processInputData(YFrame& input_data);
+    YCode processInputData(YFrame& input_data) override;
 };
 
