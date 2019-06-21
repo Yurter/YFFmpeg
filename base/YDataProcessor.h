@@ -12,6 +12,8 @@ class YDataProcessor : public YThread
 
 public:
 
+    typedef YAsyncQueue<outType> YNextProcessor;
+
     YDataProcessor() :
         _next_processor(nullptr),
         _inited(false),
@@ -23,7 +25,7 @@ public:
 
     virtual ~YDataProcessor() = default;
 
-    virtual void connectOutputTo(YAsyncQueue<outType>* next_processor) final
+    virtual void connectOutputTo(YNextProcessor* next_processor) final
     {
         _next_processor = next_processor;
     }
@@ -39,9 +41,14 @@ public:
 
 protected:
 
-    virtual YCode processInputData(inType& input_data) = 0;
-    virtual YCode sendOutputData(outType output_data) final
+    [[nodiscard]] virtual YCode processInputData(inType& input_data) = 0;
+    [[nodiscard]] virtual YCode sendOutputData(outType output_data
+                                                , YNextProcessor* next_proc = nullptr) final
     {
+        if (next_proc != nullptr) {
+            next_proc->push(output_data);
+            return YCode::OK;
+        }
         return_if(_next_processor == nullptr, YCode::NOT_INITED);
         _next_processor->push(output_data);
         return YCode::OK;
@@ -49,7 +56,7 @@ protected:
 
 private:
 
-    YCode run() override final
+    [[nodiscard]] YCode run() override final
     {
         return_if(!inited(), YCode::NOT_INITED);
         inType input_data;

@@ -2,7 +2,7 @@
 
 YPacket::YPacket() :
     YData<AVPacket>(),
-    _source_index(INVALID_INT)
+    _stream(nullptr)
 {
     setName("YPacket");
 }
@@ -49,9 +49,9 @@ void YPacket::setStreamIndex(int64_t stream_index)
     _data.stream_index = static_cast<int>(stream_index);
 }
 
-void YPacket::setSourceIndex(int64_t source_index)
+void YPacket::setStream(YStream *stream)
 {
-    _source_index = source_index;
+    _stream = stream;
 }
 
 int64_t YPacket::pts() const
@@ -79,9 +79,9 @@ int64_t YPacket::streamIndex() const
     return static_cast<int64_t>(_data.stream_index);
 }
 
-int64_t YPacket::sourceIndex() const
+YStream *YPacket::stream()
 {
-    return _source_index;
+    return _stream;
 }
 
 bool YPacket::empty() const

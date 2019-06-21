@@ -21,11 +21,11 @@ public:
 
     YCode       addRoute(streams_pair streams);
     YCode       setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_processor);
-    YCode       processInputData(YPacket& input_data) override;
 
 private:
 
-    YAsyncQueue<YPacket>* findFirstDataProcessor();
+    YCode       checkStreamPair(streams_pair streams);
+    YCode       processInputData(YPacket& input_data) override;
 
 private:
 

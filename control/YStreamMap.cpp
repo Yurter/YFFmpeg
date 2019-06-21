@@ -18,8 +18,7 @@ stream_map& YStreamMap::map()
 
 YCode YStreamMap::addRoute(streams_pair streams)
 {
-    return_if_not(dynamic_cast<YSource*>(streams.first->mediaContext()), YCode::INVALID_INPUT);
-    return_if_not(dynamic_cast<YDestination*>(streams.second->mediaContext()), YCode::INVALID_INPUT);
+    try_to(checkStreamPair(streams));
     streams.first->mediaContext()->setUid(_source_uid++);
     streams.second->mediaContext()->setUid(_destination_uid++);
     streams.first->setUid(utils::gen_stream_uid(streams.first->mediaContext()->uid(), streams.first->index()));
@@ -31,36 +30,37 @@ YCode YStreamMap::setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_proce
 {
     return_if(invalid_int(src_stream->uid()), YCode::INVALID_INPUT);
     _route_map.insert({src_stream->uid(), next_processor});
-    return YCode::OK;
-}
-
-bool YStreamMap::addRoute(YStream* src_stream, YStream* dst_stream)
-{
-    if (src_stream == nullptr) { return false; }
-    if (dst_stream == nullptr) { return false; }
-    if (src_stream->raw() == dst_stream->raw())   { return false; }
-    if (src_stream->type() != dst_stream->type()) { return false; }
-    _map.push_back(YMap(src_stream, dst_stream));
     setInited(true);
-    return true;
-}
-
-YCode YStreamMap::processInputData(YPacket& input_data) //TODO
-{
-    try {
-//        auto&& route = _route_map.at("")
-    } catch (std::out_of_range) {
-        log_error(utils::code_to_string(YCode::INVALID_INPUT));
-    }
-    auto result = std::find_if(_map.begin(), _map.end(),
-        [input_data](YMap& it) {
-        return it.second->type() == input_data.type();
-    });
-    if (result == _map.end()) {
-        input_data.setStreamIndex(INVALID_INT);
-        return YCode::INVALID_INPUT;
-    }
-    input_data.setStreamIndex(result->second->index());
-    sendOutputData(input_data);
     return YCode::OK;
 }
+
+YCode YStreamMap::checkStreamPair(streams_pair streams)
+{
+    return_if(streams.first == nullptr, YCode::INVALID_INPUT);
+    return_if(streams.second == nullptr, YCode::INVALID_INPUT);
+    return_if(streams.first->raw() == streams.second->raw(), YCode::INVALID_INPUT);
+    return_if_not(streams.first->type() == streams.second->type(), YCode::INVALID_INPUT);
+    return_if_not(dynamic_cast<YSource*>(streams.first->mediaContext()), YCode::INVALID_INPUT);
+    return_if_not(dynamic_cast<YDestination*>(streams.second->mediaContext()), YCode::INVALID_INPUT);
+    return YCode::OK;
+}
+
+YCode YStreamMap::processInputData(YPacket& input_data)
+{
+    YStream* input_stream = input_data.stream();
+    YStream* output_stream = nullptr;
+
+    try {
+        output_stream = _stream_map.at(input_stream);
+    } catch (std::out_of_range) { return YCode::INVALID_INPUT; }
+
+    input_data.setStreamIndex(output_stream->index());
+
+    YNextProcessor* next_proc = nullptr;
+    try {
+        next_proc = _route_map.at(input_stream->uid());
+    } catch (std::out_of_range) { return YCode::INVALID_INPUT; }
+
+    return sendOutputData(input_data, next_proc);
+}
+

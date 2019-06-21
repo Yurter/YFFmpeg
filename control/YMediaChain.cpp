@@ -218,7 +218,7 @@ YCode YMediaChain::determineSequences() //TODO
             auto video_decoder = new YDecoder(input_stream);
             sequence.push_back(video_decoder);
             _data_processors_codec.push_back(video_decoder);
-            _stream_map->connectOutputTo(video_decoder);
+//            _stream_map->connectOutputTo(video_decoder);
             //
             auto rescaler = new YRescaler(route);
             sequence.push_back(rescaler);
@@ -238,7 +238,7 @@ YCode YMediaChain::determineSequences() //TODO
             auto audio_decoder = new YDecoder(input_stream);
             sequence.push_back(audio_decoder);
             _data_processors_codec.push_back(audio_decoder);
-            _stream_map->connectOutputTo(audio_decoder);
+//            _stream_map->connectOutputTo(audio_decoder);
             //
             auto resampler = new YResampler(route);
             sequence.push_back(resampler);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "YData.h"
+#include "YStream.h"
 #include "utils.h"
 
 class YPacket : public YData<AVPacket>
@@ -19,7 +20,7 @@ public:
     void            setDuration(int64_t duration);
     void            setPos(int64_t pos);
     void            setStreamIndex(int64_t stream_index);
-    void            setSourceIndex(int64_t source_index);
+    void            setStream(YStream* stream);
 
     int64_t         pts()           const;
     int64_t         dts()           const;
@@ -27,13 +28,14 @@ public:
     int64_t         pos()           const;
     int64_t         streamIndex()   const;
     int64_t         sourceIndex()   const;
+    YStream*        stream();
 
     bool            empty()         const;
     std::string     toString()      const override;
 
 private:
 
-    // General
-    int64_t         _source_index;
+    // Media
+    YStream*        _stream;
 
 };
