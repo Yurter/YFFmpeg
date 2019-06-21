@@ -93,33 +93,39 @@ YCode YMediaChain::run()
     return YCode::OK;
 }
 
-bool YMediaChain::rescalerRequired(streams_pair streams)
+bool YMediaChain::rescalerRequired(streams_pair streams) //TODO
 {
-    return true;
-//    return false;
+    YStream* test = nullptr;
+    bool test2 = test->isAudio();
+    return_if(streams.first->isAudio(), false);
+    return_if(streams.second->isAudio(), false);
+    return false;
 }
 
 bool YMediaChain::resamplerRequired(streams_pair streams)
 {
-    auto& src = _source->audio_parameters;
-    auto& dst = _destination->audio_parameters;
-    if (!src.available())   { return false; }
-    if (!dst.available())   { return false; }
-    if (src.ignore())       { return false; }
-    if (option(COPY_AUDIO)) { return false; }
-    if (src.sampleRate() != dst.sampleRate())       { return true; }
-    if (src.sampleFormat() != dst.sampleFormat())   { return true; }
-    if (src.chanels() != dst.chanels())             { return true; }
-    if (src.chanelsLayout() != dst.chanelsLayout()) { return true; }
+    return_if(streams.first->isVideo(), false);
+    return_if(streams.second->isVideo(), false);
+
+    YAudioStream* in_stream = dynamic_cast<YAudioStream*>(streams.first);
+    YAudioStream* out_stream = dynamic_cast<YAudioStream*>(streams.second);
+    YAudioParameters* in = &in_stream->parameters;
+    YAudioParameters* out = &out_stream->parameters;
+
+    return_if(in->sampleRate()      != out->sampleRate(),       true);
+    return_if(in->sampleFormat()    != out->sampleFormat(),     true);
+    return_if(in->chanels()         != out->chanels(),          true);
+    return_if(in->chanelsLayout()   != out->chanelsLayout(),    true);
+
     return false;
 }
 
-bool YMediaChain::contingencyVideoSourceRequired()
+bool YMediaChain::contingencyVideoSourceRequired() //TODO
 {
     return false;
 }
 
-bool YMediaChain::contingencyAudioSourceRequired()
+bool YMediaChain::contingencyAudioSourceRequired() //TODO
 {
     return !_source->audio_parameters.available()
             || _source->audio_parameters.ignore();
@@ -259,19 +265,6 @@ YCode YMediaChain::determineSequences() //TODO
     }
 }
 
-YCode YMediaChain::defaultRelation(std::list<streams_pair>* relation_list)
-{
-    std::list<YSource*> source_list;
-    for (auto& elem : _data_processors_context) {
-        auto ptr = dynamic_cast<YSource*>(elem);
-        if (ptr != nullptr) {
-            source_list.push_back(ptr);
-        }
-    }
-    return_if(source_list.size() > 1, YCode::DOUBT);
-    return YCode::OK;
-}
-
 YCode YMediaChain::checkProcessors()
 {
     for (auto&& context : _data_processors_context) {
@@ -286,9 +279,9 @@ YCode YMediaChain::checkProcessors()
     return YCode::OK;
 }
 
-void YMediaChain::freeProcesors() //TODO
+void YMediaChain::freeProcesors() //TODO объекты в смартпоинтеры
 {
-    std::for_each(_data_processors.begin()
-                  , _data_processors.end()
-                  , [](YThread* proc){ delete proc; });
+    for (auto&& context : _data_processors_context) { delete context; }
+    for (auto&& codec : _data_processors_codec) { delete codec; }
+    for (auto&& refi : _data_processors_refi) { delete refi; }
 }

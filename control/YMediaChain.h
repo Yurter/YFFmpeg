@@ -19,19 +19,32 @@ public:
     YMediaChain();
     ~YMediaChain() override;
 
-    bool    stop();
-    void    pause();
-    void    unpause();
+    bool    stop();                             ///<
+    void    pause();                            ///<
+    void    unpause();                          ///<
 
-    void    setOptions(int64_t options);
-    void    addElement(YObject* element);
-    void    setRoute(streams_pair streams);
+    void    setOptions(int64_t options);        ///<
+    void    addElement(YObject* element);       ///<
+    void    setRoute(streams_pair streams);     ///<
 
 private:
 
-    YCode   init();
-
     YCode   run() override;
+
+    YCode   init();
+    bool    inited() const;
+    void    setInited(bool inited);
+    bool    option(YOption option) const;
+
+    YCode   initRefi();
+    YCode   initCodec();
+    YCode   openContext();
+    YCode   closeContext();
+    YCode   startProcesors();
+    YCode   stopProcesors();
+    YCode   determineSequences();
+    YCode   checkProcessors();
+    void    freeProcesors();
 
     bool    rescalerRequired(streams_pair streams);
     bool    resamplerRequired(streams_pair streams);
@@ -39,31 +52,14 @@ private:
     bool contingencyVideoSourceRequired();
     bool contingencyAudioSourceRequired();
 
-    bool    option(YOption option);
-    void parseOptions();
 
     void completeDestinationParametres();
 
 
-    bool    inited() const;
-    void    setInited(bool inited);
 
 
 
-    YCode   initRefi();
-    YCode   initCodec();
 
-    YCode   openContext();
-    YCode   closeContext();
-
-    YCode   startProcesors();
-    YCode   stopProcesors();
-
-    YCode   defaultRelation(std::list<streams_pair>* relation_list);
-    YCode   determineSequences();
-
-    YCode   checkProcessors();
-    void    freeProcesors();
 
 
 

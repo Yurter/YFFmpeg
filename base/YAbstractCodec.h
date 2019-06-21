@@ -5,7 +5,6 @@
 #include "../base/YStream.h"
 #include "../base/YFrame.h"
 #include "../base/YPacket.h"
-#include <string>
 
 class YAbstractCodec : virtual public YThread
 {
@@ -19,14 +18,10 @@ public:
 
     AVCodecContext*     codecContext();
 
-private:
-
-    YCode               copyCodecParameters(YStream* stream);
-
 protected:
 
-    // General
-    YMediaType          _type;
+    // Media
+    YStream*            _stream;
 
     // FFmpeg
     AVCodecContext*     _codec_context;
