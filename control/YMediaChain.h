@@ -56,8 +56,6 @@ private:
     YCode   openContext();
     YCode   closeContext();
 
-    YCode   connectProcessors();
-
     YCode   startProcesors();
     YCode   stopProcesors();
 

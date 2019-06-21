@@ -42,9 +42,7 @@ protected:
     virtual YCode processInputData(inType& input_data) = 0;
     virtual YCode sendOutputData(outType output_data) final
     {
-        if (_next_processor == nullptr) {
-            return YCode::NOT_INITED;
-        }
+        return_if(_next_processor == nullptr, YCode::NOT_INITED);
         _next_processor->push(output_data);
         return YCode::OK;
     }
@@ -53,17 +51,13 @@ private:
 
     YCode run() override final
     {
-        if (!inited()) {
-            return YCode::NOT_INITED;
-        }
+        return_if(!inited(), YCode::NOT_INITED);
         inType input_data;
         if (!pop(input_data)) {
             utils::sleep_for(SHORT_DELAY_MS);
             return YCode::AGAIN;
         }
-        if (ignoreType(input_data.type())) {
-            return YCode::AGAIN;
-        }
+        return_if(ignoreType(input_data.type()), YCode::AGAIN);
         return processInputData(input_data);
     }
 

@@ -98,8 +98,13 @@ enum YLogLevel {
 
 /* ? */
 #define try_to(x) { YCode ret; ret = x; if (utils::exit_code(ret)) { return ret; } }
+#define return_if(cond,code) { if (cond) { return code; } }
+#define return_if_not(cond,code) { if (!(cond)) { return code; } }
 
 /* Значение для задержек в коде в мс */
 #define SHORT_DELAY_MS          10
 #define MEDIUM_DELAY_MS         100
 #define LONG_DELAY_MS           1000
+
+/* ? */
+//#define not !

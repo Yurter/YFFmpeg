@@ -67,7 +67,6 @@ YCode YMediaChain::init()
     try_to(initRefi());
     try_to(initCodec());
     try_to(openContext());
-    try_to(connectProcessors());
     try_to(startProcesors());
 
     setInited(true);
@@ -204,64 +203,66 @@ YCode YMediaChain::stopProcesors()
     for (auto&& context : _data_processors_context) { context->quit(); }
 }
 
-YCode YMediaChain::openProcesors()
-{
-    for (auto&& context : _data_processors_context) { context->open(); }
-}
-
-YCode YMediaChain::closeProcesors()
-{
-    for (auto&& context : _data_processors_context) { context->close(); }
-}
-
-YCode YMediaChain::determineSequences()
+YCode YMediaChain::determineSequences() //TODO
 {
     for (auto&& route : _stream_map->map()) {
-        if (route.first->type() != route.second->type()) {
-            return YCode::INVALID_INPUT;
-        }
-        if (route.first->mediaContext() == route.second->mediaContext()) {
-            return YCode::INVALID_INPUT;
-        }
+        YStream* input_stream = route.first;
+        YStream* output_stream = route.second;
+        YAbstractMedia* input_context = input_stream->mediaContext();
+        YAbstractMedia* output_context = output_stream->mediaContext();
+        return_if_not(input_stream->type() == output_stream->type(), YCode::INVALID_INPUT);
+        return_if(input_context == output_context, YCode::INVALID_INPUT);
         std::list<YObject*> sequence;
-        if (!option(YOption::COPY_VIDEO) && rescalerRequired(route)) {
+        sequence.push_back(input_context);
+        sequence.push_back(_stream_map);
+        input_context->connectOutputTo(_stream_map);
+        if (input_stream->isVideo() && !option(YOption::COPY_VIDEO) && rescalerRequired(route)) {
             //
-            auto video_decoder = new YDecoder(route.first);
+            auto video_decoder = new YDecoder(input_stream);
             sequence.push_back(video_decoder);
             _data_processors_codec.push_back(video_decoder);
+            _stream_map->connectOutputTo(video_decoder);
             //
             auto rescaler = new YRescaler(route);
             sequence.push_back(rescaler);
             _data_processors_refi.push_back(rescaler);
+            video_decoder->connectOutputTo(rescaler);
             //
-            auto video_encoder = new YEncoder(route.second);
+            auto video_encoder = new YEncoder(output_stream);
             sequence.push_back(video_encoder);
             _data_processors_codec.push_back(video_encoder);
-        }
-        if (!option(YOption::COPY_AUDIO) && resamplerRequired(route)) {
+            rescaler->connectOutputTo(video_encoder);
             //
-            auto audio_decoder = new YDecoder(route.first);
+            sequence.push_back(output_context);
+            video_encoder->connectOutputTo(output_context);
+        }
+        if (input_stream->isAudio() && !option(YOption::COPY_AUDIO) && resamplerRequired(route)) {
+            //
+            auto audio_decoder = new YDecoder(input_stream);
             sequence.push_back(audio_decoder);
             _data_processors_codec.push_back(audio_decoder);
+            _stream_map->connectOutputTo(audio_decoder);
             //
             auto resampler = new YResampler(route);
             sequence.push_back(resampler);
             _data_processors_refi.push_back(resampler);
+            audio_decoder->connectOutputTo(resampler);
             //
-            auto audio_encoder = new YEncoder(route.second);
+            auto audio_encoder = new YEncoder(output_stream);
             sequence.push_back(audio_encoder);
             _data_processors_codec.push_back(audio_encoder);
+            resampler->connectOutputTo(audio_encoder);
+            //
+            sequence.push_back(output_context);
+            audio_encoder->connectOutputTo(output_context);
         }
-        sequence.push_back(route.second->mediaContext());
-
-        _stream_map->setRoute(route.first, dynamic_cast<YAsyncQueue<YPacket>*>(*sequence.begin()));
-        sequence.push_front(_stream_map);
-        sequence.push_front(route.first->mediaContext());
+        auto first_proc_it = std::next(std::find(sequence.begin(), sequence.end(), _stream_map));
+        _stream_map->setRoute(input_stream, dynamic_cast<YAsyncQueue<YPacket>*>(*first_proc_it));
         _processor_sequences.push_back(sequence);
     }
 }
 
-YCode YMediaChain::defaultRelation(std::list<io_stream_relation>* relation_list)
+YCode YMediaChain::defaultRelation(std::list<streams_pair>* relation_list)
 {
     std::list<YSource*> source_list;
     for (auto& elem : _data_processors_context) {
@@ -270,36 +271,21 @@ YCode YMediaChain::defaultRelation(std::list<io_stream_relation>* relation_list)
             source_list.push_back(ptr);
         }
     }
-    if (source_list.size() > 1) {
-        return YCode::DOUBT;
-    }
-    //
-    return YCode::OK;
-}
-
-
-YCode YMediaChain::connectProcessors()
-{
-    for (auto&& sequence : _processor_sequences) {
-        auto it = sequence.begin();
-        while (it != sequence.end()) {
-            it->connectOutputTo(++it);
-        }
-    }
+    return_if(source_list.size() > 1, YCode::DOUBT);
     return YCode::OK;
 }
 
 YCode YMediaChain::ckeckProcessors()
 {
     for (auto&& context : _data_processors_context) {
-        if (!context->running()) { return context->exitCode(); }
+        return_if_not(context->running(), context->exitCode());
     }
     for (auto&& codec : _data_processors_codec) {
-        if (!codec->running()) { return codec->exitCode(); }
+        return_if_not(codec->running(), codec->exitCode());
     }
 
     for (auto&& refi : _data_processors_refi) {
-        if (!refi->running()) { return refi->exitCode(); }
+        return_if_not(refi->running(), refi->exitCode());
     }
     return YCode::OK;
 }
