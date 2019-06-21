@@ -9,6 +9,7 @@ YStream::YStream() :
 YStream::YStream(YAbstractMedia* media_context, AVStream* stream, YMediaType type) :
     YData<AVStream*>(stream, type),
     _media_context(media_context),
+    _uid(INVALID_INT),
     _duration(DEFAULT_INT),
     _prev_dts(DEFAULT_INT),
     _prev_pts(DEFAULT_INT),
@@ -56,6 +57,16 @@ bool YStream::stampPacket(YPacket& packet)
     _packet_index++;
 
     return true;
+}
+
+void YStream::setUid(int64_t uid)
+{
+    _uid = uid;
+}
+
+int64_t YStream::uid() const
+{
+    return _uid;
 }
 
 int64_t YStream::index() const

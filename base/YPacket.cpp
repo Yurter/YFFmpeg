@@ -21,7 +21,7 @@ bool YPacket::init()
 
 bool YPacket::inited() const
 {
-    return true; //TODO
+    return true; //TODO определить, что изменяетсяв пакете после вызова av_init_packet
 }
 
 void YPacket::setPts(int64_t pts)

@@ -25,7 +25,7 @@ public:
 
     void    setOptions(int64_t options);
     void    addElement(YObject* element);
-    void    addRoute(streams_pair streams);
+    void    setRoute(streams_pair streams);
 
 private:
 
@@ -62,7 +62,7 @@ private:
     YCode   defaultRelation(std::list<streams_pair>* relation_list);
     YCode   determineSequences();
 
-    YCode   ckeckProcessors();
+    YCode   checkProcessors();
     void    freeProcesors();
 
 
@@ -75,7 +75,7 @@ private:
     std::list<YAbstractCodec*>          _data_processors_codec;
     std::list<YAbstractFrameProcessor*> _data_processors_refi;
 
-    std::list<std::list<YObject*>>      _processor_sequences;
+    std::list<std::list<YObject*>>      _processor_sequences; //TODO зачем их хранить?
 
     YStreamMap*         _stream_map;
 

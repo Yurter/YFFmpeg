@@ -7,7 +7,7 @@
 #include <map>
 
 typedef std::map<YStream*,YStream*>             stream_map;
-typedef std::map<int64_t,YAsyncQueue<YPacket>*> YMap;
+typedef std::map<int64_t,YAsyncQueue<YPacket>*> packet_map;
 
 class YStreamMap : public YDataProcessor<YPacket,YPacket>
 {
@@ -20,7 +20,7 @@ public:
     stream_map& map();
 
     YCode       addRoute(streams_pair streams);
-    bool        setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_processor);
+    YCode       setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_processor);
     YCode       processInputData(YPacket& input_data) override;
 
 private:
@@ -30,7 +30,10 @@ private:
 private:
 
     // General
-    YMap        _route_map;
+    stream_map  _stream_map;
+    packet_map  _route_map;
+
     int64_t     _source_uid;
+    int64_t     _destination_uid;
 
 };

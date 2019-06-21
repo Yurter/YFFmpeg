@@ -5,26 +5,33 @@
 #include <exception>
 
 YStreamMap::YStreamMap() :
-    _source_uid(DEFAULT_INT)
+    _source_uid(DEFAULT_INT),
+    _destination_uid(DEFAULT_INT)
 {
     setName("YStreamMap");
 }
 
-YMap& YStreamMap::map()
+stream_map& YStreamMap::map()
 {
-    return _route_map;
+    return _stream_map;
 }
 
-YCode YStreamMap::addRoute(YStream *src_stream, YStream *dst_stream)
+YCode YStreamMap::addRoute(streams_pair streams)
 {
-    src_stream->mediaContext()->setUid(_source_uid++);
-    auto packet_index = utils::gen_packet_index(src_stream->mediaContext()->uid(), src_stream->index());
-    _route_map.insert({packet_index,});
+    return_if_not(dynamic_cast<YSource*>(streams.first->mediaContext()), YCode::INVALID_INPUT);
+    return_if_not(dynamic_cast<YDestination*>(streams.second->mediaContext()), YCode::INVALID_INPUT);
+    streams.first->mediaContext()->setUid(_source_uid++);
+    streams.second->mediaContext()->setUid(_destination_uid++);
+    streams.first->setUid(utils::gen_stream_uid(streams.first->mediaContext()->uid(), streams.first->index()));
+    streams.second->setUid(utils::gen_stream_uid(streams.second->mediaContext()->uid(), streams.second->index()));
+    _stream_map.insert(streams);
 }
 
-bool YStreamMap::addRoute(YStream *src_stream, YAsyncQueue<YPacket> *next_processor)
+YCode YStreamMap::setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_processor)
 {
-    //
+    return_if(invalid_int(src_stream->uid()), YCode::INVALID_INPUT);
+    _route_map.insert({src_stream->uid(), next_processor});
+    return YCode::OK;
 }
 
 bool YStreamMap::addRoute(YStream* src_stream, YStream* dst_stream)

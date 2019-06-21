@@ -16,6 +16,6 @@ public:
     static std::string  rational_to_string(AVRational rational);
     static bool         compatibleWithSampleFormat(AVCodecContext* codec_context, AVSampleFormat sample_format);
     static AVMediaType  ymedia_type_to_avmedia_type(YMediaType media_type);
-    static int64_t      gen_packet_index(int64_t source_index, int64_t stream_index);
+    static int64_t      gen_stream_uid(int64_t context_index, int64_t stream_index);
 
 };

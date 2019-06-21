@@ -23,10 +23,12 @@ bool YMediaChain::stop()
 void YMediaChain::pause()
 {
     _paused = true;
+    log_info("Paused");
 }
 
 void YMediaChain::unpause()
 {
+    log_info("Unpaused");
     _paused = false;
 }
 
@@ -35,26 +37,26 @@ void YMediaChain::setOptions(int64_t options)
     _options = options;
 }
 
-void YMediaChain::addElement(YObject *element)
+void YMediaChain::addElement(YObject* element)
 {
     auto context = dynamic_cast<YAbstractMedia*>(element);
     if (context != nullptr) {
         _data_processors_context.push_back(context);
         return;
     }
-    auto codec = dynamic_cast<YAbstractCodec*>(element);
+    auto codec = dynamic_cast<YAbstractCodec*>(element); //TODO игнорируется
     if (codec != nullptr) {
         _data_processors_codec.push_back(codec);
         return;
     }
-    auto refi = dynamic_cast<YAbstractFrameProcessor*>(element);
+    auto refi = dynamic_cast<YAbstractFrameProcessor*>(element); //TODO игнорируется
     if (refi != nullptr) {
         _data_processors_refi.push_back(refi);
         return;
     }
 }
 
-void YMediaChain::addRoute(streams_pair streams)
+void YMediaChain::setRoute(streams_pair streams)
 {
     _stream_map->addRoute(streams);
 }
@@ -75,23 +77,18 @@ YCode YMediaChain::init()
 
 YCode YMediaChain::run()
 {
-    if (!_inited) { //TODO
+    if (not inited()) {
         init();
     }
-
-    for (auto&& proc : _data_processors) {
-        if (proc->running() == false) {
-            return proc->erro
-        }
+    for (auto&& context : _data_processors_context) {
+        return_if_not(context->running(), context->exitCode());
     }
-
-    if (_source->running() == false)        { return YCode::ERR; } //TODO return lastError
-    if (_decoder->running() == false)       { return YCode::ERR; }
-    if (_resampler->running() == false)     { return YCode::ERR; }
-    if (_encoder->running() == false)       { return YCode::ERR; }
-    if (_stream_map->running() == false)    { return YCode::ERR; }
-    if (_destination->running() == false)   { return YCode::ERR; }
-
+    for (auto&& codec : _data_processors_codec) {
+        return_if_not(codec->running(), codec->exitCode());
+    }
+    for (auto&& refi : _data_processors_refi) {
+        return_if_not(refi->running(), refi->exitCode());
+    }
     utils::sleep_for(LONG_DELAY_MS);
     return YCode::OK;
 }
@@ -275,7 +272,7 @@ YCode YMediaChain::defaultRelation(std::list<streams_pair>* relation_list)
     return YCode::OK;
 }
 
-YCode YMediaChain::ckeckProcessors()
+YCode YMediaChain::checkProcessors()
 {
     for (auto&& context : _data_processors_context) {
         return_if_not(context->running(), context->exitCode());
@@ -283,7 +280,6 @@ YCode YMediaChain::ckeckProcessors()
     for (auto&& codec : _data_processors_codec) {
         return_if_not(codec->running(), codec->exitCode());
     }
-
     for (auto&& refi : _data_processors_refi) {
         return_if_not(refi->running(), refi->exitCode());
     }

@@ -32,8 +32,8 @@ int main()
     chain.addElement(destination);
     chain.setOptions(COPY_VIDEO);
 
-    chain.addRoute(source->stream(0), destination->stream(0));
-    chain.addRoute(source->stream(1), destination->stream(1));
+    chain.setRoute({source->stream(0), destination->stream(0)});
+    chain.setRoute({source->stream(1), destination->stream(1)});
 
     chain.start();
     chain.join();

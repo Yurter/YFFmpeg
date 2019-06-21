@@ -17,6 +17,9 @@ public:
     virtual std::string toString() const override final;
     virtual bool        stampPacket(YPacket& packet) final;
 
+    void                setUid(int64_t uid);
+
+    int64_t             uid() const;
     int64_t             index()     const;
     int64_t             duration()  const;
     AVRational          timeBase()  const;
@@ -30,6 +33,7 @@ protected:
     YAbstractMedia*     _media_context;
 
     // General
+    int64_t             _uid;
     int64_t             _duration;
     int64_t             _prev_dts;
     int64_t             _prev_pts;

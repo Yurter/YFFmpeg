@@ -68,7 +68,7 @@ AVMediaType utils::ymedia_type_to_avmedia_type(YMediaType media_type)
     }
 }
 
-int64_t utils::gen_packet_index(int64_t source_index, int64_t stream_index)
+int64_t utils::gen_stream_uid(int64_t context_index, int64_t stream_index)
 {
-    return (source_index * 10) + stream_index;
+    return (context_index * 100) + stream_index;
 }
