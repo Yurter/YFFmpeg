@@ -25,57 +25,55 @@ YSource::~YSource()
 	close();
 }
 
-bool YSource::open()
+YCode YSource::open()
 {
-    if (_opened) { return false; }
-    _opened = openInput();
-    if (_opened) {
-        _io_thread = YThread(std::bind(&YSource::read, this));
-        _io_thread.start();
-    }
-    return _opened;
+    return_if(opened(), YCode::INVALID_CALL_ORDER);
+    try_to(openContext());
+    _io_thread = YThread(std::bind(&YSource::read, this));
+    _io_thread.start();
+    return YCode::OK;
 }
 
-bool YSource::close()
+YCode YSource::close()//TODO
 {
-    if (!_opened) { return false; }
-    _io_thread.quit();
+    return_if(closed(), YCode::INVALID_CALL_ORDER);
+    _io_thread.quit(); //TODO
     quit();
     if (_media_format_context != nullptr) { avformat_close_input(&_media_format_context); }
-    if (!YAbstractMedia::close()) { return false; }
+    return_if_not(YAbstractMedia::close(), YCode::ERR);
     log_info("Source: \"" << _media_resource_locator << "\" closed.");
-    return true;
+    return YCode::OK;
 }
 
-bool YSource::guessInputFromat()
+YCode YSource::guessInputFromat()
 {
     AVInputFormat* input_format = av_find_input_format(guessFormatShortName().c_str());
     if (input_format == nullptr) {
         log_error("Failed guess input format: " << _media_resource_locator);
-        return false;
+        return YCode::INVALID_INPUT;
     }
     _input_format = input_format;
-    return true;
+    return YCode::OK;
 }
 
-bool YSource::openInput()
+YCode YSource::openContext()
 {
     log_info("Source: \"" << _media_resource_locator << "\" is opening...");
     if (_media_resource_locator.empty()) { return false; }
     if (avformat_open_input(&_media_format_context, _media_resource_locator.c_str(), _input_format, nullptr) < 0) {
         log_error("Failed to open input context.");
-        return false;
+        return YCode::INVALID_INPUT;
     }
     if (avformat_find_stream_info(_media_format_context, nullptr) < 0) {
         log_error("Failed to retrieve input video stream information.");
-        return false;
+        return YCode::ERR;
     }
     {
         _input_format = _media_format_context->iformat;
         parseFormatContext();
         av_dump_format(_media_format_context, 0, _media_resource_locator.c_str(), 0);
         log_info("Source: \"" << _media_resource_locator << "\" opened.");
-        return true;
+        return YCode::OK;
     }
 }
 
@@ -101,9 +99,10 @@ YCode YSource::processInputData(YPacket& input_data)
     if (input_data.type() == YMediaType::MEDIA_TYPE_UNKNOWN) {
         return YCode::INVALID_INPUT;
     }
-    sendOutputData(input_data); //TODO ret unused
-    if (_artificial_delay > 0) { utils::sleep_for(_artificial_delay); } //TODO
-    return YCode::OK;
+    if (_artificial_delay > 0) { //TODO
+        utils::sleep_for(_artificial_delay);
+    }
+    return sendOutputData(input_data);
 }
 
 void YSource::parseInputFormat()

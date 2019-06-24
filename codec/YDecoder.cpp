@@ -18,7 +18,7 @@ YCode YDecoder::processInputData(YPacket& input_data)
     int ret = avcodec_receive_frame(_codec_context, output_data.raw());
     switch (ret) {
     case 0:
-        output_data.setType(_type);
+        output_data.setType(input_data.type());
         return sendOutputData(output_data);
     case AVERROR(EAGAIN):
         return YCode::AGAIN;

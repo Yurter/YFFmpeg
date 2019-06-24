@@ -1,7 +1,7 @@
 #pragma once
 
-#include "YAbstractMedia.h"
 #include "YPacket.h"
+class YAbstractMedia; //TODO YAbstractMedia::_streams to pointers
 
 class YStream : public YData<AVStream*>
 {
@@ -14,7 +14,7 @@ public:
 
     virtual bool        inited() const override final;
     virtual std::string toString() const override final;
-    virtual bool        stampPacket(YPacket& packet) final;
+    virtual YCode       stampPacket(YPacket& packet) final;
 
     void                setUid(int64_t uid);
 

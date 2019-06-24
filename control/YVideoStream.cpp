@@ -1,13 +1,13 @@
 #include "YVideoStream.h"
 
 YVideoStream::YVideoStream() :
-    YVideoStream(nullptr)
+    YVideoStream(nullptr, nullptr)
 {
     //
 }
 
-YVideoStream::YVideoStream(AVStream* stream) :
-    YStream(stream, YMediaType::MEDIA_TYPE_VIDEO)
+YVideoStream::YVideoStream(YAbstractMedia* media_context, AVStream* stream) :
+    YStream(media_context, stream, YMediaType::MEDIA_TYPE_VIDEO)
 {
     setName("YVideoStream");
 }

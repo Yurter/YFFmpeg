@@ -11,15 +11,15 @@ public:
     YSource(const std::string& mrl, YMediaPreset preset = YMediaPreset::Auto);
     virtual ~YSource() override;
 
-    bool            open()  override;
-    bool            close() override;
+    YCode               open()  override;
+    YCode               close() override;
 
     AVInputFormat*  inputFormat() const;
 
 private:
 
-    bool            guessInputFromat();
-    bool            openInput();
+    YCode           guessInputFromat();
+    YCode           openContext() override;
 
     YCode           read();
 

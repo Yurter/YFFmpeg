@@ -9,7 +9,7 @@ class YAudioStream : public YStream
 public:
 
     YAudioStream();
-    YAudioStream(AVStream* stream);
+    YAudioStream(YAbstractMedia* media_context, AVStream* stream);
     virtual ~YAudioStream() override = default;
 
     bool    init() override;

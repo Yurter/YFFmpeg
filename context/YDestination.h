@@ -10,25 +10,25 @@ public:
     YDestination(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
     virtual ~YDestination() override;
 
-    bool addStream(AVCodecContext *stream_codec_context);
-    bool open() override;
-    bool close() override;
+    YCode               open() override;
+    YCode               close() override;
 
     AVOutputFormat*     outputFrormat() const;
 
-    bool                guessOutputFromat();
+    YCode               guessOutputFromat();
 
 private:
 
-    bool createOutput();
-    bool openOutput();
+    YCode               openContext() override;
 
-    YCode write();
+    YCode               write();
 
-    YCode processInputData(YPacket& input_data) override;
+    YCode               stampPacket(YPacket& packet);
+    YCode               writePacket(YPacket& packet);
 
-    void parseOutputFormat();
-    bool stampPacket(YPacket &packet);
+    YCode               processInputData(YPacket& input_data) override;
+
+    void                parseOutputFormat();
 
 private:
 public: //TODO

@@ -3,9 +3,11 @@
 #include "YDataProcessor.h"
 #include "../control/YVideoParameters.h"
 #include "../control/YAudioParameters.h"
-#include "YPacket.h"
-#include "YStream.h"
-#include <string>
+#include "../control/YVideoStream.h"
+#include "../control/YAudioStream.h"
+//#include "YPacket.h"
+//#include "YStream.h"
+//#include <string>
 
 class YAbstractMedia : public YDataProcessor<YPacket, YPacket>
 {
@@ -20,11 +22,13 @@ public:
     virtual bool        opened() const final;                           //
     virtual bool        closed() const final;                           //
 
+    YCode               createStream(); //TODO
+
     void                setUid(int64_t uid);                            //
     void                setReopeingAfterFailure(bool reopening);        //
     void                setReopeningTimeout(uint64_t timeout);          //
 
-    int64_t             uid() const;
+    int64_t             uid() const;                                    //
     std::string         mediaResourceLocator() const;                   // Функция возвращает mrl.
     AVFormatContext*    mediaFormatContext() const;                     // Функция возвращает медиа-контекст.
     int64_t             duration() const;								// Функция возвращает длительность медиа-файла в секундах.
@@ -32,7 +36,9 @@ public:
 
 protected:
 
-    void                parseFormatContext();
+    YCode               createContext();
+    virtual YCode       openContext() = 0;
+    YCode               parseFormatContext();
     std::string         guessFormatShortName();
 
 public:

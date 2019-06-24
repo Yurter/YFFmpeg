@@ -9,7 +9,7 @@ class YVideoStream : public YStream
 public:
 
     YVideoStream();
-    YVideoStream(AVStream* stream);
+    YVideoStream(YAbstractMedia* media_context, AVStream* stream);
     virtual ~YVideoStream() override = default;
 
     bool    init() override;

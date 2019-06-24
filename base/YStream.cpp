@@ -39,11 +39,11 @@ std::string YStream::toString() const
     return str;
 }
 
-bool YStream::stampPacket(YPacket& packet)
+YCode YStream::stampPacket(YPacket& packet)
 {
     if (packet.type() != type()) {
         log_error(utils::code_to_string(YCode::INVALID_INPUT));
-        return false;
+        return YCode::INVALID_INPUT;
     }
 
     packet.setDts(_prev_dts);
@@ -56,7 +56,7 @@ bool YStream::stampPacket(YPacket& packet)
     _duration += _packet_duration;
     _packet_index++;
 
-    return true;
+    return YCode::OK;
 }
 
 void YStream::setUid(int64_t uid)

@@ -21,13 +21,13 @@ YAbstractMedia::~YAbstractMedia()
     close();
 }
 
-bool YAbstractMedia::close()
+YCode YAbstractMedia::close()
 {
-    if (!_opened) { return false; }
+    return_if(closed(), YCode::INVALID_CALL_ORDER);
 //    _io_thread.quit(); //TODO вызывать в абстрактном класса
     avformat_free_context(_media_format_context);
     _opened = false;
-    return true;
+    return YCode::OK;
 }
 
 bool YAbstractMedia::opened() const
@@ -40,6 +40,11 @@ bool YAbstractMedia::closed() const
     return !_opened;
 }
 
+YCode YAbstractMedia::createStream()
+{
+    return YCode::ERR;
+}
+
 void YAbstractMedia::setUid(int64_t uid)
 {
     _uid = uid;
@@ -50,11 +55,11 @@ int64_t YAbstractMedia::uid() const
     return _uid;
 }
 
-void YAbstractMedia::parseFormatContext()
+YCode YAbstractMedia::parseFormatContext()
 {
     if (_media_format_context == nullptr) {
         std::cerr << "[YAbstractMedia] Format context not inited. Parsing failed." << std::endl;
-        return;
+        return YCode::INVALID_INPUT;
     }
 
     {
@@ -81,7 +86,7 @@ void YAbstractMedia::parseFormatContext()
             video_parameters.setStreamIndex(i);
             video_parameters.setTimeBase(avstream->time_base);
             video_parameters.setAvailable(true);
-            _streams.push_back({ avstream, YMediaType::MEDIA_TYPE_VIDEO });
+            _streams.push_back(YVideoStream(this, avstream));
             break;
         }
         case AVMEDIA_TYPE_AUDIO: {
@@ -95,7 +100,7 @@ void YAbstractMedia::parseFormatContext()
             audio_parameters.setStreamIndex(i);
             video_parameters.setTimeBase(avstream->time_base);
             audio_parameters.setAvailable(true);
-            _streams.push_back({ avstream, YMediaType::MEDIA_TYPE_AUDIO });
+            _streams.push_back(YAudioStream(this, avstream));
             break;
         }
         default:
@@ -103,6 +108,8 @@ void YAbstractMedia::parseFormatContext()
             break;
         }
     }
+
+    return YCode::OK;
 
 //    setDuration(FFMAX(_video_duration, _audio_duration));
 }
@@ -135,4 +142,15 @@ YStream* YAbstractMedia::stream(uint64_t index)
     } else {
         return nullptr;
     }
+}
+
+YCode YAbstractMedia::createContext()
+{
+    std::string output_format_name = guessFormatShortName();
+    const char *format_name = output_format_name.empty() ? nullptr : output_format_name.c_str();
+    if (avformat_alloc_output_context2(&_media_format_context, nullptr, format_name, _media_resource_locator.c_str()) < 0) {
+        log_error("Failed to alloc output context.");
+        return YCode::ERR;
+    }
+    return YCode::OK;
 }
