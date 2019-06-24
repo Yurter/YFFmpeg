@@ -41,7 +41,7 @@ enum YCode {
     DOUBT
 };
 
-/* Опции для YMediaChain */
+/* Опции для YFFmpeg */
 enum YOption {
     COPY_VIDEO      = 0x0001,
     COPY_AUDIO      = 0x0002,

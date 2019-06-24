@@ -1,43 +1,44 @@
-#include "YMediaChain.h"
+#include "YFFmpeg.h"
 #include <algorithm>
 
-YMediaChain::YMediaChain() :
+
+YFFmpeg::YFFmpeg() :
     _stream_map(new YStreamMap)
 {
-    setName("YMediaChain");
+    setName("YFFmpeg");
 }
 
-YMediaChain::~YMediaChain()
+YFFmpeg::~YFFmpeg()
 {
     freeProcesors();
     stop();
 }
 
-bool YMediaChain::stop()
+bool YFFmpeg::stop()
 {
     stopProcesors();
     log_info("Stopped");
     return true;
 }
 
-void YMediaChain::pause()
+void YFFmpeg::pause()
 {
     _paused = true;
     log_info("Paused");
 }
 
-void YMediaChain::unpause()
+void YFFmpeg::unpause()
 {
     log_info("Unpaused");
     _paused = false;
 }
 
-void YMediaChain::setOptions(int64_t options)
+void YFFmpeg::setOptions(int64_t options)
 {
     _options = options;
 }
 
-void YMediaChain::addElement(YObject* element)
+void YFFmpeg::addElement(YObject* element)
 {
     auto context = dynamic_cast<YAbstractMedia*>(element);
     if (context != nullptr) {
@@ -56,12 +57,12 @@ void YMediaChain::addElement(YObject* element)
     }
 }
 
-void YMediaChain::setRoute(streams_pair streams)
+void YFFmpeg::setRoute(streams_pair streams)
 {
     _stream_map->addRoute(streams);
 }
 
-YCode YMediaChain::init()
+YCode YFFmpeg::init()
 {
     log_info("Initialization started...");
 
@@ -75,7 +76,7 @@ YCode YMediaChain::init()
     return YCode::OK;
 }
 
-YCode YMediaChain::run()
+YCode YFFmpeg::run()
 {
     if (not inited()) {
         init();
@@ -93,16 +94,14 @@ YCode YMediaChain::run()
     return YCode::OK;
 }
 
-bool YMediaChain::rescalerRequired(streams_pair streams) //TODO
+bool YFFmpeg::rescalerRequired(streams_pair streams) //TODO
 {
-    YStream* test = nullptr;
-    bool test2 = test->isAudio();
     return_if(streams.first->isAudio(), false);
     return_if(streams.second->isAudio(), false);
-    return false;
+    return false; //TODO
 }
 
-bool YMediaChain::resamplerRequired(streams_pair streams)
+bool YFFmpeg::resamplerRequired(streams_pair streams)
 {
     return_if(streams.first->isVideo(), false);
     return_if(streams.second->isVideo(), false);
@@ -120,23 +119,23 @@ bool YMediaChain::resamplerRequired(streams_pair streams)
     return false;
 }
 
-bool YMediaChain::contingencyVideoSourceRequired() //TODO
+bool YFFmpeg::contingencyVideoSourceRequired() //TODO
 {
     return false;
 }
 
-bool YMediaChain::contingencyAudioSourceRequired() //TODO
+bool YFFmpeg::contingencyAudioSourceRequired() //TODO
 {
     return !_source->audio_parameters.available()
             || _source->audio_parameters.ignore();
 }
 
-bool YMediaChain::option(YOptions option)
+bool YFFmpeg::option(YOptions option)
 {
     return _options & option;
 }
 
-void YMediaChain::parseOptions()
+void YFFmpeg::parseOptions()
 {
     if (option(COPY_VIDEO)) {
         _destination->video_parameters = _source->video_parameters;
@@ -146,23 +145,23 @@ void YMediaChain::parseOptions()
     }
 }
 
-void YMediaChain::completeDestinationParametres()
+void YFFmpeg::completeDestinationParametres()
 {
     _destination->video_parameters.softCopy(_source->video_parameters);
     _destination->audio_parameters.softCopy(_source->audio_parameters);
 }
 
-bool YMediaChain::inited() const
+bool YFFmpeg::inited() const
 {
     return _inited;
 }
 
-void YMediaChain::setInited(bool inited)
+void YFFmpeg::setInited(bool inited)
 {
     _inited = inited;
 }
 
-YCode YMediaChain::initRefi()
+YCode YFFmpeg::initRefi()
 {
     for (auto&& refi : _data_processors_refi) {
         try_to(refi->init());
@@ -170,7 +169,7 @@ YCode YMediaChain::initRefi()
     return YCode::OK;
 }
 
-YCode YMediaChain::initCodec()
+YCode YFFmpeg::initCodec()
 {
     for (auto&& refi : _data_processors_codec) {
         try_to(refi->init());
@@ -178,7 +177,7 @@ YCode YMediaChain::initCodec()
     return YCode::OK;
 }
 
-YCode YMediaChain::openContext()
+YCode YFFmpeg::openContext()
 {
     for (auto&& context : _data_processors_context) {
         try_to(context->open());
@@ -186,7 +185,7 @@ YCode YMediaChain::openContext()
     return YCode::OK;
 }
 
-YCode YMediaChain::closeContext()
+YCode YFFmpeg::closeContext()
 {
     for (auto&& context : _data_processors_context) {
         try_to(context->close());
@@ -194,19 +193,19 @@ YCode YMediaChain::closeContext()
     return YCode::OK;
 }
 
-YCode YMediaChain::startProcesors()
+YCode YFFmpeg::startProcesors()
 {
     for (auto&& context : _data_processors_context) { context->start(); }
     for (auto&& codec : _data_processors_codec) { codec->start(); }
     for (auto&& refi : _data_processors_refi) { refi->start(); }
 }
 
-YCode YMediaChain::stopProcesors()
+YCode YFFmpeg::stopProcesors()
 {
     for (auto&& context : _data_processors_context) { context->quit(); }
 }
 
-YCode YMediaChain::determineSequences() //TODO
+YCode YFFmpeg::determineSequences() //TODO
 {
     for (auto&& route : _stream_map->map()) {
         YStream* input_stream = route.first;
@@ -265,7 +264,7 @@ YCode YMediaChain::determineSequences() //TODO
     }
 }
 
-YCode YMediaChain::checkProcessors()
+YCode YFFmpeg::checkProcessors()
 {
     for (auto&& context : _data_processors_context) {
         return_if_not(context->running(), context->exitCode());
@@ -279,7 +278,7 @@ YCode YMediaChain::checkProcessors()
     return YCode::OK;
 }
 
-void YMediaChain::freeProcesors() //TODO объекты в смартпоинтеры
+void YFFmpeg::freeProcesors() //TODO объекты в смартпоинтеры
 {
     for (auto&& context : _data_processors_context) { delete context; }
     for (auto&& codec : _data_processors_codec) { delete codec; }

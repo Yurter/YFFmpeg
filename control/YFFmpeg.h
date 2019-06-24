@@ -11,13 +11,13 @@
 #include "refi/YAudioFilter.h"
 #include "YStreamMap.h"
 
-class YMediaChain : public YThread
+class YFFmpeg : public YThread
 {
 
 public:
 
-    YMediaChain();
-    ~YMediaChain() override;
+    YFFmpeg();
+    ~YFFmpeg() override;
 
     bool    stop();                             ///<
     void    pause();                            ///<
@@ -52,17 +52,7 @@ private:
     bool contingencyVideoSourceRequired();
     bool contingencyAudioSourceRequired();
 
-
     void completeDestinationParametres();
-
-
-
-
-
-
-
-
-
 
 private:
 
@@ -78,12 +68,6 @@ private:
     // General
     volatile bool       _paused; 
     bool                _inited;
-
     int64_t             _options;
-
-    int64_t             _source_video_stream_index;
-    int64_t             _source_audio_stream_index;
-    int64_t             _destination_video_stream_index;
-    int64_t             _destination_audio_stream_index;
 
 };

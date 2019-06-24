@@ -29,7 +29,7 @@ SOURCES += \
     base\YParameters.cpp \
     control/YVideoParameters.cpp \
     control/YAudioParameters.cpp \
-    control/YMediaChain.cpp \
+    control/YFFmpeg.cpp \
     refi/YVideoFilter.cpp \
     refi/YAudioFilter.cpp \
     refi/YMediaFilter.cpp \
@@ -39,6 +39,7 @@ HEADERS += \
     codec/YEncoder.h \
     control/YAudioStream.h \
     context/YDestination.h \
+    control/YFFmpeg.h \
     refi/YResampler.h \
     refi/YRescaler.h \
     context/YSource.h \
@@ -62,7 +63,6 @@ HEADERS += \
     base\YParameters.h \
     control/YVideoParameters.h \
     control/YAudioParameters.h \
-    control/YMediaChain.h \
     refi/YMediaFilter.h \
     refi/YAudioFilter.h \
     refi/YVideoFilter.h \

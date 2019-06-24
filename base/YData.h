@@ -14,7 +14,7 @@ public:
         _type(YMediaType::MEDIA_TYPE_UNKNOWN) { setName("YData"); }
     YData(Type data, YMediaType type) :
         _type(type),
-        _data(data){ setName("YData"); }
+        _data(data) { setName("YData"); }
     virtual ~YData() {}
 
     Type&           raw() { return _data; }
@@ -25,7 +25,7 @@ public:
     bool            isVideo() const { return _type == YMediaType::MEDIA_TYPE_VIDEO; }
     bool            isAudio() const { return _type == YMediaType::MEDIA_TYPE_AUDIO; }
 
-    virtual bool        init() { return true; }
+    virtual bool        init()            = 0;
     virtual bool        inited()    const = 0;
     virtual std::string toString()  const = 0;
 

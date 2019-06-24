@@ -1,6 +1,7 @@
 #include "YDecoder.h"
 
-YDecoder::YDecoder()
+YDecoder::YDecoder(YStream *stream) :
+    YAbstractCodec(stream)
 {
     setName("YDecoder");
 }

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "control/YMediaChain.h"
+#include "control/YFFmpeg.h"
 
 using namespace std;
 
@@ -17,18 +17,19 @@ int main()
     std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/ytub-8t5w-asjj-avyf";
 //    std::string mrl_dst = "remuxed.flv";
 
-    YMediaChain chain;
     auto source = new YSource(mrl_src);
     auto destination = new YDestination(mrl_dst, YMediaPreset::YouTube);
-    chain.addElement(source);
-    chain.addElement(destination);
-    chain.setOptions(COPY_VIDEO);
 
-    chain.setRoute({source->stream(0), destination->stream(0)});
-    chain.setRoute({source->stream(1), destination->stream(1)});
+    YFFmpeg ffmpeg;
+    ffmpeg.addElement(source);
+    ffmpeg.addElement(destination);
+    ffmpeg.setOptions(COPY_VIDEO);
 
-    chain.start();
-    chain.join();
+    ffmpeg.setRoute({source->stream(0), destination->stream(0)});
+    ffmpeg.setRoute({source->stream(1), destination->stream(1)});
+
+    ffmpeg.start();
+    ffmpeg.join();
 
     cout << "Program finished." << endl;
     return 0;
