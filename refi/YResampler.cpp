@@ -2,7 +2,7 @@
 #include <iostream>
 
 YResampler::YResampler(streams_pair audio_streams) :
-    _audio_streams(audio_streams),
+    YAbstractRefi(audio_streams),
     _frame_pts(0),
     _resampler_context(nullptr)
 {
@@ -17,74 +17,49 @@ YResampler::~YResampler()
     }
 }
 
-bool YResampler::init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context)
+//YCode YResampler::init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context)
+YCode YResampler::init()
 {
-    if (inited()) {
-        std::cerr << "[YResampler] Already inited" << std::endl;
-        return false;
-    }
-    if (input_codec_context == nullptr) {
-        std::cerr << "[YResampler] input_codec_context is null" << std::endl;
-        return false;
-    }
-    if (output_codec_context == nullptr) {
-        std::cerr << "[YResampler] output_codec_context is null" << std::endl;
-        return false;
-    }
+    return_if(inited(), YCode::INVALID_CALL_ORDER);
+    return_if_not(_io_streams.first->inited(), YCode::INVALID_INPUT);
+    return_if_not(_io_streams.second->inited(), YCode::INVALID_INPUT);
 
-    _input_codec_context = input_codec_context;
-    _output_codec_context = output_codec_context;
+    auto in_param = dynamic_cast<YAudioStream*>(_io_streams.first)->parameters; //TODO
+    auto out_param = dynamic_cast<YAudioStream*>(_io_streams.second)->parameters;
 
     _resampler_context = swr_alloc_set_opts(
         nullptr,
-        av_get_default_channel_layout(_output_codec_context->channels),
-        _output_codec_context->sample_fmt,
-        _output_codec_context->sample_rate,
-        av_get_default_channel_layout(_input_codec_context->channels),
-        _input_codec_context->sample_fmt,
-        _input_codec_context->sample_rate,
+        av_get_default_channel_layout(int(out_param.channels())),
+        out_param.sampleFormat(),
+        int(out_param.sampleRate()),
+        av_get_default_channel_layout(int(in_param.channels())),
+        in_param.sampleFormat(),
+        int(in_param.sampleRate()),
         0, nullptr
     );
-
     if (_resampler_context == nullptr) {
-        std::cerr << "[YResampler] Could not allocate resampler context" << std::endl;
-        return false;
+        log_error("Could not allocate resampler context");
+        return YCode::ERR;
     }
-
     if (swr_init(_resampler_context) < 0) {
-        std::cerr << "[YResampler] Could not open resample context" << std::endl;
+        log_error("Could not open resample context");
         swr_free(&_resampler_context);
-        return false;
+        return YCode::ERR;
     }
-
     setInited(true);
-
-    std::cout << "[YResampler] Inited" << std::endl;
-    return true;
+    return YCode::OK;
 }
 
 YCode YResampler::processInputData(YFrame &input_data)
 {
-    if (!inited()) {
-        return YCode::NOT_INITED;
-    }
-    if (ignoreType(input_data.type())) { //TODO
-        return sendOutputData(input_data);
-    }
-    if (skipType(input_data.type())) { //TODO
-        return sendOutputData(input_data);
-    }
-    // crutch
-    if (input_data.isVideo()) { //TODO
-        return sendOutputData(input_data);
-    }
+    return_if_not(inited(), YCode::NOT_INITED);
     if (swr_convert_frame(_resampler_context, nullptr, input_data.raw()) != 0) {
         std::cerr << "[YResampler] PUSH swr_convert_frame failed " << std::endl;
         return YCode::ERR;
     }
     do {
         AVFrame *output_frame = nullptr;
-        if (!initOutputFrame(&output_frame, _output_codec_context->frame_size)) {
+        if (!initOutputFrame(&output_frame, _io_streams.second->codecParameters()->frame_size)) {
             std::cerr << "[YResampler] initOutputFrame failed" << std::endl;
             return YCode::ERR;
         }
@@ -99,17 +74,16 @@ YCode YResampler::processInputData(YFrame &input_data)
         YFrame output_data(output_frame);
         output_data.setType(MEDIA_TYPE_AUDIO);
 
-//        stampFrame(output_frame);
-//        log_error("--> " << output_data.raw()->pts << " " << output_data.raw()->pkt_dts);
-
-        sendOutputData(output_data);
-    } while (swr_get_out_samples(_resampler_context, 0) >= _output_codec_context->frame_size);
+        try_to(sendOutputData(output_data));
+    } while (swr_get_out_samples(_resampler_context, 0) >= _io_streams.second->codecParameters()->frame_size);
 
     return YCode::OK;
 }
 
 bool YResampler::initOutputFrame(AVFrame **frame, int frame_size)
 {
+    auto in_param = dynamic_cast<YAudioStream*>(_io_streams.first)->parameters; //TODO
+    auto out_param = dynamic_cast<YAudioStream*>(_io_streams.second)->parameters;
     /* Create a new frame to store the audio samples. */
     if (!(*frame = av_frame_alloc())) {
         std::cerr << "[YResampler] Could not allocate output frame" << std::endl;
@@ -121,9 +95,9 @@ bool YResampler::initOutputFrame(AVFrame **frame, int frame_size)
      * Default channel layouts based on the number of channels
      * are assumed for simplicity. */
     (*frame)->nb_samples     = frame_size;
-    (*frame)->channel_layout = _output_codec_context->channel_layout;
-    (*frame)->format         = _output_codec_context->sample_fmt;
-    (*frame)->sample_rate    = _output_codec_context->sample_rate;
+    (*frame)->channel_layout = out_param.chanelsLayout();
+    (*frame)->format         = out_param.sampleFormat();
+    (*frame)->sample_rate    = out_param.sampleFormat();
     /* Allocate the samples of the created frame. This call will make
      * sure that the audio frame can hold as many samples as specified. */
     if (av_frame_get_buffer(*frame, 0) < 0) {
@@ -137,17 +111,20 @@ bool YResampler::initOutputFrame(AVFrame **frame, int frame_size)
 //bool YResampler::configChanged(const AVFrame *in, const AVFrame *out)
 bool YResampler::configChanged(AVFrame *in, AVFrame *out)
 {
+    auto in_param = dynamic_cast<YAudioStream*>(_io_streams.first)->parameters; //TODO
+    auto out_param = dynamic_cast<YAudioStream*>(_io_streams.second)->parameters;
+
     if (in) {
-        if (_input_codec_context->channel_layout != in->channel_layout
-                || _input_codec_context->sample_rate != in->sample_rate
-                || _input_codec_context->sample_fmt  != in->format) {
+        if (in_param.chanelsLayout() != in->channel_layout
+                || in_param.sampleRate() != in->sample_rate
+                || in_param.sampleFormat()  != in->format) {
             return true;
         }
     }
     if (out) {
-        if (_output_codec_context->channel_layout != out->channel_layout
-                || _output_codec_context->sample_rate != out->sample_rate
-                || _output_codec_context->sample_fmt  != out->format) {
+        if (out_param.chanelsLayout() != out->channel_layout
+                || out_param.sampleRate() != out->sample_rate
+                || out_param.sampleFormat()  != out->format) {
             return true;
         }
     }
@@ -160,3 +137,4 @@ void YResampler::stampFrame(AVFrame *frame)
 //    frame->pkt_duration = 23;
     _frame_pts++;
 }
+

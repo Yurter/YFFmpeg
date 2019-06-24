@@ -18,7 +18,7 @@ public:
     int64_t         sampleRate()    const;
     AVSampleFormat  sampleFormat()  const;
     uint64_t        chanelsLayout() const;
-    int64_t         chanels()       const;
+    int64_t         channels()       const;
 
     void            softCopy(YAudioParameters &other_parametrs);
     YAudioParameters&    operator=(const YAudioParameters &rhs);

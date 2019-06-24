@@ -59,7 +59,7 @@ YCode YSource::guessInputFromat()
 YCode YSource::openContext()
 {
     log_info("Source: \"" << _media_resource_locator << "\" is opening...");
-    if (_media_resource_locator.empty()) { return false; }
+    return_if(_media_resource_locator.empty(), YCode::INVALID_INPUT);
     if (avformat_open_input(&_media_format_context, _media_resource_locator.c_str(), _input_format, nullptr) < 0) {
         log_error("Failed to open input context.");
         return YCode::INVALID_INPUT;

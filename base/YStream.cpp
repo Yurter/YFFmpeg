@@ -23,6 +23,7 @@ YStream::YStream(YAbstractMedia* media_context, AVStream* stream, YMediaType typ
 
 bool YStream::inited() const
 {
+    if (not_inited_ptr(_data))              { return false; }
     if (not_inited_int(_packet_dts_delta))  { return false; }
     if (not_inited_int(_packet_pts_delta))  { return false; }
     if (not_inited_int(_packet_duration))   { return false; }

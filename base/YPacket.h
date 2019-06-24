@@ -1,8 +1,10 @@
 #pragma once
 
 #include "YData.h"
-#include "YStream.h"
+//#include "YStream.h"
 #include "utils.h"
+
+class YStream;
 
 class YPacket : public YData<AVPacket>
 {

@@ -70,6 +70,7 @@ enum YMediaType {
 
 #define invalid_int(x)          ((x) == INVALID_INT)
 #define not_inited_int(x)       ((x) == DEFAULT_INT)
+#define not_inited_ptr(x)       ((x) == nullptr)
 #define not_inited_float(x)     ((x) == DEFAULT_FLOAT)
 #define not_inited_string(x)    ((x) == DEFAULT_STRING)
 #define not_inited_q(x)         (av_cmp_q(x, DEFAULT_RATIONAL) == 0)

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "base/ffmpeg.h"
 #include "base/YAbstractRefi.h"
 #include "../control/YAudioStream.h"
 
@@ -12,20 +11,19 @@ public:
     YResampler(streams_pair audio_streams);
     virtual ~YResampler() override;
 
-    virtual YCode init() override;
+    virtual YCode       init() override;
 
 private:
 
-    virtual YCode processInputData(YFrame& input_data) override;
-    bool initOutputFrame(AVFrame **frame, int frame_size);
-    bool configChanged(AVFrame *in, AVFrame *out);
-    void stampFrame(AVFrame *frame);
+    virtual YCode       processInputData(YFrame& input_data) override;
+    bool                initOutputFrame(AVFrame **frame, int frame_size);
+    bool                configChanged(AVFrame *in, AVFrame *out);
+    void                stampFrame(AVFrame *frame); //TODO нужно ли?
 
 protected:
 
-    // General parameters
-    streams_pair        _audio_streams;
-    int64_t             _frame_pts;
+    // General
+    int64_t             _frame_pts; //TODO нужно ли?
 
     // FFmpeg
     SwrContext*         _resampler_context;
