@@ -5,13 +5,13 @@
 #include "YStream.h"
 
 //TODO class name
-class YAbstractFrameProcessor : public YDataProcessor<YFrame,YFrame>
+class YAbstractRefi : public YDataProcessor<YFrame,YFrame>
 {
 
 public:
 
-    YAbstractFrameProcessor(streams_pair audio_streams);
-    virtual ~YAbstractFrameProcessor() override;
+    YAbstractRefi(streams_pair audio_streams);
+    virtual ~YAbstractRefi() override;
 
     virtual YCode init() = 0;
 
@@ -23,6 +23,9 @@ private:
 
     //
 
+
+    // YDataProcessor interface
+protected:
 
     // YDataProcessor interface
 protected:

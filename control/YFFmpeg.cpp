@@ -50,7 +50,7 @@ void YFFmpeg::addElement(YObject* element)
         _data_processors_codec.push_back(codec);
         return;
     }
-    auto refi = dynamic_cast<YAbstractFrameProcessor*>(element); //TODO игнорируется
+    auto refi = dynamic_cast<YAbstractRefi*>(element); //TODO игнорируется
     if (refi != nullptr) {
         _data_processors_refi.push_back(refi);
         return;

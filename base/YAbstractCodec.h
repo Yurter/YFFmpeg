@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ffmpeg.h"
 #include "YThread.h"
 #include "../base/YStream.h"
 #include "../base/YFrame.h"

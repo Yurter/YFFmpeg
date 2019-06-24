@@ -47,6 +47,11 @@ bool YFrame::empty() const //TODO frame sizes...
     }
 }
 
+bool YFrame::init()
+{
+    return true; //TODO
+}
+
 std::string YFrame::toString() const //TODO
 {
     /* Video frame: 33123 byte, dts 460, pts 460, duration 33 */

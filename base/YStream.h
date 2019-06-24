@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ffmpeg.h"
 #include "YAbstractMedia.h"
 #include "YPacket.h"
 

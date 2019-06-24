@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ffmpeg.h"
 #include "YDataProcessor.h"
 #include "../control/YVideoParameters.h"
 #include "../control/YAudioParameters.h"

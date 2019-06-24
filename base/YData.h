@@ -1,8 +1,6 @@
 #pragma once
 
-#include "ffmpeg.h"
 #include "YObject.h"
-#include <string>
 
 template <typename Type>
 class YData : public YObject

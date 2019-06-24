@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ffmpeg.h"
 #include "YObject.h"
 #include <thread>
 

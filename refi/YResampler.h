@@ -1,10 +1,10 @@
 #pragma once
 
 #include "base/ffmpeg.h"
-#include "base/YAbstractFrameProcessor.h"
+#include "base/YAbstractRefi.h"
 #include "../control/YAudioStream.h"
 
-class YResampler : public YAbstractFrameProcessor
+class YResampler : public YAbstractRefi
 {
 
 public:

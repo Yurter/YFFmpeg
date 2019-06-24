@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ffmpeg.h"
 #include <string>
 
 class YObject

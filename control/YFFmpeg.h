@@ -59,7 +59,7 @@ private:
     // ?
     std::list<YAbstractMedia*>          _data_processors_context;
     std::list<YAbstractCodec*>          _data_processors_codec;
-    std::list<YAbstractFrameProcessor*> _data_processors_refi;
+    std::list<YAbstractRefi*> _data_processors_refi;
 
     std::list<std::list<YObject*>>      _processor_sequences; //TODO зачем их хранить?
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ffmpeg.h"
 #include "YData.h"
 
 class YFrame : public YData<AVFrame*>
@@ -16,6 +15,7 @@ public:
     void            free();
 
     bool            empty()     const;
+    bool            init()            override;
     bool            inited()    const override;
     std::string     toString()  const override;
 

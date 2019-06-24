@@ -12,7 +12,7 @@ public:
     YPacket();
     virtual ~YPacket() override;
 
-    bool            init() const override;
+    bool            init() override;
     bool            inited() const override;
 
     void            setPts(int64_t pts);
