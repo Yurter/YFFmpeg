@@ -25,7 +25,7 @@ public:
 
     stream_map&         map();
 
-    YCode               addRoute(streams_pair streams);
+    YCode               addRoute(media_stream source, media_stream destination);
     YCode               setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_processor);
 
 private:

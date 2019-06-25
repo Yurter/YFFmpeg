@@ -64,19 +64,17 @@ void YFFmpeg::addElement(YObject* element)
 
 void YFFmpeg::setRoute(media_stream source, media_stream destination)
 {
-
+    _stream_map->addRoute(source, destination);
 }
 
 YCode YFFmpeg::init()
 {
     log_info("Initialization started...");
-
     try_to(determineSequences());
     try_to(initRefi());
     try_to(initCodec());
     try_to(openContext());
     try_to(startProcesors());
-
     setInited(true);
     return YCode::OK;
 }
