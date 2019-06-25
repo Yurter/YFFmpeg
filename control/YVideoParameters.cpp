@@ -1,7 +1,7 @@
 #include "YVideoParameters.h"
 
-YVideoParameters::YVideoParameters() :
-    YParameters(),
+YVideoParameters::YVideoParameters(YParameters parameters) :
+    YParameters(parameters),
     _width(DEFAULT_INT),
     _height(DEFAULT_INT),
     _aspect_ratio(DEFAULT_RATIONAL),

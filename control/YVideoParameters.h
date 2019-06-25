@@ -7,8 +7,8 @@ class YVideoParameters : public YParameters
 
 public:
 
-    YVideoParameters();
-    virtual ~YVideoParameters();
+    YVideoParameters(YParameters parameters = YParameters());
+    virtual ~YVideoParameters() override;
 
     void            setWidth(int64_t width);
     void            setHeight(int64_t height);

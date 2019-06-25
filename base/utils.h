@@ -2,6 +2,7 @@
 
 #include "ffmpeg.h"
 #include "Logger.h"
+#include "YParameters.h"
 #include <string>
 #include <sstream>
 
@@ -18,6 +19,7 @@ public:
     static bool         compatibleWithSampleFormat(AVCodecContext* codec_context, AVSampleFormat sample_format);
     static AVMediaType  ymedia_type_to_avmedia_type(YMediaType media_type);
     static int64_t      gen_stream_uid(int64_t context_index, int64_t stream_index);
+    static void         codecpar_from_parameters(AVCodecParameters* codecpar, YParameters* parameters);
 
 };
 

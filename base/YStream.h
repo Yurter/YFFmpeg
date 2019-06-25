@@ -1,6 +1,8 @@
 #pragma once
 
+#include "YParameters.h"
 #include "YPacket.h"
+
 class YAbstractMedia; //TODO YAbstractMedia::_streams to pointers ?
 
 class YStream : public YData<AVStream*>
@@ -8,8 +10,8 @@ class YStream : public YData<AVStream*>
 
 public:
 
-    YStream();
-    YStream(YAbstractMedia* media_context, AVStream* stream, YMediaType type);
+    YStream(YParameters parameters = YParameters());
+    YStream(YAbstractMedia* media_context, AVStream* stream, YMediaType type, YParameters parameters);
     virtual ~YStream() override = default;
 
     virtual YCode       init() override;
@@ -30,6 +32,7 @@ public:
 protected:
 
     // Media
+    YParameters         _parameters;
     YAbstractMedia*     _media_context;
 
     // General

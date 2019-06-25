@@ -1,6 +1,7 @@
 #include "YAudioParameters.h"
 
-YAudioParameters::YAudioParameters() :
+YAudioParameters::YAudioParameters(YParameters parameters) :
+    YParameters(parameters),
     _sample_rate(DEFAULT_INT),
     _sample_format(DEFAULT_SAMPLE_FORMAT),
     _chanels_layout(DEFAULT_CHANEL_LAYOUT),

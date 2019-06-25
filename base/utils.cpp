@@ -72,3 +72,44 @@ int64_t utils::gen_stream_uid(int64_t context_index, int64_t stream_index)
 {
     return (context_index * 100) + stream_index;
 }
+
+void utils::codecpar_from_parameters(AVCodecParameters* codecpar, YParameters* parameters)
+{
+    //TODO
+//    codecpar->codec_type = codec->codec_type;
+//    codecpar->codec_id   = codec->codec_id;
+//    codecpar->codec_tag  = codec->codec_tag;
+
+//    codecpar->bit_rate              = codec->bit_rate;
+//    codecpar->bits_per_coded_sample = codec->bits_per_coded_sample;
+//    codecpar->bits_per_raw_sample   = codec->bits_per_raw_sample;
+//    codecpar->profile               = codec->profile;
+//    codecpar->level                 = codec->level;
+
+//    switch (codecpar->codec_type) {
+//    case AVMEDIA_TYPE_VIDEO:
+//        codecpar->format              = codec->pix_fmt;
+//        codecpar->width               = codec->width;
+//        codecpar->height              = codec->height;
+//        codecpar->field_order         = codec->field_order;
+//        codecpar->color_range         = codec->color_range;
+//        codecpar->color_primaries     = codec->color_primaries;
+//        codecpar->color_trc           = codec->color_trc;
+//        codecpar->color_space         = codec->colorspace;
+//        codecpar->chroma_location     = codec->chroma_sample_location;
+//        codecpar->sample_aspect_ratio = codec->sample_aspect_ratio;
+//        codecpar->video_delay         = codec->has_b_frames;
+//        break;
+//    case AVMEDIA_TYPE_AUDIO:
+//        codecpar->format           = codec->sample_fmt;
+//        codecpar->channel_layout   = codec->channel_layout;
+//        codecpar->channels         = codec->channels;
+//        codecpar->sample_rate      = codec->sample_rate;
+//        codecpar->block_align      = codec->block_align;
+//        codecpar->frame_size       = codec->frame_size;
+//        codecpar->initial_padding  = codec->initial_padding;
+//        codecpar->trailing_padding = codec->trailing_padding;
+//        codecpar->seek_preroll     = codec->seek_preroll;
+//        break;
+//    }
+}

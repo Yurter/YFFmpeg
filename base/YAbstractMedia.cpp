@@ -36,7 +36,21 @@ bool YAbstractMedia::closed() const
     return !_opened;
 }
 
-YCode YAbstractMedia::createStream(AVCodecContext *codec_context)
+YCode YAbstractMedia::createDummyStream(YMediaType type, YParameters parametres)
+{
+    switch (type) {
+    case YMediaType::MEDIA_TYPE_VIDEO:
+        _streams.push_back(YVideoStream(parametres));
+        return YCode::OK;
+    case YMediaType::MEDIA_TYPE_AUDIO:
+        _streams.push_back(YAudioStream(parametres));
+        return YCode::OK;
+    case YMediaType::MEDIA_TYPE_UNKNOWN:
+        return YCode::INVALID_INPUT;
+    }
+}
+
+YCode YAbstractMedia::createStream(AVCodecContext* codec_context)
 {
     YStream new_stream;
     new_stream.setRaw(avformat_new_stream(_media_format_context, codec_context->codec));
@@ -44,37 +58,14 @@ YCode YAbstractMedia::createStream(AVCodecContext *codec_context)
        log_error("Failed allocating output stream");
        return YCode::ERR;
     }
-
     if (avcodec_parameters_from_context(new_stream.codecParameters(), codec_context) < 0) {
        log_error("Failed to copy context input to output stream codec context");
        return YCode::ERR;
     }
-
-    /* Crutch */
-//    out_stream->codec->sample_fmt = codec_context->sample_fmt;
-
-//    out_stream->r_frame_rate = codec_context->framerate;
-//    out_stream->avg_frame_rate = codec_context->framerate;
-//    new_stream.se
-
-
-
-    auto codec_type = out_stream->codecpar->codec_type;
-
-    switch (codec_type) {
-    case AVMEDIA_TYPE_VIDEO:
-       video_parameters.setStreamIndex(_media_format_context->nb_streams - 1);
-       break;
-    case AVMEDIA_TYPE_AUDIO:
-       audio_parameters.setStreamIndex(_media_format_context->nb_streams - 1);
-       break;
-    default:
-       log_error("Unsupported media type added: " << av_get_media_type_string(codec_type));
-       break;
+    {
+        _streams.push_back(new_stream);
+        return YCode::OK;
     }
-
-    log_debug("Created stream: " << codec_context->codec->name);
-    return YCode::OK;
 }
 
 void YAbstractMedia::setUid(int64_t uid)
@@ -107,6 +98,7 @@ YCode YAbstractMedia::parseFormatContext()
 
         switch (codec_type) {//TODO
         case AVMEDIA_TYPE_VIDEO: {
+            YVideoParameters video_parameters;
             video_parameters.setCodec(codecpar->codec_id);
             video_parameters.setWidth(codecpar->width);
             video_parameters.setHeight(codecpar->height);
@@ -118,11 +110,12 @@ YCode YAbstractMedia::parseFormatContext()
             video_parameters.setStreamIndex(i);
             video_parameters.setTimeBase(avstream->time_base);
 //            video_parameters.setAvailable(true);
-            _streams.push_back(YVideoStream(this, avstream));
+            _streams.push_back(YVideoStream(this, avstream, video_parameters));
             _streams.back().setUid(utils::gen_stream_uid(uid(), i)); //TODO
             break;
         }
         case AVMEDIA_TYPE_AUDIO: {
+            YAudioParameters audio_parameters;
             audio_parameters.setCodec(codecpar->codec_id);
             audio_parameters.setSampleRate(codecpar->sample_rate);
             audio_parameters.setSampleFormat(codec->sample_fmt);
@@ -133,7 +126,7 @@ YCode YAbstractMedia::parseFormatContext()
             audio_parameters.setStreamIndex(i);
             audio_parameters.setTimeBase(avstream->time_base);
 //            audio_parameters.setAvailable(true);
-            _streams.push_back(YAudioStream(this, avstream));
+            _streams.push_back(YAudioStream(this, avstream, audio_parameters));
             _streams.back().setUid(utils::gen_stream_uid(uid(), i));  //TODO
             break;
         }

@@ -9,34 +9,32 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
 {
     setName("YDestination");
     switch (preset) {
-    case Auto:
-         guessOutputFromat();
-         parseOutputFormat();
+    case Auto: {
+        guessOutputFromat();
+        parseOutputFormat();
         break;
-    case YouTube:
+    }
+    case YouTube: {
         /* Video */
-//        video_parameters.setWidth(1920);          //TODO rescaler
-//        video_parameters.setHeight(1080);         //TODO rescaler
+        YVideoParameters video_parameters;
+        video_parameters.setWidth(1920);
+        video_parameters.setHeight(1080);
         video_parameters.setAspectRatio({16,9});
-//        video_parameters.setFrameRate(24);        //TODO rescaler
+//        video_parameters.setFrameRate(24); //TODO
         video_parameters.setBitrate(400'000);
-//        video_parameters.setCodec("libx264");     //TODO rescaler ?
+        video_parameters.setCodec("libx264");
+        createDummyStream(YMediaType::MEDIA_TYPE_VIDEO, video_parameters);
         /* Audio */
-        /* mp3 */
-//        audio_parameters.setSampleRate(44'100);
-//        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_S16P);
-//        audio_parameters.setBitrate(128'000);
-//        audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
-//        audio_parameters.setChanels(2);
-//        audio_parameters.setCodec("mp3");
-        /* aac */
+        YAudioParameters audio_parameters;
         audio_parameters.setSampleRate(44'100);
         audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
         audio_parameters.setBitrate(128'000);
         audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
         audio_parameters.setChanels(2);
         audio_parameters.setCodec("aac");
+        createDummyStream(YMediaType::MEDIA_TYPE_AUDIO, audio_parameters);
         break;
+    }
     case Timelapse:
         break;
     default:
@@ -50,47 +48,9 @@ YDestination::~YDestination()
     close();
 }
 
-//bool YDestination::addStream(AVCodecContext *stream_codec_context)
-//{
-//    AVStream* out_stream = avformat_new_stream(_media_format_context, stream_codec_context->codec);
-//    if (out_stream == nullptr) {
-//        log_error("Failed allocating output stream");
-//        return false;
-//    }
-
-//    if (avcodec_parameters_from_context(out_stream->codecpar, stream_codec_context) < 0) {
-//        log_error("Failed to copy context input to output stream codec context");
-//        return false;
-//    }
-
-//    /* Crutch */
-//    out_stream->codec->sample_fmt = stream_codec_context->sample_fmt;
-
-//    out_stream->r_frame_rate = stream_codec_context->framerate;
-//    out_stream->avg_frame_rate = stream_codec_context->framerate;
-
-//    auto codec_type = out_stream->codecpar->codec_type;
-
-//    switch (codec_type) {
-//    case AVMEDIA_TYPE_VIDEO:
-//        video_parameters.setStreamIndex(_media_format_context->nb_streams - 1);
-//        break;
-//    case AVMEDIA_TYPE_AUDIO:
-//        audio_parameters.setStreamIndex(_media_format_context->nb_streams - 1);
-//        break;
-//    default:
-//        log_error("Unsupported media type added: " << av_get_media_type_string(codec_type));
-//        break;
-//    }
-
-//    log_info("Created stream: " << stream_codec_context->codec->name);
-//    return true;
-//}
-
 YCode YDestination::open()
 {
     return_if(opened(), YCode::INVALID_CALL_ORDER);
-//    return_if(stre, YCode::NOT_INITED);
     try_to(createContext());
     _output_format = _media_format_context->oformat; //TODO оператор "болтается в воздухе"
     try_to(openContext());
@@ -170,16 +130,16 @@ YCode YDestination::processInputData(YPacket& input_data)
     return YCode::OK;
 }
 
-void YDestination::parseOutputFormat()
+void YDestination::parseOutputFormat() //TODO
 {
     if (_output_format == nullptr) { return; }
     //TODO:                                                 ↓ mp3 AVOutputFormat дает видео кодек PNG ↓
     if (_output_format->video_codec != AV_CODEC_ID_NONE && _output_format->video_codec != AV_CODEC_ID_PNG) {
-        video_parameters.setCodec(_output_format->video_codec);
+//        video_parameters.setCodec(_output_format->video_codec);
 //        video_parameters.setAvailable(true); //TODO setAvailable
     }
     if (_output_format->audio_codec != AV_CODEC_ID_NONE) {
-        audio_parameters.setCodec(_output_format->audio_codec);
+//        audio_parameters.setCodec(_output_format->audio_codec);
 //        audio_parameters.setAvailable(true); //TODO setAvailable
     }
 }

@@ -7,8 +7,8 @@ class YAudioParameters : public YParameters
 
 public:
 
-    YAudioParameters();
-    ~YAudioParameters();
+    YAudioParameters(YParameters parameters = YParameters());
+    virtual ~YAudioParameters() override;
 
     void            setSampleRate(int64_t sample_rate);
     void            setSampleFormat(AVSampleFormat sample_format);

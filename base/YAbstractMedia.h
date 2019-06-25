@@ -19,7 +19,8 @@ public:
     virtual bool        opened() const final;                           //
     virtual bool        closed() const final;                           //
 
-    YCode               createStream(AVCodecContext* codec_context); //TODO
+    YCode               createDummyStream(YMediaType type, YParameters parametres);           //
+    YCode               createStream(AVCodecContext* codec_context);    //TODO
 
     void                setUid(int64_t uid);                            //
     void                setReopeingAfterFailure(bool reopening);        //
@@ -41,8 +42,8 @@ protected:
 public:
 
     // Media
-    YVideoParameters    video_parameters;
-    YAudioParameters    audio_parameters;
+//    YVideoParameters    video_parameters;
+//    YAudioParameters    audio_parameters;
 
 protected:
 
