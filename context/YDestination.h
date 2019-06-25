@@ -7,7 +7,7 @@ class YDestination : public YAbstractMedia
 
 public:
 
-    YDestination(const std::string &mrl, YMediaPreset preset = YMediaPreset::Auto);
+    YDestination(const std::string& mrl, YMediaPreset preset = YMediaPreset::Auto);
     virtual ~YDestination() override;
 
     YCode               open() override;
@@ -23,7 +23,6 @@ private:
 
     YCode               write();
 
-    YCode               stampPacket(YPacket& packet);
     YCode               writePacket(YPacket& packet);
 
     YCode               processInputData(YPacket& input_data) override;

@@ -1,9 +1,7 @@
 #pragma once
 
-#include "ffmpeg.h"
 #include "YAsyncQueue.h"
 #include "YThread.h"
-#include <string>
 #include <sstream>
 
 #define set_log_level(x)    Logger::instance().setLogLevel(x)

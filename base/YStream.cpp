@@ -1,4 +1,5 @@
 #include "YStream.h"
+#include "utils.h"
 
 YStream::YStream() :
     YStream(nullptr, nullptr, YMediaType::MEDIA_TYPE_UNKNOWN)

@@ -1,9 +1,7 @@
 #include "YResampler.h"
-#include <iostream>
 
 YResampler::YResampler(streams_pair audio_streams) :
     YAbstractRefi(audio_streams),
-    _frame_pts(0),
     _resampler_context(nullptr)
 {
     setName("YResampler");
@@ -17,7 +15,6 @@ YResampler::~YResampler()
     }
 }
 
-//YCode YResampler::init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context)
 YCode YResampler::init()
 {
     return_if(inited(), YCode::INVALID_CALL_ORDER);
@@ -50,25 +47,25 @@ YCode YResampler::init()
     return YCode::OK;
 }
 
-YCode YResampler::processInputData(YFrame &input_data)
+YCode YResampler::processInputData(YFrame& input_data)
 {
     return_if_not(inited(), YCode::NOT_INITED);
     if (swr_convert_frame(_resampler_context, nullptr, input_data.raw()) != 0) {
-        std::cerr << "[YResampler] PUSH swr_convert_frame failed " << std::endl;
+        log_error("swr_convert_frame failed"); //TODO формулировка
         return YCode::ERR;
     }
     do {
         AVFrame *output_frame = nullptr;
         if (!initOutputFrame(&output_frame, _io_streams.second->codecParameters()->frame_size)) {
-            std::cerr << "[YResampler] initOutputFrame failed" << std::endl;
+            log_error("initOutputFrame failed"); //TODO формулировка
             return YCode::ERR;
         }
         if (configChanged(input_data.raw(), output_frame)) {
-            std::cerr << "[YResampler] configChanged" << std::endl;
+            log_error("configChanged"); //TODO формулировка
             return YCode::ERR;
         }
         if (swr_convert_frame(_resampler_context, output_frame, nullptr) != 0) {
-            std::cerr << "[YResampler] swr_convert_frame failed " << std::endl;
+            log_error("swr_convert_frame failed"); //TODO формулировка
             return YCode::ERR;
         }
         YFrame output_data(output_frame);
@@ -80,13 +77,13 @@ YCode YResampler::processInputData(YFrame &input_data)
     return YCode::OK;
 }
 
-bool YResampler::initOutputFrame(AVFrame **frame, int frame_size)
+bool YResampler::initOutputFrame(AVFrame** frame, int frame_size)
 {
     auto in_param = dynamic_cast<YAudioStream*>(_io_streams.first)->parameters; //TODO
     auto out_param = dynamic_cast<YAudioStream*>(_io_streams.second)->parameters;
     /* Create a new frame to store the audio samples. */
     if (!(*frame = av_frame_alloc())) {
-        std::cerr << "[YResampler] Could not allocate output frame" << std::endl;
+        log_error("Could not allocate output frame");
         return false;
     }
     /* Set the frame's parameters, especially its size and format.
@@ -101,7 +98,7 @@ bool YResampler::initOutputFrame(AVFrame **frame, int frame_size)
     /* Allocate the samples of the created frame. This call will make
      * sure that the audio frame can hold as many samples as specified. */
     if (av_frame_get_buffer(*frame, 0) < 0) {
-        std::cerr << "[YResampler] Could not allocate output frame samples" << std::endl;
+        log_error("Could not allocate output frame samples");
         av_frame_free(frame);
         return false;
     }
@@ -130,11 +127,3 @@ bool YResampler::configChanged(AVFrame *in, AVFrame *out)
     }
     return false;
 }
-
-void YResampler::stampFrame(AVFrame *frame)
-{
-//    frame->pts = _frame_pts * 23;
-//    frame->pkt_duration = 23;
-    _frame_pts++;
-}
-

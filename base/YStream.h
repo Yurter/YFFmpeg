@@ -1,7 +1,7 @@
 #pragma once
 
 #include "YPacket.h"
-class YAbstractMedia; //TODO YAbstractMedia::_streams to pointers
+class YAbstractMedia; //TODO YAbstractMedia::_streams to pointers ?
 
 class YStream : public YData<AVStream*>
 {

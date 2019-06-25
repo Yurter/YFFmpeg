@@ -79,6 +79,8 @@ enum YMediaType {
 #define not_inited_smp_fmt(x)   ((x) == DEFAULT_SAMPLE_FORMAT)
 #define not_inited_ch_layout(x) ((x) == DEFAULT_CHANEL_LAYOUT)
 
+#define inited_int(x)           ((x) != DEFAULT_INT)
+
 /* Категории сообщений, которые выводятся в консоль.
  * Каждый последующий уровень включает в себя предыдущий */
 enum YLogLevel {

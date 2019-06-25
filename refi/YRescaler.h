@@ -10,11 +10,15 @@ class YRescaler : public YAbstractRefi
 public:
 
     YRescaler(streams_pair audio_streams);
+    virtual ~YRescaler() override;
 
-    YCode init() override;
+    YCode               init() override;
+    YCode               processInputData(YFrame& input_data) override;
 
-    bool rescale(AVFrame* frame);
+private:
 
-    YCode processInputData(YFrame& input_data) override;
+    //FFmpeg
+    //
+
 };
 

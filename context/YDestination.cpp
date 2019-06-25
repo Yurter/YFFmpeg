@@ -1,8 +1,8 @@
 #include "YDestination.h"
 #include <exception>
 
-YDestination::YDestination(const std::string &mrl, YMediaPreset preset) :
-	YAbstractMedia(mrl),
+YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
+    YAbstractMedia(mrl),
     _video_packet_index(0),
     _audio_packet_index(0),
     _output_format(nullptr)
@@ -159,11 +159,6 @@ YCode YDestination::write()
     return YCode::OK;
 }
 
-YCode YDestination::stampPacket(YPacket& packet) //TODO кривой вызов функции
-{
-    try_to(packet.stream()->stampPacket(packet)); //TODO кривой вызов функции
-}
-
 YCode YDestination::writePacket(YPacket& packet)
 {
     if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
@@ -176,7 +171,7 @@ YCode YDestination::writePacket(YPacket& packet)
 
 YCode YDestination::processInputData(YPacket& input_data)
 {
-    try_to(stampPacket(input_data));
+    try_to(stream(input_data.streamIndex())->stampPacket(input_data));
     try_to(writePacket(input_data));
     return YCode::OK;
 }
@@ -184,7 +179,7 @@ YCode YDestination::processInputData(YPacket& input_data)
 void YDestination::parseOutputFormat()
 {
     if (_output_format == nullptr) { return; }
-    //TODO: mp3 AVOutputFormat дает видео кодек PNG
+    //TODO:                                                 ↓ mp3 AVOutputFormat дает видео кодек PNG ↓
     if (_output_format->video_codec != AV_CODEC_ID_NONE && _output_format->video_codec != AV_CODEC_ID_PNG) {
         video_parameters.setCodec(_output_format->video_codec);
         video_parameters.setAvailable(true);

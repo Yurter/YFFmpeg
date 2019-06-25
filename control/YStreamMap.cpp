@@ -24,12 +24,14 @@ YCode YStreamMap::addRoute(streams_pair streams)
     streams.first->setUid(utils::gen_stream_uid(streams.first->mediaContext()->uid(), streams.first->index()));
     streams.second->setUid(utils::gen_stream_uid(streams.second->mediaContext()->uid(), streams.second->index()));
     _stream_map.insert(streams);
+    _index_map.insert({streams.first->uid(), streams.second->index()});
+    return YCode::OK;
 }
 
 YCode YStreamMap::setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_processor)
 {
     return_if(invalid_int(src_stream->uid()), YCode::INVALID_INPUT);
-    _route_map.insert({src_stream->uid(), next_processor});
+    _packet_map.insert({src_stream->uid(), next_processor});
     setInited(true);
     return YCode::OK;
 }
@@ -47,20 +49,18 @@ YCode YStreamMap::checkStreamPair(streams_pair streams)
 
 YCode YStreamMap::processInputData(YPacket& input_data)
 {
-    YStream* input_stream = input_data.stream();
-    YStream* output_stream = nullptr;
-
+    /* Определение локального индекса выходного потока */
+    int64_t out_stream_index = INVALID_INT;
     try {
-        output_stream = _stream_map.at(input_stream);
+        out_stream_index = _index_map.at(input_data.streamUid());
     } catch (std::out_of_range) { return YCode::INVALID_INPUT; }
 
-    input_data.setStreamIndex(output_stream->index());
-
+    /* Определение первого обработчика пакета */
     YNextProcessor* next_proc = nullptr;
     try {
-        next_proc = _route_map.at(input_stream->uid());
+        next_proc = _packet_map.at(input_data.streamUid());
     } catch (std::out_of_range) { return YCode::INVALID_INPUT; }
 
+    input_data.setStreamIndex(out_stream_index);
     return sendOutputData(input_data, next_proc);
 }
-

@@ -1,8 +1,9 @@
 #include "YPacket.h"
+#include "utils.h"
 
 YPacket::YPacket() :
     YData<AVPacket>(),
-    _stream(nullptr)
+    _stream_uid(INVALID_INT)
 {
     setName("YPacket");
 }
@@ -49,9 +50,9 @@ void YPacket::setStreamIndex(int64_t stream_index)
     _data.stream_index = static_cast<int>(stream_index);
 }
 
-void YPacket::setStream(YStream *stream)
+void YPacket::setStreamUid(int64_t stream_uid)
 {
-    _stream = stream;
+    _stream_uid = stream_uid;
 }
 
 int64_t YPacket::pts() const
@@ -79,9 +80,9 @@ int64_t YPacket::streamIndex() const
     return static_cast<int64_t>(_data.stream_index);
 }
 
-YStream *YPacket::stream()
+int64_t YPacket::streamUid() const
 {
-    return _stream;
+    return _stream_uid;
 }
 
 bool YPacket::empty() const
@@ -91,7 +92,7 @@ bool YPacket::empty() const
 
 std::string YPacket::toString() const
 {
-    /* Video packet: 33123 byte, dts 460, pts 460, duration 33 */
+    /* Video packet: 33123 bytes, dts 460, pts 460, duration 33 */
     auto dts_str = _data.dts == AV_NOPTS_VALUE ? "NOPTS" : std::to_string(_data.dts);
     auto pts_str = _data.pts == AV_NOPTS_VALUE ? "NOPTS" : std::to_string(_data.pts);
     std::string str = utils::media_type_to_string(_type) + " packet: "

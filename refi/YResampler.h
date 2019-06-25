@@ -16,14 +16,10 @@ public:
 private:
 
     virtual YCode       processInputData(YFrame& input_data) override;
-    bool                initOutputFrame(AVFrame **frame, int frame_size);
-    bool                configChanged(AVFrame *in, AVFrame *out);
-    void                stampFrame(AVFrame *frame); //TODO нужно ли?
+    bool                initOutputFrame(AVFrame** frame, int frame_size);
+    bool                configChanged(AVFrame* in, AVFrame* out);
 
 protected:
-
-    // General
-    int64_t             _frame_pts; //TODO нужно ли?
 
     // FFmpeg
     SwrContext*         _resampler_context;

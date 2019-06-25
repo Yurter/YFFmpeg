@@ -3,13 +3,15 @@
 #include "YObject.h"
 #include <thread>
 
+typedef std::function<YCode(void)> LoopFunction;
+
 class YThread : virtual public YObject
 {
 
 public:
 
     YThread();
-    YThread(std::function<YCode(void)> loop_function);
+    YThread(LoopFunction loop_function);
     YThread& operator=(YThread&& other);
     YThread(const YThread&)             = delete;
     YThread& operator=(const YThread&)  = delete;
@@ -20,8 +22,8 @@ public:
     virtual bool        running()   final;
     virtual void        join()      final;
 
-    void    setExitCode(YCode exit_code);
-    YCode   exitCode() const;
+    void                setExitCode(YCode exit_code);
+    YCode               exitCode() const;
 
 protected:
 
@@ -30,10 +32,10 @@ protected:
 private:
 
     // General
-    std::thread                 _thread;
-    volatile bool               _running;
-    YCode                       _exit_code;
-    std::function<YCode(void)>  _loop_function;
+    std::thread         _thread;
+    volatile bool       _running;
+    YCode               _exit_code;
+    LoopFunction        _loop_function;
 
 };
 

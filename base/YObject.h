@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ffmpeg.h"
+#include "Logger.h"
+#include "utils.h"
 #include <string>
 
 class YObject
@@ -16,6 +18,6 @@ public:
 
 private:
 
-    std::string     _name;
+    std::string         _name;
 
 };

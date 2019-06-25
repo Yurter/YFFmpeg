@@ -9,7 +9,7 @@ YThread::YThread() :
     //
 }
 
-YThread::YThread(std::function<YCode(void)> loop_function) :
+YThread::YThread(LoopFunction loop_function) :
     _running(false),
     _exit_code(YCode::OK),
     _loop_function(loop_function)

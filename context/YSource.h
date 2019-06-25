@@ -1,7 +1,6 @@
 #pragma once
 
 #include "base/YAbstractMedia.h"
-#include "../codec/YDecoder.h"
 
 class YSource : public YAbstractMedia
 {
@@ -14,18 +13,18 @@ public:
     YCode               open()  override;
     YCode               close() override;
 
-    AVInputFormat*  inputFormat() const;
+    AVInputFormat*      inputFormat() const;
 
 private:
 
-    YCode           guessInputFromat();
-    YCode           openContext() override;
+    YCode               guessInputFromat();
+    YCode               openContext() override;
 
-    YCode           read();
+    YCode               read();
 
-    YCode           processInputData(YPacket& input_data) override;
+    YCode               processInputData(YPacket& input_data) override;
 
-    void            parseInputFormat(); //TODO : YAbstractMedia::parseIOFormat
+    void                parseInputFormat(); //TODO : YAbstractMedia::parseIOFormat ?
 
 private:
 

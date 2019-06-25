@@ -1,22 +1,22 @@
 #include "YRescaler.h"
 
-YRescaler::YRescaler()
+YRescaler::YRescaler(streams_pair audio_streams) :
+    YAbstractRefi(audio_streams)
 {
-    //
+    setName("YRescaler");
 }
 
-bool YRescaler::init(AVCodecContext *input_codec_context, AVCodecContext *output_codec_context)
+YRescaler::~YRescaler()
 {
-    return true;
-//    return false;
+    // TODO
 }
 
-bool YRescaler::rescale(AVFrame *frame)
+YCode YRescaler::init()
 {
-    return false;
+    return YCode::ERR;
 }
 
 YCode YRescaler::processInputData(YFrame& input_data)
 {
-    return YCode::ERR;
+    return YCode::NOT_INITED;
 }

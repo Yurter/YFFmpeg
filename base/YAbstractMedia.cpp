@@ -1,19 +1,15 @@
 #include "YAbstractMedia.h"
 
-#include <iostream>
-
-YAbstractMedia::YAbstractMedia(const std::string & mrl) :
+YAbstractMedia::YAbstractMedia(const std::string& mrl) :
     _uid(DEFAULT_INT),
 	_media_resource_locator(mrl),
     _opened(false),
     _reopening_after_failure(false),
     _reopening_timeout(INVALID_INT),
-    _close_after_failure(false),
-    _close_timeout(INVALID_INT),
     _artificial_delay(DEFAULT_INT),
     _media_format_context(nullptr)
 {
-    //
+    setName("YAbstractMedia");
 }
 
 YAbstractMedia::~YAbstractMedia()
@@ -58,7 +54,7 @@ int64_t YAbstractMedia::uid() const
 YCode YAbstractMedia::parseFormatContext()
 {
     if (_media_format_context == nullptr) {
-        std::cerr << "[YAbstractMedia] Format context not inited. Parsing failed." << std::endl;
+        log_error("Format context not inited. Parsing failed");
         return YCode::INVALID_INPUT;
     }
 
@@ -67,13 +63,13 @@ YCode YAbstractMedia::parseFormatContext()
 //        _output_format = _media_format_context->oformat;
     }
 
-    for (int64_t i = 0; i < _media_format_context->nb_streams; i++) {
+    for (int64_t i = 0; i < _media_format_context->nb_streams; i++) { //TODO video_parameters | audio_parameters -> setAvailable
         AVStream* avstream = _media_format_context->streams[i];
         auto codec = avstream->codec;
         auto codecpar = avstream->codecpar;
         auto codec_type = codecpar->codec_type;
 
-        switch (codec_type) {
+        switch (codec_type) {//TODO
         case AVMEDIA_TYPE_VIDEO: {
             video_parameters.setCodec(codecpar->codec_id);
             video_parameters.setWidth(codecpar->width);
@@ -87,6 +83,7 @@ YCode YAbstractMedia::parseFormatContext()
             video_parameters.setTimeBase(avstream->time_base);
             video_parameters.setAvailable(true);
             _streams.push_back(YVideoStream(this, avstream));
+            _streams.end()->setUid(utils::gen_stream_uid(uid(), i)); //TODO
             break;
         }
         case AVMEDIA_TYPE_AUDIO: {
@@ -98,13 +95,14 @@ YCode YAbstractMedia::parseFormatContext()
             audio_parameters.setChanelsLayout(codecpar->channel_layout);
             audio_parameters.setChanels(codecpar->channels);
             audio_parameters.setStreamIndex(i);
-            video_parameters.setTimeBase(avstream->time_base);
+            audio_parameters.setTimeBase(avstream->time_base);
             audio_parameters.setAvailable(true);
             _streams.push_back(YAudioStream(this, avstream));
+            _streams.end()->setUid(utils::gen_stream_uid(uid(), i));  //TODO
             break;
         }
         default:
-            std::cerr << "[YAbstractMedia] Unsupported media type founded: " << av_get_media_type_string(codec_type) << std::endl;
+            log_warning("Unsupported media type founded: " << av_get_media_type_string(codec_type));
             break;
         }
     }
@@ -135,10 +133,10 @@ AVFormatContext *YAbstractMedia::mediaFormatContext() const
     return _media_format_context;
 }
 
-YStream* YAbstractMedia::stream(uint64_t index)
+YStream* YAbstractMedia::stream(int64_t index)
 {
-    if (index < _streams.size()) {
-        return &_streams[index];
+    if (size_t(index) < _streams.size()) {
+        return &_streams[size_t(index)];
     } else {
         return nullptr;
     }

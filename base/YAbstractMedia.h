@@ -5,16 +5,13 @@
 #include "../control/YAudioParameters.h"
 #include "../control/YVideoStream.h"
 #include "../control/YAudioStream.h"
-//#include "YPacket.h"
-//#include "YStream.h"
-//#include <string>
 
 class YAbstractMedia : public YDataProcessor<YPacket, YPacket>
 {
 
 public:
 
-    YAbstractMedia(const std::string &mrl);                             // mrl - media resource locator.
+    YAbstractMedia(const std::string& mrl);                             // mrl - media resource locator.
     virtual ~YAbstractMedia();
 
     virtual YCode       open() = 0;                                     // Функция открывает медиа-ресурс.
@@ -32,7 +29,7 @@ public:
     std::string         mediaResourceLocator() const;                   // Функция возвращает mrl.
     AVFormatContext*    mediaFormatContext() const;                     // Функция возвращает медиа-контекст.
     int64_t             duration() const;								// Функция возвращает длительность медиа-файла в секундах.
-    YStream*            stream(uint64_t index);                         //
+    YStream*            stream(int64_t index);                          //
 
 protected:
 
@@ -56,9 +53,6 @@ protected:
 
     bool                _reopening_after_failure;
     int64_t             _reopening_timeout;
-
-    bool                _close_after_failure; //TODO нужно?
-    int64_t             _close_timeout;
 
     int64_t             _artificial_delay;
 

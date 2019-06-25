@@ -113,7 +113,7 @@ bool YFFmpeg::resamplerRequired(streams_pair streams)
 
     return_if(in->sampleRate()      != out->sampleRate(),       true);
     return_if(in->sampleFormat()    != out->sampleFormat(),     true);
-    return_if(in->chanels()         != out->chanels(),          true);
+    return_if(in->channels()        != out->channels(),         true);
     return_if(in->chanelsLayout()   != out->chanelsLayout(),    true);
 
     return false;

@@ -90,22 +90,15 @@ YCode YSource::read()
 
 YCode YSource::processInputData(YPacket& input_data)
 {
-    if (input_data.raw().stream_index == video_parameters.streamIndex()) {
-        input_data.setType(YMediaType::MEDIA_TYPE_VIDEO);
-    }
-    if (input_data.raw().stream_index == audio_parameters.streamIndex()) {
-        input_data.setType(YMediaType::MEDIA_TYPE_AUDIO);
-    }
-    if (input_data.type() == YMediaType::MEDIA_TYPE_UNKNOWN) {
-        return YCode::INVALID_INPUT;
-    }
-    if (_artificial_delay > 0) { //TODO
-        utils::sleep_for(_artificial_delay);
-    }
+    auto packet_stream = stream(input_data.raw().stream_index);
+    return_if(packet_stream == nullptr, YCode::INVALID_INPUT);
+    input_data.setType(packet_stream->type());
+    input_data.setStreamUid(packet_stream->uid());
+    if (inited_int(_artificial_delay)) { utils::sleep_for(_artificial_delay); }
     return sendOutputData(input_data);
 }
 
 void YSource::parseInputFormat()
 {
-    // ?
+    // ? TODO
 }
