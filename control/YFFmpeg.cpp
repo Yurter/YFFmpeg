@@ -57,9 +57,14 @@ void YFFmpeg::addElement(YObject* element)
     }
 }
 
-void YFFmpeg::setRoute(streams_pair streams)
+//void YFFmpeg::setRoute(streams_pair streams)
+//{
+//    _stream_map->addRoute(streams);
+//}
+
+void YFFmpeg::setRoute(media_stream source, media_stream destination)
 {
-    _stream_map->addRoute(streams);
+
 }
 
 YCode YFFmpeg::init()

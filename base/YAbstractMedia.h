@@ -67,3 +67,5 @@ protected:
     AVFormatContext*	_media_format_context;
 
 };
+
+typedef std::pair<YAbstractMedia*,int64_t> media_stream; //TODO название

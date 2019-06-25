@@ -25,7 +25,8 @@ public:
 
     void    setOptions(int64_t options);        ///<
     void    addElement(YObject* element);       ///<
-    void    setRoute(streams_pair streams);     ///<
+//    void    setRoute(streams_pair streams);     ///<
+    void    setRoute(media_stream source, media_stream destination);     ///<
 
 private:
 
