@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ffmpeg.h"
-#include "logger.h"
 #include <string>
 
 class utils
