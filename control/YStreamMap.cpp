@@ -16,17 +16,27 @@ stream_map& YStreamMap::map()
     return _stream_map;
 }
 
-YCode YStreamMap::addRoute(streams_pair streams)
+YCode YStreamMap::addRoute(media_stream source, media_stream destination)
 {
-    try_to(checkStreamPair(streams));
-    streams.first->mediaContext()->setUid(_source_uid++);
-    streams.second->mediaContext()->setUid(_destination_uid++);
-    streams.first->setUid(utils::gen_stream_uid(streams.first->mediaContext()->uid(), streams.first->index()));
-    streams.second->setUid(utils::gen_stream_uid(streams.second->mediaContext()->uid(), streams.second->index()));
-    _stream_map.insert(streams);
-    _index_map.insert({streams.first->uid(), streams.second->index()});
+    source.first->setUid(_source_uid++);
+    destination.first->setUid(_destination_uid++);
+
+    _stream_map.insert(source);
+    _index_map.insert({source.first->uid(), source.second->index()});
     return YCode::OK;
 }
+
+//YCode YStreamMap::addRoute(media_stream source, media_stream destination)
+//{
+//    try_to(checkStreamPair(source));
+//    source.first->mediaContext()->setUid(_source_uid++);
+//    source.second->mediaContext()->setUid(_destination_uid++);
+//    source.first->setUid(utils::gen_stream_uid(source.first->mediaContext()->uid(), source.first->index()));
+//    source.second->setUid(utils::gen_stream_uid(source.second->mediaContext()->uid(), source.second->index()));
+//    _stream_map.insert(source);
+//    _index_map.insert({source.first->uid(), source.second->index()});
+//    return YCode::OK;
+//}
 
 YCode YStreamMap::setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_processor)
 {
