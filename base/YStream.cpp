@@ -1,15 +1,15 @@
 #include "YStream.h"
 #include "utils.h"
 
-YStream::YStream(YParameters parameters) :
-    YStream(nullptr, nullptr, YMediaType::MEDIA_TYPE_UNKNOWN, parameters)
+YStream::YStream(YParameters param) :
+    YStream(nullptr, nullptr, YMediaType::MEDIA_TYPE_UNKNOWN, param)
 {
     //
 }
 
-YStream::YStream(YAbstractMedia* media_context, AVStream* stream, YMediaType type, YParameters parameters) :
+YStream::YStream(YAbstractMedia* media_context, AVStream* stream, YMediaType type, YParameters param) :
     YData<AVStream*>(stream, type),
-    _parameters(parameters),
+    parameters(param),
     _media_context(media_context),
     _uid(INVALID_INT),
     _duration(DEFAULT_INT),

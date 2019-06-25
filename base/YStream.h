@@ -10,8 +10,8 @@ class YStream : public YData<AVStream*>
 
 public:
 
-    YStream(YParameters parameters = YParameters());
-    YStream(YAbstractMedia* media_context, AVStream* stream, YMediaType type, YParameters parameters);
+    YStream(YParameters param = YParameters());
+    YStream(YAbstractMedia* media_context, AVStream* stream, YMediaType type, YParameters param);
     virtual ~YStream() override = default;
 
     virtual YCode       init() override;
@@ -21,7 +21,7 @@ public:
 
     void                setUid(int64_t uid);
 
-    int64_t             uid() const;
+    int64_t             uid()       const;
     int64_t             index()     const;
     int64_t             duration()  const;
     AVRational          timeBase()  const;
@@ -29,10 +29,14 @@ public:
     YAbstractMedia*     mediaContext();
     void                increaseDuration(int64_t value);
 
+public:
+
+    // Media
+    YParameters         parameters;
+
 protected:
 
     // Media
-    YParameters         _parameters;
     YAbstractMedia*     _media_context;
 
     // General

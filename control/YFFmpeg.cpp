@@ -79,7 +79,7 @@ YCode YFFmpeg::init()
 YCode YFFmpeg::run()
 {
     if (!inited()) {
-        init();
+        try_to(init());
     }
     for (auto&& context : _data_processors_context) {
         return_if_not(context->running(), context->exitCode());
@@ -265,6 +265,8 @@ YCode YFFmpeg::determineSequences() //TODO
         _stream_map->setRoute(input_stream, dynamic_cast<YAsyncQueue<YPacket>*>(*first_proc_it));
         _processor_sequences.push_back(sequence);
     }
+    return_if_not(_stream_map->inited(), YCode::NOT_INITED);
+    return YCode::OK;
 }
 
 YCode YFFmpeg::checkProcessors()

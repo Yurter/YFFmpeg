@@ -36,37 +36,76 @@ bool YAbstractMedia::closed() const
     return !_opened;
 }
 
-YCode YAbstractMedia::createDummyStream(YMediaType type, YParameters parametres)
+YCode YAbstractMedia::createStream(YStream new_stream)
 {
-    switch (type) {
-    case YMediaType::MEDIA_TYPE_VIDEO:
-        _streams.push_back(YVideoStream(parametres));
-        return YCode::OK;
-    case YMediaType::MEDIA_TYPE_AUDIO:
-        _streams.push_back(YAudioStream(parametres));
-        return YCode::OK;
-    case YMediaType::MEDIA_TYPE_UNKNOWN:
-        return YCode::INVALID_INPUT;
-    }
+//    new_stream.setRaw(avformat_new_stream(_media_format_context, nullptr));
+    _streams.push_back(new_stream);
+    return YCode::OK;
 }
 
-YCode YAbstractMedia::createStream(AVCodecContext* codec_context)
-{
-    YStream new_stream;
-    new_stream.setRaw(avformat_new_stream(_media_format_context, codec_context->codec));
-    if (not_inited_ptr(new_stream.raw())) {
-       log_error("Failed allocating output stream");
-       return YCode::ERR;
-    }
-    if (avcodec_parameters_from_context(new_stream.codecParameters(), codec_context) < 0) {
-       log_error("Failed to copy context input to output stream codec context");
-       return YCode::ERR;
-    }
-    {
-        _streams.push_back(new_stream);
-        return YCode::OK;
-    }
-}
+//YCode YAbstractMedia::createStream(AVCodecID codec_id)
+//{
+//    YStream new_stream;
+//    new_stream.setRaw(avformat_new_stream(_media_format_context, codec_id));
+//    if (not_inited_ptr(new_stream.raw())) {
+//       log_error("Failed allocating output stream");
+//       return YCode::ERR;
+//    }
+//    if (avcodec_parameters_from_context(new_stream.codecParameters(), codec_context) < 0) {
+//       log_error("Failed to copy context input to output stream codec context");
+//       return YCode::ERR;
+//    }
+//    {
+//        _streams.push_back(new_stream);
+//        return YCode::OK;
+//    }
+//}
+
+//YCode YAbstractMedia::createStream(YMediaType type, YParameters parametres)
+//{
+//    switch (type) {
+//    case YMediaType::MEDIA_TYPE_VIDEO:
+//        _streams.push_back(YVideoStream(parametres));
+//        return YCode::OK;
+//    case YMediaType::MEDIA_TYPE_AUDIO:
+//        _streams.push_back(YAudioStream(parametres));
+//        return YCode::OK;
+//    case YMediaType::MEDIA_TYPE_UNKNOWN:
+//        return YCode::INVALID_INPUT;
+//    }
+//}
+
+//YCode YAbstractMedia::createDummyStream(YMediaType type, YParameters parametres)
+//{
+//    switch (type) {
+//    case YMediaType::MEDIA_TYPE_VIDEO:
+//        _streams.push_back(YVideoStream(parametres));
+//        return YCode::OK;
+//    case YMediaType::MEDIA_TYPE_AUDIO:
+//        _streams.push_back(YAudioStream(parametres));
+//        return YCode::OK;
+//    case YMediaType::MEDIA_TYPE_UNKNOWN:
+//        return YCode::INVALID_INPUT;
+//    }
+//}
+
+//YCode YAbstractMedia::createStream(AVCodecContext* codec_context)
+//{
+//    YStream new_stream;
+//    new_stream.setRaw(avformat_new_stream(_media_format_context, codec_context->codec));
+//    if (not_inited_ptr(new_stream.raw())) {
+//       log_error("Failed allocating output stream");
+//       return YCode::ERR;
+//    }
+//    if (avcodec_parameters_from_context(new_stream.codecParameters(), codec_context) < 0) {
+//       log_error("Failed to copy context input to output stream codec context");
+//       return YCode::ERR;
+//    }
+//    {
+//        _streams.push_back(new_stream);
+//        return YCode::OK;
+//    }
+//}
 
 void YAbstractMedia::setUid(int64_t uid)
 {
@@ -178,6 +217,16 @@ YCode YAbstractMedia::createContext()
     if (avformat_alloc_output_context2(&_media_format_context, nullptr, format_name, _media_resource_locator.c_str()) < 0) {
         log_error("Failed to alloc output context.");
         return YCode::ERR;
+    }
+    return YCode::OK;
+}
+
+YCode YAbstractMedia::attachStreams()
+{
+    for (auto&& str : _streams) {
+        auto avstream = avformat_new_stream(_media_format_context, nullptr);
+        return_if(not_inited_ptr(avstream), YCode::ERR);
+        str.setRaw(avstream);
     }
     return YCode::OK;
 }

@@ -55,16 +55,16 @@ int64_t YAudioParameters::channels() const
     return _chanels;
 }
 
-void YAudioParameters::softCopy(YAudioParameters &other_parametrs)
+void YAudioParameters::softCopy(YAudioParameters& other_parametrs)
 {
     if (not_inited_int(_sample_rate))           { _sample_rate      = other_parametrs.sampleRate();     }
     if (not_inited_smp_fmt(_sample_format))     { _sample_format    = other_parametrs.sampleFormat();   }
     if (not_inited_ch_layout(_chanels_layout))  { _chanels_layout   = other_parametrs.chanelsLayout();  }
-    if (not_inited_int(_chanels))               { _chanels          = other_parametrs.channels();        }
+    if (not_inited_int(_chanels))               { _chanels          = other_parametrs.channels();       }
     YParameters::softCopy(other_parametrs);
 }
 
-YAudioParameters &YAudioParameters::operator=(const YAudioParameters &rhs)
+YAudioParameters &YAudioParameters::operator=(const YAudioParameters& rhs)
 {
     _sample_rate    = rhs.sampleRate();
     _sample_format  = rhs.sampleFormat();

@@ -23,7 +23,7 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
 //        video_parameters.setFrameRate(24); //TODO
         video_parameters.setBitrate(400'000);
         video_parameters.setCodec("libx264");
-        createDummyStream(YMediaType::MEDIA_TYPE_VIDEO, video_parameters);
+        createStream(YVideoStream(video_parameters));
         /* Audio */
         YAudioParameters audio_parameters;
         audio_parameters.setSampleRate(44'100);
@@ -32,7 +32,7 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
         audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
         audio_parameters.setChanels(2);
         audio_parameters.setCodec("aac");
-        createDummyStream(YMediaType::MEDIA_TYPE_AUDIO, audio_parameters);
+        createStream(YAudioStream(audio_parameters));
         break;
     }
     case Timelapse:
@@ -53,6 +53,7 @@ YCode YDestination::open()
     return_if(opened(), YCode::INVALID_CALL_ORDER);
     try_to(createContext());
     _output_format = _media_format_context->oformat; //TODO оператор "болтается в воздухе"
+    try_to(attachStreams());
     try_to(openContext());
     try_to(parseFormatContext());
     _io_thread = YThread(std::bind(&YDestination::write, this));

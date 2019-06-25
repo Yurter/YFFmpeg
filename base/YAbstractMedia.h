@@ -19,8 +19,9 @@ public:
     virtual bool        opened() const final;                           //
     virtual bool        closed() const final;                           //
 
-    YCode               createDummyStream(YMediaType type, YParameters parametres);           //
-    YCode               createStream(AVCodecContext* codec_context);    //TODO
+    YCode               createStream(YStream new_stream);
+//    YCode               createStream(YMediaType type, YParameters parametres);
+//    YCode               createStream(AVCodecContext* codec_context);    //TODO
 
     void                setUid(int64_t uid);                            //
     void                setReopeingAfterFailure(bool reopening);        //
@@ -35,6 +36,7 @@ public:
 protected:
 
     YCode               createContext();
+    YCode               attachStreams();
     virtual YCode       openContext() = 0;
     YCode               parseFormatContext();
     std::string         guessFormatShortName();
