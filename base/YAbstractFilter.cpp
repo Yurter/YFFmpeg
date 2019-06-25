@@ -2,5 +2,5 @@
 
 YAbstractFilter::YAbstractFilter()
 {
-
+    setName("YAbstractFilter");
 }

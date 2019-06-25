@@ -78,7 +78,7 @@ YCode YFFmpeg::init()
 
 YCode YFFmpeg::run()
 {
-    if (not inited()) {
+    if (!inited()) {
         init();
     }
     for (auto&& context : _data_processors_context) {
@@ -126,29 +126,30 @@ bool YFFmpeg::contingencyVideoSourceRequired() //TODO
 
 bool YFFmpeg::contingencyAudioSourceRequired() //TODO
 {
-    return !_source->audio_parameters.available()
-            || _source->audio_parameters.ignore();
+//    return !_source->audio_parameters.available()
+//            || _source->audio_parameters.ignore();
+    return false;
 }
 
-bool YFFmpeg::option(YOptions option)
+bool YFFmpeg::option(YOption option) const
 {
     return _options & option;
 }
 
-void YFFmpeg::parseOptions()
-{
-    if (option(COPY_VIDEO)) {
-        _destination->video_parameters = _source->video_parameters;
-    }
-    if (option(COPY_AUDIO)) {
-        _destination->audio_parameters = _source->audio_parameters;
-    }
-}
+//void YFFmpeg::parseOptions()
+//{
+////    if (option(COPY_VIDEO)) {
+////        _destination->video_parameters = _source->video_parameters;
+////    }
+////    if (option(COPY_AUDIO)) {
+////        _destination->audio_parameters = _source->audio_parameters;
+////    }
+//}
 
 void YFFmpeg::completeDestinationParametres()
 {
-    _destination->video_parameters.softCopy(_source->video_parameters);
-    _destination->audio_parameters.softCopy(_source->audio_parameters);
+//    _destination->video_parameters.softCopy(_source->video_parameters);
+//    _destination->audio_parameters.softCopy(_source->audio_parameters);
 }
 
 bool YFFmpeg::inited() const
@@ -198,11 +199,13 @@ YCode YFFmpeg::startProcesors()
     for (auto&& context : _data_processors_context) { context->start(); }
     for (auto&& codec : _data_processors_codec) { codec->start(); }
     for (auto&& refi : _data_processors_refi) { refi->start(); }
+    return YCode::OK;
 }
 
 YCode YFFmpeg::stopProcesors()
 {
     for (auto&& context : _data_processors_context) { context->quit(); }
+    return YCode::OK;
 }
 
 YCode YFFmpeg::determineSequences() //TODO

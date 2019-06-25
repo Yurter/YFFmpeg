@@ -47,9 +47,14 @@ bool YFrame::empty() const //TODO frame sizes...
     }
 }
 
-bool YFrame::init()
+YCode YFrame::init()
 {
-    return true; //TODO
+    return YCode::ERR; //TODO
+}
+
+bool YFrame::inited() const
+{
+    return false; //TODO
 }
 
 std::string YFrame::toString() const //TODO

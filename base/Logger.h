@@ -2,19 +2,6 @@
 
 #include "YAsyncQueue.h"
 #include "YThread.h"
-#include <sstream>
-
-#define set_log_level(x)    Logger::instance().setLogLevel(x)
-
-#define print_info(x)       Logger::instance().print(this, YLogLevel::Info, x)
-#define print_warning(x)    Logger::instance().print(this, YLogLevel::Warning, x)
-#define print_error(x)      Logger::instance().print(this, YLogLevel::Error, x)
-#define print_debug(x)      Logger::instance().print(this, YLogLevel::Debug, x)
-
-#define log_info(x)         { std::stringstream log_ss; log_ss << x; print_info(log_ss.str());      }
-#define log_warning(x)      { std::stringstream log_ss; log_ss << x; print_warning(log_ss.str());   }
-#define log_error(x)        { std::stringstream log_ss; log_ss << x; print_error(log_ss.str());     }
-#define log_debug(x)        { std::stringstream log_ss; log_ss << x; print_debug(log_ss.str());     }
 
 typedef std::pair<YLogLevel,std::string> YMessage;
 

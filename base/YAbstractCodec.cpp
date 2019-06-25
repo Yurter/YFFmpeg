@@ -14,19 +14,13 @@ YAbstractCodec::~YAbstractCodec()
 
 YCode YAbstractCodec::init()
 {
-    AVCodec *codec;
-    auto stream_index = av_find_best_stream(_stream->mediaContext()->mediaFormatContext()
-                                            , utils::ymedia_type_to_avmedia_type(_stream->type())
-                                            , -1, -1, &codec, 0);
-    if (stream_index < 0) {
-        log_error("Cannot find an av stream in the input file");
-        return YCode::INVALID_INPUT;
-    }
+    AVCodec *codec = findCodec();
+    return_if(not_inited_ptr(codec), YCode::INVALID_INPUT);
     {
         _codec_context = avcodec_alloc_context3(codec);
         setName(name() + " " + codec->name);
     }
-    if (!_codec_context) {
+    if (not_inited_ptr(_codec_context)) {
         log_error("Failed to alloc context");
         return YCode::ERR;
     }
@@ -38,8 +32,7 @@ YCode YAbstractCodec::init()
         log_error("Cannot open av codec");
         return YCode::ERR;
     }
-    {
-        /* Crutch */ //TODO
+    { /* Crutch */ //TODO
         if (_stream->isAudio()) {
             _codec_context->channel_layout = static_cast<uint64_t>(
                 av_get_default_channel_layout(_codec_context->channels)

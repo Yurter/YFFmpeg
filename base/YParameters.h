@@ -1,6 +1,7 @@
 #pragma once
 
 #include "YObject.h"
+#include "ffmpeg.h"
 
 class YParameters : public YObject
 {
@@ -10,7 +11,6 @@ public:
     YParameters();
     virtual ~YParameters();
 
-    void            setAvailable(bool available);
     void            setCodec(AVCodecID codec_id);
     void            setCodec(std::string _codec_short_name);
     void            setBitrate(int64_t bitrate);

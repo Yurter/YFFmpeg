@@ -12,6 +12,7 @@ public:
     YStream(YAbstractMedia* media_context, AVStream* stream, YMediaType type);
     virtual ~YStream() override = default;
 
+    virtual YCode       init() override;
     virtual bool        inited() const override final;
     virtual std::string toString() const override final;
     virtual YCode       stampPacket(YPacket& packet) final;

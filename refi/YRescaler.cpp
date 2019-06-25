@@ -11,12 +11,12 @@ YRescaler::~YRescaler()
     // TODO
 }
 
-YCode YRescaler::init()
+YCode YRescaler::init()// TODO
 {
     return YCode::ERR;
 }
 
-YCode YRescaler::processInputData(YFrame& input_data)
+YCode YRescaler::processInputData(YFrame& input_data)// TODO
 {
     return YCode::NOT_INITED;
 }

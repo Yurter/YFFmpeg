@@ -81,7 +81,7 @@ YCode YAbstractMedia::parseFormatContext()
             video_parameters.setPixelFormat(codec->pix_fmt);
             video_parameters.setStreamIndex(i);
             video_parameters.setTimeBase(avstream->time_base);
-            video_parameters.setAvailable(true);
+//            video_parameters.setAvailable(true);
             _streams.push_back(YVideoStream(this, avstream));
             _streams.end()->setUid(utils::gen_stream_uid(uid(), i)); //TODO
             break;
@@ -96,7 +96,7 @@ YCode YAbstractMedia::parseFormatContext()
             audio_parameters.setChanels(codecpar->channels);
             audio_parameters.setStreamIndex(i);
             audio_parameters.setTimeBase(avstream->time_base);
-            audio_parameters.setAvailable(true);
+//            audio_parameters.setAvailable(true);
             _streams.push_back(YAudioStream(this, avstream));
             _streams.end()->setUid(utils::gen_stream_uid(uid(), i));  //TODO
             break;

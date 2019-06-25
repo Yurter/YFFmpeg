@@ -12,7 +12,7 @@ YAudioStream::YAudioStream(YAbstractMedia* media_context, AVStream* stream) :
     setName("YAudioStream");
 }
 
-bool YAudioStream::init() //TODO
+YCode YAudioStream::init() //TODO
 {
 //    int64_t duration = av_rescale_q(int64_t(1000 / parameters.frameRate())
 //                        , {1, 1000}, timeBase());
@@ -20,5 +20,5 @@ bool YAudioStream::init() //TODO
     _packet_dts_delta = duration;
     _packet_pts_delta = duration;
     _packet_duration = duration;
-    return true;
+    return YCode::OK;
 }

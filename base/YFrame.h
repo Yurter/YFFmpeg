@@ -15,7 +15,7 @@ public:
     void            free();
 
     bool            empty()     const;
-    bool            init()            override;
+    YCode           init()            override;
     bool            inited()    const override;
     std::string     toString()  const override;
 

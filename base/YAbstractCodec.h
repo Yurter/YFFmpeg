@@ -19,6 +19,10 @@ public:
 
 protected:
 
+    virtual AVCodec*    findCodec() = 0;
+
+protected:
+
     // Media
     YStream*            _stream;
 

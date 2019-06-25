@@ -14,10 +14,10 @@ YPacket::~YPacket()
     //avpacket_unref(&m_raw);
 }
 
-bool YPacket::init()
+YCode YPacket::init()
 {
     av_init_packet(&_data);
-    return true;
+    return YCode::OK;
 }
 
 bool YPacket::inited() const

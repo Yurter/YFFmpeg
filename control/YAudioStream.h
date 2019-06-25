@@ -12,7 +12,7 @@ public:
     YAudioStream(YAbstractMedia* media_context, AVStream* stream);
     virtual ~YAudioStream() override = default;
 
-    bool    init() override;
+    YCode               init() override;
 
 public:
 

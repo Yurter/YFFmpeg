@@ -1,35 +1,35 @@
-#pragma once
+//#pragma once
 
-#include "YVideoDecoder.h"
+//#include "YVideoDecoder.h"
 
-class YMediaFilter
-{
+//class YMediaFilter
+//{
 
-public:
+//public:
 
-    YMediaFilter(AVMediaType filter_type, std::string filter_description);
-    ~YMediaFilter();
+//    YMediaFilter(AVMediaType filter_type, std::string filter_description);
+//    ~YMediaFilter();
 
-    bool init(YSource *source, YDecoder *decoder);
+//    bool init(YSource *source, YDecoder *decoder);
 
-    bool filterFrames(std::list<AVFrame*> &frames);
+//    bool filterFrames(std::list<AVFrame*> &frames);
 
-private:
+//private:
 
-    bool initVideoFilter(YSource *source, YDecoder *decoder);
-    bool initAudioFilter(YSource *source, YDecoder *decoder);
+//    bool initVideoFilter(YSource *source, YDecoder *decoder);
+//    bool initAudioFilter(YSource *source, YDecoder *decoder);
 
-private:
+//private:
 
-    // General parameters
-    bool                _inited;
-    AVMediaType         _filter_type;
-    std::string         _filter_description;
+//    // General parameters
+//    bool                _inited;
+//    AVMediaType         _filter_type;
+//    std::string         _filter_description;
 
-    // FFmpeg
-    AVFilterContext     *_buffersrc_ctx;
-    AVFilterContext     *_buffersink_ctx;
-    AVFilterGraph       *_filter_graph;
+//    // FFmpeg
+//    AVFilterContext     *_buffersrc_ctx;
+//    AVFilterContext     *_buffersink_ctx;
+//    AVFilterGraph       *_filter_graph;
 
-};
+//};
 

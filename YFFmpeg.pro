@@ -35,6 +35,7 @@ SOURCES += \
     refi/YMediaFilter.cpp \
 
 HEADERS += \
+    base/Logger.h \
     base/YAbstractRefi.h \
     codec/YDecoder.h \
     codec/YEncoder.h \
@@ -52,7 +53,6 @@ HEADERS += \
     base/YObject.h \
     base/YStream.h \
     base/YThread.h \
-    base/logger.h \
     base/utils.h \
     base\ffmpeg.h \
     base\YAbstractCodec.h \

@@ -1,7 +1,9 @@
 #pragma once
 
 #include "ffmpeg.h"
+#include "Logger.h"
 #include <string>
+#include <sstream>
 
 class utils
 {
@@ -18,3 +20,18 @@ public:
     static int64_t      gen_stream_uid(int64_t context_index, int64_t stream_index);
 
 };
+
+/* Макрос установки уровня лога, сообщения имеющие урень выше установленного игнорируются */
+#define set_log_level(x)    Logger::instance().setLogLevel(x)
+
+/* Макросы для отправки строковых сообщений в лог */
+#define print_info(x)       Logger::instance().print(this, YLogLevel::Info, x)
+#define print_warning(x)    Logger::instance().print(this, YLogLevel::Warning, x)
+#define print_error(x)      Logger::instance().print(this, YLogLevel::Error, x)
+#define print_debug(x)      Logger::instance().print(this, YLogLevel::Debug, x)
+
+/* Макросы для отправки потоковых сообщений в лог */
+#define log_info(x)         { std::stringstream log_ss; log_ss << x; print_info(log_ss.str());      }
+#define log_warning(x)      { std::stringstream log_ss; log_ss << x; print_warning(log_ss.str());   }
+#define log_error(x)        { std::stringstream log_ss; log_ss << x; print_error(log_ss.str());     }
+#define log_debug(x)        { std::stringstream log_ss; log_ss << x; print_debug(log_ss.str());     }

@@ -22,6 +22,11 @@ YStream::YStream(YAbstractMedia* media_context, AVStream* stream, YMediaType typ
     setName("YStream");
 }
 
+YCode YStream::init()
+{
+    return YCode::ERR;
+}
+
 bool YStream::inited() const
 {
     if (not_inited_ptr(_data))              { return false; }

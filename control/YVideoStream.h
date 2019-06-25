@@ -12,7 +12,7 @@ public:
     YVideoStream(YAbstractMedia* media_context, AVStream* stream);
     virtual ~YVideoStream() override = default;
 
-    bool    init() override;
+    YCode               init() override;
 
 public:
 

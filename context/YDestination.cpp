@@ -21,7 +21,7 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
 //        video_parameters.setFrameRate(24);        //TODO rescaler
         video_parameters.setBitrate(400'000);
 //        video_parameters.setCodec("libx264");     //TODO rescaler ?
-        video_parameters.setAvailable(true);
+//        video_parameters.setAvailable(true);
         /* Audio */
         /* mp3 */
 //        audio_parameters.setSampleRate(44'100);
@@ -38,7 +38,7 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
         audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
         audio_parameters.setChanels(2);
         audio_parameters.setCodec("aac");
-        audio_parameters.setAvailable(true);
+//        audio_parameters.setAvailable(true);
         break;
     case Timelapse:
         break;
@@ -182,10 +182,10 @@ void YDestination::parseOutputFormat()
     //TODO:                                                 ↓ mp3 AVOutputFormat дает видео кодек PNG ↓
     if (_output_format->video_codec != AV_CODEC_ID_NONE && _output_format->video_codec != AV_CODEC_ID_PNG) {
         video_parameters.setCodec(_output_format->video_codec);
-        video_parameters.setAvailable(true);
+//        video_parameters.setAvailable(true); //TODO setAvailable
     }
     if (_output_format->audio_codec != AV_CODEC_ID_NONE) {
         audio_parameters.setCodec(_output_format->audio_codec);
-        audio_parameters.setAvailable(true);
+//        audio_parameters.setAvailable(true); //TODO setAvailable
     }
 }
