@@ -8,7 +8,7 @@ int main()
 
     cout << "Program started..." << endl;
 
-    set_log_level(YLogLevel::Debug);
+    set_log_level(YLogLevel::Info);
 
     /* Запись rtsp с камеры в flv/YouTube */
     std::string mrl_src = "rtsp://admin:admin@192.168.10.3";

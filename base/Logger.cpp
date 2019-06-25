@@ -62,6 +62,23 @@ Logger &Logger::instance()
 void Logger::setLogLevel(YLogLevel log_level)
 {
     _log_level = log_level;
+    switch (log_level) {
+    case YLogLevel::Quiet:
+        av_log_set_level(AV_LOG_QUIET);
+        break;
+    case YLogLevel::Info:
+        av_log_set_level(AV_LOG_INFO);
+        break;
+    case YLogLevel::Warning:
+        av_log_set_level(AV_LOG_WARNING);
+        break;
+    case YLogLevel::Error:
+        av_log_set_level(AV_LOG_ERROR);
+        break;
+    case YLogLevel::Debug:
+        av_log_set_level(AV_LOG_DEBUG);
+        break;
+    }
 }
 
 void Logger::print(YObject* caller, YLogLevel log_level, std::string message)
