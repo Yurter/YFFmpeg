@@ -19,7 +19,7 @@ public:
     virtual bool        opened() const final;                           //
     virtual bool        closed() const final;                           //
 
-    YCode               createStream(); //TODO
+    YCode               createStream(AVCodecContext* codec_context); //TODO
 
     void                setUid(int64_t uid);                            //
     void                setReopeingAfterFailure(bool reopening);        //

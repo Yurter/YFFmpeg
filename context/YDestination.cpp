@@ -21,7 +21,6 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
 //        video_parameters.setFrameRate(24);        //TODO rescaler
         video_parameters.setBitrate(400'000);
 //        video_parameters.setCodec("libx264");     //TODO rescaler ?
-//        video_parameters.setAvailable(true);
         /* Audio */
         /* mp3 */
 //        audio_parameters.setSampleRate(44'100);
@@ -30,7 +29,6 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
 //        audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
 //        audio_parameters.setChanels(2);
 //        audio_parameters.setCodec("mp3");
-//        audio_parameters.setAvailable(true);
         /* aac */
         audio_parameters.setSampleRate(44'100);
         audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
@@ -38,7 +36,6 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
         audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
         audio_parameters.setChanels(2);
         audio_parameters.setCodec("aac");
-//        audio_parameters.setAvailable(true);
         break;
     case Timelapse:
         break;
@@ -46,10 +43,6 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
         log_error("Invalid preset");
         break;
     }
-//    if (!createOutput()) {
-//        log_error("Failed to create output context");
-//        return;
-//    }
 }
 
 YDestination::~YDestination()
@@ -97,6 +90,7 @@ YDestination::~YDestination()
 YCode YDestination::open()
 {
     return_if(opened(), YCode::INVALID_CALL_ORDER);
+//    return_if(stre, YCode::NOT_INITED);
     try_to(createContext());
     _output_format = _media_format_context->oformat; //TODO оператор "болтается в воздухе"
     try_to(openContext());

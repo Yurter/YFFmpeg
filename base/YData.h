@@ -18,6 +18,7 @@ public:
         _data(data) { setName("YData"); }
     virtual ~YData() {}
 
+    void            setRaw(Type data) { _data = data; }
     Type&           raw() { return _data; }
 
     YMediaType      type() const { return _type; }
