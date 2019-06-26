@@ -8,6 +8,7 @@
 YLogger::YLogger() :
     _log_level(YLogLevel::Warning)
 {
+    setName("YLogger");
     start();
 }
 
@@ -55,8 +56,8 @@ bool YLogger::ignoreMessage(YLogLevel message_log_level)
 
 YLogger &YLogger::instance()
 {
-    static YLogger _YLogger;
-    return _YLogger;
+    static YLogger _logger;
+    return _logger;
 }
 
 void YLogger::setLogLevel(YLogLevel log_level)

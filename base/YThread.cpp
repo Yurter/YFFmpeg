@@ -1,8 +1,6 @@
 #include "YThread.h"
 #include "utils.h"
 
-#include <iostream>
-
 YThread::YThread() :
     YThread(std::bind(&YThread::run,this))
 {
@@ -35,6 +33,7 @@ void YThread::start()
     if (_running) { return; }
     _running = true;
     _thread = std::thread([this]() {
+        log_debug("Thread started");
         while (_running && !utils::exit_code(_exit_code = _loop_function())) {}
         _running = false;
         log_debug("Thread finished with code: " << _exit_code

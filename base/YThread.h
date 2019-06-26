@@ -3,6 +3,7 @@
 #include "ffmpeg.h"
 #include "YObject.h"
 #include <thread>
+#include <functional>
 
 typedef std::function<YCode(void)> LoopFunction;
 

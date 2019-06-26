@@ -211,6 +211,8 @@ YCode YFFmpeg::determineSequences() //TODO
     for (auto&& route : _stream_map->map()) {
         YAbstractMedia* input_context = route.first.first;
         YAbstractMedia* output_context = route.second.first;
+        return_if_not(input_context->inited(), YCode::NOT_INITED);
+        return_if_not(output_context->inited(), YCode::NOT_INITED);
         YStream* input_stream = input_context->stream(route.first.second);
         YStream* output_stream = output_context->stream(route.second.second);
         return_if_not(input_stream->type() == output_stream->type(), YCode::INVALID_INPUT);
