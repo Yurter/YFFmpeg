@@ -1,10 +1,10 @@
 #pragma once
 
 #include "YDataProcessor.h"
-#include "../control/YVideoParameters.h"
-#include "../control/YAudioParameters.h"
 #include "../control/YVideoStream.h"
 #include "../control/YAudioStream.h"
+
+typedef std::vector<YStream> Streams;
 
 class YAbstractMedia : public YDataProcessor<YPacket, YPacket>
 {
@@ -19,9 +19,8 @@ public:
     virtual bool        opened() const final;                           //
     virtual bool        closed() const final;                           //
 
-    YCode               createStream(YStream new_stream);
-//    YCode               createStream(YMediaType type, YParameters parametres);
-//    YCode               createStream(AVCodecContext* codec_context);    //TODO
+    YCode               createStream(YStream new_stream);               //
+    YStream             bestStream(YMediaType type);                    //
 
     void                setUid(int64_t uid);                            //
     void                setReopeingAfterFailure(bool reopening);        //
@@ -41,12 +40,6 @@ protected:
     YCode               parseFormatContext();
     std::string         guessFormatShortName();
 
-public:
-
-    // Media
-//    YVideoParameters    video_parameters;
-//    YAudioParameters    audio_parameters;
-
 protected:
 
     // General
@@ -61,11 +54,11 @@ protected:
 
     YThread             _io_thread;
 
-    std::vector<YStream>_streams;
+    Streams             _streams;
 
     // FFmpeg
     AVFormatContext*	_media_format_context;
 
 };
 
-typedef std::pair<YAbstractMedia*,int64_t> media_stream; //TODO название
+typedef std::pair<YAbstractMedia*,int64_t> stream_context; //TODO название

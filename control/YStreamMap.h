@@ -7,7 +7,7 @@
 #include <map>
 
 /* Таблица соответствий входного и выходного потоков */
-typedef std::map<YStream*,YStream*>             stream_map;
+typedef std::map<stream_context,stream_context> stream_map;
 
 /* Таблица соответствий uid входного потока и указателя на первый в последовательности обработчик пакета */
 typedef std::map<int64_t,YAsyncQueue<YPacket>*> packet_map;
@@ -25,12 +25,11 @@ public:
 
     stream_map&         map();
 
-    YCode               addRoute(media_stream source, media_stream destination);
+    YCode               addRoute(stream_context source, stream_context destination);
     YCode               setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_processor);
 
 private:
 
-    YCode               checkStreamPair(streams_pair streams);
     YCode               processInputData(YPacket& input_data) override;
 
 private:

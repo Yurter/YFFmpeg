@@ -14,8 +14,10 @@ stream_map& YStreamMap::map()
     return _stream_map;
 }
 
-YCode YStreamMap::addRoute(media_stream source, media_stream destination)
+YCode YStreamMap::addRoute(stream_context source, stream_context destination)
 {
+    /* ? */
+    _stream_map.insert({source, destination});
     /* Соответствие uid входного потока и локального id выходного потока */
     _index_map.insert(source.first->uid(), destination.second);
     return YCode::OK;

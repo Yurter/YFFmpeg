@@ -3,16 +3,13 @@
 #include "YParameters.h"
 #include "YPacket.h"
 
-#include "YAbstractMedia.h"
-//class YAbstractMedia; //TODO YAbstractMedia::_streams to pointers ?
-
 class YStream : public YData<AVStream*>
 {
 
 public:
 
     YStream(YParameters param = YParameters());
-    YStream(YAbstractMedia* media_context, AVStream* stream, YMediaType type, YParameters param);
+    YStream(AVStream* stream, YMediaType type, YParameters param);
     virtual ~YStream() override = default;
 
     virtual YCode       init() override;
@@ -27,7 +24,6 @@ public:
     int64_t             duration()  const;
     AVRational          timeBase()  const;
     AVCodecParameters*  codecParameters();
-    YAbstractMedia*     mediaContext();
     void                increaseDuration(int64_t value);
 
 public:
@@ -36,9 +32,6 @@ public:
     YParameters         parameters;
 
 protected:
-
-    // Media
-    YAbstractMedia*     _media_context;
 
     // General
     int64_t             _uid;
