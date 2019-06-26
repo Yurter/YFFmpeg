@@ -8,20 +8,20 @@ class YAudioParameters : public YParameters
 public:
 
     YAudioParameters(YParameters parameters = YParameters());
-    virtual ~YAudioParameters() override;
+    virtual ~YAudioParameters() override = default;
 
     void                setSampleRate(int64_t sample_rate);
     void                setSampleFormat(AVSampleFormat sample_format);
     void                setChannelLayout(uint64_t channels_layout);
     void                setChanels(int64_t channels);
 
-    int64_t             sampleRate()        const;
-    AVSampleFormat      sampleFormat()      const;
-    uint64_t            channelLayout()    const;
-    int64_t             channels()          const;
+    int64_t             sampleRate()    const;
+    AVSampleFormat      sampleFormat()  const;
+    uint64_t            channelLayout() const;
+    int64_t             channels()      const;
 
-    void                toCodecpar(AVCodecParameters* codecpar);
-    void                softCopy(YAudioParameters& other_parametrs);
+    void                toCodecpar(AVCodecParameters* codecpar) override;
+    void                softCopy(YParameters* other_parametrs)  override;
     YAudioParameters&   operator=(const YAudioParameters& rhs);
 
 private:

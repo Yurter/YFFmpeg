@@ -4,13 +4,15 @@
 #include "../control/YVideoStream.h"
 #include "../control/YAudioStream.h"
 
-typedef std::vector<YStream> Streams;
+typedef std::vector<YStream*> Streams;
 
 class YAbstractMedia : public YDataProcessor<YPacket, YPacket>
 {
 
 public:
 
+    YAbstractMedia(const YAbstractMedia& other) = delete;
+    YAbstractMedia(const YAbstractMedia&& other) = delete;
     YAbstractMedia(const std::string& mrl);                             // mrl - media resource locator.
     virtual ~YAbstractMedia();
 
@@ -19,8 +21,8 @@ public:
     virtual bool        opened() const final;                           //
     virtual bool        closed() const final;                           //
 
-    YCode               createStream(YStream new_stream);               //
-    YStream             bestStream(YMediaType type);                    //
+    YCode               createStream(YStream* new_stream);               //
+    YStream*            bestStream(YMediaType type);                    //
 
     void                setUid(int64_t uid);                            //
     void                setReopeingAfterFailure(bool reopening);        //
@@ -48,18 +50,17 @@ protected:
 	std::string			_media_resource_locator;
     bool				_opened;
 
+    Streams             _streams;
+    YThread             _io_thread;
+
     bool                _reopening_after_failure;
     int64_t             _reopening_timeout;
 
     int64_t             _artificial_delay;
-
-    YThread             _io_thread;
-
-    Streams             _streams;
 
     // FFmpeg
     AVFormatContext*	_media_format_context;
 
 };
 
-typedef std::pair<YAbstractMedia*,int64_t> stream_context; //TODO название
+typedef std::pair<YAbstractMedia*,int64_t> stream_context;

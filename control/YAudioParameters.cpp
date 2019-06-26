@@ -10,11 +10,6 @@ YAudioParameters::YAudioParameters(YParameters parameters) :
     setName("YAudioParameters");
 }
 
-YAudioParameters::~YAudioParameters()
-{
-    //
-}
-
 void YAudioParameters::setSampleRate(int64_t sample_rate)
 {
     _sample_rate = sample_rate;

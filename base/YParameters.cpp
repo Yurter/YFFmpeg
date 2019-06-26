@@ -11,11 +11,6 @@ YParameters::YParameters() :
     setName("YParameters");
 }
 
-YParameters::~YParameters()
-{
-    //
-}
-
 void YParameters::setCodec(AVCodecID codec_id)
 {
     _codec_id = codec_id;
@@ -50,7 +45,7 @@ void YParameters::setCodec(std::string codec_short_name)
     }
 }
 
-void YParameters::setCodec(AVCodec *codec)
+void YParameters::setCodec(AVCodec* codec)
 {
     _codec_id = codec->id;
     _codec_name = codec->name;
@@ -117,14 +112,14 @@ void YParameters::toCodecpar(AVCodecParameters* codecpar)
     codecpar->bit_rate = _bitrate;
 }
 
-void YParameters::softCopy(YParameters& other_parametrs)
+void YParameters::softCopy(YParameters* other_parametrs)
 {
-    if (not_inited_codec_id(_codec_id)) { _codec_id = other_parametrs.codecId();            }
-    if (not_inited_string(_codec_name)) { _codec_name = other_parametrs.codecName();        }
-    if (not_inited_int(_bitrate))       { _bitrate = other_parametrs.bitrate();             }
-    if (not_inited_int(_duration))      { _duration = other_parametrs.duration();           }
-    if (invalid_int(_stream_index))     { _stream_index = other_parametrs.streamIndex();    }
-    if (not_inited_q(_time_base))       { _time_base = other_parametrs.timeBase();          }
+    if (not_inited_codec_id(_codec_id)) { _codec_id = other_parametrs->codecId();           }
+    if (not_inited_string(_codec_name)) { _codec_name = other_parametrs->codecName();       }
+    if (not_inited_int(_bitrate))       { _bitrate = other_parametrs->bitrate();            }
+    if (not_inited_int(_duration))      { _duration = other_parametrs->duration();          }
+    if (invalid_int(_stream_index))     { _stream_index = other_parametrs->streamIndex();   }
+    if (not_inited_q(_time_base))       { _time_base = other_parametrs->timeBase();         }
 }
 
 YParameters& YParameters::operator=(const YParameters& rhs)

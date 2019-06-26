@@ -37,76 +37,12 @@ bool YAbstractMedia::closed() const
     return !_opened;
 }
 
-YCode YAbstractMedia::createStream(YStream new_stream)
+YCode YAbstractMedia::createStream(YStream* new_stream)
 {
-    new_stream.setUid(utils::gen_stream_uid(uid(), numberStream()));
+    new_stream->setUid(utils::gen_stream_uid(uid(), numberStream()));
     _streams.push_back(new_stream);
     return YCode::OK;
 }
-
-//YCode YAbstractMedia::createStream(AVCodecID codec_id)
-//{
-//    YStream new_stream;
-//    new_stream.setRaw(avformat_new_stream(_media_format_context, codec_id));
-//    if (not_inited_ptr(new_stream.raw())) {
-//       log_error("Failed allocating output stream");
-//       return YCode::ERR;
-//    }
-//    if (avcodec_parameters_from_context(new_stream.codecParameters(), codec_context) < 0) {
-//       log_error("Failed to copy context input to output stream codec context");
-//       return YCode::ERR;
-//    }
-//    {
-//        _streams.push_back(new_stream);
-//        return YCode::OK;
-//    }
-//}
-
-//YCode YAbstractMedia::createStream(YMediaType type, YParameters parametres)
-//{
-//    switch (type) {
-//    case YMediaType::MEDIA_TYPE_VIDEO:
-//        _streams.push_back(YVideoStream(parametres));
-//        return YCode::OK;
-//    case YMediaType::MEDIA_TYPE_AUDIO:
-//        _streams.push_back(YAudioStream(parametres));
-//        return YCode::OK;
-//    case YMediaType::MEDIA_TYPE_UNKNOWN:
-//        return YCode::INVALID_INPUT;
-//    }
-//}
-
-//YCode YAbstractMedia::createDummyStream(YMediaType type, YParameters parametres)
-//{
-//    switch (type) {
-//    case YMediaType::MEDIA_TYPE_VIDEO:
-//        _streams.push_back(YVideoStream(parametres));
-//        return YCode::OK;
-//    case YMediaType::MEDIA_TYPE_AUDIO:
-//        _streams.push_back(YAudioStream(parametres));
-//        return YCode::OK;
-//    case YMediaType::MEDIA_TYPE_UNKNOWN:
-//        return YCode::INVALID_INPUT;
-//    }
-//}
-
-//YCode YAbstractMedia::createStream(AVCodecContext* codec_context)
-//{
-//    YStream new_stream;
-//    new_stream.setRaw(avformat_new_stream(_media_format_context, codec_context->codec));
-//    if (not_inited_ptr(new_stream.raw())) {
-//       log_error("Failed allocating output stream");
-//       return YCode::ERR;
-//    }
-//    if (avcodec_parameters_from_context(new_stream.codecParameters(), codec_context) < 0) {
-//       log_error("Failed to copy context input to output stream codec context");
-//       return YCode::ERR;
-//    }
-//    {
-//        _streams.push_back(new_stream);
-//        return YCode::OK;
-//    }
-//}
 
 void YAbstractMedia::setUid(int64_t uid)
 {
@@ -149,7 +85,7 @@ YCode YAbstractMedia::parseFormatContext()
             video_parameters.setPixelFormat(codec->pix_fmt);
             video_parameters.setStreamIndex(i);
             video_parameters.setTimeBase(avstream->time_base);
-            createStream(YVideoStream(avstream, video_parameters));
+            createStream(new YVideoStream(avstream, video_parameters));
             break;
         }
         case AVMEDIA_TYPE_AUDIO: {
@@ -163,7 +99,7 @@ YCode YAbstractMedia::parseFormatContext()
             audio_parameters.setChanels(codecpar->channels);
             audio_parameters.setStreamIndex(i);
             audio_parameters.setTimeBase(avstream->time_base);
-            createStream(YAudioStream(avstream, audio_parameters));
+            createStream(new YAudioStream(avstream, audio_parameters));
             break;
         }
         default:
@@ -201,7 +137,7 @@ AVFormatContext *YAbstractMedia::mediaFormatContext() const
 YStream* YAbstractMedia::stream(int64_t index)
 {
     if (size_t(index) < _streams.size()) {
-        return &_streams[size_t(index)];
+        return _streams[size_t(index)];
     } else {
         return nullptr;
     }
@@ -230,10 +166,10 @@ YCode YAbstractMedia::attachStreams()
         return_if(not_inited_ptr(avstream), YCode::ERR);
 
         //TODO
-        str.initCodecpar();
-        str.parameters.toCodecpar(str.codecParameters());
+        str->initCodecpar();
+        str->parameters->toCodecpar(str->codecParameters());
 
-        str.setRaw(avstream);
+        str->setRaw(avstream);
     }
     return YCode::OK;
 }

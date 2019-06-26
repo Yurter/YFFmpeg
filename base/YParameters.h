@@ -9,7 +9,7 @@ class YParameters : public YObject
 public:
 
     YParameters();
-    virtual ~YParameters();
+    virtual ~YParameters() = default;
 
     void            setCodec(AVCodecID codec_id);
     void            setCodec(std::string _codec_short_name);
@@ -23,12 +23,12 @@ public:
     std::string     codecName()     const;
     AVCodec*        codec()         const;
     int64_t         bitrate()       const;
-    int64_t         duration()      const;
-    int64_t         streamIndex()   const;
-    AVRational      timeBase()      const;
+    int64_t             duration()      const;
+    int64_t             streamIndex()   const;
+    AVRational          timeBase()      const;
 
-    void            toCodecpar(AVCodecParameters* codecpar);
-    void            softCopy(YParameters& other_parametrs);
+    virtual void    toCodecpar(AVCodecParameters* codecpar);
+    virtual void    softCopy(YParameters* other_parametrs);
     YParameters&    operator=(const YParameters& rhs);
 
 protected:

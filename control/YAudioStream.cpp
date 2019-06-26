@@ -7,8 +7,7 @@ YAudioStream::YAudioStream(YAudioParameters param) :
 }
 
 YAudioStream::YAudioStream(AVStream* stream, YAudioParameters param ) :
-    YStream(stream, YMediaType::MEDIA_TYPE_AUDIO, param),
-    parameters(param)
+    YStream(stream, YMediaType::MEDIA_TYPE_AUDIO, param)
 {
     setName("YAudioStream");
 }
@@ -22,9 +21,4 @@ YCode YAudioStream::init() //TODO
     _packet_pts_delta = duration;
     _packet_duration = duration;
     return YCode::OK;
-}
-
-void YAudioStream::initCodecpar()
-{
-    parameters.toCodecpar(codecParameters());
 }

@@ -9,7 +9,7 @@ YStream::YStream(YParameters param) :
 
 YStream::YStream(AVStream* stream, YMediaType type, YParameters param) :
     YData<AVStream*>(stream, type),
-    parameters(param),
+    parameters(new YParameters(param)),
     _uid(INVALID_INT),
     _duration(DEFAULT_INT),
     _prev_dts(DEFAULT_INT),
@@ -22,6 +22,11 @@ YStream::YStream(AVStream* stream, YMediaType type, YParameters param) :
     setName("YStream");
 }
 
+YStream::~YStream()
+{
+    delete parameters;
+}
+
 YCode YStream::init()
 {
     return YCode::ERR;
@@ -29,7 +34,7 @@ YCode YStream::init()
 
 YCode YStream::initCodecpar()
 {
-    auto codec_context = avcodec_alloc_context3(parameters.codec());
+    auto codec_context = avcodec_alloc_context3(parameters->codec());
     return_if(not_inited_ptr(codec_context), YCode::ERR);
     return_if(avcodec_parameters_from_context(codecParameters(), codec_context) < 0, YCode::ERR);
     avcodec_free_context(&codec_context);

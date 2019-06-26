@@ -8,9 +8,11 @@ class YStream : public YData<AVStream*>
 
 public:
 
+    YStream(const YStream& other) = delete;
+    YStream(const YStream&& other) = delete;
     YStream(YParameters param = YParameters());
     YStream(AVStream* stream, YMediaType type, YParameters param);
-    virtual ~YStream() override = default;
+    virtual ~YStream() override;
 
     virtual YCode       init() override;
     virtual YCode       initCodecpar();
@@ -29,8 +31,7 @@ public:
 
 public:
 
-    // Media
-    YParameters         parameters;
+    YParameters*        parameters;
 
 protected:
 
