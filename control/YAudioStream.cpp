@@ -23,3 +23,8 @@ YCode YAudioStream::init() //TODO
     _packet_duration = duration;
     return YCode::OK;
 }
+
+void YAudioStream::initCodecpar()
+{
+    parameters.toCodecpar(codecParameters());
+}

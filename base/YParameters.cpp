@@ -112,6 +112,11 @@ AVRational YParameters::timeBase() const
     return _time_base;
 }
 
+void YParameters::toCodecpar(AVCodecParameters* codecpar)
+{
+    codecpar->bit_rate = _bitrate;
+}
+
 void YParameters::softCopy(YParameters& other_parametrs)
 {
     if (not_inited_codec_id(_codec_id)) { _codec_id = other_parametrs.codecId();            }

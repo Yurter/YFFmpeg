@@ -87,13 +87,13 @@ enum YMediaType {
 enum YLogLevel {
     /* Сообщения не выводится */
     Quiet,
-    /* Стандартная информация */
-    Info,
+    /* Сообщения об ошибках */
+    Error,
     /* Сообщения о некорректно установленных параметрах,
      * которые могут привести к проблемам */
     Warning,
-    /* Сообщения об ошибках */
-    Error,
+    /* Стандартная информация */
+    Info,
     /* Сообщения, используемые при отладке кода */
     Debug
 };
@@ -102,12 +102,11 @@ enum YLogLevel {
 #define current_thread_id() std::this_thread::get_id()
 
 /* ? */
-//#define try_to(x) { YCode ret; ret = x; if (utils::exit_code(ret)) { log_error("function " << (#x) << " failed with code: " << ret); return ret; } }
-#define try_to(x) { auto ret = x; if (utils::exit_code(ret)) { log_error("function " << (#x) << " failed with code: " << ret); return ret; } }
+#define try_to(x) { auto ret = x; if (utils::exit_code(ret)) { log_error("Function " << (#x) << " failed with code: " << ret); return ret; } }
 #define return_if(cond,ret_value) { if (cond) { return ret_value; } }
 #define return_if_not(cond,ret_value) { if (!(cond)) { return ret_value; } }
 
-/* Значение для задержек в коде в мс */
+/* Значения для задержек в коде в мс */
 #define SHORT_DELAY_MS          10
 #define MEDIUM_DELAY_MS         100
 #define LONG_DELAY_MS           1000

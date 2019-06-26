@@ -20,6 +20,7 @@ public:
     uint64_t            channelLayout()    const;
     int64_t             channels()          const;
 
+    void                toCodecpar(AVCodecParameters* codecpar);
     void                softCopy(YAudioParameters& other_parametrs);
     YAudioParameters&   operator=(const YAudioParameters& rhs);
 

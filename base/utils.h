@@ -23,8 +23,6 @@ public:
     static AVMediaType  ymedia_type_to_avmedia_type(YMediaType media_type);
     static int64_t      gen_context_uid();
     static int64_t      gen_stream_uid(int64_t context_uid, int64_t stream_index);
-//    static void         codecpar_from_parameters(AVCodecParameters* codecpar, YParameters& parameters);
-    static YCode        init_codecpar(AVCodecParameters* codecpar, AVCodec* codec);
 
 };
 

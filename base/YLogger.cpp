@@ -88,19 +88,10 @@ void YLogger::print(YObject* caller, YLogLevel log_level, std::string message)
 
     std::stringstream ss;
 
-    if (log_level >= YLogLevel::Quiet) {
-        //
-    }
-    if (log_level >= YLogLevel::Info) {
+    if (log_level <= YLogLevel::Info) {
         ss << "[" << caller->name() << "]";
     }
-    if (log_level >= YLogLevel::Warning) {
-        //
-    }
-    if (log_level >= YLogLevel::Error) {
-        //
-    }
-    if (log_level >= YLogLevel::Debug) {
+    if (log_level == YLogLevel::Debug) {
         ss << "[" << current_thread_id() << "]";
     }
 

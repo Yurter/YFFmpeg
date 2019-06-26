@@ -22,3 +22,8 @@ YCode YVideoStream::init()
     _packet_duration = packet_duration;
     return YCode::OK;
 }
+
+void YVideoStream::initCodecpar()
+{
+    parameters.toCodecpar(codecParameters());
+}

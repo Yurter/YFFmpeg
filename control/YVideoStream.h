@@ -13,6 +13,7 @@ public:
     virtual ~YVideoStream() override = default;
 
     YCode               init() override;
+    void                initCodecpar() override;
 
 public:
 

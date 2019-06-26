@@ -228,8 +228,11 @@ YCode YAbstractMedia::attachStreams()
     for (auto&& str : _streams) {
         auto avstream = avformat_new_stream(_media_format_context, nullptr);
         return_if(not_inited_ptr(avstream), YCode::ERR);
-//        utils::codecpar_from_parameters(avstream->codecpar, str.parameters);
-        utils::init_codecpar(avstream->codecpar, str.parameters.codec());
+
+        //TODO
+        str.initCodecpar();
+        str.parameters.toCodecpar(str.codecParameters());
+
         str.setRaw(avstream);
     }
     return YCode::OK;

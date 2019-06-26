@@ -13,6 +13,7 @@ public:
     virtual ~YAudioStream() override = default;
 
     YCode               init() override;
+    void                initCodecpar() override;
 
 public:
 
