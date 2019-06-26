@@ -9,7 +9,7 @@
 /* Таблица соответствий входного и выходного потоков */
 typedef std::map<YStream*,YStream*>             stream_map;
 
-/* Таблица соответствий uid входного потока и указателей на первый в последовательности обработчик пакета */
+/* Таблица соответствий uid входного потока и указателя на первый в последовательности обработчик пакета */
 typedef std::map<int64_t,YAsyncQueue<YPacket>*> packet_map;
 
 /* Таблица соответствий uid входного потока и локального индекса выходного потока */
@@ -39,8 +39,5 @@ private:
     stream_map          _stream_map;
     packet_map          _packet_map;
     index_map           _index_map;
-
-    int64_t             _source_uid;
-    int64_t             _destination_uid;
 
 };

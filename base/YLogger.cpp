@@ -1,22 +1,22 @@
-#include "Logger.h"
+#include "YLogger.h"
 #include "utils.h"
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <windows.h>
+#include <windows.h> //TODO crossplatform color output
 
-Logger::Logger() :
+YLogger::YLogger() :
     _log_level(YLogLevel::Warning)
 {
     start();
 }
 
-Logger::~Logger()
+YLogger::~YLogger()
 {
     //
 }
 
-YCode Logger::run()
+YCode YLogger::run()
 {
     YMessage message;
     if (!_messages.pop(message)) {
@@ -48,18 +48,18 @@ YCode Logger::run()
     return YCode::OK;
 }
 
-bool Logger::ignoreMessage(YLogLevel message_log_level)
+bool YLogger::ignoreMessage(YLogLevel message_log_level)
 {
     return message_log_level > _log_level;
 }
 
-Logger &Logger::instance()
+YLogger &YLogger::instance()
 {
-    static Logger _logger;
-    return _logger;
+    static YLogger _YLogger;
+    return _YLogger;
 }
 
-void Logger::setLogLevel(YLogLevel log_level)
+void YLogger::setLogLevel(YLogLevel log_level)
 {
     _log_level = log_level;
     switch (log_level) {
@@ -81,7 +81,7 @@ void Logger::setLogLevel(YLogLevel log_level)
     }
 }
 
-void Logger::print(YObject* caller, YLogLevel log_level, std::string message)
+void YLogger::print(YObject* caller, YLogLevel log_level, std::string message)
 {
     if (ignoreMessage(log_level)) { return; }
 

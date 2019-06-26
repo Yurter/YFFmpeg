@@ -1,10 +1,12 @@
 #pragma once
 
 #include "ffmpeg.h"
-#include "Logger.h"
+#include "YLogger.h"
 #include "YParameters.h"
 #include <string>
 #include <sstream>
+
+static int64_t object_uid_handle = DEFAULT_INT;
 
 class utils
 {
@@ -18,19 +20,20 @@ public:
     static std::string  rational_to_string(AVRational rational);
     static bool         compatibleWithSampleFormat(AVCodecContext* codec_context, AVSampleFormat sample_format);
     static AVMediaType  ymedia_type_to_avmedia_type(YMediaType media_type);
-    static int64_t      gen_stream_uid(int64_t context_index, int64_t stream_index);
+    static int64_t      gen_context_uid();
+    static int64_t      gen_stream_uid(int64_t context_uid, int64_t stream_index);
     static void         codecpar_from_parameters(AVCodecParameters* codecpar, YParameters* parameters);
 
 };
 
 /* Макрос установки уровня лога, сообщения имеющие урень выше установленного игнорируются */
-#define set_log_level(x)    Logger::instance().setLogLevel(x)
+#define set_log_level(x)    YLogger::instance().setLogLevel(x)
 
 /* Макросы для отправки строковых сообщений в лог */
-#define print_info(x)       Logger::instance().print(this, YLogLevel::Info, x)
-#define print_warning(x)    Logger::instance().print(this, YLogLevel::Warning, x)
-#define print_error(x)      Logger::instance().print(this, YLogLevel::Error, x)
-#define print_debug(x)      Logger::instance().print(this, YLogLevel::Debug, x)
+#define print_info(x)       YLogger::instance().print(this, YLogLevel::Info, x)
+#define print_warning(x)    YLogger::instance().print(this, YLogLevel::Warning, x)
+#define print_error(x)      YLogger::instance().print(this, YLogLevel::Error, x)
+#define print_debug(x)      YLogger::instance().print(this, YLogLevel::Debug, x)
 
 /* Макросы для отправки потоковых сообщений в лог */
 #define log_info(x)         { std::stringstream log_ss; log_ss << x; print_info(log_ss.str());      }

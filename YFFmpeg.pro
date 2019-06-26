@@ -6,6 +6,7 @@ CONFIG += c++17
 
 SOURCES += \
     base/YAbstractRefi.cpp \
+    base/YLogger.cpp \
     codec/YDecoder.cpp \
     codec/YEncoder.cpp \
     control/YAudioStream.cpp \
@@ -18,7 +19,6 @@ SOURCES += \
     base/YObject.cpp \
     base/YStream.cpp \
     base/YThread.cpp \
-    base/logger.cpp \
     base/utils.cpp \
     main.cpp \
     base\YAbstractCodec.cpp \
@@ -35,8 +35,8 @@ SOURCES += \
     refi/YMediaFilter.cpp \
 
 HEADERS += \
-    base/Logger.h \
     base/YAbstractRefi.h \
+    base/YLogger.h \
     codec/YDecoder.h \
     codec/YEncoder.h \
     control/YAudioStream.h \

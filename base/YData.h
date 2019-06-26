@@ -2,7 +2,7 @@
 
 #include "ffmpeg.h"
 #include "utils.h"
-#include "Logger.h"
+#include "YLogger.h"
 #include "YObject.h"
 
 template <typename Type>

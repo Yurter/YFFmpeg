@@ -68,9 +68,14 @@ AVMediaType utils::ymedia_type_to_avmedia_type(YMediaType media_type)
     }
 }
 
-int64_t utils::gen_stream_uid(int64_t context_index, int64_t stream_index)
+int64_t utils::gen_context_uid()
 {
-    return (context_index * 100) + stream_index;
+    return object_uid_handle++;
+}
+
+int64_t utils::gen_stream_uid(int64_t context_uid, int64_t stream_index)
+{
+    return (context_uid * 100) + stream_index;
 }
 
 void utils::codecpar_from_parameters(AVCodecParameters* codecpar, YParameters* parameters)

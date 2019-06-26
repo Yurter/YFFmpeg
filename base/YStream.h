@@ -3,7 +3,8 @@
 #include "YParameters.h"
 #include "YPacket.h"
 
-class YAbstractMedia; //TODO YAbstractMedia::_streams to pointers ?
+#include "YAbstractMedia.h"
+//class YAbstractMedia; //TODO YAbstractMedia::_streams to pointers ?
 
 class YStream : public YData<AVStream*>
 {

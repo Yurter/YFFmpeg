@@ -1,7 +1,7 @@
 #include "YAbstractMedia.h"
 
 YAbstractMedia::YAbstractMedia(const std::string& mrl) :
-    _uid(DEFAULT_INT),
+    _uid(INVALID_INT),
 	_media_resource_locator(mrl),
     _opened(false),
     _reopening_after_failure(false),
@@ -10,6 +10,7 @@ YAbstractMedia::YAbstractMedia(const std::string& mrl) :
     _media_format_context(nullptr)
 {
     setName("YAbstractMedia");
+    setUid(utils::gen_context_uid());
 }
 
 YAbstractMedia::~YAbstractMedia()
@@ -109,7 +110,7 @@ YCode YAbstractMedia::createStream(YStream new_stream)
 
 void YAbstractMedia::setUid(int64_t uid)
 {
-    _uid = uid;
+    if (invalid_int(_uid)) { _uid = uid; }
 }
 
 int64_t YAbstractMedia::uid() const
@@ -148,9 +149,7 @@ YCode YAbstractMedia::parseFormatContext()
             video_parameters.setPixelFormat(codec->pix_fmt);
             video_parameters.setStreamIndex(i);
             video_parameters.setTimeBase(avstream->time_base);
-//            video_parameters.setAvailable(true);
-            _streams.push_back(YVideoStream(this, avstream, video_parameters));
-            _streams.back().setUid(utils::gen_stream_uid(uid(), i)); //TODO
+            createStream(YVideoStream(this, avstream, video_parameters));
             break;
         }
         case AVMEDIA_TYPE_AUDIO: {
@@ -164,9 +163,7 @@ YCode YAbstractMedia::parseFormatContext()
             audio_parameters.setChanels(codecpar->channels);
             audio_parameters.setStreamIndex(i);
             audio_parameters.setTimeBase(avstream->time_base);
-//            audio_parameters.setAvailable(true);
-            _streams.push_back(YAudioStream(this, avstream, audio_parameters));
-            _streams.back().setUid(utils::gen_stream_uid(uid(), i));  //TODO
+            createStream(YAudioStream(this, avstream, audio_parameters));
             break;
         }
         default:

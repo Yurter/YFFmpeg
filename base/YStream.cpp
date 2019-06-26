@@ -21,6 +21,8 @@ YStream::YStream(YAbstractMedia* media_context, AVStream* stream, YMediaType typ
     _packet_duration(INVALID_INT)
 {
     setName("YStream");
+    auto test = mediaContext()->uid();
+//    setUid(utils::gen_stream_uid(media_context->uid(), ));
 }
 
 YCode YStream::init()
@@ -69,7 +71,7 @@ YCode YStream::stampPacket(YPacket& packet)
 
 void YStream::setUid(int64_t uid)
 {
-    _uid = uid;
+    if (invalid_int(_uid)) { _uid = uid; }
 }
 
 int64_t YStream::uid() const

@@ -4,9 +4,7 @@
 #include <iterator>
 #include <exception>
 
-YStreamMap::YStreamMap() :
-    _source_uid(DEFAULT_INT),
-    _destination_uid(DEFAULT_INT)
+YStreamMap::YStreamMap()
 {
     setName("YStreamMap");
 }
@@ -18,25 +16,10 @@ stream_map& YStreamMap::map()
 
 YCode YStreamMap::addRoute(media_stream source, media_stream destination)
 {
-    source.first->setUid(_source_uid++);
-    destination.first->setUid(_destination_uid++);
-
-    _stream_map.insert(source);
-    _index_map.insert({source.first->uid(), source.second->index()});
+    /* Соответствие uid входного потока и локального id выходного потока */
+    _index_map.insert(source.first->uid(), destination.second);
     return YCode::OK;
 }
-
-//YCode YStreamMap::addRoute(media_stream source, media_stream destination)
-//{
-//    try_to(checkStreamPair(source));
-//    source.first->mediaContext()->setUid(_source_uid++);
-//    source.second->mediaContext()->setUid(_destination_uid++);
-//    source.first->setUid(utils::gen_stream_uid(source.first->mediaContext()->uid(), source.first->index()));
-//    source.second->setUid(utils::gen_stream_uid(source.second->mediaContext()->uid(), source.second->index()));
-//    _stream_map.insert(source);
-//    _index_map.insert({source.first->uid(), source.second->index()});
-//    return YCode::OK;
-//}
 
 YCode YStreamMap::setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_processor)
 {
