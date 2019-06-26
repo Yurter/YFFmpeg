@@ -1,13 +1,13 @@
 #include "YAudioStream.h"
 
 YAudioStream::YAudioStream(YAudioParameters param) :
-    YAudioStream(nullptr, nullptr, param)
+    YAudioStream(nullptr, param)
 {
     //
 }
 
-YAudioStream::YAudioStream(YAbstractMedia* media_context, AVStream* stream, YAudioParameters param ) :
-    YStream(media_context, stream, YMediaType::MEDIA_TYPE_AUDIO, param),
+YAudioStream::YAudioStream(AVStream* stream, YAudioParameters param ) :
+    YStream(stream, YMediaType::MEDIA_TYPE_AUDIO, param),
     parameters(param)
 {
     setName("YAudioStream");

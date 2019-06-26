@@ -9,7 +9,7 @@ class YAudioStream : public YStream
 public:
 
     YAudioStream(YAudioParameters param = YAudioParameters());
-    YAudioStream(YAbstractMedia* media_context, AVStream* stream, YAudioParameters param);
+    YAudioStream(AVStream* stream, YAudioParameters param);
     virtual ~YAudioStream() override = default;
 
     YCode               init() override;
@@ -17,6 +17,6 @@ public:
 public:
 
     // Media
-    YAudioParameters    parameters;
+    YAudioParameters    parameters; //TODO
 
 };

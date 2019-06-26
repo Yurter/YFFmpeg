@@ -31,6 +31,7 @@ public:
     AVFormatContext*    mediaFormatContext() const;                     // Функция возвращает медиа-контекст.
     int64_t             duration() const;								// Функция возвращает длительность медиа-файла в секундах.
     YStream*            stream(int64_t index);                          //
+    int64_t             numberStream() const;                           //
 
 protected:
 

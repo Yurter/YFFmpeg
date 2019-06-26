@@ -39,7 +39,7 @@ bool YAbstractMedia::closed() const
 
 YCode YAbstractMedia::createStream(YStream new_stream)
 {
-//    new_stream.setRaw(avformat_new_stream(_media_format_context, nullptr));
+    new_stream.setUid(utils::gen_stream_uid(uid(), numberStream()));
     _streams.push_back(new_stream);
     return YCode::OK;
 }
@@ -149,7 +149,7 @@ YCode YAbstractMedia::parseFormatContext()
             video_parameters.setPixelFormat(codec->pix_fmt);
             video_parameters.setStreamIndex(i);
             video_parameters.setTimeBase(avstream->time_base);
-            createStream(YVideoStream(this, avstream, video_parameters));
+            createStream(YVideoStream(avstream, video_parameters));
             break;
         }
         case AVMEDIA_TYPE_AUDIO: {
@@ -163,7 +163,7 @@ YCode YAbstractMedia::parseFormatContext()
             audio_parameters.setChanels(codecpar->channels);
             audio_parameters.setStreamIndex(i);
             audio_parameters.setTimeBase(avstream->time_base);
-            createStream(YAudioStream(this, avstream, audio_parameters));
+            createStream(YAudioStream(avstream, audio_parameters));
             break;
         }
         default:
@@ -205,6 +205,11 @@ YStream* YAbstractMedia::stream(int64_t index)
     } else {
         return nullptr;
     }
+}
+
+int64_t YAbstractMedia::numberStream() const
+{
+    return int64_t(_streams.size());
 }
 
 YCode YAbstractMedia::createContext()

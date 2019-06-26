@@ -2,15 +2,14 @@
 #include "utils.h"
 
 YStream::YStream(YParameters param) :
-    YStream(nullptr, nullptr, YMediaType::MEDIA_TYPE_UNKNOWN, param)
+    YStream(nullptr, YMediaType::MEDIA_TYPE_UNKNOWN, param)
 {
     //
 }
 
-YStream::YStream(YAbstractMedia* media_context, AVStream* stream, YMediaType type, YParameters param) :
+YStream::YStream(AVStream* stream, YMediaType type, YParameters param) :
     YData<AVStream*>(stream, type),
     parameters(param),
-    _media_context(media_context),
     _uid(INVALID_INT),
     _duration(DEFAULT_INT),
     _prev_dts(DEFAULT_INT),
@@ -21,8 +20,6 @@ YStream::YStream(YAbstractMedia* media_context, AVStream* stream, YMediaType typ
     _packet_duration(INVALID_INT)
 {
     setName("YStream");
-    auto test = mediaContext()->uid();
-//    setUid(utils::gen_stream_uid(media_context->uid(), ));
 }
 
 YCode YStream::init()
@@ -97,11 +94,6 @@ AVRational YStream::timeBase() const
 AVCodecParameters* YStream::codecParameters()
 {
     return _data->codecpar;
-}
-
-YAbstractMedia* YStream::mediaContext()
-{
-    return _media_context;
 }
 
 void YStream::increaseDuration(int64_t value)

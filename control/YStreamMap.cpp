@@ -19,7 +19,7 @@ YCode YStreamMap::addRoute(stream_context source, stream_context destination)
     /* ? */
     _stream_map.insert({source, destination});
     /* Соответствие uid входного потока и локального id выходного потока */
-    _index_map.insert(source.first->uid(), destination.second);
+    _index_map.insert({source.first->uid(), destination.second});
     return YCode::OK;
 }
 
