@@ -214,24 +214,24 @@ YCode YFFmpeg::stopProcesors()
 YCode YFFmpeg::determineSequences() //TODO
 {
     for (auto&& route : _stream_map->map()) {
-        YStream* input_stream = route.first;
-        YStream* output_stream = route.second;
-        YAbstractMedia* input_context = input_stream->mediaContext();
-        YAbstractMedia* output_context = output_stream->mediaContext();
+        YAbstractMedia* input_context = route.first.first;
+        YAbstractMedia* output_context = route.second.first;
+        YStream* input_stream = input_context->stream(route.first.second);
+        YStream* output_stream = output_context->stream(route.second.second);
         return_if_not(input_stream->type() == output_stream->type(), YCode::INVALID_INPUT);
         return_if(input_context == output_context, YCode::INVALID_INPUT);
         std::list<YObject*> sequence;
         sequence.push_back(input_context);
         sequence.push_back(_stream_map);
         input_context->connectOutputTo(_stream_map);
-        if (input_stream->isVideo() && !option(YOption::COPY_VIDEO) && rescalerRequired(route)) {
+        auto io_streams = streams_pair(input_stream, output_stream);
+        if (input_stream->isVideo() && !option(YOption::COPY_VIDEO) && rescalerRequired(io_streams)) {
             //
             auto video_decoder = new YDecoder(input_stream);
             sequence.push_back(video_decoder);
             _data_processors_codec.push_back(video_decoder);
-//            _stream_map->connectOutputTo(video_decoder);
             //
-            auto rescaler = new YRescaler(route);
+            auto rescaler = new YRescaler(io_streams);
             sequence.push_back(rescaler);
             _data_processors_refi.push_back(rescaler);
             video_decoder->connectOutputTo(rescaler);
@@ -244,14 +244,13 @@ YCode YFFmpeg::determineSequences() //TODO
             sequence.push_back(output_context);
             video_encoder->connectOutputTo(output_context);
         }
-        if (input_stream->isAudio() && !option(YOption::COPY_AUDIO) && resamplerRequired(route)) {
+        if (input_stream->isAudio() && !option(YOption::COPY_AUDIO) && resamplerRequired(io_streams)) {
             //
             auto audio_decoder = new YDecoder(input_stream);
             sequence.push_back(audio_decoder);
             _data_processors_codec.push_back(audio_decoder);
-//            _stream_map->connectOutputTo(audio_decoder);
             //
-            auto resampler = new YResampler(route);
+            auto resampler = new YResampler(io_streams);
             sequence.push_back(resampler);
             _data_processors_refi.push_back(resampler);
             audio_decoder->connectOutputTo(resampler);

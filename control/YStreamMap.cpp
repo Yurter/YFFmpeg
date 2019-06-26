@@ -31,17 +31,6 @@ YCode YStreamMap::setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_proce
     return YCode::OK;
 }
 
-YCode YStreamMap::checkStreamPair(streams_pair streams)
-{
-    return_if(streams.first == nullptr, YCode::INVALID_INPUT);
-    return_if(streams.second == nullptr, YCode::INVALID_INPUT);
-    return_if(streams.first->raw() == streams.second->raw(), YCode::INVALID_INPUT);
-    return_if_not(streams.first->type() == streams.second->type(), YCode::INVALID_INPUT);
-    return_if_not(dynamic_cast<YSource*>(streams.first->mediaContext()), YCode::INVALID_INPUT);
-    return_if_not(dynamic_cast<YDestination*>(streams.second->mediaContext()), YCode::INVALID_INPUT);
-    return YCode::OK;
-}
-
 YCode YStreamMap::processInputData(YPacket& input_data)
 {
     /* Определение локального индекса выходного потока */
