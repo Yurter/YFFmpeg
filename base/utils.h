@@ -28,6 +28,7 @@ public:
 
 /* Макрос установки уровня лога, сообщения имеющие урень выше установленного игнорируются */
 #define set_log_level(x)    YLogger::instance().setLogLevel(x)
+#define stop_log()          YLogger::instance().quit() //TODO
 
 /* Макросы для отправки строковых сообщений в лог */
 #define print_info(x)       YLogger::instance().print(this, YLogLevel::Info, x)

@@ -23,6 +23,7 @@ public:
     virtual void        quit()      final;
     virtual bool        running()   final;
     virtual void        join()      final;
+    virtual void        terminate() final;
 
     void                setExitCode(YCode exit_code);
     YCode               exitCode() const;

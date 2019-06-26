@@ -1,7 +1,6 @@
 #include "YFFmpeg.h"
 #include <algorithm>
 
-
 YFFmpeg::YFFmpeg() :
     _stream_map(new YStreamMap)
 {
@@ -18,6 +17,7 @@ bool YFFmpeg::stop()
 {
     stopProcesors();
     log_info("Stopped");
+    stop_log();
     return true;
 }
 
@@ -62,9 +62,13 @@ void YFFmpeg::setRoute(stream_context source, stream_context destination)
     _stream_map->addRoute(source, destination);
 }
 
+#include <iostream>
+#define watch(x) std::cout << (#x) << " is " << std::endl
+
 YCode YFFmpeg::init()
 {
     log_info("Initialization started...");
+//    watch(init());
     try_to(determineSequences());
     try_to(initRefi());
     try_to(initCodec());
@@ -203,6 +207,8 @@ YCode YFFmpeg::startProcesors()
 YCode YFFmpeg::stopProcesors()
 {
     for (auto&& context : _data_processors_context) { context->quit(); }
+    for (auto&& codec : _data_processors_codec) { codec->quit(); }
+    for (auto&& refi : _data_processors_refi) { refi->quit(); }
     return YCode::OK;
 }
 

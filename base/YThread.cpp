@@ -59,6 +59,11 @@ void YThread::join()
     while (running()) { utils::sleep_for(MEDIUM_DELAY_MS); }
 }
 
+void YThread::terminate()
+{
+    // TODO
+}
+
 void YThread::setExitCode(YCode exit_code)
 {
     _exit_code = exit_code;

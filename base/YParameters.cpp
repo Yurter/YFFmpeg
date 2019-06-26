@@ -3,7 +3,7 @@
 YParameters::YParameters() :
     _codec_id(DEFAULT_CODEC_ID),
     _codec_name(DEFAULT_STRING),
-    _bitrate(DEFAULT_FLOAT),
+    _bitrate(DEFAULT_INT),
     _duration(DEFAULT_INT),
     _stream_index(INVALID_INT),
     _time_base(DEFAULT_RATIONAL)
