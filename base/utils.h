@@ -2,11 +2,12 @@
 
 #include "ffmpeg.h"
 #include "YLogger.h"
-#include "YParameters.h"
+#include "../control/YVideoParameters.h"
+#include "../control/YAudioParameters.h"
 #include <string>
 #include <sstream>
 
-static int64_t object_uid_handle = DEFAULT_INT;
+static int64_t object_uid_handle = DEFAULT_INT; //TODO warning
 
 class utils
 {
@@ -22,7 +23,8 @@ public:
     static AVMediaType  ymedia_type_to_avmedia_type(YMediaType media_type);
     static int64_t      gen_context_uid();
     static int64_t      gen_stream_uid(int64_t context_uid, int64_t stream_index);
-    static void         codecpar_from_parameters(AVCodecParameters* codecpar, YParameters* parameters);
+//    static void         codecpar_from_parameters(AVCodecParameters* codecpar, YParameters& parameters);
+    static YCode        init_codecpar(AVCodecParameters* codecpar, AVCodec* codec);
 
 };
 

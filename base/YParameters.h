@@ -13,6 +13,7 @@ public:
 
     void            setCodec(AVCodecID codec_id);
     void            setCodec(std::string _codec_short_name);
+    void            setCodec(AVCodec* codec);
     void            setBitrate(int64_t bitrate);
     void            setDuration(int64_t duration);
     void            setStreamIndex(int64_t stream_index);
@@ -20,17 +21,19 @@ public:
 
     AVCodecID       codecId()       const;
     std::string     codecName()     const;
+    AVCodec*        codec()         const;
     int64_t         bitrate()       const;
     int64_t         duration()      const;
     int64_t         streamIndex()   const;
     AVRational      timeBase()      const;
 
     void            softCopy(YParameters& other_parametrs);
-    YParameters&    operator=(const YParameters &rhs);
+    YParameters&    operator=(const YParameters& rhs);
 
 protected:
 
     // General
+    AVCodec*            _codec;
     AVCodecID           _codec_id;
     std::string			_codec_name;
     int64_t             _bitrate;

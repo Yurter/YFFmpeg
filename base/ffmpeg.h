@@ -40,6 +40,7 @@ enum YCode {
     INVALID_INPUT,
     INVALID_CALL_ORDER,
     DOUBT
+    //FFmpegError ?
 };
 
 /* Опции для YFFmpeg */
@@ -101,7 +102,8 @@ enum YLogLevel {
 #define current_thread_id() std::this_thread::get_id()
 
 /* ? */
-#define try_to(x) { YCode ret; ret = x; if (utils::exit_code(ret)) { log_error("function " << (#x) << " failed with code: " << ret); return ret; } }
+//#define try_to(x) { YCode ret; ret = x; if (utils::exit_code(ret)) { log_error("function " << (#x) << " failed with code: " << ret); return ret; } }
+#define try_to(x) { auto ret = x; if (utils::exit_code(ret)) { log_error("function " << (#x) << " failed with code: " << ret); return ret; } }
 #define return_if(cond,ret_value) { if (cond) { return ret_value; } }
 #define return_if_not(cond,ret_value) { if (!(cond)) { return ret_value; } }
 

@@ -92,7 +92,7 @@ bool YResampler::initOutputFrame(AVFrame** frame, int frame_size)
      * Default channel layouts based on the number of channels
      * are assumed for simplicity. */
     (*frame)->nb_samples     = frame_size;
-    (*frame)->channel_layout = out_param.chanelsLayout();
+    (*frame)->channel_layout = out_param.channelLayout();
     (*frame)->format         = out_param.sampleFormat();
     (*frame)->sample_rate    = out_param.sampleFormat();
     /* Allocate the samples of the created frame. This call will make
@@ -112,14 +112,14 @@ bool YResampler::configChanged(AVFrame *in, AVFrame *out)
     auto out_param = dynamic_cast<YAudioStream*>(_io_streams.second)->parameters;
 
     if (in) {
-        if (in_param.chanelsLayout() != in->channel_layout
+        if (in_param.channelLayout() != in->channel_layout
                 || in_param.sampleRate() != in->sample_rate
                 || in_param.sampleFormat()  != in->format) {
             return true;
         }
     }
     if (out) {
-        if (out_param.chanelsLayout() != out->channel_layout
+        if (out_param.channelLayout() != out->channel_layout
                 || out_param.sampleRate() != out->sample_rate
                 || out_param.sampleFormat()  != out->format) {
             return true;

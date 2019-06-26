@@ -20,16 +20,41 @@ void YParameters::setCodec(AVCodecID codec_id)
 {
     _codec_id = codec_id;
     _codec_name = avcodec_get_name(codec_id);
+    AVCodec *codec;
+    codec = avcodec_find_decoder(codec_id);
+    if (codec != nullptr) {
+        _codec_id = codec->id;
+        _codec = codec;
+    }
+    codec = avcodec_find_encoder(codec_id);
+    if (codec != nullptr) {
+        _codec_id = codec->id;
+        _codec = codec;
+    }
 }
 
 void YParameters::setCodec(std::string codec_short_name)
 {
     AVCodec *codec;
     codec = avcodec_find_decoder_by_name(codec_short_name.c_str());
-    if (codec != nullptr) { _codec_id = codec->id; }
+    if (codec != nullptr) {
+        _codec_id = codec->id;
+        _codec_name = codec_short_name;
+        _codec = codec;
+    }
     codec = avcodec_find_encoder_by_name(codec_short_name.c_str());
-    if (codec != nullptr) { _codec_id = codec->id; }
-    _codec_name = codec_short_name;
+    if (codec != nullptr) {
+        _codec_id = codec->id;
+        _codec_name = codec_short_name;
+        _codec = codec;
+    }
+}
+
+void YParameters::setCodec(AVCodec *codec)
+{
+    _codec_id = codec->id;
+    _codec_name = codec->name;
+    _codec = codec;
 }
 
 void YParameters::setBitrate(int64_t bitrate)
@@ -62,6 +87,11 @@ std::string YParameters::codecName() const
     return _codec_name;
 }
 
+AVCodec* YParameters::codec() const
+{
+    return _codec;
+}
+
 int64_t YParameters::bitrate() const
 {
     return _bitrate;
@@ -92,7 +122,7 @@ void YParameters::softCopy(YParameters& other_parametrs)
     if (not_inited_q(_time_base))       { _time_base = other_parametrs.timeBase();          }
 }
 
-YParameters &YParameters::operator=(const YParameters &rhs)
+YParameters& YParameters::operator=(const YParameters& rhs)
 {
     _codec_id =     rhs.codecId();
     _codec_name =   rhs.codecName();

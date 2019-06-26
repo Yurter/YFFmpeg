@@ -62,21 +62,29 @@ void YFFmpeg::setRoute(stream_context source, stream_context destination)
     _stream_map->addRoute(source, destination);
 }
 
-#include <iostream>
-#define watch(x) std::cout << (#x) << " is " << std::endl
-
 YCode YFFmpeg::init()
 {
     log_info("Initialization started...");
-//    watch(init());
+    try_to(openContext());
     try_to(determineSequences());
     try_to(initRefi());
     try_to(initCodec());
-    try_to(openContext());
     try_to(startProcesors());
     setInited(true);
     return YCode::OK;
 }
+
+//YCode YFFmpeg::init()
+//{
+//    log_info("Initialization started...");
+//    try_to(determineSequences());
+//    try_to(initRefi());
+//    try_to(initCodec());
+//    try_to(openContext());
+//    try_to(startProcesors());
+//    setInited(true);
+//    return YCode::OK;
+//}
 
 YCode YFFmpeg::run()
 {
@@ -116,7 +124,7 @@ bool YFFmpeg::resamplerRequired(streams_pair streams)
     return_if(in->sampleRate()      != out->sampleRate(),       true);
     return_if(in->sampleFormat()    != out->sampleFormat(),     true);
     return_if(in->channels()        != out->channels(),         true);
-    return_if(in->chanelsLayout()   != out->chanelsLayout(),    true);
+    return_if(in->channelLayout()   != out->channelLayout(),    true);
 
     return false;
 }

@@ -159,7 +159,7 @@ YCode YAbstractMedia::parseFormatContext()
             audio_parameters.setSampleFormat(codec->sample_fmt);
             audio_parameters.setDuration(avstream->duration);
             audio_parameters.setBitrate(codecpar->bit_rate);
-            audio_parameters.setChanelsLayout(codecpar->channel_layout);
+            audio_parameters.setChannelLayout(codecpar->channel_layout);
             audio_parameters.setChanels(codecpar->channels);
             audio_parameters.setStreamIndex(i);
             audio_parameters.setTimeBase(avstream->time_base);
@@ -228,6 +228,8 @@ YCode YAbstractMedia::attachStreams()
     for (auto&& str : _streams) {
         auto avstream = avformat_new_stream(_media_format_context, nullptr);
         return_if(not_inited_ptr(avstream), YCode::ERR);
+//        utils::codecpar_from_parameters(avstream->codecpar, str.parameters);
+        utils::init_codecpar(avstream->codecpar, str.parameters.codec());
         str.setRaw(avstream);
     }
     return YCode::OK;

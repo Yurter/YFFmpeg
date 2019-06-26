@@ -29,7 +29,7 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
         audio_parameters.setSampleRate(44'100);
         audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
         audio_parameters.setBitrate(128'000);
-        audio_parameters.setChanelsLayout(AV_CH_LAYOUT_STEREO);
+        audio_parameters.setChannelLayout(AV_CH_LAYOUT_STEREO);
         audio_parameters.setChanels(2);
         audio_parameters.setCodec("aac");
         createStream(YAudioStream(audio_parameters));

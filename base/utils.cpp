@@ -78,9 +78,61 @@ int64_t utils::gen_stream_uid(int64_t context_uid, int64_t stream_index)
     return (context_uid * 100) + stream_index;
 }
 
-void utils::codecpar_from_parameters(AVCodecParameters* codecpar, YParameters* parameters)
+//void utils::codecpar_from_parameters(AVCodecParameters* codecpar, YParameters& parameters) //TODO
+//{
+//    AVCodecContext sample = qwe;
+//    codecpar->codec_type = parameters.codecType();
+//    codecpar->codec_id   = parameters.codecId();
+//    codecpar->codec_tag  = parameters.codecTag();
+
+//    codecpar->bit_rate              = parameters.bitrate();
+//    codecpar->bits_per_coded_sample = parameters.bitsPerCodedSample();
+//    codecpar->bits_per_raw_sample   = parameters.bitsPerRawSample();
+//    codecpar->profile               = parameters.profile();
+//    codecpar->level                 = parameters.level();
+
+//    switch (codecpar->codec_type) {
+//    case AVMEDIA_TYPE_VIDEO:
+//        auto video_parametres = YVideoParameters(parameters);
+//        codecpar->format              = video_parametres.pixelFormat();
+//        codecpar->width               = video_parametres.width();
+//        codecpar->height              = video_parametres.height();
+//        codecpar->field_order         = video_parametres.fieldOrder();
+//        codecpar->color_range         = video_parametres.colorRange();
+//        codecpar->color_primaries     = video_parametres.colorPrimaries();
+//        codecpar->color_trc           = video_parametres.colorTrc();
+//        codecpar->color_space         = video_parametres.colorspace();
+//        codecpar->chroma_location     = video_parametres.chromaSampleLocation();
+//        codecpar->sample_aspect_ratio = video_parametres.sampleAspectRatio();
+//        codecpar->video_delay         = video_parametres->hasBframes();
+//        break;
+//    case AVMEDIA_TYPE_AUDIO:
+//        auto audio_parametres = YAudioParameters(parameters);
+//        codecpar->format           = audio_parametres.sampleFormat();
+//        codecpar->channel_layout   = audio_parametres.channelLayout();
+//        codecpar->channels         = audio_parametres.channels();
+//        codecpar->sample_rate      = audio_parametres.sampleRate();
+//        codecpar->block_align      = audio_parametres.blockAlign();
+//        codecpar->frame_size       = audio_parametres.frameSize();
+//        codecpar->initial_padding  = audio_parametres.initialPadding();
+//        codecpar->trailing_padding = audio_parametres.trailingPadding();
+//        codecpar->seek_preroll     = audio_parametres.seekPreroll();
+//        break;
+//    }
+//}
+
+YCode utils::init_codecpar(AVCodecParameters* codecpar, AVCodec* codec)
 {
-    //TODO
+    auto codec_context = avcodec_alloc_context3(codec);
+    return_if(not_inited_ptr(codec_context), YCode::ERR);
+    return_if(avcodec_parameters_from_context(codecpar, codec_context) < 0, YCode::ERR);
+    avcodec_free_context(&codec_context);
+    return YCode::OK;
+}
+
+//void utils::codecpar_from_parameters(AVCodecParameters* codecpar, YParameters& parameters) //TODO
+//{
+//    auto codec = parameters.codec();
 //    codecpar->codec_type = codec->codec_type;
 //    codecpar->codec_id   = codec->codec_id;
 //    codecpar->codec_tag  = codec->codec_tag;
@@ -117,4 +169,4 @@ void utils::codecpar_from_parameters(AVCodecParameters* codecpar, YParameters* p
 //        codecpar->seek_preroll     = codec->seek_preroll;
 //        break;
 //    }
-}
+//}
