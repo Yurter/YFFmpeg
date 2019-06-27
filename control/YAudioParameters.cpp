@@ -52,8 +52,8 @@ int64_t YAudioParameters::channels() const
 
 void YAudioParameters::toCodecpar(AVCodecParameters* codecpar)
 {
-    codecpar->sample_rate = int(_sample_rate);
-    codecpar->channel_layout = _channel_layout;
+    codecpar->sample_rate       = int(_sample_rate);
+    codecpar->channel_layout    = _channel_layout;
     YParameters::toCodecpar(codecpar);
 }
 
