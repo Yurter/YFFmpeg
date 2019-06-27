@@ -82,15 +82,15 @@ void YVideoParameters::toCodecpar(AVCodecParameters* codecpar)
     YParameters::toCodecpar(codecpar);
 }
 
-void YVideoParameters::softCopy(YVideoParameters &other_parametrs)
-{
-    if (not_inited_int(_width))             { _width = other_parametrs.width();                 }
-    if (not_inited_int(_height))            { _height = other_parametrs.height();               }
-    if (not_inited_q(_aspect_ratio))        { _aspect_ratio = other_parametrs.aspectRatio();    }
-    if (not_inited_float(_frame_rate))      { _frame_rate = other_parametrs.frameRate();        }
-    if (not_inited_pix_fmt(_pixel_format))  { _pixel_format = other_parametrs.pixelFormat();    }
-    YParameters::softCopy(other_parametrs);
-}
+//void YVideoParameters::softCopy(YVideoParameters &other_parametrs)
+//{
+//    if (not_inited_int(_width))             { _width = other_parametrs.width();                 }
+//    if (not_inited_int(_height))            { _height = other_parametrs.height();               }
+//    if (not_inited_q(_aspect_ratio))        { _aspect_ratio = other_parametrs.aspectRatio();    }
+//    if (not_inited_float(_frame_rate))      { _frame_rate = other_parametrs.frameRate();        }
+//    if (not_inited_pix_fmt(_pixel_format))  { _pixel_format = other_parametrs.pixelFormat();    }
+//    YParameters::softCopy(other_parametrs);
+//}
 
 YVideoParameters& YVideoParameters::operator=(const YVideoParameters &rhs)
 {

@@ -18,6 +18,7 @@ public:
 private:
 
     YCode               guessInputFromat();
+    YCode               createContext() override;
     YCode               openContext() override;
 
     YCode               read();
@@ -29,6 +30,6 @@ private:
 private:
 
     // FFmpeg
-    AVInputFormat*  _input_format;
+    AVInputFormat*  _input_format; //TODO убрать, обращатся через mediaFormatContext()
 
 };

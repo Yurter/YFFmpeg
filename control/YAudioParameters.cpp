@@ -57,14 +57,14 @@ void YAudioParameters::toCodecpar(AVCodecParameters* codecpar)
     YParameters::toCodecpar(codecpar);
 }
 
-void YAudioParameters::softCopy(YAudioParameters& other_parametrs)
-{
-    if (not_inited_int(_sample_rate))           { _sample_rate      = other_parametrs.sampleRate();     }
-    if (not_inited_smp_fmt(_sample_format))     { _sample_format    = other_parametrs.sampleFormat();   }
-    if (not_inited_ch_layout(_channel_layout)) { _channel_layout  = other_parametrs.channelLayout(); }
-    if (not_inited_int(_channels))              { _channels         = other_parametrs.channels();       }
-    YParameters::softCopy(other_parametrs);
-}
+//void YAudioParameters::softCopy(YAudioParameters& other_parametrs)
+//{
+//    if (not_inited_int(_sample_rate))           { _sample_rate      = other_parametrs.sampleRate();     }
+//    if (not_inited_smp_fmt(_sample_format))     { _sample_format    = other_parametrs.sampleFormat();   }
+//    if (not_inited_ch_layout(_channel_layout)) { _channel_layout  = other_parametrs.channelLayout(); }
+//    if (not_inited_int(_channels))              { _channels         = other_parametrs.channels();       }
+//    YParameters::softCopy(other_parametrs);
+//}
 
 YAudioParameters &YAudioParameters::operator=(const YAudioParameters& rhs)
 {

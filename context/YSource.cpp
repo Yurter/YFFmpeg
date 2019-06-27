@@ -18,6 +18,7 @@ YSource::YSource(const std::string& mrl, YMediaPreset preset) :
         log_error("Invalid preset");
         break;
     }
+    createContext(); //TODO
 }
 
 YSource::~YSource()
@@ -28,6 +29,7 @@ YSource::~YSource()
 YCode YSource::open()
 {
     return_if(opened(), YCode::INVALID_CALL_ORDER);
+    try_to(attachStreams());
     try_to(openContext());
     _io_thread = YThread(std::bind(&YSource::read, this));
     _io_thread.start();
@@ -53,6 +55,16 @@ YCode YSource::guessInputFromat()
         return YCode::INVALID_INPUT;
     }
     _input_format = input_format;
+    return YCode::OK;
+}
+
+YCode YSource::createContext()
+{
+    _media_format_context = avformat_alloc_context();
+    if (not_inited_ptr(_media_format_context)) {
+        log_error("Failed to alloc input context.");
+        return YCode::ERR;
+    }
     return YCode::OK;
 }
 

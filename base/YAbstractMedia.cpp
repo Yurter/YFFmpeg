@@ -11,6 +11,7 @@ YAbstractMedia::YAbstractMedia(const std::string& mrl) :
 {
     setName("YAbstractMedia");
     setUid(utils::gen_context_uid());
+//    createContext();
 }
 
 YAbstractMedia::~YAbstractMedia()
@@ -115,6 +116,9 @@ YCode YAbstractMedia::parseFormatContext()
 
 std::string YAbstractMedia::guessFormatShortName()
 {
+    if (_media_resource_locator.find("rtsp://") != std::string::npos) {
+        return std::string("rtsp");
+    }
 	if (_media_resource_locator.find("rtmp://") != std::string::npos) {
 		return std::string("flv");
 	}
@@ -148,28 +152,34 @@ int64_t YAbstractMedia::numberStream() const
     return int64_t(_streams.size());
 }
 
-YCode YAbstractMedia::createContext()
-{
-    std::string output_format_name = guessFormatShortName();
-    const char *format_name = output_format_name.empty() ? nullptr : output_format_name.c_str();
-    if (avformat_alloc_output_context2(&_media_format_context, nullptr, format_name, _media_resource_locator.c_str()) < 0) {
-        log_error("Failed to alloc output context.");
-        return YCode::ERR;
-    }
-    return YCode::OK;
-}
-
-YCode YAbstractMedia::attachStreams()
+YCode YAbstractMedia::attachStreams() //TODO
 {
     for (auto&& str : _streams) {
-        auto avstream = avformat_new_stream(_media_format_context, nullptr);
-        return_if(not_inited_ptr(avstream), YCode::ERR);
+        if (not_inited_ptr(str->raw())) {
+            auto avstream = avformat_new_stream(_media_format_context, nullptr);
+            return_if(not_inited_ptr(avstream), YCode::ERR);
+            str->setRaw(avstream);
+        }
 
-        //TODO
         str->initCodecpar();
-        str->parameters->toCodecpar(str->codecParameters());
 
-        str->setRaw(avstream);
+        switch (str->type()) {
+        case YMediaType::MEDIA_TYPE_VIDEO: {
+            auto video_parametres = dynamic_cast<YVideoParameters*>(str->parameters);
+            return_if(not_inited_ptr(video_parametres), YCode::ERR);
+            video_parametres->toCodecpar(str->codecParameters());
+            break;
+        }
+        case YMediaType::MEDIA_TYPE_AUDIO: {
+            auto audio_parametres = dynamic_cast<YAudioParameters*>(str->parameters);
+            return_if(not_inited_ptr(audio_parametres), YCode::ERR);
+            audio_parametres->toCodecpar(str->codecParameters());
+            break;
+        }
+        case YMediaType::MEDIA_TYPE_UNKNOWN:
+            return YCode::INVALID_INPUT;
+        }
+
     }
     return YCode::OK;
 }

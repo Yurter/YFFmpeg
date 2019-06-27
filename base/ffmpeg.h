@@ -81,6 +81,7 @@ enum YMediaType {
 #define not_inited_ch_layout(x) ((x) == DEFAULT_CHANEL_LAYOUT)
 
 #define inited_int(x)           ((x) != DEFAULT_INT)
+#define inited_ptr(x)           ((x) != nullptr)
 
 /* Категории сообщений, которые выводятся в консоль.
  * Каждый последующий уровень включает в себя предыдущий */

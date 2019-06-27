@@ -21,17 +21,19 @@ YCode YResampler::init()
     return_if_not(_io_streams.first->inited(), YCode::INVALID_INPUT);
     return_if_not(_io_streams.second->inited(), YCode::INVALID_INPUT);
 
-    auto in_param = dynamic_cast<YAudioStream*>(_io_streams.first)->parameters; //TODO
-    auto out_param = dynamic_cast<YAudioStream*>(_io_streams.second)->parameters;
+//    auto in_param = dynamic_cast<YAudioStream*>(_io_streams.first)->parameters; //TODO
+//    auto out_param = dynamic_cast<YAudioStream*>(_io_streams.second)->parameters;
+    auto in_param = dynamic_cast<YAudioParameters*>(_io_streams.first->parameters); //TODO
+    auto out_param = dynamic_cast<YAudioParameters*>(_io_streams.second->parameters);
 
     _resampler_context = swr_alloc_set_opts(
         nullptr,
-        av_get_default_channel_layout(int(out_param.channels())),
-        out_param.sampleFormat(),
-        int(out_param.sampleRate()),
-        av_get_default_channel_layout(int(in_param.channels())),
-        in_param.sampleFormat(),
-        int(in_param.sampleRate()),
+        av_get_default_channel_layout(int(out_param->channels())),
+        out_param->sampleFormat(),
+        int(out_param->sampleRate()),
+        av_get_default_channel_layout(int(in_param->channels())),
+        in_param->sampleFormat(),
+        int(in_param->sampleRate()),
         0, nullptr
     );
     if (_resampler_context == nullptr) {
@@ -79,8 +81,8 @@ YCode YResampler::processInputData(YFrame& input_data)
 
 bool YResampler::initOutputFrame(AVFrame** frame, int frame_size)
 {
-    auto in_param = dynamic_cast<YAudioStream*>(_io_streams.first)->parameters; //TODO
-    auto out_param = dynamic_cast<YAudioStream*>(_io_streams.second)->parameters;
+    auto in_param = dynamic_cast<YAudioParameters*>(_io_streams.first->parameters); //TODO
+    auto out_param = dynamic_cast<YAudioParameters*>(_io_streams.second->parameters);
     /* Create a new frame to store the audio samples. */
     if (!(*frame = av_frame_alloc())) {
         log_error("Could not allocate output frame");
@@ -92,9 +94,9 @@ bool YResampler::initOutputFrame(AVFrame** frame, int frame_size)
      * Default channel layouts based on the number of channels
      * are assumed for simplicity. */
     (*frame)->nb_samples     = frame_size;
-    (*frame)->channel_layout = out_param.channelLayout();
-    (*frame)->format         = out_param.sampleFormat();
-    (*frame)->sample_rate    = out_param.sampleFormat();
+    (*frame)->channel_layout = out_param->channelLayout();
+    (*frame)->format         = out_param->sampleFormat();
+    (*frame)->sample_rate    = out_param->sampleFormat();
     /* Allocate the samples of the created frame. This call will make
      * sure that the audio frame can hold as many samples as specified. */
     if (av_frame_get_buffer(*frame, 0) < 0) {
@@ -108,20 +110,20 @@ bool YResampler::initOutputFrame(AVFrame** frame, int frame_size)
 //bool YResampler::configChanged(const AVFrame *in, const AVFrame *out)
 bool YResampler::configChanged(AVFrame *in, AVFrame *out)
 {
-    auto in_param = dynamic_cast<YAudioStream*>(_io_streams.first)->parameters; //TODO
-    auto out_param = dynamic_cast<YAudioStream*>(_io_streams.second)->parameters;
+    auto in_param = dynamic_cast<YAudioParameters*>(_io_streams.first->parameters); //TODO
+    auto out_param = dynamic_cast<YAudioParameters*>(_io_streams.second->parameters);
 
     if (in) {
-        if (in_param.channelLayout() != in->channel_layout
-                || in_param.sampleRate() != in->sample_rate
-                || in_param.sampleFormat()  != in->format) {
+        if (in_param->channelLayout() != in->channel_layout
+                || in_param->sampleRate() != in->sample_rate
+                || in_param->sampleFormat()  != in->format) {
             return true;
         }
     }
     if (out) {
-        if (out_param.channelLayout() != out->channel_layout
-                || out_param.sampleRate() != out->sample_rate
-                || out_param.sampleFormat()  != out->format) {
+        if (out_param->channelLayout() != out->channel_layout
+                || out_param->sampleRate() != out->sample_rate
+                || out_param->sampleFormat()  != out->format) {
             return true;
         }
     }

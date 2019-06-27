@@ -3,8 +3,6 @@
 
 YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
     YAbstractMedia(mrl),
-    _video_packet_index(0),
-    _audio_packet_index(0),
     _output_format(nullptr)
 {
     setName("YDestination");
@@ -41,6 +39,7 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
         log_error("Invalid preset");
         break;
     }
+    createContext(); //TODO
 }
 
 YDestination::~YDestination()
@@ -51,7 +50,6 @@ YDestination::~YDestination()
 YCode YDestination::open()
 {
     return_if(opened(), YCode::INVALID_CALL_ORDER);
-    try_to(createContext());
     _output_format = _media_format_context->oformat; //TODO оператор "болтается в воздухе"
     try_to(attachStreams());
     try_to(openContext());
@@ -74,7 +72,7 @@ YCode YDestination::close()
     return YCode::OK;
 }
 
-AVOutputFormat *YDestination::outputFrormat() const
+AVOutputFormat* YDestination::outputFrormat() const
 {
     return _output_format;
 }
@@ -90,8 +88,21 @@ YCode YDestination::guessOutputFromat()
     return YCode::OK;
 }
 
+YCode YDestination::createContext()
+{
+    std::string format_short_name = guessFormatShortName();
+    const char* format_name = format_short_name.empty() ? nullptr : format_short_name.c_str();
+    if (avformat_alloc_output_context2(&_media_format_context, nullptr, format_name, _media_resource_locator.c_str()) < 0) {
+        log_error("Failed to alloc output context.");
+        return YCode::ERR;
+    }
+    return YCode::OK;
+}
+
 YCode YDestination::openContext()
 {
+    log_info("Destination: \"" << _media_resource_locator << "\" is opening...");
+    log_debug(stream(0)->codecParameters()->width << " " << stream(0)->codecParameters()->height);
     if (!(_media_format_context->flags & AVFMT_NOFILE)) {
         if (avio_open(&_media_format_context->pb, _media_resource_locator.c_str(), AVIO_FLAG_WRITE) < 0) {
             log_error("Could not open output: " << _media_resource_locator);
@@ -134,7 +145,7 @@ YCode YDestination::processInputData(YPacket& input_data)
 void YDestination::parseOutputFormat() //TODO
 {
     if (_output_format == nullptr) { return; }
-    //TODO:                                                 ↓ mp3 AVOutputFormat дает видео кодек PNG ↓
+    //TODO:                                                 ↓ mp3 AVOutputFormat дает видеокодек PNG ↓
     if (_output_format->video_codec != AV_CODEC_ID_NONE && _output_format->video_codec != AV_CODEC_ID_PNG) {
 //        video_parameters.setCodec(_output_format->video_codec);
 //        video_parameters.setAvailable(true); //TODO setAvailable

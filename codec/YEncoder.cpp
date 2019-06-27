@@ -14,7 +14,7 @@ YEncoder::~YEncoder()
 AVCodec* YEncoder::findCodec() //TODO check
 {
 //    return avcodec_find_encoder(_stream->codecParameters()->codec_id);
-    return avcodec_find_encoder(_stream->parameters.codecId());
+    return avcodec_find_encoder(_stream->parameters->codecId());
 }
 
 

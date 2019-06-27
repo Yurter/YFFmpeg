@@ -26,12 +26,17 @@ public:
     int64_t             index()     const;
     int64_t             duration()  const;
     AVRational          timeBase()  const;
+
     AVCodecParameters*  codecParameters();
     void                increaseDuration(int64_t value);
 
-public:
+    YParameters*        parameters();
 
-    YParameters*        parameters;
+//public:
+private:
+
+    YParameters*        _parameters;
+//    YParameters*        parameters;
 
 protected:
 

@@ -116,10 +116,12 @@ bool YFFmpeg::resamplerRequired(streams_pair streams)
     return_if(streams.first->isVideo(), false);
     return_if(streams.second->isVideo(), false);
 
-    YAudioStream* in_stream = dynamic_cast<YAudioStream*>(streams.first);
-    YAudioStream* out_stream = dynamic_cast<YAudioStream*>(streams.second);
-    YAudioParameters* in = &in_stream->parameters;
-    YAudioParameters* out = &out_stream->parameters;
+//    YAudioStream* in_stream = dynamic_cast<YAudioStream*>(streams.first);
+//    YAudioStream* out_stream = dynamic_cast<YAudioStream*>(streams.second);
+//    YAudioParameters* in = &in_stream->parameters;
+//    YAudioParameters* out = &out_stream->parameters;
+    YAudioParameters* in = dynamic_cast<YAudioParameters*>(streams.first->parameters);
+    YAudioParameters* out =  dynamic_cast<YAudioParameters*>(streams.second->parameters);
 
     return_if(in->sampleRate()      != out->sampleRate(),       true);
     return_if(in->sampleFormat()    != out->sampleFormat(),     true);

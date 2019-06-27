@@ -21,7 +21,7 @@ public:
     int64_t             channels()      const;
 
     void                toCodecpar(AVCodecParameters* codecpar) override;
-    void                softCopy(YParameters* other_parametrs)  override;
+//    void                softCopy(YParameters* other_parametrs)  override;
     YAudioParameters&   operator=(const YAudioParameters& rhs);
 
 private:

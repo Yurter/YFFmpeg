@@ -11,9 +11,9 @@ class YAbstractMedia : public YDataProcessor<YPacket, YPacket>
 
 public:
 
+    YAbstractMedia(const std::string& mrl);                             // mrl - media resource locator.
     YAbstractMedia(const YAbstractMedia& other) = delete;
     YAbstractMedia(const YAbstractMedia&& other) = delete;
-    YAbstractMedia(const std::string& mrl);                             // mrl - media resource locator.
     virtual ~YAbstractMedia();
 
     virtual YCode       open() = 0;                                     // Функция открывает медиа-ресурс.
@@ -37,7 +37,7 @@ public:
 
 protected:
 
-    YCode               createContext();
+    virtual YCode       createContext() = 0;
     YCode               attachStreams();
     virtual YCode       openContext() = 0;
     YCode               parseFormatContext();

@@ -114,3 +114,8 @@ void YStream::increaseDuration(int64_t value)
 {
     _duration += value;
 }
+
+YParameters* YStream::parameters()
+{
+    return _parameters;
+}

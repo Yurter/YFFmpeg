@@ -23,9 +23,9 @@ public:
     float               frameRate()     const;
     AVPixelFormat       pixelFormat()   const;
 
-    void                toCodecpar(AVCodecParameters* codecpar);
-    void                softCopy(YVideoParameters &other_parametrs);
-    YVideoParameters&   operator=(const YVideoParameters &rhs);
+    void                toCodecpar(AVCodecParameters* codecpar) override;
+//    void                softCopy(YVideoParameters* other_parametrs);
+    YVideoParameters&   operator=(const YVideoParameters& rhs);
 
 private:
 
