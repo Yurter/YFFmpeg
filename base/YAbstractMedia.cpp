@@ -75,31 +75,31 @@ YCode YAbstractMedia::parseFormatContext()
 
         switch (codec_type) {//TODO
         case AVMEDIA_TYPE_VIDEO: {
-            YVideoParameters video_parameters;
-            video_parameters.setCodec(codecpar->codec_id);
-            video_parameters.setWidth(codecpar->width);
-            video_parameters.setHeight(codecpar->height);
-            video_parameters.setAspectRatio({ -1, -1 }); //TODO
-            video_parameters.setDuration(avstream->duration);
-            video_parameters.setFrameRate(avstream->avg_frame_rate); // ? -> r_frame_rate
-            video_parameters.setBitrate(codecpar->bit_rate);
-            video_parameters.setPixelFormat(codec->pix_fmt);
-            video_parameters.setStreamIndex(i);
-            video_parameters.setTimeBase(avstream->time_base);
+            auto video_parameters = new YVideoParameters;
+            video_parameters->setCodec(codecpar->codec_id);
+            video_parameters->setWidth(codecpar->width);
+            video_parameters->setHeight(codecpar->height);
+            video_parameters->setAspectRatio({ -1, -1 }); //TODO
+            video_parameters->setDuration(avstream->duration);
+            video_parameters->setFrameRate(avstream->avg_frame_rate); // ? -> r_frame_rate
+            video_parameters->setBitrate(codecpar->bit_rate);
+            video_parameters->setPixelFormat(codec->pix_fmt);
+            video_parameters->setStreamIndex(i);
+            video_parameters->setTimeBase(avstream->time_base);
             createStream(new YVideoStream(avstream, video_parameters));
             break;
         }
         case AVMEDIA_TYPE_AUDIO: {
-            YAudioParameters audio_parameters;
-            audio_parameters.setCodec(codecpar->codec_id);
-            audio_parameters.setSampleRate(codecpar->sample_rate);
-            audio_parameters.setSampleFormat(codec->sample_fmt);
-            audio_parameters.setDuration(avstream->duration);
-            audio_parameters.setBitrate(codecpar->bit_rate);
-            audio_parameters.setChannelLayout(codecpar->channel_layout);
-            audio_parameters.setChanels(codecpar->channels);
-            audio_parameters.setStreamIndex(i);
-            audio_parameters.setTimeBase(avstream->time_base);
+            auto audio_parameters = new YAudioParameters;
+            audio_parameters->setCodec(codecpar->codec_id);
+            audio_parameters->setSampleRate(codecpar->sample_rate);
+            audio_parameters->setSampleFormat(codec->sample_fmt);
+            audio_parameters->setDuration(avstream->duration);
+            audio_parameters->setBitrate(codecpar->bit_rate);
+            audio_parameters->setChannelLayout(codecpar->channel_layout);
+            audio_parameters->setChanels(codecpar->channels);
+            audio_parameters->setStreamIndex(i);
+            audio_parameters->setTimeBase(avstream->time_base);
             createStream(new YAudioStream(avstream, audio_parameters));
             break;
         }
@@ -133,7 +133,7 @@ std::string YAbstractMedia::mediaResourceLocator() const
     return _media_resource_locator;
 }
 
-AVFormatContext *YAbstractMedia::mediaFormatContext() const
+AVFormatContext* YAbstractMedia::mediaFormatContext() const
 {
     return _media_format_context;
 }

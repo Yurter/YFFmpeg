@@ -14,22 +14,22 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
     }
     case YouTube: {
         /* Video */
-        YVideoParameters video_parameters;
-        video_parameters.setWidth(1920);
-        video_parameters.setHeight(1080);
-        video_parameters.setAspectRatio({16,9});
+        auto video_parameters = new YVideoParameters;
+        video_parameters->setWidth(1920);
+        video_parameters->setHeight(1080);
+        video_parameters->setAspectRatio({16,9});
 //        video_parameters.setFrameRate(24); //TODO
-        video_parameters.setBitrate(400'000);
-        video_parameters.setCodec("libx264");
+        video_parameters->setBitrate(400'000);
+        video_parameters->setCodec("libx264");
         createStream(new YVideoStream(video_parameters));
         /* Audio */
-        YAudioParameters audio_parameters;
-        audio_parameters.setSampleRate(44'100);
-        audio_parameters.setSampleFormat(AV_SAMPLE_FMT_FLTP);
-        audio_parameters.setBitrate(128'000);
-        audio_parameters.setChannelLayout(AV_CH_LAYOUT_STEREO);
-        audio_parameters.setChanels(2);
-        audio_parameters.setCodec("aac");
+        auto audio_parameters = new YAudioParameters;
+        audio_parameters->setSampleRate(44'100);
+        audio_parameters->setSampleFormat(AV_SAMPLE_FMT_FLTP);
+        audio_parameters->setBitrate(128'000);
+        audio_parameters->setChannelLayout(AV_CH_LAYOUT_STEREO);
+        audio_parameters->setChanels(2);
+        audio_parameters->setCodec("aac");
         createStream(new YAudioStream(audio_parameters));
         break;
     }

@@ -8,8 +8,8 @@ class YVideoStream : public YStream
 
 public:
 
-    YVideoStream(YVideoParameters param = YVideoParameters());
-    YVideoStream(AVStream* stream, YVideoParameters param);
+    YVideoStream(YVideoParameters* param = new YVideoParameters());
+    YVideoStream(AVStream* stream, YVideoParameters* param);
     virtual ~YVideoStream() override = default;
 
     YCode               init() override;

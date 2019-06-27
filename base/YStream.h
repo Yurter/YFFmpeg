@@ -10,8 +10,8 @@ public:
 
     YStream(const YStream& other) = delete;
     YStream(const YStream&& other) = delete;
-    YStream(YParameters param = YParameters());
-    YStream(AVStream* stream, YMediaType type, YParameters param);
+    YStream(YParameters* param = new YParameters());
+    YStream(AVStream* stream, YMediaType type, YParameters* param);
     virtual ~YStream() override;
 
     virtual YCode       init() override;
@@ -30,13 +30,13 @@ public:
     AVCodecParameters*  codecParameters();
     void                increaseDuration(int64_t value);
 
-    YParameters*        parameters();
+//    YParameters*        parameters();
 
-//public:
-private:
+public:
+//private:
 
-    YParameters*        _parameters;
-//    YParameters*        parameters;
+//    YParameters*        _parameters;
+    YParameters*        parameters;
 
 protected:
 

@@ -1,15 +1,15 @@
 #include "YStream.h"
 #include "utils.h"
 
-YStream::YStream(YParameters param) :
+YStream::YStream(YParameters* param) :
     YStream(nullptr, YMediaType::MEDIA_TYPE_UNKNOWN, param)
 {
     //
 }
 
-YStream::YStream(AVStream* stream, YMediaType type, YParameters param) :
+YStream::YStream(AVStream* stream, YMediaType type, YParameters* param) :
     YData<AVStream*>(stream, type),
-    parameters(new YParameters(param)),
+    parameters(param),
     _uid(INVALID_INT),
     _duration(DEFAULT_INT),
     _prev_dts(DEFAULT_INT),
@@ -115,7 +115,7 @@ void YStream::increaseDuration(int64_t value)
     _duration += value;
 }
 
-YParameters* YStream::parameters()
-{
-    return _parameters;
-}
+//YParameters* YStream::parameters()
+//{
+//    return _parameters;
+//}
