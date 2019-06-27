@@ -27,7 +27,7 @@ public:
     int64_t             streamIndex()   const;
     AVRational          timeBase()      const;
 
-    virtual void        toCodecpar(AVCodecParameters* codecpar);
+//    virtual void        toCodecpar(AVCodecParameters* codecpar);
     virtual void        softCopy(YParameters* other_parametrs);
     YParameters&        operator=(const YParameters& rhs);
 

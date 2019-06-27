@@ -24,18 +24,12 @@ YCode YAbstractCodec::init()
         log_error("Failed to alloc context");
         return YCode::ERR;
     }
-    //
-    auto audio_parametres = dynamic_cast<YAudioParameters*>(_stream->parameters); //TODO
-    return_if(not_inited_ptr(audio_parametres), YCode::ERR);
-    audio_parametres->toCodecpar(_stream->codecParameters());
-    //
+    utils::parameters_to_avcodecpar(_stream->parameters, _stream->codecParameters());
     if (avcodec_parameters_to_context(_codec_context, _stream->codecParameters()) < 0) {
         log_error("avcodec_parameters_to_context failed");
         return YCode::ERR;
     }
-    log_warning(_codec_context->sample_fmt);
-    _codec_context->sample_fmt = audio_parametres->sampleFormat();
-    log_warning(_codec_context->sample_fmt);
+    utils::parameters_to_context(_stream->parameters, _codec_context);
     if (avcodec_open2(_codec_context, codec, nullptr) < 0) {
         log_error("Cannot open codec");
         return YCode::ERR;

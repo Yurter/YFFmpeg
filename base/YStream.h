@@ -15,7 +15,7 @@ public:
     virtual ~YStream() override;
 
     virtual YCode       init() override;
-    virtual YCode       initCodecpar();
+//    virtual YCode       initCodecpar();
     virtual bool        inited() const override final;
     virtual std::string toString() const override final;
     virtual YCode       stampPacket(YPacket& packet) final;

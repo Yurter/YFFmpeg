@@ -89,60 +89,106 @@ YCode utils::init_codecpar(AVCodecParameters* codecpar, AVCodec* codec)
 
 void utils::parameters_to_context(YParameters* parametres, AVCodecContext* codec)
 {
-    codec->codec_type = parametres->codec_type;
-    codec->codec_id   = pparametresar->codec_id;
-    codec->codec_tag  = parametres->codec_tag;
+    codec->codec_id = parametres->codecId();
+    codec->bit_rate = parametres->bitrate();
 
-    codec->bit_rate              = parametres->bit_rate;
-    codec->bits_per_coded_sample = parametres->bits_per_coded_sample;
-    codec->bits_per_raw_sample   = parametres->bits_per_raw_sample;
-    codec->profile               = parametres->profile;
-    codec->level                 = parametres->level;
-
-    switch (parametres->codec_type) {
-    case AVMEDIA_TYPE_VIDEO:
-        codec->pix_fmt                = parametres->format;
-        codec->width                  = parametres->width;
-        codec->height                 = parametres->height;
-        codec->field_order            = parametres->field_order;
-        codec->color_range            = parametres->color_range;
-        codec->color_primaries        = parametres->color_primaries;
-        codec->color_trc              = parametres->color_trc;
-        codec->colorspace             = parametres->color_space;
-        codec->chroma_sample_location = parametres->chroma_location;
-        codec->sample_aspect_ratio    = parametres->sample_aspect_ratio;
-        codec->has_b_frames           = parametres->video_delay;
+    switch (parametres->type()) {
+    case YMediaType::MEDIA_TYPE_VIDEO: {
+        auto video_parameters = dynamic_cast<YVideoParameters*>(parametres);
+        codec->pix_fmt                = video_parameters->pixelFormat();
+        codec->width                  = int(video_parameters->width());
+        codec->height                 = int(video_parameters->height());
+//        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
         break;
-    case AVMEDIA_TYPE_AUDIO:
-        codec->sample_fmt       = parametres->format;
-        codec->channel_layout   = parametres->channel_layout;
-        codec->channels         = parametres->channels;
-        codec->sample_rate      = parametres->sample_rate;
-        codec->block_align      = parametres->block_align;
-        codec->frame_size       = parametres->frame_size;
-        codec->delay            =
-        codec->initial_padding  = parametres->initial_padding;
-        codec->trailing_padding = parametres->trailing_padding;
-        codec->seek_preroll     = parametres->seek_preroll;
+    }
+    case YMediaType::MEDIA_TYPE_AUDIO: {
+        auto audio_parameters = dynamic_cast<YAudioParameters*>(parametres);
+        codec->sample_fmt       = audio_parameters->sampleFormat();
+        codec->channel_layout   = audio_parameters->channelLayout();
+        codec->channels         = int(audio_parameters->channels());
+        codec->sample_rate      = int(audio_parameters->sampleRate());
         break;
-    case AVMEDIA_TYPE_SUBTITLE:
-        codec->width  = parametres->width;
-        codec->height = parametres->height;
+    }
+    case YMediaType::MEDIA_TYPE_UNKNOWN:
         break;
     }
 }
 
-void utils::parameters_from_context(YParameters *parametres, AVCodecContext *codec)
+void utils::parameters_from_context(YParameters* parametres, AVCodecContext* codec)
 {
-    //
+    parametres->setCodec(codec->codec_id);
+    parametres->setBitrate(codec->bit_rate);
+
+    switch (parametres->type()) {
+    case YMediaType::MEDIA_TYPE_VIDEO: {
+        auto video_parameters = dynamic_cast<YVideoParameters*>(parametres);
+        video_parameters->setPixelFormat(codec->pix_fmt);
+        video_parameters->setWidth(codec->width);
+        video_parameters->setHeight(codec->height);
+//        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
+        break;
+    }
+    case YMediaType::MEDIA_TYPE_AUDIO: {
+        auto audio_parameters = dynamic_cast<YAudioParameters*>(parametres);
+        audio_parameters->setSampleFormat(codec->sample_fmt);
+        audio_parameters->setChannelLayout(codec->channel_layout);
+        audio_parameters->setChannels(codec->channels);
+        audio_parameters->setSampleRate(codec->sample_rate);
+        break;
+    }
+    case YMediaType::MEDIA_TYPE_UNKNOWN:
+        break;
+    }
 }
 
-void utils::parameters_to_avcodecpar(YParameters *parametres, AVCodecParameters *codecpar)
+void utils::parameters_to_avcodecpar(YParameters* parametres, AVCodecParameters* codecpar) //TODO
 {
-    //
+    codecpar->codec_id = parametres->codecId();
+    codecpar->bit_rate = parametres->bitrate();
+
+    switch (parametres->type()) {
+    case YMediaType::MEDIA_TYPE_VIDEO: {
+        auto video_parameters = dynamic_cast<YVideoParameters*>(parametres);
+        codecpar->width                  = int(video_parameters->width());
+        codecpar->height                 = int(video_parameters->height());
+//        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
+        break;
+    }
+    case YMediaType::MEDIA_TYPE_AUDIO: {
+        auto audio_parameters = dynamic_cast<YAudioParameters*>(parametres);
+        codecpar->channel_layout   = audio_parameters->channelLayout();
+        codecpar->channels         = int(audio_parameters->channels());
+        codecpar->sample_rate      = int(audio_parameters->sampleRate());
+        break;
+    }
+    case YMediaType::MEDIA_TYPE_UNKNOWN:
+        break;
+    }
 }
 
-void utils::parameters_from_avcodecpar(YParameters *parametres, AVCodecParameters *codecpar)
+void utils::parameters_from_avcodecpar(YParameters* parametres, AVCodecParameters* codecpar) //TODO
 {
-    //
+    parametres->setCodec(codecpar->codec_id);
+    parametres->setBitrate(codecpar->bit_rate);
+
+    switch (parametres->type()) {
+    case YMediaType::MEDIA_TYPE_VIDEO: {
+        auto video_parameters = dynamic_cast<YVideoParameters*>(parametres);
+//        video_parameters->setPixelFormat(codecpar->pix_fmt);
+        video_parameters->setWidth(codecpar->width);
+        video_parameters->setHeight(codecpar->height);
+//        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
+        break;
+    }
+    case YMediaType::MEDIA_TYPE_AUDIO: {
+        auto audio_parameters = dynamic_cast<YAudioParameters*>(parametres);
+//        audio_parameters->setSampleFormat(codecpar->sample_fmt);
+        audio_parameters->setChannelLayout(codecpar->channel_layout);
+        audio_parameters->setChannels(codecpar->channels);
+        audio_parameters->setSampleRate(codecpar->sample_rate);
+        break;
+    }
+    case YMediaType::MEDIA_TYPE_UNKNOWN:
+        break;
+    }
 }

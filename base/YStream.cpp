@@ -32,14 +32,14 @@ YCode YStream::init()
     return YCode::ERR;
 }
 
-YCode YStream::initCodecpar()
-{
-    auto codec_context = avcodec_alloc_context3(parameters->codec());
-    return_if(not_inited_ptr(codec_context), YCode::ERR);
-    return_if(avcodec_parameters_from_context(codecParameters(), codec_context) < 0, YCode::ERR);
-    avcodec_free_context(&codec_context);
-    return YCode::OK;
-}
+//YCode YStream::initCodecpar()
+//{
+//    auto codec_context = avcodec_alloc_context3(parameters->codec());
+//    return_if(not_inited_ptr(codec_context), YCode::ERR);
+//    return_if(avcodec_parameters_from_context(codecParameters(), codec_context) < 0, YCode::ERR);
+//    avcodec_free_context(&codec_context);
+//    return YCode::OK;
+//}
 
 bool YStream::inited() const
 {

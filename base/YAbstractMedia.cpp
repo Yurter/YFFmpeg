@@ -97,7 +97,7 @@ YCode YAbstractMedia::parseFormatContext()
             audio_parameters->setDuration(avstream->duration);
             audio_parameters->setBitrate(codecpar->bit_rate);
             audio_parameters->setChannelLayout(codecpar->channel_layout);
-            audio_parameters->setChanels(codecpar->channels);
+            audio_parameters->setChannels(codecpar->channels);
             audio_parameters->setStreamIndex(i);
             audio_parameters->setTimeBase(avstream->time_base);
             createStream(new YAudioStream(avstream, audio_parameters));
@@ -160,26 +160,8 @@ YCode YAbstractMedia::attachStreams() //TODO
             return_if(not_inited_ptr(avstream), YCode::ERR);
             str->setRaw(avstream);
         }
-
-        str->initCodecpar();
-
-        switch (str->type()) {
-        case YMediaType::MEDIA_TYPE_VIDEO: {
-            auto video_parametres = dynamic_cast<YVideoParameters*>(str->parameters);
-            return_if(not_inited_ptr(video_parametres), YCode::ERR);
-            video_parametres->toCodecpar(str->codecParameters());
-            break;
-        }
-        case YMediaType::MEDIA_TYPE_AUDIO: {
-            auto audio_parametres = dynamic_cast<YAudioParameters*>(str->parameters);
-            return_if(not_inited_ptr(audio_parametres), YCode::ERR);
-            audio_parametres->toCodecpar(str->codecParameters());
-            break;
-        }
-        case YMediaType::MEDIA_TYPE_UNKNOWN:
-            return YCode::INVALID_INPUT;
-        }
-
+        utils::init_codecpar(str->codecParameters(), str->parameters->codec());
+        utils::parameters_to_avcodecpar(str->parameters, str->codecParameters());
     }
     return YCode::OK;
 }

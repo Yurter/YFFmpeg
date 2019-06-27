@@ -35,7 +35,7 @@ void YAudioParameters::setChannelLayout(uint64_t channel_layout)
     _channel_layout = channel_layout;
 }
 
-void YAudioParameters::setChanels(int64_t channels)
+void YAudioParameters::setChannels(int64_t channels)
 {
     _channels = channels;
 }
@@ -60,12 +60,12 @@ int64_t YAudioParameters::channels() const
     return _channels;
 }
 
-void YAudioParameters::toCodecpar(AVCodecParameters* codecpar)
-{
-    codecpar->sample_rate       = int(_sample_rate);
-    codecpar->channel_layout    = _channel_layout;
-    YParameters::toCodecpar(codecpar);
-}
+//void YAudioParameters::toCodecpar(AVCodecParameters* codecpar)
+//{
+//    codecpar->sample_rate       = int(_sample_rate);
+//    codecpar->channel_layout    = _channel_layout;
+//    YParameters::toCodecpar(codecpar);
+//}
 
 //void YAudioParameters::softCopy(YAudioParameters& other_parametrs)
 //{

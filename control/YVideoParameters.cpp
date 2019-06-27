@@ -86,12 +86,12 @@ AVPixelFormat YVideoParameters::pixelFormat() const
     return _pixel_format;
 }
 
-void YVideoParameters::toCodecpar(AVCodecParameters* codecpar)
-{
-    codecpar->width = int(_width);
-    codecpar->height = int(_height);
-    YParameters::toCodecpar(codecpar);
-}
+//void YVideoParameters::toCodecpar(AVCodecParameters* codecpar)
+//{
+//    codecpar->width = int(_width);
+//    codecpar->height = int(_height);
+//    YParameters::toCodecpar(codecpar);
+//}
 
 //void YVideoParameters::softCopy(YVideoParameters &other_parametrs)
 //{
