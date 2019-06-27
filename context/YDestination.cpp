@@ -23,7 +23,7 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
 //        video_parameters.setFrameRate(24); //TODO
         video_parameters.setBitrate(400'000);
         video_parameters.setCodec("libx264");
-        createStream(YVideoStream(video_parameters));
+        createStream(new YVideoStream(video_parameters));
         /* Audio */
         YAudioParameters audio_parameters;
         audio_parameters.setSampleRate(44'100);
@@ -32,7 +32,7 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
         audio_parameters.setChannelLayout(AV_CH_LAYOUT_STEREO);
         audio_parameters.setChanels(2);
         audio_parameters.setCodec("aac");
-        createStream(YAudioStream(audio_parameters));
+        createStream(new YAudioStream(audio_parameters));
         break;
     }
     case Timelapse:
