@@ -22,7 +22,6 @@ SOURCES += \
     base/YThread.cpp \
     base/utils.cpp \
     main.cpp \
-    base\YAbstractCodec.cpp \
     base\YAbstractMedia.cpp \
     base\YAbstractFilter.cpp \
     base\YFrame.cpp \
