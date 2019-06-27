@@ -44,7 +44,7 @@ private:
     YCode   startProcesors();
     YCode   stopProcesors();
     YCode   determineSequences();
-    YCode   checkProcessors();
+//    YCode   checkProcessors();
     void    freeProcesors();
 
     bool    rescalerRequired(streams_pair streams);
@@ -59,8 +59,10 @@ private:
 
     // ?
     std::list<YAbstractMedia*>          _data_processors_context;
-    std::list<YAbstractCodec*>          _data_processors_codec;
-    std::list<YAbstractRefi*> _data_processors_refi;
+//    std::list<YAbstractCodec*>          _data_processors_codec;
+    std::list<YDecoder*>          _data_processors_decoder;
+    std::list<YEncoder*>          _data_processors_encoder;
+    std::list<YAbstractRefi*>           _data_processors_refi;
 
     std::list<std::list<YObject*>>      _processor_sequences; //TODO зачем их хранить?
 

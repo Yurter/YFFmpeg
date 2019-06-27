@@ -46,11 +46,11 @@ void YFFmpeg::addElement(YObject* element)
         _data_processors_context.push_back(context);
         return;
     }
-    auto codec = dynamic_cast<YAbstractCodec*>(element); //TODO игнорируется
-    if (codec != nullptr) {
-        _data_processors_codec.push_back(codec);
-        return;
-    }
+//    auto codec = dynamic_cast<YAbstractCodec*>(element); //TODO игнорируется
+//    if (codec != nullptr) {
+//        _data_processors_codec.push_back(codec);
+//        return;
+//    }
     auto refi = dynamic_cast<YAbstractRefi*>(element); //TODO игнорируется
     if (refi != nullptr) {
         _data_processors_refi.push_back(refi);
@@ -95,7 +95,13 @@ YCode YFFmpeg::run()
     for (auto&& context : _data_processors_context) {
         return_if_not(context->running(), context->exitCode());
     }
-    for (auto&& codec : _data_processors_codec) {
+//    for (auto&& codec : _data_processors_codec) {
+//        return_if_not(codec->running(), codec->exitCode());
+//    }
+    for (auto&& codec : _data_processors_decoder) {
+        return_if_not(codec->running(), codec->exitCode());
+    }
+    for (auto&& codec : _data_processors_encoder) {
         return_if_not(codec->running(), codec->exitCode());
     }
     for (auto&& refi : _data_processors_refi) {
@@ -185,7 +191,13 @@ YCode YFFmpeg::initRefi()
 
 YCode YFFmpeg::initCodec()
 {
-    for (auto&& refi : _data_processors_codec) {
+//    for (auto&& refi : _data_processors_codec) {
+//        try_to(refi->init());
+//    }
+    for (auto&& refi : _data_processors_decoder) {
+        try_to(refi->init());
+    }
+    for (auto&& refi : _data_processors_encoder) {
         try_to(refi->init());
     }
     return YCode::OK;
@@ -210,7 +222,9 @@ YCode YFFmpeg::closeContext()
 YCode YFFmpeg::startProcesors()
 {
     for (auto&& context : _data_processors_context) { context->start(); }
-    for (auto&& codec : _data_processors_codec) { codec->start(); }
+//    for (auto&& codec : _data_processors_codec) { codec->start(); }
+    for (auto&& codec : _data_processors_decoder) { codec->start(); }
+    for (auto&& codec : _data_processors_encoder) { codec->start(); }
     for (auto&& refi : _data_processors_refi) { refi->start(); }
     return YCode::OK;
 }
@@ -218,7 +232,9 @@ YCode YFFmpeg::startProcesors()
 YCode YFFmpeg::stopProcesors()
 {
     for (auto&& context : _data_processors_context) { context->quit(); }
-    for (auto&& codec : _data_processors_codec) { codec->quit(); }
+//    for (auto&& codec : _data_processors_codec) { codec->start(); }
+    for (auto&& codec : _data_processors_decoder) { codec->quit(); }
+    for (auto&& codec : _data_processors_encoder) { codec->quit(); }
     for (auto&& refi : _data_processors_refi) { refi->quit(); }
     return YCode::OK;
 }
@@ -243,7 +259,7 @@ YCode YFFmpeg::determineSequences() //TODO
             //
             auto video_decoder = new YDecoder(input_stream);
             sequence.push_back(video_decoder);
-            _data_processors_codec.push_back(video_decoder);
+            _data_processors_decoder.push_back(video_decoder);
             //
             auto rescaler = new YRescaler(io_streams);
             sequence.push_back(rescaler);
@@ -252,7 +268,7 @@ YCode YFFmpeg::determineSequences() //TODO
             //
             auto video_encoder = new YEncoder(output_stream);
             sequence.push_back(video_encoder);
-            _data_processors_codec.push_back(video_encoder);
+            _data_processors_encoder.push_back(video_encoder);
             rescaler->connectOutputTo(video_encoder);
             //
             sequence.push_back(output_context);
@@ -266,7 +282,7 @@ YCode YFFmpeg::determineSequences() //TODO
             //
             auto audio_decoder = new YDecoder(input_stream);
             sequence.push_back(audio_decoder);
-            _data_processors_codec.push_back(audio_decoder);
+            _data_processors_decoder.push_back(audio_decoder);
             //
             auto resampler = new YResampler(io_streams);
             sequence.push_back(resampler);
@@ -275,7 +291,7 @@ YCode YFFmpeg::determineSequences() //TODO
             //
             auto audio_encoder = new YEncoder(output_stream);
             sequence.push_back(audio_encoder);
-            _data_processors_codec.push_back(audio_encoder);
+            _data_processors_encoder.push_back(audio_encoder);
             resampler->connectOutputTo(audio_encoder);
             //
             sequence.push_back(output_context);
@@ -295,23 +311,31 @@ YCode YFFmpeg::determineSequences() //TODO
     return YCode::OK;
 }
 
-YCode YFFmpeg::checkProcessors()
-{
-    for (auto&& context : _data_processors_context) {
-        return_if_not(context->running(), context->exitCode());
-    }
-    for (auto&& codec : _data_processors_codec) {
-        return_if_not(codec->running(), codec->exitCode());
-    }
-    for (auto&& refi : _data_processors_refi) {
-        return_if_not(refi->running(), refi->exitCode());
-    }
-    return YCode::OK;
-}
+//YCode YFFmpeg::checkProcessors()
+//{
+//    for (auto&& context : _data_processors_context) {
+//        return_if_not(context->running(), context->exitCode());
+//    }
+////    for (auto&& codec : _data_processors_codec) {
+////        return_if_not(codec->running(), codec->exitCode());
+////    }
+//    for (auto&& codec : _data_processors_decoder) {
+//        return_if_not(codec->running(), codec->exitCode());
+//    }
+//    for (auto&& codec : _data_processors_encoder) {
+//        return_if_not(codec->running(), codec->exitCode());
+//    }
+//    for (auto&& refi : _data_processors_refi) {
+//        return_if_not(refi->running(), refi->exitCode());
+//    }
+//    return YCode::OK;
+//}
 
 void YFFmpeg::freeProcesors() //TODO объекты в смартпоинтеры
 {
     for (auto&& context : _data_processors_context) { delete context; }
-    for (auto&& codec : _data_processors_codec) { delete codec; }
+//    for (auto&& codec : _data_processors_codec) { delete codec; }
+    for (auto&& codec : _data_processors_decoder) { delete codec; }
+    for (auto&& codec : _data_processors_encoder) { delete codec; }
     for (auto&& refi : _data_processors_refi) { delete refi; }
 }
