@@ -1,6 +1,7 @@
 #include "YParameters.h"
 
-YParameters::YParameters() :
+YParameters::YParameters(YMediaType type) :
+    YMediaData(type),
     _codec_id(DEFAULT_CODEC_ID),
     _codec_name(DEFAULT_STRING),
     _bitrate(DEFAULT_INT),

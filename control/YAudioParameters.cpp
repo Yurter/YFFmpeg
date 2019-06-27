@@ -1,7 +1,7 @@
 #include "YAudioParameters.h"
 
-YAudioParameters::YAudioParameters(YParameters parameters) :
-    YParameters(parameters),
+YAudioParameters::YAudioParameters() :
+    YParameters(YMediaType::MEDIA_TYPE_AUDIO),
     _sample_rate(DEFAULT_INT),
     _sample_format(DEFAULT_SAMPLE_FORMAT),
     _channel_layout(DEFAULT_CHANEL_LAYOUT),
@@ -9,6 +9,16 @@ YAudioParameters::YAudioParameters(YParameters parameters) :
 {
     setName("YAudioParameters");
 }
+
+//YAudioParameters::YAudioParameters(YParameters parameters) :
+//    YParameters(parameters),
+//    _sample_rate(DEFAULT_INT),
+//    _sample_format(DEFAULT_SAMPLE_FORMAT),
+//    _channel_layout(DEFAULT_CHANEL_LAYOUT),
+//    _channels(DEFAULT_INT)
+//{
+//    setName("YAudioParameters");
+//}
 
 void YAudioParameters::setSampleRate(int64_t sample_rate)
 {

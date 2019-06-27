@@ -1,14 +1,14 @@
 #pragma once
 
-#include "YObject.h"
+#include "YMediaData.h"
 #include "ffmpeg.h"
 
-class YParameters : public YObject
+class YParameters : public YMediaData
 {
 
 public:
 
-    YParameters();
+    YParameters(YMediaType type = YMediaType::MEDIA_TYPE_UNKNOWN);
     virtual ~YParameters() = default;
 
     void                setCodec(AVCodecID codec_id);

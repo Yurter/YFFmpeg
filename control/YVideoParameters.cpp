@@ -1,7 +1,7 @@
 #include "YVideoParameters.h"
 
-YVideoParameters::YVideoParameters(YParameters parameters) :
-    YParameters(parameters),
+YVideoParameters::YVideoParameters() :
+    YParameters(YMediaType::MEDIA_TYPE_VIDEO),
     _width(DEFAULT_INT),
     _height(DEFAULT_INT),
     _aspect_ratio(DEFAULT_RATIONAL),
@@ -10,6 +10,17 @@ YVideoParameters::YVideoParameters(YParameters parameters) :
 {
     setName("YVideoParameters");
 }
+
+//YVideoParameters::YVideoParameters(YParameters parameters) :
+//    YParameters(parameters),
+//    _width(DEFAULT_INT),
+//    _height(DEFAULT_INT),
+//    _aspect_ratio(DEFAULT_RATIONAL),
+//    _frame_rate(DEFAULT_FLOAT),
+//    _pixel_format(DEFAULT_PIXEL_FORMAT)
+//{
+//    setName("YVideoParameters");
+//}
 
 YVideoParameters::~YVideoParameters()
 {
