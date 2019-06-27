@@ -19,7 +19,7 @@ public:
 
 protected:
 
-    virtual AVCodec*    findCodec() = 0;
+    virtual AVCodec*    findCodec() = 0;//
 
 protected:
 
