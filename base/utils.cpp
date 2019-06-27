@@ -77,3 +77,72 @@ int64_t utils::gen_stream_uid(int64_t context_uid, int64_t stream_index)
 {
     return (context_uid * 100) + stream_index;
 }
+
+YCode utils::init_codecpar(AVCodecParameters* codecpar, AVCodec* codec)
+{
+    auto codec_context = avcodec_alloc_context3(codec);
+    return_if(not_inited_ptr(codec_context), YCode::ERR);
+    return_if(avcodec_parameters_from_context(codecpar, codec_context) < 0, YCode::ERR);
+    avcodec_free_context(&codec_context);
+    return YCode::OK;
+}
+
+void utils::parameters_to_context(YParameters* parametres, AVCodecContext* codec)
+{
+    codec->codec_type = parametres->codec_type;
+    codec->codec_id   = pparametresar->codec_id;
+    codec->codec_tag  = parametres->codec_tag;
+
+    codec->bit_rate              = parametres->bit_rate;
+    codec->bits_per_coded_sample = parametres->bits_per_coded_sample;
+    codec->bits_per_raw_sample   = parametres->bits_per_raw_sample;
+    codec->profile               = parametres->profile;
+    codec->level                 = parametres->level;
+
+    switch (parametres->codec_type) {
+    case AVMEDIA_TYPE_VIDEO:
+        codec->pix_fmt                = parametres->format;
+        codec->width                  = parametres->width;
+        codec->height                 = parametres->height;
+        codec->field_order            = parametres->field_order;
+        codec->color_range            = parametres->color_range;
+        codec->color_primaries        = parametres->color_primaries;
+        codec->color_trc              = parametres->color_trc;
+        codec->colorspace             = parametres->color_space;
+        codec->chroma_sample_location = parametres->chroma_location;
+        codec->sample_aspect_ratio    = parametres->sample_aspect_ratio;
+        codec->has_b_frames           = parametres->video_delay;
+        break;
+    case AVMEDIA_TYPE_AUDIO:
+        codec->sample_fmt       = parametres->format;
+        codec->channel_layout   = parametres->channel_layout;
+        codec->channels         = parametres->channels;
+        codec->sample_rate      = parametres->sample_rate;
+        codec->block_align      = parametres->block_align;
+        codec->frame_size       = parametres->frame_size;
+        codec->delay            =
+        codec->initial_padding  = parametres->initial_padding;
+        codec->trailing_padding = parametres->trailing_padding;
+        codec->seek_preroll     = parametres->seek_preroll;
+        break;
+    case AVMEDIA_TYPE_SUBTITLE:
+        codec->width  = parametres->width;
+        codec->height = parametres->height;
+        break;
+    }
+}
+
+void utils::parameters_from_context(YParameters *parametres, AVCodecContext *codec)
+{
+    //
+}
+
+void utils::parameters_to_avcodecpar(YParameters *parametres, AVCodecParameters *codecpar)
+{
+    //
+}
+
+void utils::parameters_from_avcodecpar(YParameters *parametres, AVCodecParameters *codecpar)
+{
+    //
+}

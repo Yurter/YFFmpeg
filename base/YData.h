@@ -3,29 +3,29 @@
 #include "ffmpeg.h"
 #include "utils.h"
 #include "YLogger.h"
-#include "YObject.h"
+#include "YMediaData.h"
 
 template <typename Type>
-class YData : public YObject
+class YData : public YMediaData
 {
 
 public:
 
     YData() :
-        _type(YMediaType::MEDIA_TYPE_UNKNOWN) { setName("YData"); }
+        YData(Type(), YMediaType::MEDIA_TYPE_UNKNOWN)
+    { }
+
     YData(Type data, YMediaType type) :
-        _type(type),
-        _data(data) { setName("YData"); }
-    virtual ~YData() {}
+        YMediaData(type),
+        _data(data)
+    {
+        setName("YData");
+    }
 
-    void            setRaw(Type data) { _data = data; }
-    Type&           raw() { return _data; }
+    virtual ~YData() override = default;
 
-    YMediaType      type() const { return _type; }
-    void            setType(YMediaType type) { _type = type; }
-
-    bool            isVideo() const { return _type == YMediaType::MEDIA_TYPE_VIDEO; }
-    bool            isAudio() const { return _type == YMediaType::MEDIA_TYPE_AUDIO; }
+    void                setRaw(Type data) { _data = data; }
+    Type&               raw() { return _data; }
 
     virtual YCode       init()            = 0;
     virtual bool        inited()    const = 0;
@@ -33,10 +33,5 @@ public:
 
 protected:
 
-    // General
-    YMediaType      _type;
-
-    // FFmpeg
-    Type            _data;
+    Type                _data;
 };
-

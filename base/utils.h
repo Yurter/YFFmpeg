@@ -24,6 +24,12 @@ public:
     static int64_t      gen_context_uid();
     static int64_t      gen_stream_uid(int64_t context_uid, int64_t stream_index);
 
+    static YCode        init_codecpar(AVCodecParameters* codecpar, AVCodec* codec);
+    static void         parameters_to_context(YParameters* parametres, AVCodecContext* codec);
+    static void         parameters_from_context(YParameters* parametres, AVCodecContext* codec);
+    static void         parameters_to_avcodecpar(YParameters* parametres, AVCodecParameters* codecpar);
+    static void         parameters_from_avcodecpar(YParameters* parametres, AVCodecParameters* codecpar);
+
 };
 
 /* ? */
