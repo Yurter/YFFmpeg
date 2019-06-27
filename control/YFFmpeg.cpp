@@ -17,6 +17,7 @@ bool YFFmpeg::stop()
 {
     stopProcesors();
     log_info("Stopped");
+    auto& debug_value = logger;
     stop_log();
     return true;
 }

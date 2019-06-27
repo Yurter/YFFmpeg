@@ -56,6 +56,7 @@ YCode YDestination::open()
     try_to(parseFormatContext());
     _io_thread = YThread(std::bind(&YDestination::write, this));
     _io_thread.start();
+    setInited(true);
     return YCode::OK;
 }
 

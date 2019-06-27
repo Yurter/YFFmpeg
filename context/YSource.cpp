@@ -84,6 +84,7 @@ YCode YSource::openContext()
         _input_format = _media_format_context->iformat;
         parseFormatContext();
         av_dump_format(_media_format_context, 0, _media_resource_locator.c_str(), 0);
+        setInited(true);
         log_info("Source: \"" << _media_resource_locator << "\" opened.");
         return YCode::OK;
     }

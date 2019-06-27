@@ -26,15 +26,18 @@ public:
 
 };
 
+/* ? */
+#define logger              YLogger::instance()
+
 /* Макрос установки уровня лога, сообщения имеющие урень выше установленного игнорируются */
-#define set_log_level(x)    YLogger::instance().setLogLevel(x)
-#define stop_log()          YLogger::instance().quit() //TODO
+#define set_log_level(x)    logger.setLogLevel(x)
+#define stop_log()          logger.quit(); logger.join() //TODO не работает, вылет при завершении поток логера не завершается
 
 /* Макросы для отправки строковых сообщений в лог */
-#define print_info(x)       YLogger::instance().print(this, YLogLevel::Info, x)
-#define print_warning(x)    YLogger::instance().print(this, YLogLevel::Warning, x)
-#define print_error(x)      YLogger::instance().print(this, YLogLevel::Error, x)
-#define print_debug(x)      YLogger::instance().print(this, YLogLevel::Debug, x)
+#define print_info(x)       logger.print(this, YLogLevel::Info, x)
+#define print_warning(x)    logger.print(this, YLogLevel::Warning, x)
+#define print_error(x)      logger.print(this, YLogLevel::Error, x)
+#define print_debug(x)      logger.print(this, YLogLevel::Debug, x)
 
 /* Макросы для отправки потоковых сообщений в лог */
 #define log_info(x)         { std::stringstream log_ss; log_ss << x; print_info(log_ss.str());      }
