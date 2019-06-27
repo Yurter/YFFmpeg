@@ -48,7 +48,7 @@ protected:
             next_proc->push(output_data);
             return YCode::OK;
         }
-        return_if(_next_processor == nullptr, YCode::NOT_INITED);
+        return_if(not_inited_ptr(_next_processor), YCode::NOT_INITED);
         _next_processor->push(output_data);
         return YCode::OK;
     }
