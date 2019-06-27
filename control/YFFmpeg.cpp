@@ -2,7 +2,8 @@
 #include <algorithm>
 
 YFFmpeg::YFFmpeg() :
-    _stream_map(new YStreamMap)
+    _stream_map(new YStreamMap),
+    _inited(false)
 {
     setName("YFFmpeg");
 }
