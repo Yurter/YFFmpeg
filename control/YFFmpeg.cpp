@@ -257,6 +257,10 @@ YCode YFFmpeg::determineSequences() //TODO
             //
             sequence.push_back(output_context);
             video_encoder->connectOutputTo(output_context);
+        } else {// TODO
+            if (input_stream->isVideo()) {
+                sequence.push_back(output_context);
+            }
         }
         if (input_stream->isAudio() && !option(YOption::COPY_AUDIO) && resamplerRequired(io_streams)) {
             //
@@ -276,8 +280,14 @@ YCode YFFmpeg::determineSequences() //TODO
             //
             sequence.push_back(output_context);
             audio_encoder->connectOutputTo(output_context);
+        } else {// TODO
+            if (input_stream->isAudio()) {
+                sequence.push_back(output_context);
+            }
         }
+        // TODO PUSH output_context
         auto first_proc_it = std::next(std::find(sequence.begin(), sequence.end(), _stream_map));
+        auto debug_test = *first_proc_it;
         _stream_map->setRoute(input_stream, dynamic_cast<YAsyncQueue<YPacket>*>(*first_proc_it));
         _processor_sequences.push_back(sequence);
     }
