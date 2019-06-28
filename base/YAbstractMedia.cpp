@@ -46,6 +46,7 @@ std::string YAbstractMedia::toString() const
 
 YCode YAbstractMedia::createStream(YStream* new_stream)
 {
+    new_stream->init();
     new_stream->setUid(utils::gen_stream_uid(uid(), numberStream()));
     _streams.push_back(new_stream);
     return YCode::OK;
@@ -168,6 +169,7 @@ YCode YAbstractMedia::attachStreams() //TODO
         }
         utils::init_codecpar(str->codecParameters(), str->parameters->codec());
         utils::parameters_to_avcodecpar(str->parameters, str->codecParameters());
+        str->init();
     }
     return YCode::OK;
 }

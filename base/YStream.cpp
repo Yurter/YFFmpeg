@@ -43,10 +43,10 @@ YCode YStream::init()
 
 bool YStream::inited() const
 {
-    if (not_inited_ptr(_data))              { return false; }
-    if (not_inited_int(_packet_dts_delta))  { return false; }
-    if (not_inited_int(_packet_pts_delta))  { return false; }
-    if (not_inited_int(_packet_duration))   { return false; }
+    if (not_inited_ptr(_data))          { return false; }
+    if (invalid_int(_packet_dts_delta)) { return false; }
+    if (invalid_int(_packet_pts_delta)) { return false; }
+    if (invalid_int(_packet_duration))  { return false; }
     return true;
 }
 
@@ -62,6 +62,7 @@ std::string YStream::toString() const
 
 YCode YStream::stampPacket(YPacket& packet)
 {
+    return_if_not(inited(), YCode::NOT_INITED);//TODO
     if (packet.type() != type()) {
         log_error(utils::code_to_string(YCode::INVALID_INPUT));
         return YCode::INVALID_INPUT;

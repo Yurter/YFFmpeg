@@ -134,6 +134,7 @@ YCode YDestination::write()
 
 YCode YDestination::writePacket(YPacket& packet)
 {
+    log_error(packet.streamIndex())
     if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
 //    if (av_write_frame(_media_format_context, &input_data.raw()) < 0) {
         log_error("Error muxing packet");

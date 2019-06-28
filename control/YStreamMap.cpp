@@ -29,7 +29,9 @@ YCode YStreamMap::addRoute(stream_context source, stream_context destination)
     /* ? */
     _stream_map.insert({source, destination});
     /* Соответствие uid входного потока и локального id выходного потока */
-    _index_map.insert({source.first->uid(), destination.second});
+//    _index_map.insert({source.first->uid(), destination.second});
+//    _index_map.insert({source.first->stream(source.second)->uid(), destination.second});
+    _index_map.insert({utils::gen_stream_uid(source.first->uid(), source.second), destination.second});
     return YCode::OK;
 }
 
@@ -43,7 +45,6 @@ YCode YStreamMap::setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_proce
 
 YCode YStreamMap::processInputData(YPacket& input_data)
 {
-    log_debug(__func__)
     /* Определение локального индекса выходного потока */
     int64_t out_stream_index = INVALID_INT;
     try {

@@ -75,7 +75,7 @@ int64_t utils::gen_context_uid()
 
 int64_t utils::gen_stream_uid(int64_t context_uid, int64_t stream_index)
 {
-    return (context_uid * 100) + stream_index;
+    return ((context_uid + 1) * 100) + stream_index;
 }
 
 YCode utils::init_codecpar(AVCodecParameters* codecpar, AVCodec* codec)
