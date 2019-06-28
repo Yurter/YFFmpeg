@@ -18,8 +18,8 @@ YResampler::~YResampler()
 YCode YResampler::init()
 {
     return_if(inited(), YCode::INVALID_CALL_ORDER);
-    return_if_not(_io_streams.first->inited(), YCode::INVALID_INPUT);
-    return_if_not(_io_streams.second->inited(), YCode::INVALID_INPUT);
+//    return_if_not(_io_streams.first->inited(), YCode::INVALID_INPUT); //TODO
+//    return_if_not(_io_streams.second->inited(), YCode::INVALID_INPUT);
 
 //    auto in_param = dynamic_cast<YAudioStream*>(_io_streams.first)->parameters; //TODO
 //    auto out_param = dynamic_cast<YAudioStream*>(_io_streams.second)->parameters;
@@ -81,6 +81,7 @@ YCode YResampler::processInputData(YFrame& input_data)
 
 bool YResampler::initOutputFrame(AVFrame** frame, int frame_size)
 {
+//    frame_size = 1024; //TODO
     auto in_param = dynamic_cast<YAudioParameters*>(_io_streams.first->parameters); //TODO
     auto out_param = dynamic_cast<YAudioParameters*>(_io_streams.second->parameters);
     /* Create a new frame to store the audio samples. */

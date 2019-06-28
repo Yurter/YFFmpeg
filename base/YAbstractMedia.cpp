@@ -46,7 +46,7 @@ std::string YAbstractMedia::toString() const
 
 YCode YAbstractMedia::createStream(YStream* new_stream)
 {
-    new_stream->init();
+//    new_stream->init();
     new_stream->setUid(utils::gen_stream_uid(uid(), numberStream()));
     _streams.push_back(new_stream);
     return YCode::OK;
