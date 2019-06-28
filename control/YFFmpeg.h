@@ -1,6 +1,5 @@
 #pragma once
 
-#include "base/YThread.h"
 #include "context/YSource.h"
 #include "context/YDestination.h"
 #include "codec/YDecoder.h"
@@ -19,21 +18,19 @@ public:
     YFFmpeg();
     ~YFFmpeg() override;
 
-    bool                stop();                             ///<
-    void                pause();                            ///<
-    void                unpause();                          ///<
+    bool                stop();                             ///< Функция завершает работу класса.
+    void                pause();                            ///< Функция приостанавливает работу класса.
+    void                unpause();                          ///< Функция возобновляет работу класса.
 
-    void                setOptions(int64_t options);        ///<
-    void                addElement(YObject* element);       ///<
-    void                setRoute(stream_context source, stream_context destination);     ///<
+    void                setOptions(int64_t options);        ///< Функция устанавливает переданные ей опции.
+    void                addElement(YObject* element);       ///< Функция добавляет процессор меди-данных в кучу.
+    void                setRoute(Route);                    ///< Функция устанавливает соответствие между входным и выходным потоками.
 
 private:
 
+    YCode               init() override;
     YCode               run() override;
 
-    YCode               init();
-    bool                inited() const;
-    void                setInited(bool inited);
     bool                option(YOption option) const;
 
     YCode               initRefi();
@@ -70,7 +67,6 @@ private:
 
     // General
     volatile bool       _paused; 
-    bool                _inited;
     int64_t             _options;
 
 };

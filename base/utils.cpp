@@ -78,6 +78,20 @@ int64_t utils::gen_stream_uid(int64_t context_uid, int64_t stream_index)
     return ((context_uid + 1) * 100) + stream_index;
 }
 
+std::string utils::guess_format_short_name(std::string media_resurs_locator)
+{
+    if (media_resurs_locator.find("rtsp://") != std::string::npos) {
+        return std::string("rtsp");
+    }
+    if (media_resurs_locator.find("rtmp://") != std::string::npos) {
+        return std::string("flv");
+    }
+    if (media_resurs_locator.find("aevalsrc") != std::string::npos) {
+        return std::string("lavfi");
+    }
+    return std::string();
+}
+
 YCode utils::init_codecpar(AVCodecParameters* codecpar, AVCodec* codec)
 {
     auto codec_context = avcodec_alloc_context3(codec);

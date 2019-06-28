@@ -53,7 +53,7 @@ YCode YDestination::open()
     _output_format = _media_format_context->oformat; //TODO оператор "болтается в воздухе"
     try_to(attachStreams());
     try_to(openContext());
-    try_to(parseFormatContext());
+//    try_to(parseFormatContext()); //TODO ??
     _io_thread = YThread(std::bind(&YDestination::write, this));
     _io_thread.start();
     setInited(true);
@@ -97,7 +97,7 @@ YCode YDestination::guessOutputFromat()
 
 YCode YDestination::createContext()
 {
-    std::string format_short_name = guessFormatShortName();
+    std::string format_short_name = utils::guess_format_short_name(_media_resource_locator);
     const char* format_name = format_short_name.empty() ? nullptr : format_short_name.c_str();
     if (avformat_alloc_output_context2(&_media_format_context, nullptr, format_name, _media_resource_locator.c_str()) < 0) {
         log_error("Failed to alloc output context.");

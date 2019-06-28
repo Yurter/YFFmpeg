@@ -27,10 +27,6 @@ public:
     void                setRaw(Type data) { _data = data; }
     Type&               raw() { return _data; }
 
-    virtual YCode       init()            = 0;
-    virtual bool        inited()    const = 0;
-//    virtual std::string toString()  const = 0;
-
 protected:
 
     Type                _data;

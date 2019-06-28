@@ -7,7 +7,7 @@
 
 typedef std::function<YCode(void)> LoopFunction;
 
-class YThread : public YObject/*virtual public YObject*/
+class YThread : public YObject
 {
 
 public:

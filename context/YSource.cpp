@@ -53,9 +53,10 @@ std::string YSource::toString() const
     return str;
 }
 
-YCode YSource::guessInputFromat()
+YCode YSource::guessInputFromat() //TODO зачем это?
 {
-    AVInputFormat* input_format = av_find_input_format(guessFormatShortName().c_str());
+    auto shorn_name = utils::guess_format_short_name(_media_resource_locator);
+    AVInputFormat* input_format = av_find_input_format(shorn_name.c_str());
     if (input_format == nullptr) {
         log_error("Failed guess input format: " << _media_resource_locator);
         return YCode::INVALID_INPUT;

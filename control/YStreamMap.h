@@ -15,6 +15,9 @@ typedef std::map<int64_t,YAsyncQueue<YPacket>*> packet_map;
 /* Таблица соответствий uid входного потока и локального индекса выходного потока */
 typedef std::map<int64_t,int64_t>               index_map;
 
+/* ? */
+typedef std::pair<stream_context, stream_context> Route;
+
 class YStreamMap : public YDataProcessor<YPacket,YPacket> //TODO название -> YMap
 {
 
@@ -27,7 +30,7 @@ public:
     packet_map&         packetMap();
     index_map&          indexMap();
 
-    YCode               addRoute(stream_context source, stream_context destination);
+    YCode               addRoute(Route);
     YCode               setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_processor);
 
 private:

@@ -44,12 +44,17 @@ std::string YContext::toString() const
     return str;
 }
 
-YCode YContext::createStream(YStream* new_stream)
+YCode YContext::createStream(YStream* new_stream) //TODO
 {
-//    new_stream->init();
     new_stream->setUid(utils::gen_stream_uid(uid(), numberStream()));
     _streams.push_back(new_stream);
     return YCode::OK;
+}
+
+void YContext::reopenAfterFailure(int64_t timeout)
+{
+    _reopening_after_failure = true;
+    _reopening_timeout = timeout;
 }
 
 void YContext::setUid(int64_t uid)
@@ -74,7 +79,7 @@ YCode YContext::parseFormatContext()
 //        _output_format = _media_format_context->oformat;
     }
 
-    for (int64_t i = 0; i < _media_format_context->nb_streams; i++) { //TODO video_parameters | audio_parameters -> setAvailable
+    for (int64_t i = 0; i < _media_format_context->nb_streams; i++) {
         AVStream* avstream = _media_format_context->streams[i];
         auto codec = avstream->codec;
         auto codecpar = avstream->codecpar;
@@ -118,21 +123,7 @@ YCode YContext::parseFormatContext()
 
     return YCode::OK;
 
-//    setDuration(FFMAX(_video_duration, _audio_duration));
-}
-
-std::string YContext::guessFormatShortName()
-{
-    if (_media_resource_locator.find("rtsp://") != std::string::npos) {
-        return std::string("rtsp");
-    }
-	if (_media_resource_locator.find("rtmp://") != std::string::npos) {
-		return std::string("flv");
-	}
-    if (_media_resource_locator.find("aevalsrc") != std::string::npos) {
-        return std::string("lavfi");
-    }
-	return std::string();
+//    setDuration(FFMAX(_video_duration, _audio_duration)); //TODO
 }
 
 std::string YContext::mediaResourceLocator() const

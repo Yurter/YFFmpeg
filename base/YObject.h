@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ffmpeg.h"
 #include <string>
 #include <iostream>
 
@@ -15,6 +16,10 @@ public:
     std::string         name()  const;
     bool                is(std::string name);
 
+    virtual YCode       init();
+    void                setInited(bool inited);
+    bool                inited() const;
+
     virtual std::string toString() const = 0;
 
     friend std::ostream& operator<<(std::ostream& os, const YObject& obj);
@@ -22,5 +27,6 @@ public:
 private:
 
     std::string         _name;
+    bool                _inited;
 
 };

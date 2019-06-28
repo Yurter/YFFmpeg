@@ -15,7 +15,6 @@ public:
     virtual ~YStream() override;
 
     virtual YCode       init() override;
-//    virtual YCode       initCodecpar();
     virtual bool        inited() const override final;
     virtual std::string toString() const override final;
     virtual YCode       stampPacket(YPacket& packet) final;
@@ -30,12 +29,8 @@ public:
     AVCodecParameters*  codecParameters();
     void                increaseDuration(int64_t value);
 
-//    YParameters*        parameters();
-
 public:
-//private:
 
-//    YParameters*        _parameters;
     YParameters*        parameters;
 
 protected:

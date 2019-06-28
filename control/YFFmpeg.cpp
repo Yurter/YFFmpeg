@@ -152,16 +152,6 @@ void YFFmpeg::completeDestinationParametres()
 //    _destination->audio_parameters.softCopy(_source->audio_parameters);
 }
 
-bool YFFmpeg::inited() const
-{
-    return _inited;
-}
-
-void YFFmpeg::setInited(bool inited)
-{
-    _inited = inited;
-}
-
 YCode YFFmpeg::initRefi()
 {
     for (auto&& refi : _data_processors_refi) {
