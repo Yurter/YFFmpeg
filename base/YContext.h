@@ -6,15 +6,15 @@
 
 typedef std::vector<YStream*> Streams;
 
-class YAbstractMedia : public YDataProcessor<YPacket, YPacket> //TODO rename to YContext
+class YContext : public YDataProcessor<YPacket, YPacket> //TODO rename to YContext
 {
 
 public:
 
-    YAbstractMedia(const std::string& mrl);                             // mrl - media resource locator.
-    YAbstractMedia(const YAbstractMedia& other) = delete;
-    YAbstractMedia(const YAbstractMedia&& other) = delete;
-    virtual ~YAbstractMedia() override;
+    YContext(const std::string& mrl);                             // mrl - media resource locator.
+    YContext(const YContext& other) = delete;
+    YContext(const YContext&& other) = delete;
+    virtual ~YContext() override;
 
     virtual YCode       open() = 0;                                     // Функция открывает медиа-ресурс.
     virtual YCode       close();                                        // Функция закрывает медиа-ресурс.
@@ -65,4 +65,4 @@ protected:
 
 };
 
-typedef std::pair<YAbstractMedia*,int64_t> stream_context;
+typedef std::pair<YContext*,int64_t> stream_context;

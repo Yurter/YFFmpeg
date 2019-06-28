@@ -1,8 +1,8 @@
 #pragma once
 
-#include "base/YAbstractMedia.h"
+#include "base/YContext.h"
 
-class YDestination : public YAbstractMedia
+class YDestination : public YContext
 {
 
 public:

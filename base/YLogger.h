@@ -20,7 +20,7 @@ public:
 private:
 
     YLogger();
-    virtual ~YLogger() override;
+    virtual ~YLogger() override = default;
 
     YLogger(YLogger const&)               = delete;
     YLogger& operator=(YLogger const&)    = delete;

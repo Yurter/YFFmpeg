@@ -2,7 +2,7 @@
 #include <exception>
 
 YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
-    YAbstractMedia(mrl),
+    YContext(mrl),
     _output_format(nullptr)
 {
     setName("YDestination");
@@ -68,7 +68,7 @@ YCode YDestination::close()
         log_error("Failed to write the stream trailer to an output media file");
         return YCode::ERR;
     }
-    try_to(YAbstractMedia::close());
+    try_to(YContext::close());
     log_info("Destination: \"" << _media_resource_locator << "\" closed.");
     return YCode::OK;
 }

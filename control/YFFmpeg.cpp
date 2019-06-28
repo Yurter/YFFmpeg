@@ -41,7 +41,7 @@ void YFFmpeg::setOptions(int64_t options)
 
 void YFFmpeg::addElement(YObject* element)
 {
-    auto context = dynamic_cast<YAbstractMedia*>(element);
+    auto context = dynamic_cast<YContext*>(element);
     if (context != nullptr) {
         _data_processors_context.push_back(context);
         return;
@@ -224,8 +224,8 @@ YCode YFFmpeg::stopProcesors()
 YCode YFFmpeg::determineSequences() //TODO
 {
     for (auto&& route : _stream_map->streamMap()) {
-        YAbstractMedia* input_context = route.first.first;
-        YAbstractMedia* output_context = route.second.first;
+        YContext* input_context = route.first.first;
+        YContext* output_context = route.second.first;
         return_if_not(input_context->inited(), YCode::NOT_INITED);
         return_if_not(output_context->inited(), YCode::NOT_INITED);
         YStream* input_stream = input_context->stream(route.first.second);
@@ -353,7 +353,7 @@ std::string YFFmpeg::toString() const
             if (elem->is("YStreamMap")) { continue; }
             str += elem->name();
             if (elem->is("YSource") || elem->is("YDestination")) {
-                auto context = dynamic_cast<YAbstractMedia*>(elem);
+                auto context = dynamic_cast<YContext*>(elem);
                 str += "[" + std::to_string(context->uid())
                         + ":"
                         + std::to_string(i-1) + "]"; //TODO stream_index, брать из _stream_map->streamMap();

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "base/YAbstractMedia.h"
+#include "base/YContext.h"
 
-class YSource : public YAbstractMedia
+class YSource : public YContext
 {
 
 public:
@@ -26,7 +26,7 @@ private:
 
     YCode               processInputData(YPacket& input_data) override;
 
-    void                parseInputFormat(); //TODO : YAbstractMedia::parseIOFormat ?
+    void                parseInputFormat(); //TODO : YContext::parseIOFormat ?
 
 private:
 

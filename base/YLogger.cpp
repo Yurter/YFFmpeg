@@ -3,18 +3,13 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <windows.h> //TODO crossplatform color output
+#include <windows.h>
 
 YLogger::YLogger() :
     _log_level(YLogLevel::Warning)
 {
     setName("YLogger");
     start();
-}
-
-YLogger::~YLogger()
-{
-//    quit(); вызов в деструкторе треда
 }
 
 YCode YLogger::run()

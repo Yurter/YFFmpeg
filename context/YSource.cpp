@@ -1,7 +1,7 @@
 #include "YSource.h"
 
 YSource::YSource(const std::string& mrl, YMediaPreset preset) :
-    YAbstractMedia(mrl),
+    YContext(mrl),
     _input_format(nullptr)
 {
     setName("YSource");
@@ -42,7 +42,7 @@ YCode YSource::close()//TODO
     _io_thread.quit(); //TODO
     quit();
     if (_media_format_context != nullptr) { avformat_close_input(&_media_format_context); }
-    return_if_not(YAbstractMedia::close(), YCode::ERR);
+    return_if_not(YContext::close(), YCode::ERR);
     log_info("Source: \"" << _media_resource_locator << "\" closed.");
     return YCode::OK;
 }

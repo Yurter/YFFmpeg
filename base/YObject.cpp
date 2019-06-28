@@ -20,3 +20,9 @@ bool YObject::is(std::string name)
 {
     return _name == name;
 }
+
+std::ostream &operator<<(std::ostream& os, const YObject& obj)
+{
+    os << obj.toString();
+    return os;
+}

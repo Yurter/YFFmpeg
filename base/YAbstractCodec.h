@@ -58,9 +58,10 @@ public:
         }
     }
 
-    std::string toString() const override final // ?
+    std::string toString() const override final
     {
-        std::string str = "TODO";
+        std::string str = std::string(_codec_context->codec->name)
+                + " codec";
         return str;
     }
 

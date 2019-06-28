@@ -1,6 +1,6 @@
-#include "YAbstractMedia.h"
+#include "YContext.h"
 
-YAbstractMedia::YAbstractMedia(const std::string& mrl) :
+YContext::YContext(const std::string& mrl) :
     _uid(INVALID_INT),
 	_media_resource_locator(mrl),
     _opened(false),
@@ -9,17 +9,17 @@ YAbstractMedia::YAbstractMedia(const std::string& mrl) :
     _artificial_delay(DEFAULT_INT),
     _media_format_context(nullptr)
 {
-    setName("YAbstractMedia");
+    setName("YContext");
     setUid(utils::gen_context_uid());
 //    createContext();
 }
 
-YAbstractMedia::~YAbstractMedia()
+YContext::~YContext()
 {
     close();
 }
 
-YCode YAbstractMedia::close()
+YCode YContext::close()
 {
     return_if(closed(), YCode::INVALID_CALL_ORDER);
 //    _io_thread.quit(); //TODO вызывать в абстрактном класса
@@ -28,23 +28,23 @@ YCode YAbstractMedia::close()
     return YCode::OK;
 }
 
-bool YAbstractMedia::opened() const
+bool YContext::opened() const
 {
     return _opened;
 }
 
-bool YAbstractMedia::closed() const
+bool YContext::closed() const
 {
     return !_opened;
 }
 
-std::string YAbstractMedia::toString() const
+std::string YContext::toString() const
 {
     std::string str = "TODO";
     return str;
 }
 
-YCode YAbstractMedia::createStream(YStream* new_stream)
+YCode YContext::createStream(YStream* new_stream)
 {
 //    new_stream->init();
     new_stream->setUid(utils::gen_stream_uid(uid(), numberStream()));
@@ -52,17 +52,17 @@ YCode YAbstractMedia::createStream(YStream* new_stream)
     return YCode::OK;
 }
 
-void YAbstractMedia::setUid(int64_t uid)
+void YContext::setUid(int64_t uid)
 {
     if (invalid_int(_uid)) { _uid = uid; }
 }
 
-int64_t YAbstractMedia::uid() const
+int64_t YContext::uid() const
 {
     return _uid;
 }
 
-YCode YAbstractMedia::parseFormatContext()
+YCode YContext::parseFormatContext()
 {
     if (_media_format_context == nullptr) {
         log_error("Format context not inited. Parsing failed");
@@ -121,7 +121,7 @@ YCode YAbstractMedia::parseFormatContext()
 //    setDuration(FFMAX(_video_duration, _audio_duration));
 }
 
-std::string YAbstractMedia::guessFormatShortName()
+std::string YContext::guessFormatShortName()
 {
     if (_media_resource_locator.find("rtsp://") != std::string::npos) {
         return std::string("rtsp");
@@ -135,17 +135,17 @@ std::string YAbstractMedia::guessFormatShortName()
 	return std::string();
 }
 
-std::string YAbstractMedia::mediaResourceLocator() const
+std::string YContext::mediaResourceLocator() const
 {
     return _media_resource_locator;
 }
 
-AVFormatContext* YAbstractMedia::mediaFormatContext() const
+AVFormatContext* YContext::mediaFormatContext() const
 {
     return _media_format_context;
 }
 
-YStream* YAbstractMedia::stream(int64_t index)
+YStream* YContext::stream(int64_t index)
 {
     if (size_t(index) < _streams.size()) {
         return _streams[size_t(index)];
@@ -154,12 +154,12 @@ YStream* YAbstractMedia::stream(int64_t index)
     }
 }
 
-int64_t YAbstractMedia::numberStream() const
+int64_t YContext::numberStream() const
 {
     return int64_t(_streams.size());
 }
 
-YCode YAbstractMedia::attachStreams() //TODO
+YCode YContext::attachStreams() //TODO
 {
     for (auto&& str : _streams) {
         if (not_inited_ptr(str->raw())) {

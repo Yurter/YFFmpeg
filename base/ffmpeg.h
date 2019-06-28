@@ -39,8 +39,8 @@ enum YCode {
     END_OF_FILE,
     INVALID_INPUT,
     INVALID_CALL_ORDER,
+    FFMPEG_ERROR,
     DOUBT
-    //FFmpegError ?
 };
 
 /* Опции для YFFmpeg */
@@ -56,14 +56,6 @@ enum YMediaType {
     MEDIA_TYPE_UNKNOWN  = 0x0001,
     MEDIA_TYPE_VIDEO    = 0x0002,
     MEDIA_TYPE_AUDIO    = 0x0004,
-};
-
-//TODO enum для сорса, деста, рефи и тд? как тайп
-/* ? */
-enum YFfmpegType { // ?
-    //
-    Source,
-    Destination
 };
 
 /* Значения по умолчанию для видео- и аудиопараметров */

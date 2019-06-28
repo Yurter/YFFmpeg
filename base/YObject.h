@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 
 class YObject
 {
@@ -16,7 +17,7 @@ public:
 
     virtual std::string toString() const = 0;
 
-    //TODO operator<< + toString()
+    friend std::ostream& operator<<(std::ostream& os, const YObject& obj);
 
 private:
 

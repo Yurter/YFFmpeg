@@ -6,6 +6,7 @@ CONFIG += c++17
 
 SOURCES += \
     base/YAbstractRefi.cpp \
+    base/YContext.cpp \
     base/YLogger.cpp \
     base/YMediaData.cpp \
     codec/YDecoder.cpp \
@@ -22,7 +23,7 @@ SOURCES += \
     base/YThread.cpp \
     base/utils.cpp \
     main.cpp \
-    base\YAbstractMedia.cpp \
+    base\YContext.cpp \
     base\YAbstractFilter.cpp \
     base\YFrame.cpp \
     base\YPacket.cpp \
@@ -36,6 +37,7 @@ SOURCES += \
 
 HEADERS += \
     base/YAbstractRefi.h \
+    base/YContext.h \
     base/YLogger.h \
     base/YMediaData.h \
     codec/YDecoder.h \
@@ -57,7 +59,7 @@ HEADERS += \
     base/utils.h \
     base\ffmpeg.h \
     base\YAbstractCodec.h \
-    base\YAbstractMedia.h \
+    base\YContext.h \
     base\YAbstractFilter.h \
     base\YFrame.h \
     base\YPacket.h \
