@@ -43,6 +43,7 @@ YCode YStreamMap::setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_proce
 
 YCode YStreamMap::processInputData(YPacket& input_data)
 {
+    log_debug(__func__)
     /* Определение локального индекса выходного потока */
     int64_t out_stream_index = INVALID_INT;
     try {

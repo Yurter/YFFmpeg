@@ -81,6 +81,8 @@ YCode YFFmpeg::run()
     if (!inited()) {
         try_to(init());
     }
+
+    return_if_not(_stream_map->running(), _stream_map->exitCode());
     for (auto&& context : _data_processors_context) {
         return_if_not(context->running(), context->exitCode());
     }
@@ -200,6 +202,7 @@ YCode YFFmpeg::closeContext()
 
 YCode YFFmpeg::startProcesors()
 {
+    _stream_map->start(); //TODO
     for (auto&& context : _data_processors_context) { context->start(); }
 //    for (auto&& codec : _data_processors_codec) { codec->start(); }
     for (auto&& codec : _data_processors_decoder) { codec->start(); }
