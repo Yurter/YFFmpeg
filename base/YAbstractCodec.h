@@ -58,6 +58,12 @@ public:
         }
     }
 
+    std::string toString() const override final // ?
+    {
+        std::string str = "TODO";
+        return str;
+    }
+
     AVCodecContext* codecContext()
     {
         return _codec_context;

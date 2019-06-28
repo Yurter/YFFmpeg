@@ -12,8 +12,9 @@ public:
 
     YCode               open() override;
     YCode               close() override;
+    std::string         toString() const override;
 
-    AVOutputFormat*     outputFrormat() const;
+    AVOutputFormat*     outputFrormat() const; //TODO убрать?
 
     YCode               guessOutputFromat();
 

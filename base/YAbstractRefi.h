@@ -13,6 +13,7 @@ public:
     virtual ~YAbstractRefi() override;
 
     virtual YCode       init() = 0;
+    std::string         toString() const override;
 
 protected:
 

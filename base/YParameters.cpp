@@ -108,6 +108,12 @@ AVRational YParameters::timeBase() const
     return _time_base;
 }
 
+std::string YParameters::toString() const
+{
+    std::string str = "TODO";
+    return str;
+}
+
 //void YParameters::toCodecpar(AVCodecParameters* codecpar)
 //{
 //    codecpar->bit_rate = _bitrate;

@@ -60,6 +60,12 @@ int64_t YAudioParameters::channels() const
     return _channels;
 }
 
+std::string YAudioParameters::toString() const
+{
+    std::string str = "TODO";
+    return str;
+}
+
 //void YAudioParameters::toCodecpar(AVCodecParameters* codecpar)
 //{
 //    codecpar->sample_rate       = int(_sample_rate);

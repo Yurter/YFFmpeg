@@ -9,7 +9,7 @@ class YParameters : public YMediaData
 public:
 
     YParameters(YMediaType type = YMediaType::MEDIA_TYPE_UNKNOWN);
-    virtual ~YParameters() = default;
+    virtual ~YParameters() override = default;
 
     void                setCodec(AVCodecID codec_id);
     void                setCodec(std::string _codec_short_name);
@@ -26,6 +26,8 @@ public:
     int64_t             duration()      const;
     int64_t             streamIndex()   const;
     AVRational          timeBase()      const;
+
+    virtual std::string toString() const override;
 
 //    virtual void        toCodecpar(AVCodecParameters* codecpar);
     virtual void        softCopy(YParameters* other_parametrs);

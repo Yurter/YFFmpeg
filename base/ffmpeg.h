@@ -58,6 +58,14 @@ enum YMediaType {
     MEDIA_TYPE_AUDIO    = 0x0004,
 };
 
+//TODO enum для сорса, деста, рефи и тд? как тайп
+/* ? */
+enum YFfmpegType { // ?
+    //
+    Source,
+    Destination
+};
+
 /* Значения по умолчанию для видео- и аудиопараметров */
 #define INVALID_INT             -1
 #define DEFAULT_INT             0
@@ -111,3 +119,6 @@ enum YLogLevel {
 #define SHORT_DELAY_MS          10
 #define MEDIUM_DELAY_MS         100
 #define LONG_DELAY_MS           1000
+
+/* ? */
+#define TAB                     "\t"

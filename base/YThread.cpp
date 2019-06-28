@@ -42,7 +42,7 @@ void YThread::start()
     _thread.detach();
 }
 
-void YThread::quit()
+void YThread::quit() //TODO join?
 {
     if (_running == false) { return; }
     _running = false;
@@ -61,7 +61,13 @@ void YThread::join()
 
 void YThread::terminate()
 {
-    // TODO
+    // TODO ?
+}
+
+std::string YThread::toString() const
+{
+    std::string str = "TODO";
+    return str;
 }
 
 void YThread::setExitCode(YCode exit_code)

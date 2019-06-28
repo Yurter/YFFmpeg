@@ -7,7 +7,7 @@
 
 typedef std::function<YCode(void)> LoopFunction;
 
-class YThread : virtual public YObject
+class YThread : public YObject/*virtual public YObject*/
 {
 
 public:
@@ -17,7 +17,7 @@ public:
     YThread& operator=(YThread&& other);
     YThread(const YThread&)             = delete;
     YThread& operator=(const YThread&)  = delete;
-    virtual ~YThread();
+    virtual ~YThread() override;
 
     virtual void        start()     final;
     virtual void        quit()      final;
@@ -25,6 +25,7 @@ public:
     virtual void        join()      final;
     virtual void        terminate() final;
 
+    std::string         toString() const override;
     void                setExitCode(YCode exit_code);
     YCode               exitCode() const;
 

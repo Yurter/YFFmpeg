@@ -11,7 +11,12 @@ public:
     virtual ~YObject() = default;
 
     void                setName(std::string name);
-    virtual std::string name() const final;
+    std::string         name()  const;
+    bool                is(std::string name);
+
+    virtual std::string toString() const = 0;
+
+    //TODO operator<< + toString()
 
 private:
 

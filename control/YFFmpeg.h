@@ -19,41 +19,41 @@ public:
     YFFmpeg();
     ~YFFmpeg() override;
 
-    bool    stop();                             ///<
-    void    pause();                            ///<
-    void    unpause();                          ///<
+    bool                stop();                             ///<
+    void                pause();                            ///<
+    void                unpause();                          ///<
 
-    void    setOptions(int64_t options);        ///<
-    void    addElement(YObject* element);       ///<
-//    void    setRoute(streams_pair streams);     ///<
-    void    setRoute(stream_context source, stream_context destination);     ///<
+    void                setOptions(int64_t options);        ///<
+    void                addElement(YObject* element);       ///<
+    void                setRoute(stream_context source, stream_context destination);     ///<
 
 private:
 
-    YCode   run() override;
+    YCode               run() override;
 
-    YCode   init();
-    bool    inited() const;
-    void    setInited(bool inited);
-    bool    option(YOption option) const;
+    YCode               init();
+    bool                inited() const;
+    void                setInited(bool inited);
+    bool                option(YOption option) const;
 
-    YCode   initRefi();
-    YCode   initCodec();
-    YCode   openContext();
-    YCode   closeContext();
-    YCode   startProcesors();
-    YCode   stopProcesors();
-    YCode   determineSequences();
-//    YCode   checkProcessors();
-    void    freeProcesors();
+    YCode               initRefi();
+    YCode               initCodec();
+    YCode               openContext();
+    YCode               closeContext();
+    YCode               startProcesors();
+    YCode               stopProcesors();
+    YCode               determineSequences();
+    void                freeProcesors();
 
-    bool    rescalerRequired(streams_pair streams);
-    bool    resamplerRequired(streams_pair streams);
+    std::string         toString() const override;
 
-    bool contingencyVideoSourceRequired();
-    bool contingencyAudioSourceRequired();
+    bool                rescalerRequired(streams_pair streams);
+    bool                resamplerRequired(streams_pair streams);
 
-    void completeDestinationParametres();
+    bool                contingencyVideoSourceRequired();
+    bool                contingencyAudioSourceRequired();
+
+    void                completeDestinationParametres();
 
 private:
 

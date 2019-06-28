@@ -73,6 +73,12 @@ YCode YDestination::close()
     return YCode::OK;
 }
 
+std::string YDestination::toString() const
+{
+    std::string str = "TODO";
+    return str;
+}
+
 AVOutputFormat* YDestination::outputFrormat() const
 {
     return _output_format;

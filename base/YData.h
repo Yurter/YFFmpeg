@@ -29,7 +29,7 @@ public:
 
     virtual YCode       init()            = 0;
     virtual bool        inited()    const = 0;
-    virtual std::string toString()  const = 0;
+//    virtual std::string toString()  const = 0;
 
 protected:
 

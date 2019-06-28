@@ -38,6 +38,12 @@ bool YAbstractMedia::closed() const
     return !_opened;
 }
 
+std::string YAbstractMedia::toString() const
+{
+    std::string str = "TODO";
+    return str;
+}
+
 YCode YAbstractMedia::createStream(YStream* new_stream)
 {
     new_stream->setUid(utils::gen_stream_uid(uid(), numberStream()));

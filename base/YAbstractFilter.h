@@ -10,4 +10,8 @@ public:
 
     YAbstractFilter();
 
+
+    // YObject interface
+public:
+    std::string toString() const;
 };

@@ -18,7 +18,6 @@ bool YFFmpeg::stop()
 {
     stopProcesors();
     log_info("Stopped");
-    auto& debug_value = logger;
     stop_log();
     return true;
 }
@@ -72,21 +71,10 @@ YCode YFFmpeg::init()
     try_to(initRefi());
     try_to(initCodec());
     try_to(startProcesors());
+    log_info(toString());
     setInited(true);
     return YCode::OK;
 }
-
-//YCode YFFmpeg::init()
-//{
-//    log_info("Initialization started...");
-//    try_to(determineSequences());
-//    try_to(initRefi());
-//    try_to(initCodec());
-//    try_to(openContext());
-//    try_to(startProcesors());
-//    setInited(true);
-//    return YCode::OK;
-//}
 
 YCode YFFmpeg::run()
 {
@@ -155,16 +143,6 @@ bool YFFmpeg::option(YOption option) const
 {
     return _options & option;
 }
-
-//void YFFmpeg::parseOptions()
-//{
-////    if (option(COPY_VIDEO)) {
-////        _destination->video_parameters = _source->video_parameters;
-////    }
-////    if (option(COPY_AUDIO)) {
-////        _destination->audio_parameters = _source->audio_parameters;
-////    }
-//}
 
 void YFFmpeg::completeDestinationParametres()
 {
@@ -242,7 +220,7 @@ YCode YFFmpeg::stopProcesors()
 
 YCode YFFmpeg::determineSequences() //TODO
 {
-    for (auto&& route : _stream_map->map()) {
+    for (auto&& route : _stream_map->streamMap()) {
         YAbstractMedia* input_context = route.first.first;
         YAbstractMedia* output_context = route.second.first;
         return_if_not(input_context->inited(), YCode::NOT_INITED);
@@ -339,4 +317,54 @@ void YFFmpeg::freeProcesors() //TODO объекты в смартпоинтер�
     for (auto&& codec : _data_processors_decoder) { delete codec; }
     for (auto&& codec : _data_processors_encoder) { delete codec; }
     for (auto&& refi : _data_processors_refi) { delete refi; }
+}
+
+std::string YFFmpeg::toString() const
+{
+    //input сами в опене TODO
+    //output сами в опене TODO
+    //chains
+//    for (auto&& context : _data_processors_context) { log_info(context->toString()); }
+
+
+    std::string dump_str;
+
+    /* Вывод информации о контекстах */
+    /* Input #0, rtsp, from 'rtsp://admin:admin@192.168.10.3':
+     *      Stream #0:0: Video: h264, 1920x1080 [16:9], 23 fps, 400 kb/s
+     *      Stream #0:1: Audio: pcm_mulaw, 16000 Hz, 1 channels, s16, 128 kb/s
+     * Output #0, flv, to 'rtmp://a.rtmp.youtube.com/live2/ytub-8t5w-asjj-avyf':
+     *      Stream #0:0: Video: h264, 1920x1080, 400 kb/s
+     *      Stream #0:1: Audio: aac, 44100 Hz, stereo, 128 kb/s
+    */
+
+    /* Вывод информации о последовательностях обработки потоков */
+    int64_t i = 0;
+    std::string delimeter = " -> ";
+//    auto& stream_map = _stream_map->streamMap();
+    //TODO
+    // #1 YSource[0:1] -> YDecoder pcm_mulaw -> YResampler -> YEncoder aac -> YDestination[1:1]
+    for (auto&& sequence : _processor_sequences) {
+        std::string str = "\n#" + std::to_string(i++) + " ";
+        for (auto&& elem : sequence) {
+            if (elem->is("YStreamMap")) { continue; }
+            str += elem->name();
+            if (elem->is("YSource") || elem->is("YDestination")) {
+                auto context = dynamic_cast<YAbstractMedia*>(elem);
+                str += "[" + std::to_string(context->uid())
+                        + ":"
+                        + std::to_string(i-1) + "]"; //TODO stream_index, брать из _stream_map->streamMap();
+            }
+            str += delimeter;
+        }
+        str.erase(str.size() - delimeter.size(), delimeter.size());
+        dump_str += str;
+    }
+
+
+
+
+
+
+    return dump_str;
 }

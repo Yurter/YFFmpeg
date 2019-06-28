@@ -10,10 +10,11 @@ public:
     YSource(const std::string& mrl, YMediaPreset preset = YMediaPreset::Auto);
     virtual ~YSource() override;
 
-    YCode               open()  override;
+    YCode               open() override;
     YCode               close() override;
+    std::string         toString() const override;
 
-    AVInputFormat*      inputFormat() const;
+    AVInputFormat*      inputFormat() const;  //TODO убрать?
 
 private:
 

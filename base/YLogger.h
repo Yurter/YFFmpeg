@@ -13,7 +13,9 @@ public:
 
     static YLogger&     instance();
     void                setLogLevel(YLogLevel log_level);
-    void                print(YObject* caller, YLogLevel log_level, std::string message);
+    void                print(const YObject* caller, YLogLevel log_level, std::string message);
+
+    std::string         toString() const final;
 
 private:
 

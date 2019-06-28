@@ -47,6 +47,12 @@ YCode YSource::close()//TODO
     return YCode::OK;
 }
 
+std::string YSource::toString() const
+{
+    std::string str = "TODO";
+    return str;
+}
+
 YCode YSource::guessInputFromat()
 {
     AVInputFormat* input_format = av_find_input_format(guessFormatShortName().c_str());

@@ -15,3 +15,8 @@ std::string YObject::name() const
 {
     return _name;
 }
+
+bool YObject::is(std::string name)
+{
+    return _name == name;
+}

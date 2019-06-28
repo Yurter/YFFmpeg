@@ -21,6 +21,8 @@ public:
     uint64_t            channelLayout() const;
     int64_t             channels()      const;
 
+    std::string         toString() const override;
+
 //    void                toCodecpar(AVCodecParameters* codecpar) override;
 //    void                softCopy(YParameters* other_parametrs)  override;
     YAudioParameters&   operator=(const YAudioParameters& rhs);

@@ -86,6 +86,12 @@ AVPixelFormat YVideoParameters::pixelFormat() const
     return _pixel_format;
 }
 
+std::string YVideoParameters::toString() const
+{
+    std::string str = "TODO";
+    return str;
+}
+
 //void YVideoParameters::toCodecpar(AVCodecParameters* codecpar)
 //{
 //    codecpar->width = int(_width);

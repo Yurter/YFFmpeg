@@ -14,7 +14,7 @@ YLogger::YLogger() :
 
 YLogger::~YLogger()
 {
-    //
+//    quit(); вызов в деструкторе треда
 }
 
 YCode YLogger::run()
@@ -82,20 +82,26 @@ void YLogger::setLogLevel(YLogLevel log_level)
     }
 }
 
-void YLogger::print(YObject* caller, YLogLevel log_level, std::string message)
+void YLogger::print(const YObject* caller, YLogLevel log_level, std::string message)
 {
     if (ignoreMessage(log_level)) { return; }
 
     std::stringstream ss;
 
-    if (log_level <= YLogLevel::Info) {
+    if (log_level > YLogLevel::Quiet) {
         ss << "[" << caller->name() << "]";
     }
-    if (log_level == YLogLevel::Debug) {
+    if (log_level == YLogLevel::Debug) { //TODO вывод сигнатуры функции
         ss << "[" << current_thread_id() << "]";
     }
 
     ss << " " << message;
     _messages.push({log_level, ss.str()});
+}
+
+std::string YLogger::toString() const
+{
+    std::string str = "TODO";
+    return str;
 }
 

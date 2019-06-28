@@ -9,9 +9,19 @@ YStreamMap::YStreamMap()
     setName("YStreamMap");
 }
 
-stream_map& YStreamMap::map()
+stream_map& YStreamMap::streamMap()
 {
     return _stream_map;
+}
+
+packet_map& YStreamMap::packetMap()
+{
+    return _packet_map;
+}
+
+index_map& YStreamMap::indexMap()
+{
+    return _index_map;
 }
 
 YCode YStreamMap::addRoute(stream_context source, stream_context destination)
