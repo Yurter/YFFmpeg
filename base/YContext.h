@@ -21,7 +21,7 @@ public:
     virtual bool        opened() const final;                       ///< Функция возвращает true, если контекст находится в открытом состоянии.
     virtual bool        closed() const final;                       ///< Функция возвращает true, если контекст находится в закрытом состоянии.
 
-    virtual std::string toString() const override;                  ///< Функция возвращает строковое описание объекта.
+//    virtual std::string toString() const override;                  ///< Функция возвращает строковое описание объекта.
 
     YCode               createStream(YStream* new_stream);          ///< Функция создает поток к текущем контексте.
     YStream*            bestStream(YMediaType type);                ///< Функция возвращает указатель на поток заданного типа с наилучшими параметрами; nullptr, если потока заданного типа нет.

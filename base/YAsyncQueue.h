@@ -12,12 +12,16 @@ public:
     YAsyncQueue() : _queue_capacity(100) {}
     ~YAsyncQueue() { clear(); }
 
-    void push(Type data)
+    [[nodiscard]] bool push(Type data)
     {
         std::lock_guard<std::mutex> lock(_queue_mutex);
+        if (_queue.size() == _queue_capacity) {
+            return false;
+        }
         _queue.push(data);
+        return true;
     }
-    bool pop(Type& data)
+    [[nodiscard]] bool pop(Type& data)
     {
         std::lock_guard<std::mutex> lock(_queue_mutex);
         if (_queue.empty()) { return false; }
@@ -33,7 +37,7 @@ public:
     bool full()
     {
         std::lock_guard<std::mutex> lock(_queue_mutex);
-        return _queue.size() >= _queue_capacity;
+        return _queue.size() == _queue_capacity;
     }
     int64_t size()
     {
@@ -51,7 +55,7 @@ private:
 
     std::queue<Type>    _queue;
     std::mutex          _queue_mutex;
-    uint64_t            _queue_capacity;  //TODO implment
+    uint64_t            _queue_capacity;
 
 };
 

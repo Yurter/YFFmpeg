@@ -37,6 +37,11 @@ bool YObject::inited() const
     return _inited;
 }
 
+std::string YObject::toString() const
+{
+    return std::to_string(int64_t(this));
+}
+
 std::ostream &operator<<(std::ostream& os, const YObject& obj)
 {
     os << obj.toString();

@@ -35,28 +35,27 @@ void YFrame::free()
     av_frame_free(&_data);
 }
 
-bool YFrame::empty() const //TODO frame sizes...
+bool YFrame::empty() const
 {
-    switch (_type) {
-    case MEDIA_TYPE_VIDEO:
-        return _data->linesize[0];
-    case MEDIA_TYPE_AUDIO:
-        return _data->nb_samples;
-    case MEDIA_TYPE_UNKNOWN:
-        return true;
+    if (isVideo()) {
+        return _data->linesize[0] == 0;
     }
+    if (isAudio()) {
+        return _data->nb_samples == 0;
+    }
+    return true;
 }
 
-YCode YFrame::init()
+YCode YFrame::init() //TODO
 {
-    return YCode::ERR; //TODO
+    return YCode::ERR;
 }
 
-std::string YFrame::toString() const //TODO
+std::string YFrame::toString() const
 {
     /* Video frame: 33123 byte, dts 460, pts 460, duration 33 */
     /* Audio frame: 316 byte, dts 460, pts 460, duration 33 */
-    auto pts_str = _data->pts == AV_NOPTS_VALUE ? "NOPTS" : std::to_string(_data->pts);
+    auto pts_str = utils::pts_to_string(_data->pts);
     std::string str = utils::media_type_to_string(_type) + " frame: ";
     if (isVideo()) {
         str += std::to_string(_data->linesize[0]) + " bytes, "

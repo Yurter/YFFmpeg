@@ -45,11 +45,11 @@ protected:
                                                 , YNextProcessor* next_proc = nullptr) final
     {
         if (next_proc != nullptr) {
-            next_proc->push(output_data);
+            guaranteed_push(next_proc, output_data);
             return YCode::OK;
         }
-        return_if(not_inited_ptr(_next_processor), YCode::NOT_INITED);
-        _next_processor->push(output_data);
+        return_if(not_inited_ptr(_next_processor), YCode::NOT_INITED); //TODO убрать
+        guaranteed_push(_next_processor, output_data);
         return YCode::OK;
     }
 
@@ -57,10 +57,9 @@ private:
 
     [[nodiscard]] YCode run() override final
     {
-        return_if(!inited(), YCode::NOT_INITED);
+        return_if(!inited(), YCode::NOT_INITED); //TODO убрать
         inType input_data;
         if (!pop(input_data)) {
-//            log_debug(__func__)
             utils::sleep_for(SHORT_DELAY_MS);
             return YCode::AGAIN;
         }

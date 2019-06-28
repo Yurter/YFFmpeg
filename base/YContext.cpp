@@ -38,12 +38,6 @@ bool YContext::closed() const
     return !_opened;
 }
 
-std::string YContext::toString() const
-{
-    std::string str = "TODO";
-    return str;
-}
-
 YCode YContext::createStream(YStream* new_stream) //TODO
 {
     new_stream->setUid(utils::gen_stream_uid(uid(), numberStream()));

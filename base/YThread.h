@@ -23,9 +23,7 @@ public:
     virtual void        quit()      final;
     virtual bool        running()   final;
     virtual void        join()      final;
-    virtual void        terminate() final;
 
-    std::string         toString() const override;
     void                setExitCode(YCode exit_code);
     YCode               exitCode() const;
 

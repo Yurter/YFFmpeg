@@ -282,26 +282,6 @@ YCode YFFmpeg::determineSequences() //TODO
     return YCode::OK;
 }
 
-//YCode YFFmpeg::checkProcessors()
-//{
-//    for (auto&& context : _data_processors_context) {
-//        return_if_not(context->running(), context->exitCode());
-//    }
-////    for (auto&& codec : _data_processors_codec) {
-////        return_if_not(codec->running(), codec->exitCode());
-////    }
-//    for (auto&& codec : _data_processors_decoder) {
-//        return_if_not(codec->running(), codec->exitCode());
-//    }
-//    for (auto&& codec : _data_processors_encoder) {
-//        return_if_not(codec->running(), codec->exitCode());
-//    }
-//    for (auto&& refi : _data_processors_refi) {
-//        return_if_not(refi->running(), refi->exitCode());
-//    }
-//    return YCode::OK;
-//}
-
 void YFFmpeg::freeProcesors() //TODO объекты в смартпоинтеры
 {
     for (auto&& context : _data_processors_context) { delete context; }
@@ -329,6 +309,25 @@ std::string YFFmpeg::toString() const
      *      Stream #0:0: Video: h264, 1920x1080, 400 kb/s
      *      Stream #0:1: Audio: aac, 44100 Hz, stereo, 128 kb/s
     */
+    for (auto&& context : _data_processors_context) {
+        dump_str += context->toString();
+        for (auto i = 0; i < context->numberStream(); i++) {
+            dump_str += TAB + context->stream(i)->toString(); //TODO tut
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /* Вывод информации о последовательностях обработки потоков */
     int64_t i = 0;
@@ -337,20 +336,19 @@ std::string YFFmpeg::toString() const
     //TODO
     // #1 YSource[0:1] -> YDecoder pcm_mulaw -> YResampler -> YEncoder aac -> YDestination[1:1]
     for (auto&& sequence : _processor_sequences) {
-        std::string str = "\n#" + std::to_string(i++) + " ";
+        dump_str += "\n#" + std::to_string(i++) + " ";
         for (auto&& elem : sequence) {
             if (elem->is("YMap")) { continue; }
-            str += elem->name();
+            dump_str += elem->name();
             if (elem->is("YSource") || elem->is("YDestination")) {
                 auto context = dynamic_cast<YContext*>(elem);
-                str += "[" + std::to_string(context->uid())
+                dump_str += "[" + std::to_string(context->uid())
                         + ":"
                         + std::to_string(i-1) + "]"; //TODO stream_index, брать из _stream_map->streamMap();
             }
-            str += delimeter;
+            dump_str += delimeter;
         }
-        str.erase(str.size() - delimeter.size(), delimeter.size());
-        dump_str += str;
+        dump_str.erase(dump_str.size() - delimeter.size(), delimeter.size());
     }
 
 

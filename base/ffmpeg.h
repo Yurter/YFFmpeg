@@ -99,6 +99,9 @@ enum YLogLevel {
     Debug
 };
 
+/* ? */
+#define guaranteed_push(proc,data) while (!proc->push(data)) { utils::sleep_for(SHORT_DELAY_MS); }
+
 /* Функция возвращает id потока, в котором вызвана */
 #define current_thread_id() std::this_thread::get_id()
 

@@ -54,7 +54,7 @@ private:
 
 private:
 
-    // ?
+    // ? //TODO объянить
     std::list<YContext*>          _data_processors_context;
 //    std::list<YAbstractCodec*>          _data_processors_codec;
     std::list<YDecoder*>          _data_processors_decoder;

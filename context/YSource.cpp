@@ -49,7 +49,11 @@ YCode YSource::close()//TODO
 
 std::string YSource::toString() const
 {
-    std::string str = "TODO";
+    /* Input #0, rtsp, from 'rtsp://admin:admin@192.168.10.3': */
+    std::string str = "Input #"
+            + std::to_string(uid()) + ", "
+            + utils::guess_format_short_name(_media_resource_locator) + ", "
+            + "from '" + _media_resource_locator + "'";
     return str;
 }
 

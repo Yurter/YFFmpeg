@@ -13,6 +13,11 @@ std::string utils::media_type_to_string(YMediaType media_type)
     }
 }
 
+std::string utils::pts_to_string(int64_t pts)
+{
+    return pts == AV_NOPTS_VALUE ? "NOPTS" : std::to_string(pts);
+}
+
 void utils::sleep_for(int64_t milliseconds)
 {
     std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));

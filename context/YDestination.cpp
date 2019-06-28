@@ -75,7 +75,11 @@ YCode YDestination::close()
 
 std::string YDestination::toString() const
 {
-    std::string str = "TODO";
+    /* Output #0, flv, to 'rtmp://a.rtmp.youtube.com/live2/ytub-8t5w-asjj-avyf'*/
+    std::string str = "Output #"
+            + std::to_string(uid()) + ", "
+            + utils::guess_format_short_name(_media_resource_locator) + ", "
+            + "to '" + _media_resource_locator + "'";
     return str;
 }
 

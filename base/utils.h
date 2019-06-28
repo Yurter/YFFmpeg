@@ -15,6 +15,7 @@ class utils
 public:
 
     static std::string  media_type_to_string(YMediaType media_type);
+    static std::string  pts_to_string(int64_t pts);
     static void         sleep_for(int64_t milliseconds);
     static bool         exit_code(YCode code);
     static std::string  code_to_string(YCode code);
