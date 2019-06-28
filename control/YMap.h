@@ -18,19 +18,19 @@ typedef std::map<int64_t,int64_t>               index_map;
 /* ? */
 typedef std::pair<stream_context, stream_context> Route;
 
-class YStreamMap : public YDataProcessor<YPacket,YPacket> //TODO название -> YMap
+class YMap : public YDataProcessor<YPacket,YPacket>
 {
 
 public:
 
-    YStreamMap();
-    virtual ~YStreamMap() override = default;
+    YMap();
+    virtual ~YMap() override = default;
 
     stream_map&         streamMap();
     packet_map&         packetMap();
     index_map&          indexMap();
 
-    YCode               addRoute(Route);
+    YCode               addRoute(Route route);
     YCode               setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_processor);
 
 private:

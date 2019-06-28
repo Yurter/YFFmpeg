@@ -1,41 +1,42 @@
-#include "YStreamMap.h"
+#include "YMap.h"
 
 #include <algorithm>
 #include <iterator>
 #include <exception>
 
-YStreamMap::YStreamMap()
+YMap::YMap()
 {
-    setName("YStreamMap");
+    setName("YMap");
 }
 
-stream_map& YStreamMap::streamMap()
+stream_map& YMap::streamMap()
 {
     return _stream_map;
 }
 
-packet_map& YStreamMap::packetMap()
+packet_map& YMap::packetMap()
 {
     return _packet_map;
 }
 
-index_map& YStreamMap::indexMap()
+index_map& YMap::indexMap()
 {
     return _index_map;
 }
 
-YCode YStreamMap::addRoute(stream_context source, stream_context destination)
+YCode YMap::addRoute(Route route)
 {
-    /* ? */
-    _stream_map.insert({source, destination});
+    /* Соответствие входного и выходного потоков */
+    _stream_map.insert({route.first, route.second});
     /* Соответствие uid входного потока и локального id выходного потока */
-//    _index_map.insert({source.first->uid(), destination.second});
-//    _index_map.insert({source.first->stream(source.second)->uid(), destination.second});
-    _index_map.insert({utils::gen_stream_uid(source.first->uid(), source.second), destination.second});
+    auto source_context_uid = route.first.first->uid();
+    auto sourcestram_uid = route.first.second;
+    auto destination_stream_id = route.second.second;
+    _index_map.insert({utils::gen_stream_uid(source_context_uid, sourcestram_uid), destination_stream_id});
     return YCode::OK;
 }
 
-YCode YStreamMap::setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_processor)
+YCode YMap::setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_processor)
 {
     return_if(invalid_int(src_stream->uid()), YCode::INVALID_INPUT);
     _packet_map.insert({src_stream->uid(), next_processor});
@@ -43,7 +44,7 @@ YCode YStreamMap::setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_proce
     return YCode::OK;
 }
 
-YCode YStreamMap::processInputData(YPacket& input_data)
+YCode YMap::processInputData(YPacket& input_data)
 {
     /* Определение локального индекса выходного потока */
     int64_t out_stream_index = INVALID_INT;

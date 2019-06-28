@@ -13,10 +13,10 @@ SOURCES += \
     codec/YEncoder.cpp \
     control/YAudioStream.cpp \
     context/YDestination.cpp \
+    control/YMap.cpp \
     refi/YResampler.cpp \
     refi/YRescaler.cpp \
     context/YSource.cpp \
-    control/YStreamMap.cpp \
     control/YVideoStream.cpp \
     base/YObject.cpp \
     base/YStream.cpp \
@@ -45,10 +45,10 @@ HEADERS += \
     control/YAudioStream.h \
     context/YDestination.h \
     control/YFFmpeg.h \
+    control/YMap.h \
     refi/YResampler.h \
     refi/YRescaler.h \
     context/YSource.h \
-    control/YStreamMap.h \
     control/YVideoStream.h \
     base/YAsyncQueue.h \
     base/YData.h \

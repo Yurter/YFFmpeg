@@ -8,7 +8,7 @@
 #include "refi/YResampler.h"
 #include "refi/YVideoFilter.h"
 #include "refi/YAudioFilter.h"
-#include "YStreamMap.h"
+#include "YMap.h"
 
 class YFFmpeg : public YThread
 {
@@ -24,12 +24,12 @@ public:
 
     void                setOptions(int64_t options);        ///< Функция устанавливает переданные ей опции.
     void                addElement(YObject* element);       ///< Функция добавляет процессор меди-данных в кучу.
-    void                setRoute(Route);                    ///< Функция устанавливает соответствие между входным и выходным потоками.
+    void                setRoute(Route route);              ///< Функция устанавливает соответствие между входным и выходным потоками.
 
 private:
 
-    YCode               init() override;
-    YCode               run() override;
+    YCode               init()  override;
+    YCode               run()   override;
 
     bool                option(YOption option) const;
 
@@ -63,7 +63,7 @@ private:
 
     std::list<std::list<YObject*>>      _processor_sequences; //TODO зачем их хранить?
 
-    YStreamMap*         _stream_map;
+    YMap*         _stream_map;
 
     // General
     volatile bool       _paused; 

@@ -2,8 +2,7 @@
 #include <algorithm>
 
 YFFmpeg::YFFmpeg() :
-    _stream_map(new YStreamMap),
-    _inited(false)
+    _stream_map(new YMap)
 {
     setName("YFFmpeg");
 }
@@ -58,9 +57,9 @@ void YFFmpeg::addElement(YObject* element)
     }
 }
 
-void YFFmpeg::setRoute(stream_context source, stream_context destination)
+void YFFmpeg::setRoute(Route route)
 {
-    _stream_map->addRoute(source, destination);
+    _stream_map->addRoute(route);
 }
 
 YCode YFFmpeg::init()
@@ -340,7 +339,7 @@ std::string YFFmpeg::toString() const
     for (auto&& sequence : _processor_sequences) {
         std::string str = "\n#" + std::to_string(i++) + " ";
         for (auto&& elem : sequence) {
-            if (elem->is("YStreamMap")) { continue; }
+            if (elem->is("YMap")) { continue; }
             str += elem->name();
             if (elem->is("YSource") || elem->is("YDestination")) {
                 auto context = dynamic_cast<YContext*>(elem);

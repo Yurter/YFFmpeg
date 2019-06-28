@@ -11,7 +11,6 @@ public:
     virtual ~YPacket() override;
 
     YCode           init() override;
-    bool            inited() const override;
 
     void            setPts(int64_t pts);
     void            setDts(int64_t dts);

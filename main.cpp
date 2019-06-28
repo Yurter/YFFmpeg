@@ -26,8 +26,8 @@ int main()
     ffmpeg.addElement(destination);
     ffmpeg.setOptions(COPY_VIDEO);
 
-    ffmpeg.setRoute({source, 0}, {destination, 0});
-    ffmpeg.setRoute({source, 1}, {destination, 1});
+    ffmpeg.setRoute({{source, 0}, {destination, 0}});
+    ffmpeg.setRoute({{source, 1}, {destination, 1}});
 
     ffmpeg.start();
     ffmpeg.join();

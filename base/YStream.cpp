@@ -32,15 +32,6 @@ YCode YStream::init()
     return YCode::ERR;
 }
 
-bool YStream::inited() const
-{
-    if (not_inited_ptr(_data))          { return false; }
-    if (invalid_int(_packet_dts_delta)) { return false; }
-    if (invalid_int(_packet_pts_delta)) { return false; }
-    if (invalid_int(_packet_duration))  { return false; }
-    return true;
-}
-
 std::string YStream::toString() const
 {
     std::string str = utils::media_type_to_string(_type) + " stream: "

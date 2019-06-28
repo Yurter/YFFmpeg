@@ -14,10 +14,9 @@ public:
     bool            alloc();
     void            free();
 
-    bool            empty()     const;
-    YCode           init()            override;
-    bool            inited()    const override;
-    std::string     toString()  const override;
+    bool            empty() const;
+    YCode           init() override;
+    std::string     toString() const override;
 
 private:
 

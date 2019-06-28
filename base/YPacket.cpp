@@ -17,12 +17,8 @@ YPacket::~YPacket()
 YCode YPacket::init()
 {
     av_init_packet(&_data);
+    setInited(true);
     return YCode::OK;
-}
-
-bool YPacket::inited() const
-{
-    return true; //TODO определить, что изменяетсяв пакете после вызова av_init_packet
 }
 
 void YPacket::setPts(int64_t pts)

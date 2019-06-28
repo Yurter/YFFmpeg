@@ -52,11 +52,6 @@ YCode YFrame::init()
     return YCode::ERR; //TODO
 }
 
-bool YFrame::inited() const
-{
-    return false; //TODO
-}
-
 std::string YFrame::toString() const //TODO
 {
     /* Video frame: 33123 byte, dts 460, pts 460, duration 33 */
