@@ -7,7 +7,7 @@ YContext::YContext(const std::string& mrl) :
     _reopening_after_failure(false),
     _reopening_timeout(INVALID_INT),
     _artificial_delay(DEFAULT_INT),
-    _media_format_context(nullptr)
+    _format_context(nullptr)
 {
     setName("YContext");
     setUid(utils::gen_context_uid());
@@ -23,7 +23,7 @@ YCode YContext::close()
 {
     return_if(closed(), YCode::INVALID_CALL_ORDER);
 //    _io_thread.quit(); //TODO вызывать в абстрактном класса
-    avformat_free_context(_media_format_context);
+    avformat_free_context(_format_context);
     _opened = false;
     return YCode::OK;
 }
@@ -63,18 +63,18 @@ int64_t YContext::uid() const
 
 YCode YContext::parseFormatContext()
 {
-    if (_media_format_context == nullptr) {
+    if (_format_context == nullptr) {
         log_error("Format context not inited. Parsing failed");
         return YCode::INVALID_INPUT;
     }
 
     {
-//        _input_format = _media_format_context->iformat;
-//        _output_format = _media_format_context->oformat;
+//        _input_format = _format_context->iformat;
+//        _output_format = _format_context->oformat;
     }
 
-    for (int64_t i = 0; i < _media_format_context->nb_streams; i++) {
-        AVStream* avstream = _media_format_context->streams[i];
+    for (int64_t i = 0; i < _format_context->nb_streams; i++) {
+        AVStream* avstream = _format_context->streams[i];
         auto codec = avstream->codec;
         auto codecpar = avstream->codecpar;
         auto codec_type = codecpar->codec_type;
@@ -129,7 +129,7 @@ std::string YContext::mediaResourceLocator() const
 
 AVFormatContext* YContext::mediaFormatContext() const
 {
-    return _media_format_context;
+    return _format_context;
 }
 
 YStream* YContext::stream(int64_t index)
@@ -150,7 +150,7 @@ YCode YContext::attachStreams() //TODO
 {
     for (auto&& str : _streams) {
         if (not_inited_ptr(str->raw())) {
-            auto avstream = avformat_new_stream(_media_format_context, nullptr);
+            auto avstream = avformat_new_stream(_format_context, nullptr);
             return_if(not_inited_ptr(avstream), YCode::ERR);
             str->setRaw(avstream);
 //            str->setUid(utils::gen_stream_uid(uid(), avstream->index));

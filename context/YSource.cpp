@@ -41,7 +41,7 @@ YCode YSource::close()//TODO
     return_if(closed(), YCode::INVALID_CALL_ORDER);
     _io_thread.quit(); //TODO
     quit();
-    if (_media_format_context != nullptr) { avformat_close_input(&_media_format_context); }
+    if (_format_context != nullptr) { avformat_close_input(&_format_context); }
     return_if_not(YContext::close(), YCode::ERR);
     log_info("Source: \"" << _media_resource_locator << "\" closed.");
     return YCode::OK;
@@ -71,8 +71,8 @@ YCode YSource::guessInputFromat() //TODO зачем это?
 
 YCode YSource::createContext()
 {
-    _media_format_context = avformat_alloc_context();
-    if (not_inited_ptr(_media_format_context)) {
+    _format_context = avformat_alloc_context();
+    if (not_inited_ptr(_format_context)) {
         log_error("Failed to alloc input context.");
         return YCode::ERR;
     }
@@ -83,18 +83,18 @@ YCode YSource::openContext()
 {
     log_info("Source: \"" << _media_resource_locator << "\" is opening...");
     return_if(_media_resource_locator.empty(), YCode::INVALID_INPUT);
-    if (avformat_open_input(&_media_format_context, _media_resource_locator.c_str(), _input_format, nullptr) < 0) {
+    if (avformat_open_input(&_format_context, _media_resource_locator.c_str(), _input_format, nullptr) < 0) {
         log_error("Failed to open input context.");
         return YCode::INVALID_INPUT;
     }
-    if (avformat_find_stream_info(_media_format_context, nullptr) < 0) {
+    if (avformat_find_stream_info(_format_context, nullptr) < 0) {
         log_error("Failed to retrieve input video stream information.");
         return YCode::ERR;
     }
     {
-        _input_format = _media_format_context->iformat;
+        _input_format = _format_context->iformat;
         parseFormatContext();
-        av_dump_format(_media_format_context, 0, _media_resource_locator.c_str(), 0);
+        av_dump_format(_format_context, 0, _media_resource_locator.c_str(), 0);
         setInited(true);
         log_info("Source: \"" << _media_resource_locator << "\" opened.");
         return YCode::OK;

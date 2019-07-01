@@ -57,7 +57,7 @@ protected:
     int64_t             _artificial_delay;
 
     // FFmpeg
-    AVFormatContext*	_media_format_context; //TODO rename to _format_context
+    AVFormatContext*	_format_context;
 
 };
 

@@ -52,7 +52,7 @@ YDestination::~YDestination()
 YCode YDestination::open()
 {
     return_if(opened(), YCode::INVALID_CALL_ORDER);
-    _output_format = _media_format_context->oformat; //TODO оператор "болтается в воздухе"
+    _output_format = _format_context->oformat; //TODO оператор "болтается в воздухе"
     try_to(attachStreams());
     try_to(openContext());
 //    try_to(parseFormatContext()); //TODO ??
@@ -66,7 +66,7 @@ YCode YDestination::close()
 {
     return_if(closed(), YCode::INVALID_CALL_ORDER);
     quit();
-    if (av_write_trailer(_media_format_context) != 0) {
+    if (av_write_trailer(_format_context) != 0) {
         log_error("Failed to write the stream trailer to an output media file");
         return YCode::ERR;
     }
@@ -105,7 +105,7 @@ YCode YDestination::createContext()
 {
     std::string format_short_name = utils::guess_format_short_name(_media_resource_locator);
     const char* format_name = format_short_name.empty() ? nullptr : format_short_name.c_str();
-    if (avformat_alloc_output_context2(&_media_format_context, nullptr, format_name, _media_resource_locator.c_str()) < 0) {
+    if (avformat_alloc_output_context2(&_format_context, nullptr, format_name, _media_resource_locator.c_str()) < 0) {
         log_error("Failed to alloc output context.");
         return YCode::ERR;
     }
@@ -116,18 +116,18 @@ YCode YDestination::openContext()
 {
     log_info("Destination: \"" << _media_resource_locator << "\" is opening...");
     log_debug(stream(0)->codecParameters()->width << " " << stream(0)->codecParameters()->height);
-    if (!(_media_format_context->flags & AVFMT_NOFILE)) {
-        if (avio_open(&_media_format_context->pb, _media_resource_locator.c_str(), AVIO_FLAG_WRITE) < 0) {
+    if (!(_format_context->flags & AVFMT_NOFILE)) {
+        if (avio_open(&_format_context->pb, _media_resource_locator.c_str(), AVIO_FLAG_WRITE) < 0) {
             log_error("Could not open output: " << _media_resource_locator);
             return YCode::INVALID_INPUT;
         }
     }
-    if (avformat_write_header(_media_format_context, nullptr) < 0) {
+    if (avformat_write_header(_format_context, nullptr) < 0) {
         log_error("Error occurred when opening output");
         return YCode::ERR;
     }
     {
-        av_dump_format(_media_format_context, 0, _media_resource_locator.c_str(), 1);
+        av_dump_format(_format_context, 0, _media_resource_locator.c_str(), 1);
         log_info("Destination: \"" << _media_resource_locator << "\" opened.");
         return YCode::OK;
     }
@@ -141,8 +141,8 @@ YCode YDestination::write()
 YCode YDestination::writePacket(YPacket& packet)
 {
     log_error(packet.streamIndex())
-    if (av_interleaved_write_frame(_media_format_context, &packet.raw()) < 0) {
-//    if (av_write_frame(_media_format_context, &input_data.raw()) < 0) {
+    if (av_interleaved_write_frame(_format_context, &packet.raw()) < 0) {
+//    if (av_write_frame(_format_context, &input_data.raw()) < 0) {
         log_error("Error muxing packet");
         return YCode::ERR;
     }

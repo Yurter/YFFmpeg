@@ -11,6 +11,7 @@ std::string utils::media_type_to_string(YMediaType media_type)
     case YMediaType::MEDIA_TYPE_AUDIO:
         return "Audio";
     }
+    return "Invalid";
 }
 
 std::string utils::pts_to_string(int64_t pts)
