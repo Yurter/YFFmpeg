@@ -21,6 +21,7 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
 //        video_parameters.setFrameRate(24); //TODO
         video_parameters->setBitrate(400'000);
         video_parameters->setCodec("libx264");
+        video_parameters->setContextUid(uid());
         createStream(new YVideoStream(video_parameters));
         /* Audio */
         auto audio_parameters = new YAudioParameters;
@@ -30,6 +31,7 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
         audio_parameters->setChannelLayout(AV_CH_LAYOUT_STEREO);
         audio_parameters->setChannels(2);
         audio_parameters->setCodec("aac");
+        audio_parameters->setContextUid(uid());
         createStream(new YAudioStream(audio_parameters));
         break;
     }

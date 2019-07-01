@@ -92,6 +92,7 @@ YCode YContext::parseFormatContext()
             video_parameters->setPixelFormat(codec->pix_fmt);
             video_parameters->setStreamIndex(i);
             video_parameters->setTimeBase(avstream->time_base);
+            video_parameters->setContextUid(uid());
             createStream(new YVideoStream(avstream, video_parameters));
             break;
         }
@@ -106,6 +107,7 @@ YCode YContext::parseFormatContext()
             audio_parameters->setChannels(codecpar->channels);
             audio_parameters->setStreamIndex(i);
             audio_parameters->setTimeBase(avstream->time_base);
+            audio_parameters->setContextUid(uid());
             createStream(new YAudioStream(avstream, audio_parameters));
             break;
         }
@@ -151,6 +153,7 @@ YCode YContext::attachStreams() //TODO
             auto avstream = avformat_new_stream(_media_format_context, nullptr);
             return_if(not_inited_ptr(avstream), YCode::ERR);
             str->setRaw(avstream);
+//            str->setUid(utils::gen_stream_uid(uid(), avstream->index));
         }
         utils::init_codecpar(str->codecParameters(), str->parameters->codec());
         utils::parameters_to_avcodecpar(str->parameters, str->codecParameters());

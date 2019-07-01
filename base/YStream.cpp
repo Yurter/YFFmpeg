@@ -34,7 +34,10 @@ YCode YStream::init()
 
 std::string YStream::toString() const
 {
-    std::string str = utils::media_type_to_string(_type) + " stream: "
+    std::string str = "[" + std::to_string(parameters->contextUid())
+            + ":" + std::to_string(parameters->streamIndex()) + "] "
+            + utils::media_type_to_string(_type) + " stream: "
+            + parameters->codecName() + ", "
             + "dts_delta " + std::to_string(_packet_dts_delta) + ", "
             + "pts_delta " + std::to_string(_packet_pts_delta) + ", "
             + "time_base " + utils::rational_to_string(timeBase()) + ", "

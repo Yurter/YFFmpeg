@@ -7,7 +7,8 @@ YParameters::YParameters(YMediaType type) :
     _bitrate(DEFAULT_INT),
     _duration(DEFAULT_INT),
     _stream_index(INVALID_INT),
-    _time_base(DEFAULT_RATIONAL)
+    _time_base(DEFAULT_RATIONAL),
+    _context_uid(INVALID_INT)
 {
     setName("YParameters");
 }
@@ -73,6 +74,11 @@ void YParameters::setTimeBase(AVRational time_base)
     _time_base = time_base;
 }
 
+void YParameters::setContextUid(int64_t context_uid)
+{
+    _context_uid = context_uid;
+}
+
 AVCodecID YParameters::codecId() const
 {
     return _codec_id;
@@ -106,6 +112,11 @@ int64_t YParameters::streamIndex() const
 AVRational YParameters::timeBase() const
 {
     return _time_base;
+}
+
+int64_t YParameters::contextUid() const
+{
+    return _context_uid;
 }
 
 std::string YParameters::toString() const

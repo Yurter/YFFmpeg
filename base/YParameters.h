@@ -18,6 +18,7 @@ public:
     void                setDuration(int64_t duration);
     void                setStreamIndex(int64_t stream_index);
     void                setTimeBase(AVRational time_base);
+    void                setContextUid(int64_t context_uid);
 
     AVCodecID           codecId()       const;
     std::string         codecName()     const;
@@ -26,6 +27,7 @@ public:
     int64_t             duration()      const;
     int64_t             streamIndex()   const;
     AVRational          timeBase()      const;
+    int64_t             contextUid()    const;
 
     virtual std::string toString() const override;
 
@@ -43,6 +45,7 @@ protected:
     int64_t             _duration;
     int64_t             _stream_index;
     AVRational          _time_base;
+    int64_t             _context_uid;
 
 };
 

@@ -310,26 +310,17 @@ std::string YFFmpeg::toString() const
      *      Stream #0:1: Audio: aac, 44100 Hz, stereo, 128 kb/s
     */
     for (auto&& context : _data_processors_context) {
-        dump_str += context->toString();
+        dump_str += "\n" + context->toString();
         for (auto i = 0; i < context->numberStream(); i++) {
+            dump_str += "\n";
             dump_str += TAB + context->stream(i)->toString(); //TODO tut
         }
     }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
     /* Вывод информации о последовательностях обработки потоков */
+    dump_str += "\nProcessing sequences";
     int64_t i = 0;
     std::string delimeter = " -> ";
 //    auto& stream_map = _stream_map->streamMap();
