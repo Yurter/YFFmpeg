@@ -327,7 +327,9 @@ std::string YFFmpeg::toString() const
     //TODO
     // #1 YSource[0:1] -> YDecoder pcm_mulaw -> YResampler -> YEncoder aac -> YDestination[1:1]
     for (auto&& sequence : _processor_sequences) {
-        dump_str += "\n#" + std::to_string(i++) + " ";
+        dump_str += "\n";
+        dump_str +=  TAB;
+        dump_str += "#" + std::to_string(i++) + " ";
         for (auto&& elem : sequence) {
             if (elem->is("YMap")) { continue; }
             dump_str += elem->name();

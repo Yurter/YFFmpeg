@@ -20,5 +20,6 @@ YCode YVideoStream::init()
     _packet_dts_delta = packet_duration;
     _packet_pts_delta = packet_duration;
     _packet_duration = packet_duration;
+    setInited(true);
     return YCode::OK;
 }

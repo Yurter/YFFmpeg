@@ -53,6 +53,7 @@ public:
             }
         }
         {
+            log_debug("frame_size = " << _stream->codecParameters()->frame_size)
             setInited(true);
             return YCode::OK;
         }

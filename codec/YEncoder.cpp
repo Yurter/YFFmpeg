@@ -6,17 +6,10 @@ YEncoder::YEncoder(YStream* stream) :
     setName("YEncoder");
 }
 
-YEncoder::~YEncoder()
+AVCodec* YEncoder::findCodec()
 {
-    // TODO
-}
-
-AVCodec* YEncoder::findCodec() //TODO check
-{
-//    return avcodec_find_encoder(_stream->codecParameters()->codec_id);
     return avcodec_find_encoder(_stream->parameters->codecId());
 }
-
 
 YCode YEncoder::processInputData(YFrame& input_data) //TODO
 {

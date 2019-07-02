@@ -81,7 +81,7 @@ YCode YResampler::processInputData(YFrame& input_data)
 
 bool YResampler::initOutputFrame(AVFrame** frame, int frame_size)
 {
-//    frame_size = 1024; //TODO
+    frame_size = 1024; //TODO critical!
     auto in_param = dynamic_cast<YAudioParameters*>(_io_streams.first->parameters); //TODO
     auto out_param = dynamic_cast<YAudioParameters*>(_io_streams.second->parameters);
     /* Create a new frame to store the audio samples. */
@@ -109,7 +109,7 @@ bool YResampler::initOutputFrame(AVFrame** frame, int frame_size)
 }
 
 //bool YResampler::configChanged(const AVFrame *in, const AVFrame *out)
-bool YResampler::configChanged(AVFrame *in, AVFrame *out)
+bool YResampler::configChanged(AVFrame* in, AVFrame* out)
 {
     auto in_param = dynamic_cast<YAudioParameters*>(_io_streams.first->parameters); //TODO
     auto out_param = dynamic_cast<YAudioParameters*>(_io_streams.second->parameters);

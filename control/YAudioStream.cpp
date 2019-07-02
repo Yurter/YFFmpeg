@@ -20,5 +20,6 @@ YCode YAudioStream::init() //TODO
     _packet_dts_delta = duration;
     _packet_pts_delta = duration;
     _packet_duration = duration;
+    setInited(true);
     return YCode::OK;
 }
