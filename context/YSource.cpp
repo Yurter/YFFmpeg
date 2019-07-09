@@ -29,8 +29,8 @@ YSource::~YSource()
 YCode YSource::open()
 {
     return_if(opened(), YCode::INVALID_CALL_ORDER);
-    try_to(attachStreams());
     try_to(openContext());
+    try_to(attachStreams());
     _io_thread = YThread(std::bind(&YSource::read, this));
     _io_thread.setName("IOThread");
     _io_thread.start();

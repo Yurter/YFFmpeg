@@ -15,7 +15,7 @@ public:
     std::string         toString() const override;
     operator            std::string() const; //TODO заменить метод на оператор
 
-    AVInputFormat*      inputFormat() const;  //TODO убрать?
+    AVInputFormat*      inputFormat() const;  //TODO убрать? IOFormat() ?
 
 private:
 
