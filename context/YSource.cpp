@@ -32,6 +32,7 @@ YCode YSource::open()
     try_to(attachStreams());
     try_to(openContext());
     _io_thread = YThread(std::bind(&YSource::read, this));
+    _io_thread.setName("IOThread");
     _io_thread.start();
     return YCode::OK;
 }

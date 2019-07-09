@@ -57,6 +57,7 @@ YCode YDestination::open()
     try_to(openContext());
 //    try_to(parseFormatContext()); //TODO ??
     _io_thread = YThread(std::bind(&YDestination::write, this));
+    _io_thread.setName("IOThread");
     _io_thread.start();
     setInited(true);
     return YCode::OK;
@@ -140,7 +141,6 @@ YCode YDestination::write()
 
 YCode YDestination::writePacket(YPacket& packet)
 {
-    log_error(packet.streamIndex())
     if (av_interleaved_write_frame(_format_context, &packet.raw()) < 0) {
 //    if (av_write_frame(_format_context, &input_data.raw()) < 0) {
         log_error("Error muxing packet");

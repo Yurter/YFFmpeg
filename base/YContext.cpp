@@ -38,11 +38,16 @@ bool YContext::closed() const
     return !_opened;
 }
 
-YCode YContext::createStream(YStream* new_stream) //TODO
+YCode YContext::createStream(YStream* new_stream) //TODO ?
 {
     new_stream->setUid(utils::gen_stream_uid(uid(), numberStream()));
     _streams.push_back(new_stream);
     return YCode::OK;
+}
+
+YStream* YContext::bestStream(YMediaType type)
+{
+    return nullptr; //TODO
 }
 
 void YContext::reopenAfterFailure(int64_t timeout)
