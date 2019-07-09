@@ -19,6 +19,7 @@ public:
     virtual YCode       stampPacket(YPacket& packet) final;
 
     void                setUid(int64_t uid);
+    void                setTimeBase(AVRational time_base);
 
     int64_t             uid()       const;
     int64_t             index()     const;

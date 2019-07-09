@@ -75,7 +75,10 @@ enum YMediaType {
 #define DEFAULT_SAMPLE_FORMAT   AV_SAMPLE_FMT_NONE
 #define DEFAULT_CHANEL_LAYOUT   0
 
+#define DEFAULT_TIME_BASE       { 1, 1000 }
+
 #define invalid_int(x)          ((x) == INVALID_INT)
+#define invalid_rational(x)     ((x.den) == 0)
 #define not_inited_int(x)       ((x) == DEFAULT_INT)
 #define not_inited_ptr(x)       ((x) == nullptr)
 #define not_inited_float(x)     ((x) == DEFAULT_FLOAT)
@@ -115,6 +118,9 @@ enum YLogLevel {
 #define try_to(x) { auto ret = x; if (utils::exit_code(ret)) { log_error("Function " << (#x) << " failed with code: " << ret); return ret; } }
 #define return_if(cond,ret_value) { if (cond) { return ret_value; } }
 #define return_if_not(cond,ret_value) { if (!(cond)) { return ret_value; } }
+
+/* ? */
+#define if_not(x) if(!(x))
 
 /* Значения для задержек в коде в мс */
 #define SHORT_DELAY_MS          10

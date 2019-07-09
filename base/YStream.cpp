@@ -34,6 +34,7 @@ YCode YStream::init()
 
 std::string YStream::toString() const
 {
+    if_not(inited()) { return "not inited!"; }
     std::string str = "[" + std::to_string(parameters->contextUid())
             + ":" + std::to_string(parameters->streamIndex()) + "] "
             + utils::media_type_to_string(_type) + " stream: "
@@ -69,6 +70,11 @@ YCode YStream::stampPacket(YPacket& packet)
 void YStream::setUid(int64_t uid)
 {
     if (invalid_int(_uid)) { _uid = uid; }
+}
+
+void YStream::setTimeBase(AVRational time_base)
+{
+    _data->time_base = time_base;
 }
 
 int64_t YStream::uid() const

@@ -18,7 +18,7 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
         video_parameters->setWidth(1920);
         video_parameters->setHeight(1080);
         video_parameters->setAspectRatio({16,9});
-//        video_parameters.setFrameRate(24); //TODO
+        video_parameters->setFrameRate(24); //TODO
         video_parameters->setBitrate(400'000);
         video_parameters->setCodec("libx264");
         video_parameters->setContextUid(uid());

@@ -13,6 +13,7 @@ public:
     YCode               open() override;
     YCode               close() override;
     std::string         toString() const override;
+    operator            std::string() const; //TODO заменить метод на оператор
 
     AVInputFormat*      inputFormat() const;  //TODO убрать?
 
@@ -31,6 +32,6 @@ private:
 private:
 
     // FFmpeg
-    AVInputFormat*  _input_format; //TODO убрать, обращатся через mediaFormatContext()
+    AVInputFormat*  _input_format; //TODO убрать, обращатся через mediaFormatContext()? IOFormat() ?
 
 };

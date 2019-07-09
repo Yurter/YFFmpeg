@@ -153,16 +153,19 @@ int64_t YContext::numberStream() const
 
 YCode YContext::attachStreams() //TODO
 {
-    for (auto&& str : _streams) {
-        if (not_inited_ptr(str->raw())) {
+    return_if(numberStream() == 0, YCode::NOT_INITED);
+    for (auto&& stream : _streams) {
+        if (not_inited_ptr(stream->raw())) {
             auto avstream = avformat_new_stream(_format_context, nullptr);
             return_if(not_inited_ptr(avstream), YCode::ERR);
-            str->setRaw(avstream);
+            stream->setRaw(avstream);
 //            str->setUid(utils::gen_stream_uid(uid(), avstream->index));
         }
-        utils::init_codecpar(str->codecParameters(), str->parameters->codec());
-        utils::parameters_to_avcodecpar(str->parameters, str->codecParameters());
-        str->init();
+        utils::init_codecpar(stream->codecParameters(), stream->parameters->codec());
+        utils::parameters_to_avcodecpar(stream->parameters, stream->codecParameters());
+        /* crutch */ //TODO
+        if (invalid_rational(stream->timeBase())) { stream->setTimeBase(DEFAULT_TIME_BASE); }
+        try_to(stream->init());
     }
     return YCode::OK;
 }

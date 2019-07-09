@@ -115,9 +115,10 @@ void utils::parameters_to_context(YParameters* parametres, AVCodecContext* codec
     switch (parametres->type()) {
     case YMediaType::MEDIA_TYPE_VIDEO: {
         auto video_parameters = dynamic_cast<YVideoParameters*>(parametres);
-        codec->pix_fmt                = video_parameters->pixelFormat();
-        codec->width                  = int(video_parameters->width());
-        codec->height                 = int(video_parameters->height());
+        codec->pix_fmt      = video_parameters->pixelFormat();
+        codec->width        = int(video_parameters->width());
+        codec->height       = int(video_parameters->height());
+        codec->time_base    = DEFAULT_TIME_BASE;
 //        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
         break;
     }
