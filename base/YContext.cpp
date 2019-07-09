@@ -110,6 +110,10 @@ YCode YContext::parseFormatContext()
             audio_parameters->setBitrate(codecpar->bit_rate);
             audio_parameters->setChannelLayout(codecpar->channel_layout);
             audio_parameters->setChannels(codecpar->channels);
+            /* crutch */ //TODO
+            if (audio_parameters->channelLayout() == 0) {
+                audio_parameters->setChannelLayout(uint64_t(av_get_default_channel_layout(int(audio_parameters->channels()))));
+            }
             audio_parameters->setStreamIndex(i);
             audio_parameters->setTimeBase(avstream->time_base);
             audio_parameters->setContextUid(uid());

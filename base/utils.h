@@ -50,6 +50,6 @@ public:
 
 /* Макросы для отправки потоковых сообщений в лог */
 #define log_info(x)         { std::stringstream log_ss; log_ss << x; print_info(log_ss.str());      }
-#define log_warning(x)      { std::stringstream log_ss; log_ss << x; print_warning(log_ss.str());   }
-#define log_error(x)        { std::stringstream log_ss; log_ss << x; print_error(log_ss.str());     }
+#define log_warning(x)      { std::stringstream log_ss; log_ss << x; print_warning(log_ss.str());   } //TODO для требования ставить ;
+#define log_error(x)        { std::stringstream log_ss; log_ss << x; print_error(log_ss.str());     } void(0)
 #define log_debug(x)        { std::stringstream log_ss; log_ss << x; print_debug(log_ss.str());     }

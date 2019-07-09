@@ -4,6 +4,7 @@
 #include "YFrame.h"
 #include "YStream.h"
 
+//TODO class name: YAbstractRefi? YRefi?
 class YAbstractRefi : public YDataProcessor<YFrame,YFrame>
 {
 

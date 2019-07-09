@@ -118,6 +118,10 @@ bool YResampler::configChanged(AVFrame* in, AVFrame* out)
         if (in_param->channelLayout() != in->channel_layout
                 || in_param->sampleRate() != in->sample_rate
                 || in_param->sampleFormat()  != in->format) {
+            log_error("in_param: " << in_param->toString());
+            log_error("in->channel_layout = " << in->channel_layout << " "
+                      << "in->sample_rate = " << in->sample_rate << " "
+                      << "in->format " << in->format);
             return true;
         }
     }
@@ -125,6 +129,10 @@ bool YResampler::configChanged(AVFrame* in, AVFrame* out)
         if (out_param->channelLayout() != out->channel_layout
                 || out_param->sampleRate() != out->sample_rate
                 || out_param->sampleFormat()  != out->format) {
+            log_error("out_param: " << out_param->toString());
+            log_error("out->channel_layout = " << out->channel_layout << " "
+                      << "out->sample_rate = " << out->sample_rate << " "
+                      << "out->format " << out->format);
             return true;
         }
     }
