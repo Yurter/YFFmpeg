@@ -58,6 +58,10 @@ YLogger &YLogger::instance()
 void YLogger::setLogLevel(YLogLevel log_level)
 {
     _log_level = log_level;
+}
+
+void YLogger::setFfmpegLogLevel(YLogLevel log_level)
+{
     switch (log_level) {
     case YLogLevel::Quiet:
         av_log_set_level(AV_LOG_QUIET);
@@ -72,7 +76,7 @@ void YLogger::setLogLevel(YLogLevel log_level)
         av_log_set_level(AV_LOG_ERROR);
         break;
     case YLogLevel::Debug:
-//        av_log_set_level(AV_LOG_DEBUG); //TODO
+        av_log_set_level(AV_LOG_DEBUG);
         break;
     }
 }

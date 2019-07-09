@@ -15,7 +15,7 @@ class YFFmpeg : public YThread
 
 public:
 
-    YFFmpeg();
+    YFFmpeg(); //TODO hwaccel flag_enum|bool_arg|set_method
     ~YFFmpeg() override;
 
     bool                stop();                             ///< Функция завершает работу класса.

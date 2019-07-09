@@ -18,6 +18,11 @@ extern "C" {
 #include <libswresample/swresample.h>
 }
 
+/* ? */
+//enum Yode {hwaccel
+//    //
+//};
+
 /* Варианты для быстрой преднастройки */
 /* параметров медиа-контекстов        */
 enum YMediaPreset {

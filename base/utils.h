@@ -37,9 +37,10 @@ public:
 /* ? */
 #define logger              YLogger::instance()
 
-/* Макрос установки уровня лога, сообщения имеющие урень выше установленного игнорируются */
-#define set_log_level(x)    logger.setLogLevel(x)
-#define stop_log()          logger.quit(); logger.join() //TODO не работает, вылет при завершении поток логера не завершается
+/* Макрос установки уровня лога; сообщения, имеющие урень выше установленного, игнорируются */
+#define set_log_level(x)        logger.setLogLevel(x)
+#define set_ffmpeg_log_level(x) logger.setFfmpegLogLevel(x)
+#define stop_log()              logger.quit(); logger.join() //TODO не работает, вылет при завершении - поток лога не завершается
 
 /* Макросы для отправки строковых сообщений в лог */
 #define print_info(x)       logger.print(this, YLogLevel::Info, x)
