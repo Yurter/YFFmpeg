@@ -155,7 +155,7 @@ int64_t YContext::numberStream() const
     return int64_t(_streams.size());
 }
 
-YCode YContext::attachStreams() //TODO
+YCode YContext::attachStreams()  //TODO
 {
     return_if(numberStream() == 0, YCode::NOT_INITED);
     for (auto&& stream : _streams) {
