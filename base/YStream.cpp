@@ -2,13 +2,13 @@
 #include "utils.h"
 
 YStream::YStream(YParameters* param) :
-    YStream(nullptr, YMediaType::MEDIA_TYPE_UNKNOWN, param)
+    YStream(nullptr, param)
 {
     //
 }
 
-YStream::YStream(AVStream* stream, YMediaType type, YParameters* param) :
-    YData<AVStream*>(stream, type),
+YStream::YStream(AVStream* stream, YParameters* param) :
+    YData<AVStream*>(stream, param->type()),
     parameters(param),
     _uid(INVALID_INT),
     _duration(DEFAULT_INT),
@@ -29,7 +29,11 @@ YStream::~YStream()
 
 YCode YStream::init()
 {
-    return YCode::ERR;
+    /* Иницаиализация полей параметров кодека дефолтными значениями */
+    try_to(utils::init_codecpar(codecParameters(), parameters->codec()));
+    /* Инициализация полей параметров кодека значениями из параметров потока */
+    utils::parameters_to_avcodecpar(parameters, codecParameters());
+    return YCode::OK;
 }
 
 std::string YStream::toString() const
@@ -105,6 +109,11 @@ AVCodecParameters* YStream::codecParameters()
 void YStream::increaseDuration(int64_t value)
 {
     _duration += value;
+}
+
+void YStream::parseParametres() //TODO ?
+{
+    _data->time_base = parameters->timeBase();
 }
 
 //YParameters* YStream::parameters()

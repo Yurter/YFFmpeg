@@ -130,3 +130,6 @@ enum YLogLevel {
 /* ? */
 //#define TAB                     "\t"
 #define TAB                     "  "
+
+/* ? */ //TODO
+#define EMPTY_CONSTRUCTOR

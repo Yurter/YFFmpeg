@@ -30,6 +30,7 @@ public:
     int64_t             contextUid()    const;
 
     virtual std::string toString() const override;
+//    virtual YCode       inited() con
 
 //    virtual void        toCodecpar(AVCodecParameters* codecpar);
     virtual void        softCopy(YParameters* other_parametrs);

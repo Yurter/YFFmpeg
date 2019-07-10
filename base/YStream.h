@@ -11,7 +11,7 @@ public:
     YStream(const YStream& other) = delete;
     YStream(const YStream&& other) = delete;
     YStream(YParameters* param = new YParameters());
-    YStream(AVStream* stream, YMediaType type, YParameters* param);
+    YStream(AVStream* stream, YParameters* param);
     virtual ~YStream() override;
 
     virtual YCode       init() override;
@@ -32,6 +32,10 @@ public:
 public:
 
     YParameters*        parameters;
+
+protected:
+
+    virtual void        parseParametres();
 
 protected:
 

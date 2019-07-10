@@ -23,8 +23,10 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
         video_parameters->setBitrate(400'000);
         video_parameters->setCodec("libx264");
         video_parameters->setContextUid(uid());
-//        createStream(new YVideoStream(video_parameters));
-        createStream(video_parameters);
+        if (utils::exit_code(createStream(video_parameters))) {
+            log_error("Failed to create video stream");
+            return;
+        }
         /* Audio */
         auto audio_parameters = new YAudioParameters;
         audio_parameters->setSampleRate(44'100);
@@ -34,8 +36,10 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
         audio_parameters->setChannels(2);
         audio_parameters->setCodec("aac");
         audio_parameters->setContextUid(uid());
-//        createStream(new YAudioStream(audio_parameters));
-        createStream(audio_parameters);
+        if (utils::exit_code(createStream(audio_parameters))) {
+            log_error("Failed to create audio stream");
+            return;
+        }
         break;
     }
     case Timelapse:
@@ -124,6 +128,9 @@ YCode YDestination::openContext()
             return YCode::INVALID_INPUT;
         }
     }
+    //AVSTREAM_INIT_IN_WRITE_HEADER
+    //AVSTREAM_INIT_IN_INIT_OUTPUT
+//    avformat_write_header(_format_context, nullptr); //TODO check return value?
     if (avformat_write_header(_format_context, nullptr) < 0) {
         log_error("Error occurred when opening output");
         return YCode::ERR;
