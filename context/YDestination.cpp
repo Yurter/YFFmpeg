@@ -6,6 +6,7 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
     _output_format(nullptr)
 {
     setName("YDestination");
+    createContext();
     switch (preset) {
     case Auto: {
         guessOutputFromat();
@@ -22,7 +23,8 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
         video_parameters->setBitrate(400'000);
         video_parameters->setCodec("libx264");
         video_parameters->setContextUid(uid());
-        createStream(new YVideoStream(video_parameters));
+//        createStream(new YVideoStream(video_parameters));
+        createStream(video_parameters);
         /* Audio */
         auto audio_parameters = new YAudioParameters;
         audio_parameters->setSampleRate(44'100);
@@ -32,7 +34,8 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
         audio_parameters->setChannels(2);
         audio_parameters->setCodec("aac");
         audio_parameters->setContextUid(uid());
-        createStream(new YAudioStream(audio_parameters));
+//        createStream(new YAudioStream(audio_parameters));
+        createStream(audio_parameters);
         break;
     }
     case Timelapse:
@@ -41,7 +44,6 @@ YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
         log_error("Invalid preset");
         break;
     }
-    createContext(); //TODO
 }
 
 YDestination::~YDestination()
@@ -53,7 +55,7 @@ YCode YDestination::open()
 {
     return_if(opened(), YCode::INVALID_CALL_ORDER);
     _output_format = _format_context->oformat; //TODO оператор "болтается в воздухе"
-    try_to(attachStreams());
+//    try_to(attachStreams());
     try_to(openContext());
 //    try_to(parseFormatContext()); //TODO ??
     _io_thread = YThread(std::bind(&YDestination::write, this));
@@ -116,7 +118,6 @@ YCode YDestination::createContext()
 YCode YDestination::openContext()
 {
     log_info("Destination: \"" << _media_resource_locator << "\" is opening...");
-    log_debug(stream(0)->codecParameters()->width << " " << stream(0)->codecParameters()->height);
     if (!(_format_context->flags & AVFMT_NOFILE)) {
         if (avio_open(&_format_context->pb, _media_resource_locator.c_str(), AVIO_FLAG_WRITE) < 0) {
             log_error("Could not open output: " << _media_resource_locator);

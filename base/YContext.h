@@ -21,9 +21,8 @@ public:
     virtual bool        opened() const final;                       ///< Функция возвращает true, если контекст находится в открытом состоянии.
     virtual bool        closed() const final;                       ///< Функция возвращает true, если контекст находится в закрытом состоянии.
 
-//    virtual std::string toString() const override;                  ///< Функция возвращает строковое описание объекта.
-
     YCode               createStream(YStream* new_stream);          ///< Функция создает поток к текущем контексте.
+    YCode               createStream(YParameters* param);           ///< Функция создает поток к текущем контексте.
     YStream*            bestStream(YMediaType type);                ///< Функция возвращает указатель на поток заданного типа с наилучшими параметрами; nullptr, если потока заданного типа нет.
     void                reopenAfterFailure(int64_t timeout);        ///< Функция позволяет автоматически переоткрывать контекст в случаее его закрытия по заданному таймауту в секундах.
 
@@ -40,7 +39,7 @@ protected:
 
     virtual YCode       createContext() = 0;
     virtual YCode       openContext()   = 0;
-    YCode               attachStreams();
+//    YCode               attachStreams();
 
     YCode               parseFormatContext();
 
