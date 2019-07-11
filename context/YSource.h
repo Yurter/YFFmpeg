@@ -10,6 +10,7 @@ public:
     YSource(const std::string& mrl, YMediaPreset preset = YMediaPreset::Auto);
     virtual ~YSource() override;
 
+    YCode               init() override;
     YCode               open() override;
     YCode               close() override;
     std::string         toString() const override;

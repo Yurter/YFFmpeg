@@ -109,15 +109,24 @@ enum YLogLevel {
 };
 
 /* ? */
-#define guaranteed_push(proc,data) while (!proc->push(data)) { utils::sleep_for(SHORT_DELAY_MS); }
+#define guaranteed_push(proc,data) while (!proc->push(data)) { utils::sleep_for(SHORT_DELAY_MS); } SEMICOLON_REQUIREMENT
 
 /* Функция возвращает id потока, в котором вызвана */
 #define current_thread_id() std::this_thread::get_id()
 
 /* ? */
-#define try_to(x) { auto ret = x; if (utils::exit_code(ret)) { log_error("Function " << (#x) << " failed with code: " << ret); return ret; } }
-#define return_if(cond,ret_value) { if (cond) { return ret_value; } }
-#define return_if_not(cond,ret_value) { if (!(cond)) { return ret_value; } }
+#define try_to(x) { auto ret = x;\
+                    if (utils::exit_code(ret)) {\
+                        log_error("Function " << (#x) << " failed with code: " << ret);\
+                        return ret;\
+                    }\
+                  } SEMICOLON_REQUIREMENT
+
+/* ? */
+#define return_if(cond,ret_value) { if (cond) { return ret_value; } } SEMICOLON_REQUIREMENT
+
+/* ? */
+#define return_if_not(cond,ret_value) { if (!(cond)) { return ret_value; } } SEMICOLON_REQUIREMENT
 
 /* ? */
 #define if_not(x) if(!(x))
@@ -131,5 +140,8 @@ enum YLogLevel {
 //#define TAB                     "\t"
 #define TAB                     "  "
 
-/* ? */ //TODO
+/* ? */
+#define SEMICOLON_REQUIREMENT   void(0)
+
+/* ? */
 #define EMPTY_CONSTRUCTOR

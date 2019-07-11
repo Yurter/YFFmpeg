@@ -10,6 +10,7 @@ public:
     YDestination(const std::string& mrl, YMediaPreset preset = YMediaPreset::Auto);
     virtual ~YDestination() override;
 
+    YCode               init() override;
     YCode               open() override;
     YCode               close() override;
     std::string         toString() const override;
@@ -32,11 +33,6 @@ private:
     void                parseOutputFormat();
 
 private:
-public: //TODO
-
-	// General parameters
-//    int64_t             _video_packet_index;
-//    int64_t             _audio_packet_index;
 
     //FFmpeg
     AVOutputFormat*     _output_format;

@@ -5,7 +5,16 @@ YSource::YSource(const std::string& mrl, YMediaPreset preset) :
     _input_format(nullptr)
 {
     setName("YSource");
-    switch (preset) {
+}
+
+YSource::~YSource()
+{
+    close();
+}
+
+YCode YSource::init()
+{
+    switch (_preset) {
     case Auto:
         break;
     case Virtual:
@@ -18,12 +27,9 @@ YSource::YSource(const std::string& mrl, YMediaPreset preset) :
         log_error("Invalid preset");
         break;
     }
-    createContext(); //TODO
-}
-
-YSource::~YSource()
-{
-	close();
+    try_to(createContext());
+    setInited(true);
+    return YCode::OK;
 }
 
 YCode YSource::open()

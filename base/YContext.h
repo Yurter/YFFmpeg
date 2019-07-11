@@ -11,7 +11,7 @@ class YContext : public YDataProcessor<YPacket, YPacket>
 
 public:
 
-    YContext(const std::string& mrl);                               ///< mrl - media resource locator.
+    YContext(const std::string& mrl, YMediaPreset preset = YMediaPreset::Auto); ///< mrl - media resource locator.
     YContext(const YContext& other) = delete;
     YContext(const YContext&& other) = delete;
     virtual ~YContext() override;
@@ -25,8 +25,6 @@ public:
     YCode               createStream(YParameters* param);           ///< Функция создает поток к текущем контексте.
     YStream*            bestStream(YMediaType type);                ///< Функция возвращает указатель на поток заданного типа с наилучшими параметрами; nullptr, если потока заданного типа нет.
     void                reopenAfterFailure(int64_t timeout);        ///< Функция позволяет автоматически переоткрывать контекст в случаее его закрытия по заданному таймауту в секундах.
-
-    void                setUid(int64_t uid);                        ///< Функция установки uid контекста, не позволяет повторных вызовов.
 
     int64_t             uid() const;                                ///< Функция возвращает uid.
     std::string         mediaResourceLocator() const;               ///< Функция возвращает mrl.
@@ -43,6 +41,10 @@ protected:
 
     YCode               parseFormatContext();
 
+private:
+
+    void                setUid(int64_t uid);                        ///< Функция установки uid контекста, не позволяет повторных вызовов.
+
 protected:
 
     // General
@@ -54,6 +56,7 @@ protected:
     bool                _reopening_after_failure;
     int64_t             _reopening_timeout;
     int64_t             _artificial_delay;
+    YMediaPreset        _preset;
 
     // FFmpeg
     AVFormatContext*	_format_context;
