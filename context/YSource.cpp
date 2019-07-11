@@ -1,7 +1,7 @@
 #include "YSource.h"
 
 YSource::YSource(const std::string& mrl, YMediaPreset preset) :
-    YContext(mrl),
+    YContext(mrl, preset),
     _input_format(nullptr)
 {
     setName("YSource");

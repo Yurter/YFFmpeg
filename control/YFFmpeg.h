@@ -35,6 +35,7 @@ private:
 
     YCode               initRefi();
     YCode               initCodec();
+    YCode               initContext();
     YCode               openContext();
     YCode               closeContext();
     YCode               startProcesors();

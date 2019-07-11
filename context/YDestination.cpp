@@ -2,7 +2,7 @@
 #include <exception>
 
 YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
-    YContext(mrl),
+    YContext(mrl, preset),
     _output_format(nullptr)
 {
     setName("YDestination");
@@ -58,6 +58,7 @@ YCode YDestination::init()
 YCode YDestination::open()
 {
     return_if(opened(), YCode::INVALID_CALL_ORDER);
+    return_if_not(inited(), YCode::NOT_INITED);
     _output_format = _format_context->oformat; //TODO оператор "болтается в воздухе"
     try_to(openContext());
     _io_thread = YThread(std::bind(&YDestination::write, this));

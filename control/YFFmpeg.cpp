@@ -65,6 +65,7 @@ void YFFmpeg::setRoute(Route route)
 YCode YFFmpeg::init()
 {
     log_info("Initialization started...");
+    try_to(initContext());
     try_to(openContext());
     try_to(determineSequences());
     try_to(initRefi());
@@ -169,6 +170,14 @@ YCode YFFmpeg::initCodec()
     }
     for (auto&& refi : _data_processors_encoder) {
         try_to(refi->init());
+    }
+    return YCode::OK;
+}
+
+YCode YFFmpeg::initContext()
+{
+    for (auto&& context : _data_processors_context) {
+        try_to(context->init());
     }
     return YCode::OK;
 }

@@ -6,19 +6,26 @@
 #include <windows.h>
 
 YLogger::YLogger() :
+    _messages(new MessageQueue),
     _log_level(YLogLevel::Warning)
 {
     setName("YLogger");
     start();
 }
 
+YLogger::~YLogger()
+{
+    delete _messages;
+}
+
 YCode YLogger::run()
 {
     YMessage message;
-    if (!_messages.pop(message)) {
-        utils::sleep_for(SHORT_DELAY_MS);
-        return YCode::AGAIN;
-    }
+    guaranteed_pop(_messages, message);
+//    if (!_messages->pop(message)) {
+//        utils::sleep_for(SHORT_DELAY_MS);
+//        return YCode::AGAIN;
+//    }
 
     HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -95,7 +102,7 @@ void YLogger::print(const YObject* caller, YLogLevel log_level, std::string mess
     }
 
     ss << " " << message;
-    _messages.push({log_level, ss.str()});
+    guaranteed_push(_messages, YMessage(log_level, ss.str()));
 }
 
 std::string YLogger::toString() const

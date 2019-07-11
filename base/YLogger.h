@@ -21,7 +21,7 @@ public:
 private:
 
     YLogger();
-    virtual ~YLogger() override = default;
+    virtual ~YLogger() override;
 
     YLogger(YLogger const&)               = delete;
     YLogger& operator=(YLogger const&)    = delete;
@@ -32,7 +32,7 @@ private:
 private:
 
     // General
-    MessageQueue        _messages;
+    MessageQueue*       _messages;
     YLogLevel           _log_level;
 
 };

@@ -44,7 +44,7 @@ protected:
     [[nodiscard]] virtual YCode sendOutputData(outType output_data
                                                 , YNextProcessor* next_proc = nullptr) final
     {
-        if (next_proc != nullptr) {
+        if (inited_ptr(next_proc)) {
             guaranteed_push(next_proc, output_data);
             return YCode::OK;
         }
@@ -59,10 +59,11 @@ private:
     {
         return_if(!inited(), YCode::NOT_INITED); //TODO убрать
         inType input_data;
-        if (!pop(input_data)) {
-            utils::sleep_for(SHORT_DELAY_MS);
-            return YCode::AGAIN;
-        }
+        guaranteed_pop(this, input_data);
+//        if (!pop(input_data)) {
+//            utils::sleep_for(SHORT_DELAY_MS);
+//            return YCode::AGAIN;
+//        }
         return_if(ignoreType(input_data.type()), YCode::AGAIN);
         return processInputData(input_data);
     }
