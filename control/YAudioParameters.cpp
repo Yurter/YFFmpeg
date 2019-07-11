@@ -63,7 +63,7 @@ int64_t YAudioParameters::channels() const
 std::string YAudioParameters::toString() const //TODO
 {
     std::string str = "Sample rate: " + std::to_string(sampleRate()) + ", "
-            + "sample format: " + av_get_sample_fmt_name(sampleFormat()) + ", "
+            + "sample format: " + av_get_sample_fmt_name(sampleFormat()) + "[" + std::to_string(sampleFormat()) + "], "
             + "channel layout: " + std::to_string(channelLayout()) + ", "
             + "channels: " + std::to_string(channels());
     return str;

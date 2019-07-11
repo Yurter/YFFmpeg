@@ -97,7 +97,7 @@ bool YResampler::initOutputFrame(AVFrame** frame, int frame_size)
     (*frame)->nb_samples     = frame_size;
     (*frame)->channel_layout = out_param->channelLayout();
     (*frame)->format         = out_param->sampleFormat();
-    (*frame)->sample_rate    = out_param->sampleFormat();
+    (*frame)->sample_rate    = int(out_param->sampleRate());
     /* Allocate the samples of the created frame. This call will make
      * sure that the audio frame can hold as many samples as specified. */
     if (av_frame_get_buffer(*frame, 0) < 0) {
