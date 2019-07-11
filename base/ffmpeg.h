@@ -118,7 +118,9 @@ enum YLogLevel {
 /* ? */
 #define try_to(x) { auto ret = x;\
                     if (utils::exit_code(ret)) {\
-                        log_error("Function " << (#x) << " failed with code: " << ret);\
+                        log_error("Function " << (#x)\
+                        << " failed with code: " << ret\
+                        << " - " << utils::code_to_string(ret));\
                         return ret;\
                     }\
                   } SEMICOLON_REQUIREMENT
