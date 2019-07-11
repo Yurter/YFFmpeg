@@ -31,6 +31,7 @@ YCode YDestination::init()
         video_parameters->setFrameRate(24); //TODO
         video_parameters->setBitrate(400'000);
         video_parameters->setCodec("libx264");
+        video_parameters->setTimeBase({ 1, 1000 });
         video_parameters->setContextUid(uid());
         try_to(createStream(video_parameters));
         /* Audio */

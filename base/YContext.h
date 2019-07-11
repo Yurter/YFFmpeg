@@ -37,7 +37,6 @@ protected:
 
     virtual YCode       createContext() = 0;
     virtual YCode       openContext()   = 0;
-//    YCode               attachStreams();
 
     YCode               parseFormatContext();
 

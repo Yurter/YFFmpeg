@@ -45,7 +45,8 @@ std::string YStream::toString() const
             + parameters->codecName() + ", "
             + "dts_delta " + std::to_string(_packet_dts_delta) + ", "
             + "pts_delta " + std::to_string(_packet_pts_delta) + ", "
-            + "time_base " + utils::rational_to_string(timeBase()) + ", "
+//            + "time_base " + utils::rational_to_string(timeBase()) + ", "
+            + "time_base " + utils::rational_to_string(parameters->timeBase()) + ", "
             + "duration " + std::to_string(_duration);
     return str;
 }
@@ -77,10 +78,10 @@ void YStream::setUid(int64_t uid)
     if (invalid_int(_uid)) { _uid = uid; }
 }
 
-void YStream::setTimeBase(AVRational time_base)
-{
-    _data->time_base = time_base;
-}
+//void YStream::setTimeBase(AVRational time_base)
+//{
+//    _data->time_base = time_base;
+//}
 
 int64_t YStream::uid() const
 {
@@ -97,10 +98,10 @@ int64_t YStream::duration() const
     return _duration;
 }
 
-AVRational YStream::timeBase() const
-{
-    return _data->time_base;
-}
+//AVRational YStream::timeBase() const
+//{
+//    return _data->time_base;
+//}
 
 AVCodecParameters* YStream::codecParameters()
 {

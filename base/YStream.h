@@ -19,12 +19,12 @@ public:
     virtual YCode       stampPacket(YPacket& packet) final;
 
     void                setUid(int64_t uid);
-    void                setTimeBase(AVRational time_base);
+//    void                setTimeBase(AVRational time_base);
 
     int64_t             uid()       const;
     int64_t             index()     const;
     int64_t             duration()  const;
-    AVRational          timeBase()  const;
+//    AVRational          timeBase()  const;
 
     AVCodecParameters*  codecParameters();
     void                increaseDuration(int64_t value);
