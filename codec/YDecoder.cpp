@@ -24,7 +24,7 @@ YCode YDecoder::processInputData(YPacket& input_data)
     switch (ret) {
     case 0:
         output_data.setType(input_data.type());
-        output_data.setStreamIndex(input_data.streamIndex());
+//        output_data.setStreamIndex(input_data.streamIndex());
         return sendOutputData(output_data);
     case AVERROR(EAGAIN):
         return YCode::AGAIN;

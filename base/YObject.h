@@ -13,7 +13,7 @@ public:
     virtual ~YObject() = default;
 
     void                setName(std::string name);
-    std::string         name()  const;
+    std::string         name() const;
     bool                is(std::string name);
 
     virtual YCode       init();
@@ -21,8 +21,9 @@ public:
     bool                inited() const;
 
     virtual std::string toString() const;
+    //TODO operator std::string()
 
-    friend std::ostream& operator<<(std::ostream& os, const YObject& obj);
+    friend std::ostream&    operator<<(std::ostream& os, const YObject& obj);
 
 private:
 

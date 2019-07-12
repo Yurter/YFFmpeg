@@ -8,8 +8,8 @@ YFrame::YFrame() :
 }
 
 YFrame::YFrame(AVFrame *frame) :
-    YData<AVFrame*>(frame),
-    _stream_index(INVALID_INT)
+    YData<AVFrame*>(frame)//,
+//    _stream_index(INVALID_INT)
 {
     setName("YFrame");
 //    _data = frame;
@@ -75,12 +75,12 @@ std::string YFrame::toString() const
     return str;
 }
 
-int64_t YFrame::streamIndex() const
-{
-    return _stream_index;
-}
+//int64_t YFrame::streamIndex() const
+//{
+//    return _stream_index;
+//}
 
-void YFrame::setStreamIndex(int64_t stream_index)
-{
-    _stream_index = stream_index;
-}
+//void YFrame::setStreamIndex(int64_t stream_index)
+//{
+//    _stream_index = stream_index;
+//}

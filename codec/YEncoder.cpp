@@ -25,6 +25,9 @@ YCode YEncoder::processInputData(YFrame& input_data) //TODO
         return YCode::AGAIN;
     }
     input_data.free(); //TODO
-    output_data.setStreamIndex(input_data.streamIndex());
+//    output_data.setStreamIndex(input_data.streamIndex());
+    output_data.setStreamIndex(_stream->parameters->streamIndex());
+    output_data.setStreamUid(_stream->uid());
+    log_debug(output_data);
     return sendOutputData(output_data);
 }

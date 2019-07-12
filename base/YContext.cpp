@@ -42,6 +42,7 @@ YCode YContext::createStream(YStream* new_stream)
 {
     try_to(new_stream->init());
     new_stream->setUid(utils::gen_stream_uid(uid(), numberStream()));
+    new_stream->parameters->setStreamIndex(numberStream());
     _streams.push_back(new_stream);
     return YCode::OK;
 }
