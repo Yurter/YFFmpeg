@@ -12,10 +12,12 @@ class YData : public YMediaData
 public:
 
     YData() :
-        YData(Type(), YMediaType::MEDIA_TYPE_UNKNOWN)
-    { }
+        YData(Type())
+    {
+        EMPTY_CONSTRUCTOR
+    }
 
-    YData(Type data, YMediaType type) :
+    YData(Type data, YMediaType type = YMediaType::MEDIA_TYPE_UNKNOWN) :
         YMediaData(type),
         _data(data)
     {
