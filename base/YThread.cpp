@@ -31,10 +31,11 @@ YThread::~YThread()
 YCode YThread::start()
 {
     return_if(running(), YCode::INVALID_CALL_ORDER);
-    return_if_not(inited(), YCode::NOT_INITED);
+//    return_if_not(inited(), YCode::NOT_INITED);
+    if_not(inited()) { try_to(init()); }
+    _running = true;
     _thread = std::thread([this]() {
         log_debug("Thread started");
-        _running = true;
         while (_running && !utils::exit_code(_exit_code = _loop_function())) {}
         _running = false;
         log_debug("Thread finished with code: " << _exit_code

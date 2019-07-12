@@ -53,9 +53,6 @@ std::string YStream::toString() const
 
 YCode YStream::stampPacket(YPacket& packet)
 {
-    if (packet.type() != type()) {
-        log_error(packet.toString());
-    }
     return_if(packet.type() != type(), YCode::INVALID_INPUT);
 
     packet.setDts(_prev_dts);
