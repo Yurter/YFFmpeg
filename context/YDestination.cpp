@@ -52,6 +52,10 @@ YCode YDestination::init()
         log_error("Invalid preset");
         break;
     }
+    if (numberStream() == 0) {
+        log_error("No streams to mux were specified");
+        return YCode::NOT_INITED;
+    }
     setInited(true);
     return YCode::OK;
 }
