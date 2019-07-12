@@ -19,7 +19,7 @@ public:
     YThread& operator=(const YThread&)  = delete;
     virtual ~YThread() override;
 
-    virtual void        start()     final;
+    virtual YCode       start()     final;
     virtual void        quit()      final;
     virtual bool        running()   final;
     virtual void        join()      final;

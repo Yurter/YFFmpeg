@@ -51,7 +51,7 @@ YCode YResampler::init()
 
 YCode YResampler::processInputData(YFrame& input_data)
 {
-    return_if_not(inited(), YCode::NOT_INITED);
+    return_if_not(inited(), YCode::NOT_INITED); //TODO убрать в YDataProcessor
     if (swr_convert_frame(_resampler_context, nullptr, input_data.raw()) != 0) {
         log_error("swr_convert_frame failed"); //TODO формулировка
         return YCode::ERR;

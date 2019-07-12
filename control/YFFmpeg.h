@@ -26,6 +26,8 @@ public:
     void                addElement(YObject* element);       ///< Функция добавляет процессор меди-данных в кучу.
     void                setRoute(Route route);              ///< Функция устанавливает соответствие между входным и выходным потоками.
 
+    void                dump() const;                       ///<
+
 private:
 
     YCode               init()  override;

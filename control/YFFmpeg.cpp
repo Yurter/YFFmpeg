@@ -62,6 +62,11 @@ void YFFmpeg::setRoute(Route route)
     _stream_map->addRoute(route);
 }
 
+void YFFmpeg::dump() const //TODO operator std::string()
+{
+//    log_info(this);
+}
+
 YCode YFFmpeg::init()
 {
     log_info("Initialization started...");
@@ -71,14 +76,14 @@ YCode YFFmpeg::init()
     try_to(initRefi());
     try_to(initCodec());
     try_to(startProcesors());
-    log_info(toString());
+    log_info(toString()); //void dump();
     setInited(true);
     return YCode::OK;
 }
 
 YCode YFFmpeg::run()
 {
-    if (!inited()) {
+    if (!inited()) { // TODO перенести в YThread::start
         try_to(init());
     }
 

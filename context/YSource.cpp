@@ -114,14 +114,14 @@ YCode YSource::read()
         log_error("Cannot read source: \"" << _media_resource_locator << "\". Error or EOF.");
         return YCode::ERR;
     }
-    push(packet);
+    guaranteed_push(this, packet);
     return YCode::OK;
 }
 
 YCode YSource::processInputData(YPacket& input_data)
 {
     auto packet_stream = stream(input_data.raw().stream_index);
-    return_if(packet_stream == nullptr, YCode::INVALID_INPUT);
+    return_if(not_inited_ptr(packet_stream), YCode::INVALID_INPUT);
     input_data.setType(packet_stream->type());
     input_data.setStreamUid(packet_stream->uid());
     if (inited_int(_artificial_delay)) { utils::sleep_for(_artificial_delay); }
