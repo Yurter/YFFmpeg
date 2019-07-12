@@ -1,7 +1,6 @@
 #pragma once
 
 #include "YMediaData.h"
-#include "ffmpeg.h"
 
 class YParameters : public YMediaData
 {
@@ -30,7 +29,6 @@ public:
     int64_t             contextUid()    const;
 
     virtual std::string toString() const override;
-//    virtual YCode       inited() con
 
 //    virtual void        toCodecpar(AVCodecParameters* codecpar);
     virtual void        softCopy(YParameters* other_parametrs);
@@ -38,7 +36,6 @@ public:
 
 protected:
 
-    // General
     AVCodec*            _codec;
     AVCodecID           _codec_id;
     std::string			_codec_name;

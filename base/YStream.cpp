@@ -4,7 +4,7 @@
 YStream::YStream(YParameters* param) :
     YStream(nullptr, param)
 {
-    //
+    EMPTY_CONSTRUCTOR
 }
 
 YStream::YStream(AVStream* stream, YParameters* param) :
@@ -53,8 +53,6 @@ std::string YStream::toString() const
 
 YCode YStream::stampPacket(YPacket& packet)
 {
-//    log_error(packet.toString());
-//    log_error(packet.type());
     return_if(packet.type() != type(), YCode::INVALID_INPUT);
 
     packet.setDts(_prev_dts);
@@ -75,11 +73,6 @@ void YStream::setUid(int64_t uid)
     if (invalid_int(_uid)) { _uid = uid; }
 }
 
-//void YStream::setTimeBase(AVRational time_base)
-//{
-//    _data->time_base = time_base;
-//}
-
 int64_t YStream::uid() const
 {
     return _uid;
@@ -95,11 +88,6 @@ int64_t YStream::duration() const
     return _duration;
 }
 
-//AVRational YStream::timeBase() const
-//{
-//    return _data->time_base;
-//}
-
 AVCodecParameters* YStream::codecParameters()
 {
     return _data->codecpar;
@@ -114,8 +102,3 @@ void YStream::parseParametres() //TODO ?
 {
     _data->time_base = parameters->timeBase();
 }
-
-//YParameters* YStream::parameters()
-//{
-//    return _parameters;
-//}

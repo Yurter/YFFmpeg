@@ -42,7 +42,8 @@ protected:
 
 private:
 
-    void                setUid(int64_t uid);                        ///< Функция установки uid контекста, не позволяет повторных вызовов.
+    void                setUid(int64_t uid);                        ///< Функция установки uid контекста, не допускает повторного вызовова.
+//    YStream*            bestVideoStream()
 
 protected:
 

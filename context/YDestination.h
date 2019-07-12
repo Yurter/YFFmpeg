@@ -30,7 +30,7 @@ private:
 
     YCode               processInputData(YPacket& input_data) override;
 
-    void                parseOutputFormat();
+    YCode               parseOutputFormat();
 
 private:
 

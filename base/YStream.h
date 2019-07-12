@@ -19,12 +19,10 @@ public:
     virtual YCode       stampPacket(YPacket& packet) final;
 
     void                setUid(int64_t uid);
-//    void                setTimeBase(AVRational time_base);
 
     int64_t             uid()       const;
     int64_t             index()     const;
     int64_t             duration()  const;
-//    AVRational          timeBase()  const;
 
     AVCodecParameters*  codecParameters();
     void                increaseDuration(int64_t value);
@@ -39,7 +37,6 @@ protected:
 
 protected:
 
-    // General
     int64_t             _uid;
     int64_t             _duration;
     int64_t             _prev_dts;

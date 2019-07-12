@@ -42,6 +42,7 @@ private:
     YCode               closeContext();
     YCode               startProcesors();
     YCode               stopProcesors();
+    YCode               joinProcesors();
     YCode               determineSequences();
     void                freeProcesors();
 
@@ -55,7 +56,7 @@ private:
 
     void                completeDestinationParametres();
 
-private:
+//private:
 
     // ? //TODO объянить
     std::list<YContext*>          _data_processors_context;

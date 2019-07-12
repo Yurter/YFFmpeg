@@ -6,11 +6,6 @@ YEncoder::YEncoder(YStream* stream) :
     setName("YEncoder");
 }
 
-AVCodec* YEncoder::findCodec()
-{
-    return avcodec_find_encoder(_stream->parameters->codecId());
-}
-
 YCode YEncoder::processInputData(YFrame& input_data) //TODO
 {
     YPacket output_data;
@@ -25,9 +20,7 @@ YCode YEncoder::processInputData(YFrame& input_data) //TODO
         return YCode::AGAIN;
     }
     input_data.free(); //TODO
-//    output_data.setStreamIndex(input_data.streamIndex());
     output_data.setStreamIndex(_stream->parameters->streamIndex());
     output_data.setStreamUid(_stream->uid());
-//    log_debug(output_data);
     return sendOutputData(output_data);
 }

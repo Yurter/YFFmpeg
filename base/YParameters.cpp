@@ -1,4 +1,5 @@
 #include "YParameters.h"
+#include "utils.h"
 
 YParameters::YParameters(YMediaType type) :
     YMediaData(type),
@@ -15,43 +16,21 @@ YParameters::YParameters(YMediaType type) :
 
 void YParameters::setCodec(AVCodecID codec_id)
 {
-    _codec_id = codec_id;
-    _codec_name = avcodec_get_name(codec_id);
-    AVCodec *codec;
-    codec = avcodec_find_decoder(codec_id);
-    if (codec != nullptr) {
-        _codec_id = codec->id;
-        _codec = codec;
-    }
-    codec = avcodec_find_encoder(codec_id);
-    if (codec != nullptr) {
-        _codec_id = codec->id;
-        _codec = codec;
-    }
+    setCodec(utils::find_codec(codec_id));
 }
 
 void YParameters::setCodec(std::string codec_short_name)
 {
-    AVCodec *codec;
-    codec = avcodec_find_decoder_by_name(codec_short_name.c_str());
-    if (codec != nullptr) {
-        _codec_id = codec->id;
-        _codec_name = codec_short_name;
-        _codec = codec;
-    }
-    codec = avcodec_find_encoder_by_name(codec_short_name.c_str());
-    if (codec != nullptr) {
-        _codec_id = codec->id;
-        _codec_name = codec_short_name;
-        _codec = codec;
-    }
+    setCodec(utils::find_codec(codec_short_name));
 }
 
 void YParameters::setCodec(AVCodec* codec)
 {
-    _codec_id = codec->id;
-    _codec_name = codec->name;
-    _codec = codec;
+    if (inited_ptr(codec)) {
+        _codec_id = codec->id;
+        _codec_name = codec->name;
+        _codec = codec;
+    }
 }
 
 void YParameters::setBitrate(int64_t bitrate)
@@ -124,11 +103,6 @@ std::string YParameters::toString() const
     std::string str = "TODO";
     return str;
 }
-
-//void YParameters::toCodecpar(AVCodecParameters* codecpar)
-//{
-//    codecpar->bit_rate = _bitrate;
-//}
 
 void YParameters::softCopy(YParameters* other_parametrs)
 {

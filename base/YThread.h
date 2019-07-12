@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ffmpeg.h"
 #include "YObject.h"
 #include <thread>
 #include <functional>
@@ -33,7 +32,6 @@ protected:
 
 private:
 
-    // General
     std::thread         _thread;
     volatile bool       _running;
     YCode               _exit_code;

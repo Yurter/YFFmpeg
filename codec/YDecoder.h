@@ -12,7 +12,6 @@ public:
 
 private:
 
-    AVCodec*            findCodec() override;
     YCode               processInputData(YPacket& input_data) override;
 
 };

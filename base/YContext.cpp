@@ -65,9 +65,36 @@ YCode YContext::createStream(YParameters* param)
     return createStream(new_stream);
 }
 
-YStream* YContext::bestStream(YMediaType type)
+YStream* YContext::bestStream(YMediaType type) //TODO разделить на два метода? определить алгоритм выбора
 {
-    return nullptr; //TODO
+    int64_t best_stream_index = -1;
+    if (type == YMediaType::MEDIA_TYPE_VIDEO) {
+        int64_t best_resolution = 0;
+        for (auto&& str : _streams) {
+            if (str->isVideo()) {
+                auto video_param = dynamic_cast<YVideoParameters*>(str->parameters);
+                int64_t resolution = video_param->width() * video_param->height();
+                if (resolution > best_resolution) {
+                    best_resolution = resolution;
+                    best_stream_index = str->index();
+                }
+            }
+        }
+    }
+    if (type == YMediaType::MEDIA_TYPE_AUDIO) {
+        int64_t best_bitrate = 0;
+        for (auto&& str : _streams) {
+            if (str->isVideo()) {
+                auto audio_param = dynamic_cast<YAudioParameters*>(str->parameters);
+                int64_t birtrate = audio_param->bitrate();
+                if (birtrate > best_bitrate) {
+                    best_bitrate = birtrate;
+                    best_stream_index = str->index();
+                }
+            }
+        }
+    }
+    return stream(best_stream_index);
 }
 
 void YContext::reopenAfterFailure(int64_t timeout)
@@ -174,22 +201,3 @@ int64_t YContext::numberStream() const
 {
     return int64_t(_streams.size());
 }
-
-//YCode YContext::attachStreams()  //TODO
-//{
-//    return_if(numberStream() == 0, YCode::NOT_INITED);
-//    for (auto&& stream : _streams) {
-//        if (not_inited_ptr(stream->raw())) {
-//            auto avstream = avformat_new_stream(_format_context, nullptr);
-//            return_if(not_inited_ptr(avstream), YCode::ERR);
-//            stream->setRaw(avstream);
-////            str->setUid(utils::gen_stream_uid(uid(), avstream->index));
-//        }
-//        utils::init_codecpar(stream->codecParameters(), stream->parameters->codec());
-//        utils::parameters_to_avcodecpar(stream->parameters, stream->codecParameters());
-//        /* crutch */ //TODO
-//        if (invalid_rational(stream->timeBase())) { stream->setTimeBase(DEFAULT_TIME_BASE); }
-//        try_to(stream->init());
-//    }
-//    return YCode::OK;
-//}

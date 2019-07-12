@@ -3,8 +3,8 @@
 #include "YAsyncQueue.h"
 #include "YThread.h"
 
-typedef std::pair<YLogLevel,std::string>    YMessage;
-typedef YAsyncQueue<YMessage>               MessageQueue;
+typedef std::pair<YLogLevel,std::string>    Message;
+typedef YAsyncQueue<Message>                MessageQueue;
 
 class YLogger : public YThread
 {
@@ -26,12 +26,13 @@ private:
     YLogger(YLogger const&)               = delete;
     YLogger& operator=(YLogger const&)    = delete;
 
+private:
+
     YCode               run() override;
     bool                ignoreMessage(YLogLevel message_log_level);
 
 private:
 
-    // General
     MessageQueue*       _messages;
     YLogLevel           _log_level;
 

@@ -7,7 +7,6 @@ class YAudioParameters : public YParameters
 
 public:
 
-//    YAudioParameters(YParameters parameters = YParameters());
     YAudioParameters();
     virtual ~YAudioParameters() override = default;
 
@@ -23,7 +22,6 @@ public:
 
     std::string         toString() const override;
 
-//    void                toCodecpar(AVCodecParameters* codecpar) override;
 //    void                softCopy(YParameters* other_parametrs)  override;
     YAudioParameters&   operator=(const YAudioParameters& rhs);
 

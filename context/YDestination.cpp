@@ -18,8 +18,8 @@ YCode YDestination::init()
     createContext();
     switch (_preset) {
     case Auto: {
-        guessOutputFromat();
-        parseOutputFormat();
+        try_to(guessOutputFromat());
+        try_to(parseOutputFormat());
         break;
     }
     case YouTube: {
@@ -178,11 +178,21 @@ YCode YDestination::processInputData(YPacket& input_data)
 //    return YCode::OK;
 //}
 
-void YDestination::parseOutputFormat() //TODO
+YCode YDestination::parseOutputFormat() //TODO
 {
-    if (_output_format == nullptr) { return; }
+    return_if_not(inited_ptr(_output_format), YCode::INVALID_CALL_ORDER);
     //TODO:                                                 ↓ mp3 AVOutputFormat дает видеокодек PNG ↓
     if (_output_format->video_codec != AV_CODEC_ID_NONE && _output_format->video_codec != AV_CODEC_ID_PNG) {
+        auto video_parameters = new YVideoParameters;
+        video_parameters->setWidth(1920);
+        video_parameters->setHeight(1080);
+        video_parameters->setAspectRatio({16,9});
+        video_parameters->setFrameRate(24); //TODO
+        video_parameters->setBitrate(400'000);
+        video_parameters->setCodec(_output_format->video_codec);
+        video_parameters->setTimeBase({ 1, 1000 });
+        video_parameters->setContextUid(uid());
+        try_to(createStream(video_parameters));
 //        video_parameters.setCodec(_output_format->video_codec);
 //        video_parameters.setAvailable(true); //TODO setAvailable
     }
@@ -190,4 +200,5 @@ void YDestination::parseOutputFormat() //TODO
 //        audio_parameters.setCodec(_output_format->audio_codec);
 //        audio_parameters.setAvailable(true); //TODO setAvailable
     }
+    return YCode::OK;
 }

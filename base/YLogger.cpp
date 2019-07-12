@@ -20,7 +20,7 @@ YLogger::~YLogger()
 
 YCode YLogger::run()
 {
-    YMessage message;
+    Message message;
     guaranteed_pop(_messages, message);
 //    if (!_messages->pop(message)) {
 //        utils::sleep_for(SHORT_DELAY_MS);
@@ -102,7 +102,7 @@ void YLogger::print(const YObject* caller, YLogLevel log_level, std::string mess
     }
 
     ss << " " << message;
-    guaranteed_push(_messages, YMessage(log_level, ss.str()));
+    guaranteed_push(_messages, Message(log_level, ss.str()));
 }
 
 std::string YLogger::toString() const

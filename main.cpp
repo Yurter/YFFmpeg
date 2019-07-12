@@ -37,6 +37,9 @@ int main()
     }
     ffmpeg.join();
 
+//    logger.quit();
+//    logger.join();
+    auto&& debag = logger;
     cout << "Program finished." << endl;
     return 0;
 

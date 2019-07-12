@@ -12,7 +12,6 @@ public:
 
 private:
 
-    AVCodec*            findCodec() override;
     YCode               processInputData(YFrame& input_data) override;
 
 };

@@ -20,12 +20,14 @@ public:
 
     virtual ~YAbstractCodec()
     {
-        avcodec_close(_codec_context);
+        if (inited_ptr(_codec_context)) {
+            avcodec_close(_codec_context);
+        }
     }
 
     YCode init()
     {
-        AVCodec* codec = findCodec();
+        auto codec = _stream->parameters->codec();
         return_if(not_inited_ptr(codec), YCode::INVALID_INPUT);
         {
             _codec_context = avcodec_alloc_context3(codec);
@@ -52,11 +54,8 @@ public:
                 );
             }
         }
-        {
-//            log_debug("frame_size = " << _stream->codecParameters()->frame_size);
-            setInited(true);
-            return YCode::OK;
-        }
+        setInited(true);
+        return YCode::OK;
     }
 
     std::string toString() const override final
@@ -73,14 +72,7 @@ public:
 
 protected:
 
-    virtual AVCodec*    findCodec() = 0;
-
-protected:
-
-    // Media
     YStream*            _stream;
-
-    // FFmpeg
     AVCodecContext*     _codec_context;
 
 };

@@ -7,7 +7,6 @@ class YVideoParameters : public YParameters
 
 public:
 
-//    YVideoParameters(YParameters parameters = YParameters());
     YVideoParameters();
     virtual ~YVideoParameters() override;
 
@@ -26,7 +25,6 @@ public:
 
     std::string         toString() const override;
 
-//    void                toCodecpar(AVCodecParameters* codecpar) override;
 //    void                softCopy(YVideoParameters* other_parametrs);
     YVideoParameters&   operator=(const YVideoParameters& rhs);
 

@@ -1,8 +1,5 @@
 #pragma once
 
-#include "ffmpeg.h"
-#include "utils.h"
-#include "YLogger.h"
 #include "YMediaData.h"
 
 template <typename Type>

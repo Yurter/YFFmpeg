@@ -6,11 +6,6 @@ YDecoder::YDecoder(YStream *stream) :
     setName("YDecoder");
 }
 
-AVCodec* YDecoder::findCodec()
-{
-    return avcodec_find_decoder(_stream->codecParameters()->codec_id);
-}
-
 YCode YDecoder::processInputData(YPacket& input_data)
 {
     if (!input_data.empty()) {

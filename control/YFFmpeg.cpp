@@ -16,6 +16,7 @@ YFFmpeg::~YFFmpeg()
 bool YFFmpeg::stop()
 {
     stopProcesors();
+    joinProcesors();
     log_info("Stopped");
     stop_log();
     return true;
@@ -221,6 +222,16 @@ YCode YFFmpeg::stopProcesors()
     for (auto&& codec : _data_processors_decoder) { codec->quit(); }
     for (auto&& codec : _data_processors_encoder) { codec->quit(); }
     for (auto&& refi : _data_processors_refi) { refi->quit(); }
+    return YCode::OK;
+}
+
+YCode YFFmpeg::joinProcesors()
+{
+    for (auto&& context : _data_processors_context) { context->join(); }
+//    for (auto&& codec : _data_processors_codec) { codec->start(); }
+    for (auto&& codec : _data_processors_decoder) { codec->join(); }
+    for (auto&& codec : _data_processors_encoder) { codec->join(); }
+    for (auto&& refi : _data_processors_refi) { refi->join(); }
     return YCode::OK;
 }
 
