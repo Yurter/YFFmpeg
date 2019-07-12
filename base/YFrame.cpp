@@ -53,7 +53,7 @@ YCode YFrame::init() //TODO
     return YCode::ERR;
 }
 
-std::string YFrame::toString() const
+std::string YFrame::toString() const //TODO размеры фреймов
 {
     /* Video frame: 33123 byte, dts 460, pts 460, duration 33 */
     /* Audio frame: 316 byte, dts 460, pts 460, duration 33   */
@@ -74,13 +74,3 @@ std::string YFrame::toString() const
     }
     return str;
 }
-
-//int64_t YFrame::streamIndex() const
-//{
-//    return _stream_index;
-//}
-
-//void YFrame::setStreamIndex(int64_t stream_index)
-//{
-//    _stream_index = stream_index;
-//}

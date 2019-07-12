@@ -149,8 +149,9 @@ YCode YDestination::write()
 
 YCode YDestination::writePacket(YPacket& packet)
 {
+//    log_debug(packet);
     if (av_interleaved_write_frame(_format_context, &packet.raw()) < 0) {
-//    if (av_write_frame(_format_context, &input_data.raw()) < 0) {
+//    if (av_write_frame(_format_context, &packet.raw()) < 0) {
         log_error("Error muxing packet");
         return YCode::ERR;
     }
@@ -159,10 +160,19 @@ YCode YDestination::writePacket(YPacket& packet)
 
 YCode YDestination::processInputData(YPacket& input_data)
 {
-    try_to(stream(input_data.streamIndex())->stampPacket(input_data));
+    if (input_data.isVideo()) { //Debug if
+        try_to(stream(input_data.streamIndex())->stampPacket(input_data));
+    }
     try_to(writePacket(input_data));
     return YCode::OK;
 }
+
+//YCode YDestination::processInputData(YPacket& input_data)
+//{
+//    try_to(stream(input_data.streamIndex())->stampPacket(input_data));
+//    try_to(writePacket(input_data));
+//    return YCode::OK;
+//}
 
 void YDestination::parseOutputFormat() //TODO
 {

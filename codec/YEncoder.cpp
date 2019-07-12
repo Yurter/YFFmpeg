@@ -28,6 +28,6 @@ YCode YEncoder::processInputData(YFrame& input_data) //TODO
 //    output_data.setStreamIndex(input_data.streamIndex());
     output_data.setStreamIndex(_stream->parameters->streamIndex());
     output_data.setStreamUid(_stream->uid());
-    log_debug(output_data);
+//    log_debug(output_data);
     return sendOutputData(output_data);
 }
