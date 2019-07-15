@@ -4,7 +4,7 @@ YObject::YObject() :
     _name("YObject"),
     _inited(false)
 {
-    //
+    EMPTY_CONSTRUCTOR
 }
 
 void YObject::setName(std::string name)
@@ -17,7 +17,7 @@ std::string YObject::name() const
     return _name;
 }
 
-bool YObject::is(std::string name)
+bool YObject::is(std::string name) const
 {
     return _name == name;
 }
@@ -40,6 +40,11 @@ bool YObject::inited() const
 std::string YObject::toString() const
 {
     return std::to_string(int64_t(this));
+}
+
+YObject::operator std::string() const
+{
+    return toString();
 }
 
 std::ostream &operator<<(std::ostream& os, const YObject& obj)

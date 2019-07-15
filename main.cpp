@@ -9,7 +9,7 @@ int main()
     cout << "[main] Program started..." << endl;
 
     set_log_level(YLogLevel::Debug);
-//    set_ffmpeg_log_level(YLogLevel::Quiet);
+    set_ffmpeg_log_level(YLogLevel::Quiet);
 
     /* Запись rtsp с камеры в flv/YouTube */
     std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
@@ -31,8 +31,9 @@ int main()
 //    ffmpeg.setRoute({{source, 0}, {destination, 0}});
 //    ffmpeg.setRoute({{source, 1}, {destination, 1}});
 
-    ffmpeg.setRoute({{source, 1}, {destination, 0}});
+//    ffmpeg.setRoute({{source, 1}, {destination, 0}});
 
+    ffmpeg.setRoute(source, 1, destination, 0);
     auto ret = ffmpeg.start();
     if (ret != YCode::OK) {
         cout << "[main] YFFmpeg start failed: " << ret << " - " << utils::code_to_string(ret) << endl;

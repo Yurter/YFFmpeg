@@ -10,6 +10,8 @@
 #include "refi/YAudioFilter.h"
 #include "YMap.h"
 
+typedef std::list<YThread*> ProcessorList;
+
 class YFFmpeg : public YThread
 {
 
@@ -25,6 +27,9 @@ public:
     void                setOptions(int64_t options);        ///< Функция устанавливает переданные ей опции.
     void                addElement(YObject* element);       ///< Функция добавляет процессор меди-данных в кучу.
     void                setRoute(Route route);              ///< Функция устанавливает соответствие между входным и выходным потоками.
+    void                setRoute(stream_context input_stream_context, stream_context output_stream_context);
+    void                setRoute(YContext* input_context, int64_t input_stream_index
+                                 , YContext* output_context, int64_t output_stream_index);
 
     void                dump() const;                       ///<
 
@@ -35,6 +40,7 @@ private:
 
     bool                option(YOption option) const;
 
+    YCode               initMap();
     YCode               initRefi();
     YCode               initCodec();
     YCode               initContext();
@@ -56,9 +62,11 @@ private:
 
     void                completeDestinationParametres();
 
-//private:
+private:
 
-    // ? //TODO объянить
+    ProcessorList       _data_processors;
+
+    // ? //TODO объянить?
     std::list<YContext*>          _data_processors_context;
 //    std::list<YAbstractCodec*>          _data_processors_codec;
     std::list<YDecoder*>          _data_processors_decoder;

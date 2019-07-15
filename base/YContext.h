@@ -33,6 +33,12 @@ public:
     YStream*            stream(int64_t index);                      ///< Функция возвращает указатель на поток с заданным индексом; nullptr, если невалидный индекс.
     int64_t             numberStream() const;                       ///< Функция возвращает количество потоков в текущем котексте.
 
+    AVInputFormat*      inputFormat()   const;
+    AVOutputFormat*     outputFormat()  const;
+
+    bool                supportsVideo();
+    bool                supportsAudio();
+
 protected:
 
     virtual YCode       createContext() = 0;

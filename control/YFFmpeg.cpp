@@ -5,6 +5,7 @@ YFFmpeg::YFFmpeg() :
     _stream_map(new YMap)
 {
     setName("YFFmpeg");
+    _data_processors.push_back(_stream_map);
 }
 
 YFFmpeg::~YFFmpeg()
@@ -41,6 +42,8 @@ void YFFmpeg::setOptions(int64_t options)
 
 void YFFmpeg::addElement(YObject* element)
 {
+    _data_processors.push_back(element);
+    //
     auto context = dynamic_cast<YContext*>(element);
     if (context != nullptr) {
         _data_processors_context.push_back(context);
@@ -65,7 +68,7 @@ void YFFmpeg::setRoute(Route route)
 
 void YFFmpeg::dump() const //TODO operator std::string()
 {
-//    log_info(this);
+    log_info(this);
 }
 
 YCode YFFmpeg::init()
@@ -77,32 +80,16 @@ YCode YFFmpeg::init()
     try_to(initRefi());
     try_to(initCodec());
     try_to(startProcesors());
-    log_info(toString()); //void dump();
+    dump();
     setInited(true);
     return YCode::OK;
 }
 
 YCode YFFmpeg::run()
 {
-    if (!inited()) { // TODO перенести в YThread::start
-        try_to(init());
-    }
-
-    return_if_not(_stream_map->running(), _stream_map->exitCode());
-    for (auto&& context : _data_processors_context) {
-        return_if_not(context->running(), context->exitCode());
-    }
-//    for (auto&& codec : _data_processors_codec) {
-//        return_if_not(codec->running(), codec->exitCode());
-//    }
-    for (auto&& codec : _data_processors_decoder) {
-        return_if_not(codec->running(), codec->exitCode());
-    }
-    for (auto&& codec : _data_processors_encoder) {
-        return_if_not(codec->running(), codec->exitCode());
-    }
-    for (auto&& refi : _data_processors_refi) {
-        return_if_not(refi->running(), refi->exitCode());
+    for (auto&& processor : _data_processors) {
+        return_if_not(processor->running()
+                      , processor->exitCode());
     }
     utils::sleep_for(LONG_DELAY_MS);
     return YCode::OK;
@@ -150,6 +137,18 @@ bool YFFmpeg::contingencyAudioSourceRequired() //TODO
 bool YFFmpeg::option(YOption option) const
 {
     return _options & option;
+}
+
+YCode YFFmpeg::initMap()
+{
+    auto&& route_map = _stream_map->streamMap();
+    if (route_map.empty()) {
+        // определить дефолтные маршруты
+    } else {
+        // испольозвать установленные маршруты, (!) изменения но не замена дефолтных
+    }
+    try_to(_stream_map->init());
+    return YCode::OK;
 }
 
 void YFFmpeg::completeDestinationParametres()
@@ -344,7 +343,7 @@ std::string YFFmpeg::toString() const
 
 
 
-    /* Вывод информации о последовательностях обработки потоков */
+    /* Вывод информации о последовательностях обработки потоков */ //TODO move code to YMap::toString() etc.
     dump_str += "\nProcessing sequences";
     int64_t i = 0;
     std::string delimeter = " -> ";

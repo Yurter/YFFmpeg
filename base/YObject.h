@@ -14,15 +14,14 @@ public:
 
     void                setName(std::string name);
     std::string         name() const;
-    bool                is(std::string name);
+    bool                is(std::string name) const;
 
     virtual YCode       init();
     void                setInited(bool inited);
     bool                inited() const;
 
-    virtual std::string toString() const;
-    //TODO operator std::string()
-
+    virtual std::string     toString()      const;
+    operator                std::string()   const;
     friend std::ostream&    operator<<(std::ostream& os, const YObject& obj);
 
 private:

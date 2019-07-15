@@ -11,7 +11,7 @@ class YDataProcessor : public YThread
 
 public:
 
-    typedef YAsyncQueue<outType> YNextProcessor;
+    typedef YAsyncQueue<outType> NextProcessor;
 
     YDataProcessor() :
         _next_processor(nullptr),
@@ -23,7 +23,7 @@ public:
 
     virtual ~YDataProcessor() = default;
 
-    virtual void connectOutputTo(YNextProcessor* next_processor) final
+    void connectOutputTo(NextProcessor* next_processor)
     {
         _next_processor = next_processor;
     }
@@ -38,13 +38,10 @@ protected:
 
     [[nodiscard]] virtual YCode processInputData(inType& input_data) = 0;
     [[nodiscard]] virtual YCode sendOutputData(outType output_data
-                                                , YNextProcessor* next_proc = nullptr) final
+                                                , NextProcessor* next_proc = nullptr) final
     {
-        if (inited_ptr(next_proc)) {
-            guaranteed_push(next_proc, output_data);
-            return YCode::OK;
-        }
-        guaranteed_push(_next_processor, output_data);
+        auto pointer = inited_ptr(next_proc) ? next_proc : _next_processor;
+        guaranteed_push(pointer, output_data);
         return YCode::OK;
     }
 
@@ -52,7 +49,6 @@ private:
 
     [[nodiscard]] YCode run() override final
     {
-        return_if(!inited(), YCode::NOT_INITED); //TODO убрать
         inType input_data;
         guaranteed_pop(this, input_data);
         return_if(ignoreType(input_data.type()), YCode::AGAIN);
@@ -61,8 +57,8 @@ private:
 
 private:
 
-    YAsyncQueue<outType>*   _next_processor;
-    int64_t                 _skip_types;
-    int64_t                 _ignore_types;
+    NextProcessor*      _next_processor;
+    int64_t             _skip_types;
+    int64_t             _ignore_types;
 
 };

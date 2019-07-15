@@ -98,7 +98,7 @@ void YStream::increaseDuration(int64_t value)
     _duration += value;
 }
 
-void YStream::parseParametres() //TODO ?
+void YStream::parseParametres() //TODO ? што это?
 {
     _data->time_base = parameters->timeBase();
 }

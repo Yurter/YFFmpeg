@@ -9,6 +9,16 @@ YMap::YMap()
     setName("YMap");
 }
 
+YCode YMap::init() //TODO
+{
+    return YCode::ERR;
+}
+
+std::string YMap::toString() const
+{
+    return "TODO";
+}
+
 stream_map& YMap::streamMap()
 {
     return _stream_map;

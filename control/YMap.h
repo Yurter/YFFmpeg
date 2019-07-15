@@ -26,6 +26,9 @@ public:
     YMap();
     virtual ~YMap() override = default;
 
+    YCode               init() override;
+    std::string         toString() const override; //TODO
+
     stream_map&         streamMap();
     packet_map&         packetMap();
     index_map&          indexMap();
@@ -39,7 +42,6 @@ private:
 
 private:
 
-    // General
     stream_map          _stream_map;
     packet_map          _packet_map;
     index_map           _index_map;

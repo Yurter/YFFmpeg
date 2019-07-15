@@ -45,7 +45,7 @@ YCode YThread::start()
             std::cerr << "Thread " << current_thread_id() << " failed: " << e.what() << std::endl;
         }
     });
-    _thread.detach();
+    _thread.detach(); //TODO убрать?
     return YCode::OK;
 }
 

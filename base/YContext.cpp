@@ -68,29 +68,29 @@ YCode YContext::createStream(YParameters* param)
 
 YStream* YContext::bestStream(YMediaType type) //TODO разделить на два метода? определить алгоритм выбора
 {
-    int64_t best_stream_index = -1;
+    int64_t best_stream_index = INVALID_INT;
     if (type == YMediaType::MEDIA_TYPE_VIDEO) {
         int64_t best_resolution = 0;
-        for (auto&& str : _streams) {
-            if (str->isVideo()) {
-                auto video_param = dynamic_cast<YVideoParameters*>(str->parameters);
+        for (auto&& video_stream : _streams) {
+            if (video_stream->isVideo()) {
+                auto video_param = dynamic_cast<YVideoParameters*>(video_stream->parameters);
                 int64_t resolution = video_param->width() * video_param->height();
                 if (resolution > best_resolution) {
                     best_resolution = resolution;
-                    best_stream_index = str->index();
+                    best_stream_index = video_stream->index();
                 }
             }
         }
     }
     if (type == YMediaType::MEDIA_TYPE_AUDIO) {
         int64_t best_bitrate = 0;
-        for (auto&& str : _streams) {
-            if (str->isVideo()) {
-                auto audio_param = dynamic_cast<YAudioParameters*>(str->parameters);
+        for (auto&& audio_stream : _streams) {
+            if (audio_stream->isAudio()) {
+                auto audio_param = dynamic_cast<YAudioParameters*>(audio_stream->parameters);
                 int64_t birtrate = audio_param->bitrate();
                 if (birtrate > best_bitrate) {
                     best_bitrate = birtrate;
-                    best_stream_index = str->index();
+                    best_stream_index = audio_stream->index();
                 }
             }
         }
@@ -201,4 +201,36 @@ YStream* YContext::stream(int64_t index)
 int64_t YContext::numberStream() const
 {
     return int64_t(_streams.size());
+}
+
+AVInputFormat* YContext::inputFormat() const
+{
+    return _format_context->iformat;
+}
+
+AVOutputFormat* YContext::outputFormat() const
+{
+    return _format_context->oformat;
+}
+
+bool YContext::supportsVideo()
+{
+    if (is("YSource")) {
+        return inited_ptr(bestStream(YMediaType::MEDIA_TYPE_VIDEO));
+    }
+    if (is("YDestination")) {
+        return inited_codec_id(outputFormat()->video_codec); //TODO защиту от пнг в мп3
+    }
+    return false;
+}
+
+bool YContext::supportsAudio()
+{
+    if (this->is("YSource")) {
+        return inited_ptr(bestStream(YMediaType::MEDIA_TYPE_AUDIO));
+    }
+    if (this->is("YDestination")) {
+        return inited_codec_id(outputFormat()->audio_codec);
+    }
+    return false;
 }
