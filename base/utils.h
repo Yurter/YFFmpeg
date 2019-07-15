@@ -7,7 +7,7 @@
 #include <string>
 #include <sstream>
 
-static int64_t object_uid_handle = DEFAULT_INT; //TODO warning
+static int64_t object_uid_handle = DEFAULT_INT; //TODO remove warning
 
 class utils
 {
@@ -34,10 +34,13 @@ public:
     static void         parameters_to_avcodecpar(YParameters* parametres, AVCodecParameters* codecpar);
     static void         parameters_from_avcodecpar(YParameters* parametres, AVCodecParameters* codecpar);
 
+    static YVideoParameters*    default_video_parameters(AVCodecID codec_id);
+    static YAudioParameters*    default_audio_parameters(AVCodecID codec_id);
+
 };
 
 /* ? */
-#define logger              YLogger::instance()
+#define logger                  YLogger::instance()
 
 /* Макрос установки уровня лога; сообщения, имеющие урень выше установленного, игнорируются */
 #define set_log_level(x)        logger.setLogLevel(x)

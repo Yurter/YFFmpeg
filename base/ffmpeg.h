@@ -63,7 +63,7 @@ enum YMediaType {
     MEDIA_TYPE_AUDIO    = 0x0004,
 };
 
-/* Значения по умолчанию для видео- и аудиопараметров */
+/* Значения по умолчанию для видео- и аудиопараметров */ //TODO по умолчанию невалидные, добавить по умолчанию валидные
 #define INVALID_INT             -1
 #define DEFAULT_INT             0
 //#define DEFAULT_UINT            0 //TODO ?
@@ -91,6 +91,7 @@ enum YMediaType {
 
 #define inited_int(x)           ((x) != DEFAULT_INT)
 #define inited_ptr(x)           ((x) != nullptr)
+#define inited_codec_id(x)      ((x) != DEFAULT_CODEC_ID)
 
 /* Категории сообщений, которые выводятся в консоль.
  * Каждый последующий уровень включает в себя предыдущий */

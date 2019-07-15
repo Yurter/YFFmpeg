@@ -53,7 +53,7 @@ void YThread::quit() //TODO join?
 {
     if (_running == false) { return; }
     _running = false;
-    try { //TODO ?
+    try { //TODO
         if (_thread.joinable()) { _thread.join(); }
     } catch (std::exception e) {
         std::cout << "exeption: " << e.what() << std::endl;

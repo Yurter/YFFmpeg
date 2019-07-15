@@ -12,7 +12,7 @@ public:
 
     void                setSampleRate(int64_t sample_rate);
     void                setSampleFormat(AVSampleFormat sample_format);
-    void                setChannelLayout(uint64_t channels_layout);
+    void                setChannelLayout(uint64_t channels_layout); // TODO скрыть в прайват? устанваливать дефолтное значение при установке числа каналов?
     void                setChannels(int64_t channels);
 
     int64_t             sampleRate()    const;

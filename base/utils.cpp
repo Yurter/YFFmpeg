@@ -241,3 +241,30 @@ void utils::parameters_from_avcodecpar(YParameters* parametres, AVCodecParameter
         break;
     }
 }
+
+YVideoParameters* utils::default_video_parameters(AVCodecID codec_id)
+{
+    auto video_params = new YVideoParameters;
+    video_params->setCodec(codec_id);
+    video_params->setBitrate(400000); //TODO расчитывать
+    video_params->setTimeBase(DEFAULT_TIME_BASE);
+    video_params->setWidth(1920);
+    video_params->setHeight(1080);
+    video_params->setAspectRatio({ 16, 9 });
+    video_params->setFrameRate(30);
+    video_params->setPixelFormat(AV_PIX_FMT_YUV420P);
+    return video_params;
+}
+
+YAudioParameters* utils::default_audio_parameters(AVCodecID codec_id)
+{
+    auto audio_params = new YAudioParameters;
+    audio_params->setCodec(codec_id);
+    audio_params->setBitrate(192000); //TODO расчитывать
+    audio_params->setTimeBase(DEFAULT_TIME_BASE);
+    audio_params->setSampleRate(44100);
+    audio_params->setSampleFormat(audio_params->codec()->sample_fmts[0]);
+    audio_params->setChannels(2);
+    audio_params->setChannelLayout(uint64_t(av_get_default_channel_layout(int(audio_params->channels()))));
+    return audio_params;
+}

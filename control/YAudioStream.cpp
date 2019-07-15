@@ -1,9 +1,10 @@
 #include "YAudioStream.h"
+#include "../base/utils.h"
 
 YAudioStream::YAudioStream(YAudioParameters* param) :
     YAudioStream(nullptr, param)
 {
-    //
+    EMPTY_CONSTRUCTOR
 }
 
 YAudioStream::YAudioStream(AVStream* stream, YAudioParameters* param ) :

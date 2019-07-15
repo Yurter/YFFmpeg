@@ -171,34 +171,21 @@ YCode YDestination::processInputData(YPacket& input_data)
     return YCode::OK;
 }
 
-//YCode YDestination::processInputData(YPacket& input_data)
-//{
-//    try_to(stream(input_data.streamIndex())->stampPacket(input_data));
-//    try_to(writePacket(input_data));
-//    return YCode::OK;
-//}
-
-YCode YDestination::parseOutputFormat() //TODO
+YCode YDestination::parseOutputFormat()
 {
     return_if_not(inited_ptr(_output_format), YCode::INVALID_CALL_ORDER);
-    //TODO:                                                 ↓ mp3 AVOutputFormat дает видеокодек PNG ↓
-    if (_output_format->video_codec != AV_CODEC_ID_NONE && _output_format->video_codec != AV_CODEC_ID_PNG) {
-        auto video_parameters = new YVideoParameters;
-        video_parameters->setWidth(1920);
-        video_parameters->setHeight(1080);
-        video_parameters->setAspectRatio({16,9});
-        video_parameters->setFrameRate(24); //TODO
-        video_parameters->setBitrate(400'000);
-        video_parameters->setCodec(_output_format->video_codec);
-        video_parameters->setTimeBase({ 1, 1000 });
-        video_parameters->setContextUid(uid());
-        try_to(createStream(video_parameters));
-//        video_parameters.setCodec(_output_format->video_codec);
-//        video_parameters.setAvailable(true); //TODO setAvailable
+    {
+        //TODO:                                   ↓ mp3 AVOutputFormat дает видеокодек PNG ↓
+        auto& video_codec_id = _output_format->video_codec;
+        if (inited_codec_id(video_codec_id) && _output_format->video_codec != AV_CODEC_ID_PNG) {
+            try_to(createStream(utils::default_audio_parameters(video_codec_id)));
+        }
     }
-    if (_output_format->audio_codec != AV_CODEC_ID_NONE) {
-//        audio_parameters.setCodec(_output_format->audio_codec);
-//        audio_parameters.setAvailable(true); //TODO setAvailable
+    {
+        auto& audio_codec_id = _output_format->audio_codec;
+        if (inited_codec_id(audio_codec_id)) {
+            try_to(createStream(utils::default_audio_parameters(audio_codec_id)));
+        }
     }
     return YCode::OK;
 }

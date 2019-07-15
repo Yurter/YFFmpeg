@@ -6,10 +6,10 @@ using namespace std;
 int main()
 {
 
-    cout << "Program started..." << endl;
+    cout << "[main] Program started..." << endl;
 
     set_log_level(YLogLevel::Debug);
-    set_ffmpeg_log_level(YLogLevel::Quiet);
+//    set_ffmpeg_log_level(YLogLevel::Quiet);
 
     /* Запись rtsp с камеры в flv/YouTube */
     std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
@@ -26,21 +26,20 @@ int main()
     YFFmpeg ffmpeg;
     ffmpeg.addElement(source);
     ffmpeg.addElement(destination);
-    ffmpeg.setOptions(COPY_VIDEO);
+//    ffmpeg.setOptions(COPY_VIDEO);
 
-    ffmpeg.setRoute({{source, 0}, {destination, 0}});
+//    ffmpeg.setRoute({{source, 0}, {destination, 0}});
 //    ffmpeg.setRoute({{source, 1}, {destination, 1}});
+
+    ffmpeg.setRoute({{source, 1}, {destination, 0}});
 
     auto ret = ffmpeg.start();
     if (ret != YCode::OK) {
-        cout << "YFFmpeg start failed: " << ret << " - " << utils::code_to_string(ret) << endl;
+        cout << "[main] YFFmpeg start failed: " << ret << " - " << utils::code_to_string(ret) << endl;
     }
     ffmpeg.join();
 
-//    logger.quit();
-//    logger.join();
-    auto&& debag = logger;
-    cout << "Program finished." << endl;
+    cout << "[main] Program finished." << endl;
     return 0;
 
 }
