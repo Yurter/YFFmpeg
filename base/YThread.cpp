@@ -41,48 +41,29 @@ YCode YThread::start()
             log_debug("Thread finished with code: " << _exit_code
                       << " - " << utils::code_to_string(_exit_code));
             _running = false;
-        } catch(std::exception e) {
-            std::cerr << "Thread " << current_thread_id() << " failed: " << e.what() << std::endl;
+        } catch (std::exception e) {
+            _exit_code = YCode::EXCEPTION;
+            _exit_message = e.what();
+            return;
         }
     });
     _thread.detach(); //TODO убрать?
     return YCode::OK;
 }
 
-void YThread::quit() //TODO join?
+YCode YThread::quit() //TODO join?
 {
-    if (_running == false) { return; }
+    return_if_not(running(), YCode::INVALID_CALL_ORDER);
     _running = false;
-    try { //TODO
+    try { /* TODO */
         if (_thread.joinable()) { _thread.join(); }
     } catch (std::exception e) {
-        std::cout << "exeption: " << e.what() << std::endl;
+        std::cout << "TODO: exeption: " << e.what() << std::endl;
+        _exit_message = e.what();
+        return YCode::EXCEPTION;
     }
+    return YCode::OK;
 }
-
-//YCode YThread::start()
-//{
-//    return_if(running(), YCode::INVALID_CALL_ORDER);
-////    return_if_not(inited(), YCode::NOT_INITED);
-//    if_not(inited()) { try_to(init()); }
-//    _running = true;
-//    _thread = std::thread([this]() {
-//        log_debug("Thread started");
-//        while (_running && !utils::exit_code(_exit_code = _loop_function())) {}
-//        _running = false;
-//        log_debug("Thread finished with code: " << _exit_code
-//                  << " - " << utils::code_to_string(_exit_code));
-//    });
-//    _thread.detach();
-//    return YCode::OK;
-//}
-
-//void YThread::quit() //TODO join?
-//{
-//    if (_running == false) { return; }
-//    _running = false;
-//    if (_thread.joinable()) { _thread.join(); }
-//}
 
 bool YThread::running()
 {
@@ -92,11 +73,6 @@ bool YThread::running()
 void YThread::join()
 {
     while (running()) { utils::sleep_for(MEDIUM_DELAY_MS); }
-}
-
-void YThread::setExitCode(YCode exit_code)
-{
-    _exit_code = exit_code;
 }
 
 YCode YThread::exitCode() const

@@ -40,25 +40,9 @@ void YFFmpeg::setOptions(int64_t options)
     _options = options;
 }
 
-void YFFmpeg::addElement(YThread* element)
+void YFFmpeg::addElement(YObject* element)
 {
     _data_processors.push_back(element);
-    //
-    auto context = dynamic_cast<YContext*>(element);
-    if (context != nullptr) {
-        _data_processors_context.push_back(context);
-        return;
-    }
-//    auto codec = dynamic_cast<YCodec*>(element); //TODO игнорируется
-//    if (codec != nullptr) {
-//        _data_processors_codec.push_back(codec);
-//        return;
-//    }
-    auto refi = dynamic_cast<YRefi*>(element); //TODO игнорируется
-    if (refi != nullptr) {
-        _data_processors_refi.push_back(refi);
-        return;
-    }
 }
 
 void YFFmpeg::setRoute(Route route)
@@ -88,8 +72,9 @@ YCode YFFmpeg::init()
 YCode YFFmpeg::run()
 {
     for (auto&& processor : _data_processors) {
-        return_if_not(processor->running()
-                      , processor->exitCode());
+        auto thread_processor = static_cast<YThread*>(processor);
+        return_if_not(thread_processor->running()
+                      , thread_processor->exitCode());
     }
     utils::sleep_for(LONG_DELAY_MS);
     return YCode::OK;
@@ -107,12 +92,8 @@ bool YFFmpeg::resamplerRequired(streams_pair streams)
     return_if(streams.first->isVideo(), false);
     return_if(streams.second->isVideo(), false);
 
-//    YAudioStream* in_stream = dynamic_cast<YAudioStream*>(streams.first);
-//    YAudioStream* out_stream = dynamic_cast<YAudioStream*>(streams.second);
-//    YAudioParameters* in = &in_stream->parameters;
-//    YAudioParameters* out = &out_stream->parameters;
     YAudioParameters* in = dynamic_cast<YAudioParameters*>(streams.first->parameters);
-    YAudioParameters* out =  dynamic_cast<YAudioParameters*>(streams.second->parameters);
+    YAudioParameters* out = dynamic_cast<YAudioParameters*>(streams.second->parameters);
 
     return_if(in->sampleRate()      != out->sampleRate(),       true);
     return_if(in->sampleFormat()    != out->sampleFormat(),     true);
@@ -159,78 +140,75 @@ void YFFmpeg::completeDestinationParametres()
 
 YCode YFFmpeg::initRefi()
 {
-    for (auto&& refi : _data_processors_refi) {
-        try_to(refi->init());
+    for (auto&& processor : _data_processors) {
+        auto refi = dynamic_cast<YRefi*>(processor);
+        if (inited_ptr(refi)) { try_to(refi->init()); }
     }
     return YCode::OK;
 }
 
 YCode YFFmpeg::initCodec()
 {
-//    for (auto&& refi : _data_processors_codec) {
-//        try_to(refi->init());
-//    }
-    for (auto&& refi : _data_processors_decoder) {
-        try_to(refi->init());
-    }
-    for (auto&& refi : _data_processors_encoder) {
-        try_to(refi->init());
+    for (auto&& processor : _data_processors) {
+        auto decoder = dynamic_cast<YDecoder*>(processor);
+        if (inited_ptr(decoder)) { try_to(decoder->init()); }
+        auto encoder = dynamic_cast<YEncoder*>(processor);
+        if (inited_ptr(encoder)) { try_to(decoder->init()); }
     }
     return YCode::OK;
 }
 
 YCode YFFmpeg::initContext()
 {
-    for (auto&& context : _data_processors_context) {
-        try_to(context->init());
+    for (auto&& processor : _data_processors) {
+        auto context = dynamic_cast<YContext*>(processor);
+        if (inited_ptr(context)) { try_to(context->init()); }
     }
     return YCode::OK;
 }
 
 YCode YFFmpeg::openContext()
 {
-    for (auto&& context : _data_processors_context) {
-        try_to(context->open());
+    for (auto&& processor : _data_processors) {
+        auto context = dynamic_cast<YContext*>(processor);
+        if (inited_ptr(context)) { try_to(context->open()); }
     }
     return YCode::OK;
 }
 
 YCode YFFmpeg::closeContext()
 {
-    for (auto&& context : _data_processors_context) {
-        try_to(context->close());
+    for (auto&& processor : _data_processors) {
+        auto context = dynamic_cast<YContext*>(processor);
+        if (inited_ptr(context)) { try_to(context->close()); }
     }
     return YCode::OK;
 }
 
 YCode YFFmpeg::startProcesors()
 {
-    _stream_map->start(); //TODO
-    for (auto&& context : _data_processors_context) { context->start(); }
-//    for (auto&& codec : _data_processors_codec) { codec->start(); }
-    for (auto&& codec : _data_processors_decoder) { codec->start(); }
-    for (auto&& codec : _data_processors_encoder) { codec->start(); }
-    for (auto&& refi : _data_processors_refi) { refi->start(); }
+    for (auto&& processor : _data_processors) {
+        auto thread_processor = static_cast<YThread*>(processor);
+        try_to(thread_processor->start());
+    }
     return YCode::OK;
 }
 
 YCode YFFmpeg::stopProcesors()
 {
-    for (auto&& context : _data_processors_context) { context->quit(); }
-//    for (auto&& codec : _data_processors_codec) { codec->start(); }
-    for (auto&& codec : _data_processors_decoder) { codec->quit(); }
-    for (auto&& codec : _data_processors_encoder) { codec->quit(); }
-    for (auto&& refi : _data_processors_refi) { refi->quit(); }
+    for (auto&& processor : _data_processors) {
+        auto thread_processor = static_cast<YThread*>(processor);
+        try_to(thread_processor->quit());
+    }
     return YCode::OK;
 }
 
 YCode YFFmpeg::joinProcesors()
 {
-    for (auto&& context : _data_processors_context) { context->join(); }
-//    for (auto&& codec : _data_processors_codec) { codec->start(); }
-    for (auto&& codec : _data_processors_decoder) { codec->join(); }
-    for (auto&& codec : _data_processors_encoder) { codec->join(); }
-    for (auto&& refi : _data_processors_refi) { refi->join(); }
+    for (auto&& processor : _data_processors) {
+        auto thread_processor = static_cast<YThread*>(processor);
+        thread_processor->join();
+    }
     return YCode::OK;
 }
 
@@ -308,11 +286,7 @@ YCode YFFmpeg::determineSequences() //TODO
 
 void YFFmpeg::freeProcesors() //TODO объекты в смартпоинтеры
 {
-    for (auto&& context : _data_processors_context) { delete context; }
-//    for (auto&& codec : _data_processors_codec) { delete codec; }
-    for (auto&& codec : _data_processors_decoder) { delete codec; }
-    for (auto&& codec : _data_processors_encoder) { delete codec; }
-    for (auto&& refi : _data_processors_refi) { delete refi; }
+    //см TODO ↗
 }
 
 std::string YFFmpeg::toString() const

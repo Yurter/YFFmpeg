@@ -19,12 +19,12 @@ public:
     virtual ~YThread() override;
 
     virtual YCode       start()     final;
-    virtual void        quit()      final;
+    virtual YCode       quit()      final;
     virtual bool        running()   final;
     virtual void        join()      final;
 
-    void                setExitCode(YCode exit_code);
-    YCode               exitCode() const;
+    YCode               exitCode()      const;
+    std::string         exitMessage()   const;
 
 protected:
 
@@ -35,6 +35,7 @@ private:
     std::thread         _thread;
     volatile bool       _running;
     YCode               _exit_code;
+    std::string         _exit_message;
     LoopFunction        _loop_function;
 
 };

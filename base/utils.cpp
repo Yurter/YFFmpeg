@@ -30,6 +30,7 @@ bool utils::exit_code(YCode code)
     if (code == YCode::NOT_INITED)      { return true; }
     if (code == YCode::END_OF_FILE)     { return true; }
     if (code == YCode::INVALID_INPUT)   { return true; }
+    if (code == YCode::EXCEPTION)       { return true; }
     return false;
 }
 

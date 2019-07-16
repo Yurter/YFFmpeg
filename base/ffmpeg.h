@@ -45,7 +45,7 @@ enum YCode {
     INVALID_INPUT,
     INVALID_CALL_ORDER,
     FFMPEG_ERROR,
-    DOUBT
+    EXCEPTION
 };
 
 /* Опции для YFFmpeg */
