@@ -1,7 +1,7 @@
 #include "YResampler.h"
 
 YResampler::YResampler(streams_pair audio_streams) :
-    YAbstractRefi(audio_streams),
+    YRefi(audio_streams),
     _resampler_context(nullptr)
 {
     setName("YResampler");

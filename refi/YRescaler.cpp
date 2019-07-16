@@ -1,7 +1,7 @@
 #include "YRescaler.h"
 
 YRescaler::YRescaler(streams_pair audio_streams) :
-    YAbstractRefi(audio_streams)
+    YRefi(audio_streams)
 {
     setName("YRescaler");
 }

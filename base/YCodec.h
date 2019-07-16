@@ -6,19 +6,19 @@
 #include "../base/YPacket.h"
 
 template <class inType, class outType>
-class YAbstractCodec : public YDataProcessor<inType,outType>
+class YCodec : public YDataProcessor<inType,outType>
 {
 
 public:
 
-    YAbstractCodec(YStream* stream) :
+    YCodec(YStream* stream) :
         _stream(stream),
         _codec_context(nullptr)
     {
-        setName("YAbstractCodec");
+        setName("YCodec");
     }
 
-    virtual ~YAbstractCodec()
+    virtual ~YCodec()
     {
         if (inited_ptr(_codec_context)) {
             avcodec_close(_codec_context);

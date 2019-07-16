@@ -1,10 +1,10 @@
 #pragma once
 
 #include "base/ffmpeg.h"
-#include "base/YAbstractRefi.h"
+#include "base/YRefi.h"
 #include "../control/YVideoStream.h"
 
-class YRescaler : public YAbstractRefi
+class YRescaler : public YRefi
 {
 
 public:

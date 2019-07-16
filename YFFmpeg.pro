@@ -5,10 +5,10 @@ CONFIG -= qt
 CONFIG += c++17
 
 SOURCES += \
-    base/YAbstractRefi.cpp \
     base/YContext.cpp \
     base/YLogger.cpp \
     base/YMediaData.cpp \
+    base/YRefi.cpp \
     codec/YDecoder.cpp \
     codec/YEncoder.cpp \
     control/YAudioStream.cpp \
@@ -36,10 +36,11 @@ SOURCES += \
     refi/YMediaFilter.cpp \
 
 HEADERS += \
-    base/YAbstractRefi.h \
+    base/YCodec.h \
     base/YContext.h \
     base/YLogger.h \
     base/YMediaData.h \
+    base/YRefi.h \
     codec/YDecoder.h \
     codec/YEncoder.h \
     control/YAudioStream.h \
@@ -58,7 +59,7 @@ HEADERS += \
     base/YThread.h \
     base/utils.h \
     base\ffmpeg.h \
-    base\YAbstractCodec.h \
+    base\YCodec.h \
     base\YContext.h \
     base\YAbstractFilter.h \
     base\YFrame.h \

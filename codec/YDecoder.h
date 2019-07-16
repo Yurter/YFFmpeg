@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../base/YAbstractCodec.h"
+#include "../base/YCodec.h"
 
-class YDecoder : public YAbstractCodec<YPacket,YFrame>
+class YDecoder : public YCodec<YPacket,YFrame>
 {
 
 public:

@@ -40,7 +40,7 @@ void YFFmpeg::setOptions(int64_t options)
     _options = options;
 }
 
-void YFFmpeg::addElement(YObject* element)
+void YFFmpeg::addElement(YThread* element)
 {
     _data_processors.push_back(element);
     //
@@ -49,12 +49,12 @@ void YFFmpeg::addElement(YObject* element)
         _data_processors_context.push_back(context);
         return;
     }
-//    auto codec = dynamic_cast<YAbstractCodec*>(element); //TODO игнорируется
+//    auto codec = dynamic_cast<YCodec*>(element); //TODO игнорируется
 //    if (codec != nullptr) {
 //        _data_processors_codec.push_back(codec);
 //        return;
 //    }
-    auto refi = dynamic_cast<YAbstractRefi*>(element); //TODO игнорируется
+    auto refi = dynamic_cast<YRefi*>(element); //TODO игнорируется
     if (refi != nullptr) {
         _data_processors_refi.push_back(refi);
         return;

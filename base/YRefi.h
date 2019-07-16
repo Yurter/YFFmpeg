@@ -4,14 +4,14 @@
 #include "YFrame.h"
 #include "YStream.h"
 
-//TODO class name: YAbstractRefi? YRefi?
-class YAbstractRefi : public YDataProcessor<YFrame,YFrame>
+//TODO class name: YRefi? YRefi?
+class YRefi : public YDataProcessor<YFrame,YFrame>
 {
 
 public:
 
-    YAbstractRefi(streams_pair io_streams);
-    virtual ~YAbstractRefi() override;
+    YRefi(streams_pair io_streams);
+    virtual ~YRefi() override;
 
     virtual YCode       init() = 0;
     std::string         toString() const override;

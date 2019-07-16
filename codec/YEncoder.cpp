@@ -1,7 +1,7 @@
 #include "YEncoder.h"
 
 YEncoder::YEncoder(YStream* stream) :
-    YAbstractCodec(stream)
+    YCodec(stream)
 {
     setName("YEncoder");
 }

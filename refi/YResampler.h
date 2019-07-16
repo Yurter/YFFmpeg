@@ -1,9 +1,9 @@
 #pragma once
 
-#include "base/YAbstractRefi.h"
+#include "base/YRefi.h"
 #include "../control/YAudioStream.h"
 
-class YResampler : public YAbstractRefi
+class YResampler : public YRefi
 {
 
 public:

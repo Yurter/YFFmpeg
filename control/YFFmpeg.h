@@ -10,7 +10,11 @@
 #include "refi/YAudioFilter.h"
 #include "YMap.h"
 
-typedef std::list<YThread*> ProcessorList;
+typedef std::list<YThread*>     ProcessorList;
+typedef std::list<YContext*>    ContextList;
+typedef std::list<YDecoder*>    CodecList;
+typedef std::list<YEncoder*>    EncoderList;
+typedef std::list<YRefi*>       RefiList;
 
 class YFFmpeg : public YThread
 {
@@ -25,7 +29,7 @@ public:
     void                unpause();                          ///< Функция возобновляет работу класса.
 
     void                setOptions(int64_t options);        ///< Функция устанавливает переданные ей опции.
-    void                addElement(YObject* element);       ///< Функция добавляет процессор меди-данных в кучу.
+    void                addElement(YThread* element);       ///< Функция добавляет процессор меди-данных в кучу.
     void                setRoute(Route route);              ///< Функция устанавливает соответствие между входным и выходным потоками.
     void                setRoute(stream_context input_stream_context, stream_context output_stream_context);
     void                setRoute(YContext* input_context, int64_t input_stream_index
@@ -68,10 +72,10 @@ private:
 
     // ? //TODO объянить?
     std::list<YContext*>          _data_processors_context;
-//    std::list<YAbstractCodec*>          _data_processors_codec;
+//    std::list<YCodec*>          _data_processors_codec;
     std::list<YDecoder*>          _data_processors_decoder;
     std::list<YEncoder*>          _data_processors_encoder;
-    std::list<YAbstractRefi*>           _data_processors_refi;
+    std::list<YRefi*>           _data_processors_refi;
 
     std::list<std::list<YObject*>>      _processor_sequences; //TODO зачем их хранить?
 
