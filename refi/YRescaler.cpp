@@ -1,6 +1,6 @@
 #include "YRescaler.hpp"
 
-YRescaler::YRescaler(streams_pair audio_streams) :
+YRescaler::YRescaler(StreamPair audio_streams) :
     YRefi(audio_streams)
 {
     setName("YRescaler");

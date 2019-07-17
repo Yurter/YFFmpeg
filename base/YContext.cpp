@@ -66,36 +66,14 @@ YCode YContext::createStream(YParameters* param)
     return createStream(new_stream);
 }
 
-YStream* YContext::bestStream(YMediaType type) //TODO разделить на два метода? определить алгоритм выбора
+YVideoStream* YContext::bestVideoStream()
 {
-    int64_t best_stream_index = INVALID_INT;
-    if (type == YMediaType::MEDIA_TYPE_VIDEO) {
-        int64_t best_resolution = 0;
-        for (auto&& video_stream : _streams) {
-            if (video_stream->isVideo()) {
-                auto video_param = dynamic_cast<YVideoParameters*>(video_stream->parameters);
-                int64_t resolution = video_param->width() * video_param->height();
-                if (resolution > best_resolution) {
-                    best_resolution = resolution;
-                    best_stream_index = video_stream->index();
-                }
-            }
-        }
-    }
-    if (type == YMediaType::MEDIA_TYPE_AUDIO) {
-        int64_t best_bitrate = 0;
-        for (auto&& audio_stream : _streams) {
-            if (audio_stream->isAudio()) {
-                auto audio_param = dynamic_cast<YAudioParameters*>(audio_stream->parameters);
-                int64_t birtrate = audio_param->bitrate();
-                if (birtrate > best_bitrate) {
-                    best_bitrate = birtrate;
-                    best_stream_index = audio_stream->index();
-                }
-            }
-        }
-    }
-    return stream(best_stream_index);
+    return static_cast<YVideoStream*>(utils::findBestVideoStream(_streams));
+}
+
+YAudioStream* YContext::bestAudioStream()
+{
+    return static_cast<YAudioStream*>(utils::findBestAudioStream(_streams));
 }
 
 void YContext::reopenAfterFailure(int64_t timeout)

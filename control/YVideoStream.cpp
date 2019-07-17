@@ -28,3 +28,12 @@ YCode YVideoStream::init()
     setInited(true);
     return YCode::OK;
 }
+
+bool YVideoStream::operator>(const YStream& other) const
+{
+    auto this_params = static_cast<YVideoParameters*>(parameters);
+    auto other_params = static_cast<YVideoParameters*>(other.parameters);
+    auto this_pixels = this_params->width() * this_params->height();
+    auto other_pixels = other_params->width() * other_params->height();
+    return this_pixels > other_pixels;
+}

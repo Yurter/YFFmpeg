@@ -10,7 +10,7 @@ class YRefi : public YDataProcessor<YFrame,YFrame>
 
 public:
 
-    YRefi(streams_pair io_streams);
+    YRefi(StreamPair io_streams);
     virtual ~YRefi() override;
 
     virtual YCode       init() = 0;
@@ -19,7 +19,7 @@ public:
 protected:
 
     // Media
-    streams_pair        _io_streams;
+    StreamPair        _io_streams;
 
 };
 

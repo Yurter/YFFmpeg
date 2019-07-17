@@ -8,7 +8,7 @@ class YResampler : public YRefi
 
 public:
 
-    YResampler(streams_pair audio_streams);
+    YResampler(StreamPair audio_streams);
     virtual ~YResampler() override;
 
     virtual YCode       init() override;

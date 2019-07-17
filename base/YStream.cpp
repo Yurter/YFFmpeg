@@ -115,6 +115,11 @@ void YStream::increaseDuration(int64_t value)
     _duration += value;
 }
 
+bool YStream::operator>(const YStream& other) const
+{
+    return parameters->bitrate() > other.parameters->bitrate();
+}
+
 void YStream::parseParametres() //TODO ? што это?
 {
     _data->time_base = parameters->timeBase();

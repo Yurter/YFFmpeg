@@ -7,7 +7,7 @@ YAudioStream::YAudioStream(YAudioParameters* param) :
     EMPTY_CONSTRUCTOR
 }
 
-YAudioStream::YAudioStream(AVStream* stream, YAudioParameters* param ) :
+YAudioStream::YAudioStream(AVStream* stream, YAudioParameters* param) :
     YStream(stream, param)
 {
     setName("YAudioStream");
@@ -24,4 +24,11 @@ YCode YAudioStream::init() //TODO
     _packet_duration = duration;
     setInited(true);
     return YCode::OK;
+}
+
+bool YAudioStream::operator>(const YStream& other) const
+{
+    auto this_params = static_cast<YAudioParameters*>(parameters);
+    auto other_params = static_cast<YAudioParameters*>(other.parameters);
+    return this_params->bitrate() > other_params->bitrate();
 }

@@ -270,14 +270,14 @@ YAudioParameters* utils::default_audio_parameters(AVCodecID codec_id)
     return audio_params;
 }
 
-bool utils::rescalerRequired(streams_pair streams)
+bool utils::rescalerRequired(StreamPair streams)
 {
     return_if(streams.first->isAudio(),  false);
     return_if(streams.second->isAudio(), false);
     return false; //TODO
 }
 
-bool utils::resamplerRequired(streams_pair streams)
+bool utils::resamplerRequired(StreamPair streams)
 {
     return_if(streams.first->isVideo(),  false);
     return_if(streams.second->isVideo(), false);
@@ -291,4 +291,40 @@ bool utils::resamplerRequired(streams_pair streams)
     return_if(in->channelLayout()   != out->channelLayout(),    true);
 
     return false;
+}
+
+YStream* utils::findBestVideoStream(StreamVector& stream_list)
+{
+    YStream* best_video_stream = nullptr;
+    for (auto&& video_stream : stream_list) {
+        if_not(video_stream->isVideo()) {
+            continue;
+        }
+        if (not_inited_ptr(best_video_stream)) {
+            best_video_stream = video_stream;
+            continue;
+        }
+        if (video_stream > best_video_stream) {
+            best_video_stream = video_stream;
+        }
+    }
+    return best_video_stream;
+}
+
+YStream* utils::findBestAudioStream(StreamVector& stream_list)
+{
+    YStream* best_audio_stream = nullptr;
+    for (auto&& audio_stream : stream_list) {
+        if_not(audio_stream->isAudio()) {
+            continue;
+        }
+        if (not_inited_ptr(best_audio_stream)) {
+            best_audio_stream = audio_stream;
+            continue;
+        }
+        if (audio_stream > best_audio_stream) {
+            best_audio_stream = audio_stream;
+        }
+    }
+    return best_audio_stream;
 }

@@ -2,6 +2,8 @@
 
 #include "YParameters.hpp"
 #include "YPacket.hpp"
+#include <vector>
+#include <list>
 
 class YStream : public YData<AVStream*>
 {
@@ -30,6 +32,8 @@ public:
 
     void                increaseDuration(int64_t value);
 
+    virtual bool        operator>(const YStream& other) const;
+
 public:
 
     YParameters*        parameters;
@@ -54,4 +58,6 @@ protected:
 
 };
 
-typedef std::pair<YStream*,YStream*> streams_pair;
+typedef std::list<YStream*>             StreamList;
+typedef std::vector<YStream*>           StreamVector;
+typedef std::pair<YStream*,YStream*>    StreamPair;

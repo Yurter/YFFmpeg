@@ -101,22 +101,25 @@ YCode YFFmpeg::initMap()
     if (route_map.empty()) {
         /* Пользователь не установил таблицу маршрутов явно,
          * определяются маршруты по умолчанию */
-        YVideoStream* best_in_video_stream = findBestVideoStream();
-        std::list<YVideoStream*> destination_video_streams;
-        if (not_inited_ptr(best_in_video_stream) && !destination_video_streams.empty()) {
+        /* Поиск наилучшего видео-потока */
+        YVideoStream* best_video_stream = findBestVideoStream();
+        std::list<YVideoStream*> destination_video_streams; ..TODO
+        if (not_inited_ptr(best_video_stream) && !destination_video_streams.empty()) {
             log_warning("Destination requires a video stream that is not present in the source");
         }
+        /* Трансляция наилучшего видео-потока на все видео-потоки выхода */
         for (auto&& out_video_stream : destination_video_streams) {
-            _stream_map->addRoute(best_in_video_stream, out_video_stream);
+            _stream_map->addRoute(best_video_stream, out_video_stream);
         }
-        //-----------------------------------------------------------------------------|
-        YAudioStream* best_in_audio_stream = findBestAudioStream();
+        /* Поиск наилучшего аудио-потока */
+        YAudioStream* best_audio_stream = findBestAudioStream();
         std::list<YAudioStream*> destination_audio_streams;
-        if (not_inited_ptr(best_in_audio_stream) && !destination_audio_streams.empty()) {
+        if (not_inited_ptr(best_audio_stream) && !destination_audio_streams.empty()) {
             log_warning("Destination requires a video stream that is not present in the source");
         }
+        /* Трансляция наилучшего аудио-потока на все аудио-потоки выхода */
         for (auto&& out_audio_stream : destination_audio_streams) {
-            _stream_map->addRoute(best_in_audio_stream, out_audio_stream);
+            _stream_map->addRoute(best_audio_stream, out_audio_stream);
         }
     } else {
         // испольозвать (только?) установленные маршруты, (!) изменения но не замена дефолтных
@@ -124,42 +127,6 @@ YCode YFFmpeg::initMap()
     try_to(_stream_map->init());
     return YCode::OK;
 }
-
-//YCode YFFmpeg::initMap()
-//{
-//    auto&& route_map = _stream_map->streamMap();
-//    if (route_map.empty()) {
-//        /* Пользователь не установил таблицу маршрутов явно,
-//         * определяются маршруты по умолчанию */
-//        // найти лучшие видео- и аудио потоки среди источников
-//        YVideoStream* best_in_video_stream = findBestVideoStream();
-//        YAudioStream* best_in_audio_stream = findBestAudioStream();
-//        //
-//        // упомяенуть о недостаточных, (прервать выполнение с ошибкой?)
-//        bool destination_video_required;
-//        bool destination_audio_required;
-//        if (not_inited_ptr(best_in_video_stream) && destination_video_required) {
-//            log_warning("Destination requires a video stream that is not present in the source");
-//        }
-//        if (not_inited_ptr(best_in_audio_stream) && destination_audio_required) {
-//            log_warning("Destination requires a video stream that is not present in the source");
-//        }
-//        //
-//        // составить маршруты от них до всех потоков в назначениях
-//        std::list<YVideoStream*> destination_video_streams;
-//        std::list<YAudioStream*> destination_audio_streams;
-//        for (auto&& out_video_stream : destination_video_streams) {
-//            _stream_map->addRoute(best_in_video_stream, out_video_stream);
-//        }
-//        for (auto&& out_audio_stream : destination_audio_streams) {
-//            _stream_map->addRoute(best_in_audio_stream, out_audio_stream);
-//        }
-//    } else {
-//        // испольозвать (только?) установленные маршруты, (!) изменения но не замена дефолтных
-//    }
-//    try_to(_stream_map->init());
-//    return YCode::OK;
-//}
 
 YCode YFFmpeg::initRefi()
 {
@@ -250,7 +217,7 @@ YCode YFFmpeg::determineSequences() //TODO
         sequence.push_back(input_context);
         sequence.push_back(_stream_map);
         input_context->connectOutputTo(_stream_map);
-        auto io_streams = streams_pair(input_stream, output_stream);
+        auto io_streams = StreamPair(input_stream, output_stream);
         if (input_stream->isVideo() && !option(YOption::COPY_VIDEO) && rescalerRequired(io_streams)) {
             //
             auto video_decoder = new YDecoder(input_stream);
@@ -366,21 +333,22 @@ std::string YFFmpeg::toString() const
     return dump_str;
 }
 
-YVideoStream* YFFmpeg::findBestVideoStream() //TODO
+YVideoStream* YFFmpeg::findBestVideoStream()
 {
-    YVideoStream* best_video_stream = nullptr;
+    StreamVector all_video_streams;
     for (auto&& context : contexts()) {
-        auto context_best_video_stream = static_cast<YVideoStream*>(context->bestStream(YMediaType::MEDIA_TYPE_VIDEO));
-        if (context_best_video_stream > best_video_stream) { //TODO сравнение потоков
-            best_video_stream = context_best_video_stream;
-        }
+        all_video_streams.push_back(context->bestVideoStream());
     }
-    return best_video_stream;
+    return static_cast<YVideoStream*>(utils::findBestVideoStream(all_video_streams));
 }
 
 YAudioStream* YFFmpeg::findBestAudioStream()
 {
-    //TODO
+    StreamVector all_audio_streams;
+    for (auto&& context : contexts()) {
+        all_audio_streams.push_back(context->bestAudioStream());
+    }
+    return static_cast<YAudioStream*>(utils::findBestAudioStream(all_audio_streams));
 }
 
 ContextList YFFmpeg::contexts()

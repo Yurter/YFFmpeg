@@ -9,7 +9,7 @@ class YRescaler : public YRefi
 
 public:
 
-    YRescaler(streams_pair audio_streams);
+    YRescaler(StreamPair audio_streams);
     virtual ~YRescaler() override;
 
     YCode               init() override;

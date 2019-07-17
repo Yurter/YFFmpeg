@@ -14,6 +14,8 @@ public:
 
     YCode               init() override;
 
+    bool                operator>(const YStream& other) const override;
+
 };
 
 typedef std::list<YVideoStream*> VideoStreamList;

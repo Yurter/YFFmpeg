@@ -40,8 +40,11 @@ public:
     static YVideoParameters*    default_video_parameters(AVCodecID codec_id);
     static YAudioParameters*    default_audio_parameters(AVCodecID codec_id);
 
-    static bool         rescalerRequired(streams_pair streams);
-    static bool         resamplerRequired(streams_pair streams);
+    static bool         rescalerRequired(StreamPair streams);
+    static bool         resamplerRequired(StreamPair streams);
+
+    static YStream*     findBestVideoStream(StreamVector& stream_list);
+    static YStream*     findBestAudioStream(StreamVector& stream_list);
 
 };
 

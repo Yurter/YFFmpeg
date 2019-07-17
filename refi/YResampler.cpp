@@ -1,6 +1,6 @@
 #include "YResampler.hpp"
 
-YResampler::YResampler(streams_pair audio_streams) :
+YResampler::YResampler(StreamPair audio_streams) :
     YRefi(audio_streams),
     _resampler_context(nullptr)
 {
