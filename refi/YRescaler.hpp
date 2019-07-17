@@ -1,8 +1,8 @@
 #pragma once
 
-#include "base/ffmpeg.h"
-#include "base/YRefi.h"
-#include "../control/YVideoStream.h"
+#include "base/ffmpeg.hpp"
+#include "base/YRefi.hpp"
+#include "../control/YVideoStream.hpp"
 
 class YRescaler : public YRefi
 {

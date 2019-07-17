@@ -1,6 +1,6 @@
 #pragma once
 
-#include "YMediaData.h"
+#include "YMediaData.hpp"
 
 template <typename Type>
 class YData : public YMediaData

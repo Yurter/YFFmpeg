@@ -1,7 +1,7 @@
 #pragma once
 
-#include "base/YStream.h"
-#include "YVideoParameters.h"
+#include "base/YStream.hpp"
+#include "YVideoParameters.hpp"
 
 class YVideoStream : public YStream
 {
@@ -15,4 +15,6 @@ public:
     YCode               init() override;
 
 };
+
+typedef std::list<YVideoStream*> VideoStreamList;
 

@@ -1,4 +1,4 @@
-#include "YRefi.h"
+#include "YRefi.hpp"
 
 YRefi::YRefi(streams_pair io_streams) :
     _io_streams(io_streams)

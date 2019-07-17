@@ -1,4 +1,4 @@
-#include "YVideoParameters.h"
+#include "YVideoParameters.hpp"
 
 YVideoParameters::YVideoParameters() :
     YParameters(YMediaType::MEDIA_TYPE_VIDEO),

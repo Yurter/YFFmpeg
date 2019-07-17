@@ -1,6 +1,6 @@
 #pragma once
 
-#include "base/YParameters.h"
+#include "base/YParameters.hpp"
 
 class YVideoParameters : public YParameters
 {

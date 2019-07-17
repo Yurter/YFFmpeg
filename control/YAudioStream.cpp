@@ -1,5 +1,5 @@
-#include "YAudioStream.h"
-#include "../base/utils.h"
+#include "YAudioStream.hpp"
+#include "../base/utils.hpp"
 
 YAudioStream::YAudioStream(YAudioParameters* param) :
     YAudioStream(nullptr, param)

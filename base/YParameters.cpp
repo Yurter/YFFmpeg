@@ -1,5 +1,5 @@
-#include "YParameters.h"
-#include "utils.h"
+#include "YParameters.hpp"
+#include "utils.hpp"
 
 YParameters::YParameters(YMediaType type) :
     YMediaData(type),

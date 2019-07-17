@@ -1,9 +1,9 @@
 #pragma once
 
-#include "YDataProcessor.h"
-#include "../base/YStream.h"
-#include "../base/YFrame.h"
-#include "../base/YPacket.h"
+#include "YDataProcessor.hpp"
+#include "../base/YStream.hpp"
+#include "../base/YFrame.hpp"
+#include "../base/YPacket.hpp"
 
 template <class inType, class outType>
 class YCodec : public YDataProcessor<inType,outType>

@@ -1,5 +1,5 @@
-#include "YFrame.h"
-#include "utils.h"
+#include "YFrame.hpp"
+#include "utils.hpp"
 
 YFrame::YFrame() :
     YFrame(nullptr)

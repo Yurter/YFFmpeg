@@ -1,7 +1,7 @@
 #pragma once
 
-#include "base/YStream.h"
-#include "YAudioParameters.h"
+#include "base/YStream.hpp"
+#include "YAudioParameters.hpp"
 
 class YAudioStream : public YStream
 {

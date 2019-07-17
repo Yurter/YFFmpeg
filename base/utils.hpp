@@ -1,11 +1,14 @@
 #pragma once
 
-#include "ffmpeg.h"
-#include "YLogger.h"
-#include "../control/YVideoParameters.h"
-#include "../control/YAudioParameters.h"
+#include "ffmpeg.hpp"
+#include "YLogger.hpp"
+#include "../control/YVideoStream.hpp"
+#include "../control/YAudioStream.hpp"
+#include "../control/YVideoParameters.hpp"
+#include "../control/YAudioParameters.hpp"
 #include <string>
 #include <sstream>
+#include <algorithm>
 
 static int64_t object_uid_handle = DEFAULT_INT; //TODO remove warning
 
@@ -37,9 +40,12 @@ public:
     static YVideoParameters*    default_video_parameters(AVCodecID codec_id);
     static YAudioParameters*    default_audio_parameters(AVCodecID codec_id);
 
+    static bool         rescalerRequired(streams_pair streams);
+    static bool         resamplerRequired(streams_pair streams);
+
 };
 
-/* ? */
+/* Макрос получения экзмепляра объекта класса YLogger */
 #define logger                  YLogger::instance()
 
 /* Макрос установки уровня лога; сообщения, имеющие урень выше установленного, игнорируются */
@@ -48,10 +54,10 @@ public:
 #define stop_log()              logger.quit(); logger.join() //TODO не работает, вылет при завершении - поток лога не завершается
 
 /* Макросы для отправки строковых сообщений в лог */
-#define print_info(x)       logger.print(this, YLogLevel::Info, x)
+#define print_info(x)       logger.print(this, YLogLevel::Info,    x)
 #define print_warning(x)    logger.print(this, YLogLevel::Warning, x)
-#define print_error(x)      logger.print(this, YLogLevel::Error, x)
-#define print_debug(x)      logger.print(this, YLogLevel::Debug, x)
+#define print_error(x)      logger.print(this, YLogLevel::Error,   x)
+#define print_debug(x)      logger.print(this, YLogLevel::Debug,   x)
 
 /* Макросы для отправки потоковых сообщений в лог */
 #define log_info(x)         { std::stringstream log_ss; log_ss << x; print_info(log_ss.str());      } SEMICOLON_REQUIREMENT

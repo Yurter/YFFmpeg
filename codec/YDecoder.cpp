@@ -1,4 +1,4 @@
-#include "YDecoder.h"
+#include "YDecoder.hpp"
 
 YDecoder::YDecoder(YStream *stream) :
     YCodec(stream)

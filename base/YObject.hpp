@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ffmpeg.h"
+#include "ffmpeg.hpp"
 #include <string>
 #include <iostream>
 

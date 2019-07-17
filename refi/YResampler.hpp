@@ -1,7 +1,7 @@
 #pragma once
 
-#include "base/YRefi.h"
-#include "../control/YAudioStream.h"
+#include "base/YRefi.hpp"
+#include "../control/YAudioStream.hpp"
 
 class YResampler : public YRefi
 {

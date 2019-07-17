@@ -1,8 +1,8 @@
 #pragma once
 
-#include "utils.h"
-#include "YThread.h"
-#include "YAsyncQueue.h"
+#include "utils.hpp"
+#include "YThread.hpp"
+#include "YAsyncQueue.hpp"
 
 template <class inType, class outType>
 class YDataProcessor : public YThread

@@ -1,4 +1,4 @@
-﻿#include "YContext.h"
+﻿#include "YContext.hpp"
 
 YContext::YContext(const std::string& mrl, YMediaPreset preset) :
     _uid(INVALID_INT),
@@ -215,6 +215,7 @@ AVOutputFormat* YContext::outputFormat() const
 
 bool YContext::supportsVideo()
 {
+    // return inited_ptr(bestStream(YMediaType::MEDIA_TYPE_VIDEO)); //TODO объеденить? сорс не знает о своих потоках до открытия..
     if (is("YSource")) {
         return inited_ptr(bestStream(YMediaType::MEDIA_TYPE_VIDEO));
     }

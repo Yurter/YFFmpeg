@@ -1,4 +1,4 @@
-#include "YObject.h"
+#include "YObject.hpp"
 
 YObject::YObject() :
     _name("YObject"),

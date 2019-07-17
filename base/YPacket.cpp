@@ -1,5 +1,5 @@
-#include "YPacket.h"
-#include "utils.h"
+#include "YPacket.hpp"
+#include "utils.hpp"
 
 YPacket::YPacket() :
     YData<AVPacket>(),

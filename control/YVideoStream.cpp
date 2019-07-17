@@ -1,5 +1,5 @@
-#include "YVideoStream.h"
-#include "../base/utils.h"
+#include "YVideoStream.hpp"
+#include "../base/utils.hpp"
 
 YVideoStream::YVideoStream(YVideoParameters* param) :
     YVideoStream(nullptr, param)

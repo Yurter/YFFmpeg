@@ -1,4 +1,4 @@
-#include "YEncoder.h"
+#include "YEncoder.hpp"
 
 YEncoder::YEncoder(YStream* stream) :
     YCodec(stream)

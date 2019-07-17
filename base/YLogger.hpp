@@ -1,7 +1,7 @@
 #pragma once
 
-#include "YAsyncQueue.h"
-#include "YThread.h"
+#include "YAsyncQueue.hpp"
+#include "YThread.hpp"
 
 typedef std::pair<YLogLevel,std::string>    Message;
 typedef YAsyncQueue<Message>                MessageQueue;

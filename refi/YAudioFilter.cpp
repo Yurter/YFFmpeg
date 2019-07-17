@@ -1,4 +1,4 @@
-#include "YAudioFilter.h"
+#include "YAudioFilter.hpp"
 
 YAudioFilter::YAudioFilter()
 {

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "YObject.h"
-#include "ffmpeg.h"
+#include "YObject.hpp"
 
 class YMediaData : public YObject
 {
@@ -17,7 +16,7 @@ public:
     bool                isVideo() const { return _type == YMediaType::MEDIA_TYPE_VIDEO; }
     bool                isAudio() const { return _type == YMediaType::MEDIA_TYPE_AUDIO; }
 
-protected:
+private:
 
     YMediaType          _type;
 

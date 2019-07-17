@@ -1,6 +1,6 @@
 #pragma once
 
-#include "YData.h"
+#include "YData.hpp"
 
 class YPacket : public YData<AVPacket>
 {

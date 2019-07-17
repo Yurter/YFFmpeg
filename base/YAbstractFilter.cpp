@@ -1,4 +1,4 @@
-#include "YAbstractFilter.h"
+#include "YAbstractFilter.hpp"
 
 YAbstractFilter::YAbstractFilter()
 {

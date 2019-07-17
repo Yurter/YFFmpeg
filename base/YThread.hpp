@@ -1,6 +1,6 @@
 #pragma once
 
-#include "YObject.h"
+#include "YObject.hpp"
 #include <thread>
 #include <functional>
 

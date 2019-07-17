@@ -1,4 +1,4 @@
-#include "YMap.h"
+#include "YMap.hpp"
 
 #include <algorithm>
 #include <iterator>
@@ -32,6 +32,11 @@ packet_map& YMap::packetMap()
 index_map& YMap::indexMap()
 {
     return _index_map;
+}
+
+ProcessorList& YMap::getExtraProcessors()
+{
+    return _extra_processors;
 }
 
 YCode YMap::addRoute(Route route)

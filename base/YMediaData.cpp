@@ -1,4 +1,4 @@
-#include "YMediaData.h"
+#include "YMediaData.hpp"
 
 YMediaData::YMediaData(YMediaType type) :
     _type(type)

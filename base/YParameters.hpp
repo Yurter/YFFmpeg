@@ -1,6 +1,6 @@
 #pragma once
 
-#include "YMediaData.h"
+#include "YMediaData.hpp"
 
 class YParameters : public YMediaData
 {

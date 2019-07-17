@@ -1,4 +1,4 @@
-#include "YSource.h"
+#include "YSource.hpp"
 
 YSource::YSource(const std::string& mrl, YMediaPreset preset) :
     YContext(mrl, preset),

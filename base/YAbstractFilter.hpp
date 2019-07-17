@@ -1,7 +1,7 @@
 #pragma once
 
-#include "YDataProcessor.h"
-#include "YFrame.h"
+#include "YDataProcessor.hpp"
+#include "YFrame.hpp"
 
 //TODO class name: YAbstractFilter? YFilter?
 class YAbstractFilter : public YDataProcessor<YFrame,YFrame>

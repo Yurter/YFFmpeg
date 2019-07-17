@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "utils.hpp"
 #include <thread>
 
 std::string utils::media_type_to_string(YMediaType media_type)
@@ -268,4 +268,27 @@ YAudioParameters* utils::default_audio_parameters(AVCodecID codec_id)
     audio_params->setChannels(2);
     audio_params->setChannelLayout(uint64_t(av_get_default_channel_layout(int(audio_params->channels()))));
     return audio_params;
+}
+
+bool utils::rescalerRequired(streams_pair streams)
+{
+    return_if(streams.first->isAudio(),  false);
+    return_if(streams.second->isAudio(), false);
+    return false; //TODO
+}
+
+bool utils::resamplerRequired(streams_pair streams)
+{
+    return_if(streams.first->isVideo(),  false);
+    return_if(streams.second->isVideo(), false);
+
+    YAudioParameters* in = dynamic_cast<YAudioParameters*>(streams.first->parameters);
+    YAudioParameters* out = dynamic_cast<YAudioParameters*>(streams.second->parameters);
+
+    return_if(in->sampleRate()      != out->sampleRate(),       true);
+    return_if(in->sampleFormat()    != out->sampleFormat(),     true);
+    return_if(in->channels()        != out->channels(),         true);
+    return_if(in->channelLayout()   != out->channelLayout(),    true);
+
+    return false;
 }

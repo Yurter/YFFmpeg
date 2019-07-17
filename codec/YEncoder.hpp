@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../base/YCodec.h"
+#include "../base/YCodec.hpp"
 
 class YEncoder : public YCodec<YFrame,YPacket>
 {

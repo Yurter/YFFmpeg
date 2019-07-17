@@ -1,4 +1,4 @@
-#include "YAudioParameters.h"
+#include "YAudioParameters.hpp"
 
 YAudioParameters::YAudioParameters() :
     YParameters(YMediaType::MEDIA_TYPE_AUDIO),

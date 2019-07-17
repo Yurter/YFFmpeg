@@ -1,8 +1,8 @@
 #pragma once
 
-#include "YDataProcessor.h"
-#include "YFrame.h"
-#include "YStream.h"
+#include "YDataProcessor.hpp"
+#include "YFrame.hpp"
+#include "YStream.hpp"
 
 //TODO class name: YRefi? YRefi?
 class YRefi : public YDataProcessor<YFrame,YFrame>

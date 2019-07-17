@@ -1,5 +1,5 @@
-#include "YStream.h"
-#include "utils.h"
+#include "YStream.hpp"
+#include "utils.hpp"
 
 YStream::YStream(YParameters* param) :
     YStream(nullptr, param)
@@ -12,6 +12,7 @@ YStream::YStream(AVStream* stream, YParameters* param) :
     parameters(param),
     _uid(INVALID_INT),
     _duration(DEFAULT_INT),
+    _used(false),
     _prev_dts(DEFAULT_INT),
     _prev_pts(DEFAULT_INT),
     _packet_index(DEFAULT_INT),
@@ -38,16 +39,22 @@ YCode YStream::init()
 
 std::string YStream::toString() const
 {
-    if_not(inited()) { return "not inited!"; }
+    return_if_not(inited(), "not inited!");
     std::string str = "[" + std::to_string(parameters->contextUid())
             + ":" + std::to_string(parameters->streamIndex()) + "] "
-            + utils::media_type_to_string(_type) + " stream: "
-            + parameters->codecName() + ", "
-            + "dts_delta " + std::to_string(_packet_dts_delta) + ", "
-            + "pts_delta " + std::to_string(_packet_pts_delta) + ", "
-//            + "time_base " + utils::rational_to_string(timeBase()) + ", "
-            + "time_base " + utils::rational_to_string(parameters->timeBase()) + ", "
-            + "duration " + std::to_string(_duration);
+            + utils::media_type_to_string(type()) + " stream: "
+            + parameters->codecName() + ", ";
+
+    if (used()) {
+        str += "dts_delta " + std::to_string(_packet_dts_delta) + ", "
+                + "pts_delta " + std::to_string(_packet_pts_delta) + ", "
+//              + "time_base " + utils::rational_to_string(timeBase()) + ", "
+                + "time_base " + utils::rational_to_string(parameters->timeBase()) + ", "
+                + "duration " + std::to_string(_duration);
+    } else {
+        str += "not used";
+    }
+
     return str;
 }
 
@@ -73,6 +80,11 @@ void YStream::setUid(int64_t uid)
     if (invalid_int(_uid)) { _uid = uid; }
 }
 
+void YStream::setUsed(bool used)
+{
+    _used = used;
+}
+
 int64_t YStream::uid() const
 {
     return _uid;
@@ -86,6 +98,11 @@ int64_t YStream::index() const
 int64_t YStream::duration() const
 {
     return _duration;
+}
+
+bool YStream::used() const
+{
+    return _used;
 }
 
 AVCodecParameters* YStream::codecParameters()

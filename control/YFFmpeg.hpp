@@ -1,23 +1,27 @@
 #pragma once
 
-#include "context/YSource.h"
-#include "context/YDestination.h"
-#include "codec/YDecoder.h"
-#include "codec/YEncoder.h"
-#include "refi/YRescaler.h"
-#include "refi/YResampler.h"
-#include "refi/YVideoFilter.h"
-#include "refi/YAudioFilter.h"
-#include "YMap.h"
+#include "context/YSource.hpp"
+#include "context/YDestination.hpp"
+#include "codec/YDecoder.hpp"
+#include "codec/YEncoder.hpp"
+#include "refi/YRescaler.hpp"
+#include "refi/YResampler.hpp"
+#include "refi/YVideoFilter.hpp"
+#include "refi/YAudioFilter.hpp"
+#include "YMap.hpp"
 
 typedef std::list<YObject*>     ProcessorList;
+typedef std::list<YContext*>    ContextList;
+typedef std::list<YEncoder*>    EncoderList;
+typedef std::list<YDecoder*>    DecoderList;
+typedef std::list<YRefi*>       RefiList;
 
 class YFFmpeg : public YThread
 {
 
 public:
 
-    YFFmpeg(); //TODO hwaccel flag_enum|bool_arg|set_method
+    YFFmpeg(); //TODO hwaccel flag_enum|set_method
     ~YFFmpeg() override;
 
     bool                stop();                             ///< Функция завершает работу класса.
@@ -54,13 +58,15 @@ private:
 
     std::string         toString() const override;
 
-    bool                rescalerRequired(streams_pair streams);
-    bool                resamplerRequired(streams_pair streams);
+    // TODO
 
-    bool                contingencyVideoSourceRequired();
-    bool                contingencyAudioSourceRequired();
+    YVideoStream*       findBestVideoStream();
+    YAudioStream*       findBestAudioStream();
 
-    void                completeDestinationParametres();
+    ContextList         contexts();
+    DecoderList         decoders();
+    EncoderList         encoders();
+    RefiList            refis();
 
 private:
 

@@ -1,5 +1,5 @@
-#include "YThread.h"
-#include "utils.h"
+#include "YThread.hpp"
+#include "utils.hpp"
 #include <exception>
 
 YThread::YThread() :

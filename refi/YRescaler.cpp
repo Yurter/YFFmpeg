@@ -1,4 +1,4 @@
-#include "YRescaler.h"
+#include "YRescaler.hpp"
 
 YRescaler::YRescaler(streams_pair audio_streams) :
     YRefi(audio_streams)

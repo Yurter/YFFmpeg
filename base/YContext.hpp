@@ -1,8 +1,8 @@
 #pragma once
 
-#include "YDataProcessor.h"
-#include "../control/YVideoStream.h"
-#include "../control/YAudioStream.h"
+#include "YDataProcessor.hpp"
+#include "../control/YVideoStream.hpp"
+#include "../control/YAudioStream.hpp"
 
 typedef std::vector<YStream*> Streams;
 

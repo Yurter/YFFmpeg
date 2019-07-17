@@ -1,7 +1,7 @@
 #pragma once
 
-#include "YParameters.h"
-#include "YPacket.h"
+#include "YParameters.hpp"
+#include "YPacket.hpp"
 
 class YStream : public YData<AVStream*>
 {
@@ -19,12 +19,15 @@ public:
     virtual YCode       stampPacket(YPacket& packet) final;
 
     void                setUid(int64_t uid);
+    void                setUsed(bool used);
 
     int64_t             uid()       const;
     int64_t             index()     const;
     int64_t             duration()  const;
+    bool                used()      const;
 
     AVCodecParameters*  codecParameters();
+
     void                increaseDuration(int64_t value);
 
 public:
@@ -39,6 +42,8 @@ protected:
 
     int64_t             _uid;
     int64_t             _duration;
+    bool                _used;
+
     int64_t             _prev_dts;
     int64_t             _prev_pts;
     int64_t             _packet_index;

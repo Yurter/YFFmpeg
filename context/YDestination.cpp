@@ -1,4 +1,4 @@
-#include "YDestination.h"
+#include "YDestination.hpp"
 #include <exception>
 
 YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :

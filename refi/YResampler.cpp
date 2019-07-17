@@ -1,4 +1,4 @@
-#include "YResampler.h"
+#include "YResampler.hpp"
 
 YResampler::YResampler(streams_pair audio_streams) :
     YRefi(audio_streams),

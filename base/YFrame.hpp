@@ -1,6 +1,6 @@
 #pragma once
 
-#include "YData.h"
+#include "YData.hpp"
 
 class YFrame : public YData<AVFrame*>
 {
