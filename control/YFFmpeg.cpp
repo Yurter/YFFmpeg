@@ -101,12 +101,10 @@ YCode YFFmpeg::initMap()
     if (route_map.empty()) {
         /* Пользователь не установил таблицу маршрутов явно,
          * определяются маршруты по умолчанию */
-        /* Проброс наилучшего видео-потока */
+        /* Проброс наилучшего видео-потока    */
         try_to(connectIOStreams(YMediaType::MEDIA_TYPE_VIDEO));
-        /* Проброс наилучшего аудио-потока */
+        /* Проброс наилучшего аудио-потока    */
         try_to(connectIOStreams(YMediaType::MEDIA_TYPE_AUDIO));
-    } else {
-        // испольозвать (только?) установленные маршруты, (!) изменения но не замена дефолтных
     }
     try_to(_stream_map->init());
     return YCode::OK;

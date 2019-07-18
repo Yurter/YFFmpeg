@@ -18,6 +18,7 @@ typedef std::map<int64_t,int64_t>               index_map;
 /* ? */
 typedef std::pair<stream_context, stream_context> Route;
 typedef std::list<YObject*> ProcessorList;
+typedef std::list<ProcessorList> ProcessingSequences;
 
 class YMap : public YDataProcessor<YPacket,YPacket>
 {
@@ -34,11 +35,9 @@ public:
     packet_map&         packetMap();
     index_map&          indexMap();
 
-    ProcessorList&      getExtraProcessors();
+    YCode               addRoute(YStream* in_stream, YStream* out_stream);
 
-    YCode               addRoute(YStream* in_stream, YStream* out_stream); //TODO
-    YCode               addRoute(Route route);
-    YCode               setRoute(YStream* src_stream, YAsyncQueue<YPacket>* next_processor);
+    ProcessorList&      getExtraProcessors();
 
 private:
 
@@ -50,6 +49,9 @@ private:
     packet_map          _packet_map;
     index_map           _index_map;
 
+    ProcessorList       _context_list;
     ProcessorList       _extra_processors;
+
+    ProcessingSequences _processing_sequences;
 
 };

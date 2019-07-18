@@ -11,12 +11,12 @@ YMap::YMap()
 
 YCode YMap::init() //TODO
 {
-    return YCode::ERR;
+
 }
 
 std::string YMap::toString() const
 {
-    return "TODO";
+    return "TODO"; //вывод цепочек процессоров
 }
 
 stream_map& YMap::streamMap()
@@ -37,6 +37,57 @@ index_map& YMap::indexMap()
 ProcessorList& YMap::getExtraProcessors()
 {
     return _extra_processors;
+}
+
+YCode YMap::addRoute(YStream* in_stream, YStream* out_stream)
+{
+    return_if(in_stream->type() != out_stream->type(), YCode::INVALID_INPUT);
+    auto in_context = *std::find_if(_context_list.begin(), _context_list.end(), 1);      //TODO
+    auto out_context = *std::find_if(_context_list.begin(), _context_list.end(), 1); //TODO
+
+
+
+
+    ProcessorList sequence;
+
+
+
+
+    // нужно ли декодировать и кодировать?
+    if (utils::transcodingRequired({ in_stream, out_stream })) {
+        //
+    }
+
+
+
+
+    // нужен ли рескейлер или ресемплер?
+
+    if (utils::rescalingRequired({ in_stream, out_stream })) {
+        //
+    }
+
+
+
+
+
+    if (utils::resamplingRequired({ in_stream, out_stream })) {
+        //
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    _processing_sequences.push_back(sequence);
+    return YCode::OK;
 }
 
 YCode YMap::addRoute(Route route)
@@ -68,7 +119,7 @@ YCode YMap::processInputData(YPacket& input_data)
     } catch (std::out_of_range) { return YCode::INVALID_INPUT; }
 
     /* Определение первого обработчика пакета */
-    YNextProcessor* next_proc = nullptr;
+    NextProcessor* next_proc = nullptr;
     try {
         next_proc = _packet_map.at(input_data.streamUid());
     } catch (std::out_of_range) { return YCode::INVALID_INPUT; }

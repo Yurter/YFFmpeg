@@ -138,6 +138,9 @@ enum YLogLevel {
 #define return_if_not(cond,ret_value) { if (!(cond)) { return ret_value; } } SEMICOLON_REQUIREMENT
 
 /* ? */
+#define trow_if(cond,error_message) //TODO
+
+/* ? */
 #define if_not(x) if(!(x))
 
 /* Значения для задержек в коде в мс */

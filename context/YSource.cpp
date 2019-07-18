@@ -124,11 +124,11 @@ YCode YSource::processInputData(YPacket& input_data)
     return_if(not_inited_ptr(packet_stream), YCode::INVALID_INPUT);
     input_data.setType(packet_stream->type());
     input_data.setStreamUid(packet_stream->uid());
-    if (inited_int(_artificial_delay)) { utils::sleep_for(_artificial_delay); }
+    if (inited_int(_artificial_delay)) { utils::sleep_for(_artificial_delay); } //todo
     return sendOutputData(input_data);
 }
 
 void YSource::parseInputFormat()
 {
-    // ? TODO
+    // ? TODO зачем это?
 }

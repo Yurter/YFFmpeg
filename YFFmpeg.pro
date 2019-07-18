@@ -6,6 +6,7 @@ CONFIG += c++17
 
 SOURCES += \
     base/YContext.cpp \
+    base/YException.cpp \
     base/YLogger.cpp \
     base/YMediaData.cpp \
     base/YRefi.cpp \
@@ -38,6 +39,7 @@ SOURCES += \
 HEADERS += \
     base/YCodec.hpp \
     base/YContext.hpp \
+    base/YException.hpp \
     base/YLogger.hpp \
     base/YMediaData.hpp \
     base/YRefi.hpp \

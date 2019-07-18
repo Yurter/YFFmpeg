@@ -13,7 +13,7 @@ public:
     YRefi(StreamPair io_streams);
     virtual ~YRefi() override;
 
-    virtual YCode       init() = 0;
+//    virtual YCode       init() = 0;
     std::string         toString() const override;
 
 protected:

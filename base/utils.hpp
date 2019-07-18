@@ -2,6 +2,8 @@
 
 #include "ffmpeg.hpp"
 #include "YLogger.hpp"
+#include "YContext.hpp"
+#include "YException.hpp"
 #include "../control/YVideoStream.hpp"
 #include "../control/YAudioStream.hpp"
 #include "../control/YVideoParameters.hpp"
@@ -11,6 +13,8 @@
 #include <algorithm>
 
 static int64_t object_uid_handle = DEFAULT_INT; //TODO remove warning
+
+typedef std::list<YObject*> ProcessorList;
 
 class utils
 {
@@ -27,6 +31,7 @@ public:
     static AVMediaType  ymedia_type_to_avmedia_type(YMediaType media_type);
     static int64_t      gen_context_uid();
     static int64_t      gen_stream_uid(int64_t context_uid, int64_t stream_index);
+    static int64_t      get_context_uid(int64_t stream_uid);
     static std::string  guess_format_short_name(std::string media_resurs_locator);
     static AVCodec*     find_codec(std::string codec_short_name);
     static AVCodec*     find_codec(AVCodecID codec_id);
@@ -40,10 +45,12 @@ public:
     static YVideoParameters*    default_video_parameters(AVCodecID codec_id);
     static YAudioParameters*    default_audio_parameters(AVCodecID codec_id);
 
-    static bool         rescalerRequired(StreamPair streams);
-    static bool         resamplerRequired(StreamPair streams);
+    static bool         transcodingRequired(StreamPair streams);
+    static bool         rescalingRequired(StreamPair streams);
+    static bool         resamplingRequired(StreamPair streams);
 
     static YStream*     findBestStream(StreamVector& stream_list);
+    static YContext*    findContext(ProcessorList& contexts, YStream* stream);
 
 };
 

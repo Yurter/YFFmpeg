@@ -82,7 +82,12 @@ int64_t utils::gen_context_uid()
 
 int64_t utils::gen_stream_uid(int64_t context_uid, int64_t stream_index)
 {
-    return ((context_uid + 1) * 100) + stream_index;
+    return (context_uid + 1) * 100 + stream_index;
+}
+
+int64_t utils::get_context_uid(int64_t stream_uid)
+{
+    return stream_uid / 100 - 1;
 }
 
 std::string utils::guess_format_short_name(std::string media_resurs_locator)
@@ -270,20 +275,31 @@ YAudioParameters* utils::default_audio_parameters(AVCodecID codec_id)
     return audio_params;
 }
 
-bool utils::rescalerRequired(StreamPair streams)
+bool utils::transcodingRequired(StreamPair streams)
+{
+    auto in = streams.first->parameters;
+    auto out = streams.second->parameters;
+
+    return_if(in->codecId() != out->codecId(), true);
+
+    return false;
+}
+
+bool utils::rescalingRequired(StreamPair streams) //TODO
 {
     return_if(streams.first->isAudio(),  false);
     return_if(streams.second->isAudio(), false);
-    return false; //TODO
+
+    return false;
 }
 
-bool utils::resamplerRequired(StreamPair streams)
+bool utils::resamplingRequired(StreamPair streams)
 {
-    return_if(streams.first->isVideo(),  false);
+    return_if(streams.first->isVideo(),  false); //TODO throw YException, надо ли?
     return_if(streams.second->isVideo(), false);
 
-    YAudioParameters* in = dynamic_cast<YAudioParameters*>(streams.first->parameters);
-    YAudioParameters* out = dynamic_cast<YAudioParameters*>(streams.second->parameters);
+    auto in = dynamic_cast<YAudioParameters*>(streams.first->parameters);
+    auto out = dynamic_cast<YAudioParameters*>(streams.second->parameters);
 
     return_if(in->sampleRate()      != out->sampleRate(),       true);
     return_if(in->sampleFormat()    != out->sampleFormat(),     true);
@@ -297,4 +313,14 @@ YStream* utils::findBestStream(StreamVector& stream_list)
 {
     auto best_stream_it = std::max_element(stream_list.begin(), stream_list.end());
     return *best_stream_it;
+}
+
+YContext* utils::findContext(ProcessorList& contexts, YStream* stream)
+{
+    auto context_it = std::find_if(contexts.begin(), contexts.end(), 1);
+    if (context_it == contexts.end()) {
+        throw YException("Failed to find context of stream");
+    }
+    auto context_ptr = *context_it;
+    return static_cast<YContext*>(context_ptr);
 }
