@@ -43,8 +43,7 @@ public:
     static bool         rescalerRequired(StreamPair streams);
     static bool         resamplerRequired(StreamPair streams);
 
-    static YStream*     findBestVideoStream(StreamVector& stream_list);
-    static YStream*     findBestAudioStream(StreamVector& stream_list);
+    static YStream*     findBestStream(StreamVector& stream_list);
 
 };
 

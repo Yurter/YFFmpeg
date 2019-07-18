@@ -15,6 +15,7 @@ public:
 
     bool                isVideo() const { return _type == YMediaType::MEDIA_TYPE_VIDEO; }
     bool                isAudio() const { return _type == YMediaType::MEDIA_TYPE_AUDIO; }
+    bool                typeIs(YMediaType media_type) { return _type == media_type; }
 
 private:
 

@@ -46,6 +46,7 @@ enum YCode {
     INVALID_CALL_ORDER,
     FFMPEG_ERROR,
     EXCEPTION
+    //TODO код возрата без ошибки, что-то типа варнинга
 };
 
 /* Опции для YFFmpeg */
@@ -111,7 +112,7 @@ enum YLogLevel {
 
 /* ? */
 #define guaranteed_push(proc,data) while (!proc->push(data)) { utils::sleep_for(SHORT_DELAY_MS); } SEMICOLON_REQUIREMENT
-#define guaranteed_pop(proc,data) while (!proc->pop(data)) { utils::sleep_for(SHORT_DELAY_MS); } SEMICOLON_REQUIREMENT
+#define guaranteed_pop(proc,data)  while (!proc->pop(data))  { utils::sleep_for(SHORT_DELAY_MS); } SEMICOLON_REQUIREMENT
 
 /* Функция возвращает id потока, в котором вызвана */
 #define current_thread_id() std::this_thread::get_id()
@@ -125,6 +126,10 @@ enum YLogLevel {
                         return ret;\
                     }\
                   } SEMICOLON_REQUIREMENT
+
+/* ? */
+//TODO
+// Возрат кода и отправка сообщения в лог, сответствующий коду
 
 /* ? */
 #define return_if(cond,ret_value) { if (cond) { return ret_value; } } SEMICOLON_REQUIREMENT

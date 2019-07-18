@@ -10,11 +10,13 @@
 #include "refi/YAudioFilter.hpp"
 #include "YMap.hpp"
 
-typedef std::list<YObject*>     ProcessorList;
-typedef std::list<YContext*>    ContextList;
-typedef std::list<YEncoder*>    EncoderList;
-typedef std::list<YDecoder*>    DecoderList;
-typedef std::list<YRefi*>       RefiList;
+typedef std::list<YObject*>         ProcessorList;
+typedef std::list<YSource*>         SourceList;
+typedef std::list<YDestination*>    DestinationList;
+typedef std::list<YContext*>        ContextList;
+typedef std::list<YEncoder*>        EncoderList;
+typedef std::list<YDecoder*>        DecoderList;
+typedef std::list<YRefi*>           RefiList;
 
 class YFFmpeg : public YThread
 {
@@ -60,10 +62,14 @@ private:
 
     // TODO
 
-    YVideoStream*       findBestVideoStream();
-    YAudioStream*       findBestAudioStream();
+    YStream*            findBestInputStream(YMediaType media_type);
+    StreamList          getOutputStreams(YMediaType media_type);
+
+    YCode               connectIOStreams(YMediaType media_type);
 
     ContextList         contexts();
+    SourceList          sources();
+    DestinationList     destinations();
     DecoderList         decoders();
     EncoderList         encoders();
     RefiList            refis();

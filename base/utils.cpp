@@ -293,38 +293,8 @@ bool utils::resamplerRequired(StreamPair streams)
     return false;
 }
 
-YStream* utils::findBestVideoStream(StreamVector& stream_list)
+YStream* utils::findBestStream(StreamVector& stream_list)
 {
-    YStream* best_video_stream = nullptr;
-    for (auto&& video_stream : stream_list) {
-        if_not(video_stream->isVideo()) {
-            continue;
-        }
-        if (not_inited_ptr(best_video_stream)) {
-            best_video_stream = video_stream;
-            continue;
-        }
-        if (video_stream > best_video_stream) {
-            best_video_stream = video_stream;
-        }
-    }
-    return best_video_stream;
-}
-
-YStream* utils::findBestAudioStream(StreamVector& stream_list)
-{
-    YStream* best_audio_stream = nullptr;
-    for (auto&& audio_stream : stream_list) {
-        if_not(audio_stream->isAudio()) {
-            continue;
-        }
-        if (not_inited_ptr(best_audio_stream)) {
-            best_audio_stream = audio_stream;
-            continue;
-        }
-        if (audio_stream > best_audio_stream) {
-            best_audio_stream = audio_stream;
-        }
-    }
-    return best_audio_stream;
+    auto best_stream_it = std::max_element(stream_list.begin(), stream_list.end());
+    return *best_stream_it;
 }

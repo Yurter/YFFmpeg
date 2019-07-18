@@ -41,6 +41,8 @@ public:
     bool                supportsVideo();
     bool                supportsAudio();
 
+    StreamVector        streams(YMediaType media_type);
+
 protected:
 
     virtual YCode       createContext() = 0;

@@ -101,26 +101,10 @@ YCode YFFmpeg::initMap()
     if (route_map.empty()) {
         /* Пользователь не установил таблицу маршрутов явно,
          * определяются маршруты по умолчанию */
-        /* Поиск наилучшего видео-потока */
-        YVideoStream* best_video_stream = findBestVideoStream();
-        std::list<YVideoStream*> destination_video_streams; ..TODO
-        if (not_inited_ptr(best_video_stream) && !destination_video_streams.empty()) {
-            log_warning("Destination requires a video stream that is not present in the source");
-        }
-        /* Трансляция наилучшего видео-потока на все видео-потоки выхода */
-        for (auto&& out_video_stream : destination_video_streams) {
-            _stream_map->addRoute(best_video_stream, out_video_stream);
-        }
-        /* Поиск наилучшего аудио-потока */
-        YAudioStream* best_audio_stream = findBestAudioStream();
-        std::list<YAudioStream*> destination_audio_streams;
-        if (not_inited_ptr(best_audio_stream) && !destination_audio_streams.empty()) {
-            log_warning("Destination requires a video stream that is not present in the source");
-        }
-        /* Трансляция наилучшего аудио-потока на все аудио-потоки выхода */
-        for (auto&& out_audio_stream : destination_audio_streams) {
-            _stream_map->addRoute(best_audio_stream, out_audio_stream);
-        }
+        /* Проброс наилучшего видео-потока */
+        try_to(connectIOStreams(YMediaType::MEDIA_TYPE_VIDEO));
+        /* Проброс наилучшего аудио-потока */
+        try_to(connectIOStreams(YMediaType::MEDIA_TYPE_AUDIO));
     } else {
         // испольозвать (только?) установленные маршруты, (!) изменения но не замена дефолтных
     }
@@ -333,22 +317,54 @@ std::string YFFmpeg::toString() const
     return dump_str;
 }
 
-YVideoStream* YFFmpeg::findBestVideoStream()
+YStream* YFFmpeg::findBestInputStream(YMediaType media_type)
 {
-    StreamVector all_video_streams;
-    for (auto&& context : contexts()) {
-        all_video_streams.push_back(context->bestVideoStream());
+    switch (media_type) {
+    case YMediaType::MEDIA_TYPE_VIDEO: {
+        StreamVector all_video_streams;
+        for (auto&& source : sources()) {
+            all_video_streams.push_back(source->bestVideoStream());
+        }
+        return static_cast<YVideoStream*>(utils::findBestStream(all_video_streams));
     }
-    return static_cast<YVideoStream*>(utils::findBestVideoStream(all_video_streams));
+    case YMediaType::MEDIA_TYPE_AUDIO: {
+        StreamVector all_audio_streams;
+        for (auto&& source : sources()) {
+            all_audio_streams.push_back(source->bestAudioStream());
+        }
+        return static_cast<YAudioStream*>(utils::findBestStream(all_audio_streams));
+    }
+    default:
+        return nullptr;
+    }
 }
 
-YAudioStream* YFFmpeg::findBestAudioStream()
+StreamList YFFmpeg::getOutputStreams(YMediaType media_type)
 {
-    StreamVector all_audio_streams;
-    for (auto&& context : contexts()) {
-        all_audio_streams.push_back(context->bestAudioStream());
+    StreamList output_streams;
+    for (auto&& destination : destinations()) {
+        for (auto&& video_stream : destination->streams(media_type)) {
+            output_streams.push_back(video_stream);
+        }
     }
-    return static_cast<YAudioStream*>(utils::findBestAudioStream(all_audio_streams));
+    return output_streams;
+}
+
+YCode YFFmpeg::connectIOStreams(YMediaType media_type)
+{
+    YStream* best_stream = findBestInputStream(media_type);
+    if (not_inited_ptr(best_stream)) {
+        log_warning("Destination requires a "
+                    << utils::media_type_to_string(media_type)
+                    << " stream that is not present in the source");
+        return YCode::INVALID_INPUT;
+    }
+    StreamList output_streams = getOutputStreams(media_type);
+    /* Трансляция наилучшего потока на все потоки выхода того же медиа-типа */
+    for (auto&& out_stream : output_streams) {
+        try_to(_stream_map->addRoute(best_stream, out_stream));
+    }
+    return YCode::OK;
 }
 
 ContextList YFFmpeg::contexts()
@@ -359,6 +375,26 @@ ContextList YFFmpeg::contexts()
         if (inited_ptr(context)) { context_list.push_back(context); }
     }
     return context_list;
+}
+
+SourceList YFFmpeg::sources()
+{
+    SourceList source_list;
+    for (auto&& processor : _data_processors) {
+        auto source = dynamic_cast<YSource*>(processor);
+        if (inited_ptr(source)) { source_list.push_back(source); }
+    }
+    return source_list;
+}
+
+DestinationList YFFmpeg::destinations()
+{
+    DestinationList destination_list;
+    for (auto&& processor : _data_processors) {
+        auto destination = dynamic_cast<YDestination*>(processor);
+        if (inited_ptr(destination)) { destination_list.push_back(destination); }
+    }
+    return destination_list;
 }
 
 DecoderList YFFmpeg::decoders()

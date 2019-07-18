@@ -213,3 +213,12 @@ bool YContext::supportsAudio()
     }
     return false;
 }
+
+StreamVector YContext::streams(YMediaType media_type)
+{
+    StreamVector streams;
+    for (auto&& str : _streams) {
+        if (str->typeIs(media_type)) { streams.push_back(str); }
+    }
+    return streams;
+}
