@@ -43,8 +43,8 @@ public:
 protected:
 
     [[nodiscard]] virtual YCode processInputData(inType& input_data) = 0;
-    [[nodiscard]] virtual YCode sendOutputData(outType output_data
-                                                , NextProcessor* next_proc = nullptr) final
+    [[nodiscard]] YCode sendOutputData(outType output_data
+                                       , NextProcessor* next_proc = nullptr)
     {
         auto pointer = inited_ptr(next_proc) ? next_proc : _next_processor;
         guaranteed_push(pointer, output_data);

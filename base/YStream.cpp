@@ -10,6 +10,7 @@ YStream::YStream(YParameters* param) :
 YStream::YStream(AVStream* stream, YParameters* param) :
     YData<AVStream*>(stream, param->type()),
     parameters(param),
+    _context(nullptr),
     _uid(INVALID_INT),
     _duration(DEFAULT_INT),
     _used(false),

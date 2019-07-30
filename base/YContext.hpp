@@ -10,7 +10,7 @@ class YContext : public YDataProcessor<YPacket, YPacket>
 public:
 
     YContext(const std::string& mrl, YMediaPreset preset = YMediaPreset::Auto); ///< mrl - media resource locator.
-    YContext(const YContext& other) = delete;
+    YContext(const YContext& other)  = delete;
     YContext(const YContext&& other) = delete;
     virtual ~YContext() override;
 
@@ -31,14 +31,14 @@ public:
     YStream*            stream(int64_t index);                      ///< Функция возвращает указатель на поток с заданным индексом; nullptr, если невалидный индекс.
     int64_t             numberStream() const;                       ///< Функция возвращает количество потоков в текущем котексте.
 
-    AVInputFormat*      inputFormat()   const;
-    AVOutputFormat*     outputFormat()  const;
+    AVInputFormat*      inputFormat()   const;                      ///< Функция ...
+    AVOutputFormat*     outputFormat()  const;                      ///< Функция ...
 
-    bool                supportsVideo();
-    bool                supportsAudio();
+    bool                supportsVideo();                            ///< Функция ...
+    bool                supportsAudio();                            ///< Функция ...
 
-    StreamVector        streams();
-    StreamVector        streams(YMediaType media_type);
+    StreamVector        streams();                                  ///< Функция возвращает все потоки текущего контекста.
+    StreamVector        streams(YMediaType media_type);             ///< Функция потоки заданного медиа-типа.
 
 protected:
 
