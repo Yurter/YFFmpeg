@@ -285,10 +285,19 @@ bool utils::transcodingRequired(StreamPair streams)
     return false;
 }
 
-bool utils::rescalingRequired(StreamPair streams) //TODO
+bool utils::rescalingRequired(StreamPair streams)
 {
+    //TODO не реализован рескейлер
+    return false;
+    //
     return_if(streams.first->isAudio(),  false);
     return_if(streams.second->isAudio(), false);
+
+    auto in = dynamic_cast<YVideoParameters*>(streams.first->parameters);
+    auto out = dynamic_cast<YVideoParameters*>(streams.second->parameters);
+
+    return_if(in->width()  != out->width(),  true);
+    return_if(in->height() != out->height(), true);
 
     return false;
 }

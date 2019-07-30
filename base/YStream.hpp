@@ -10,7 +10,7 @@ class YStream : public YData<AVStream*>
 
 public:
 
-    YStream(const YStream& other) = delete;
+    YStream(const YStream& other)  = delete;
     YStream(const YStream&& other) = delete;
     YStream(YParameters* param = new YParameters());
     YStream(AVStream* stream, YParameters* param);
@@ -20,9 +20,11 @@ public:
     virtual std::string toString() const override final;
     virtual YCode       stampPacket(YPacket& packet) final;
 
+    void                setContext(YObject* context); //TOOD заменить на YContext* ?
     void                setUid(int64_t uid);
     void                setUsed(bool used);
 
+    YObject*            context()   const;
     int64_t             uid()       const;
     int64_t             index()     const;
     int64_t             duration()  const;
@@ -32,7 +34,7 @@ public:
 
     void                increaseDuration(int64_t value);
 
-    virtual bool        operator>(const YStream& other) const;
+    virtual bool        operator>(const YStream& other) const; //TODO func betterThen(YStream* other) ?
 
 public:
 
@@ -43,6 +45,8 @@ protected:
     virtual void        parseParametres();
 
 protected:
+
+    YObject*            _context;
 
     int64_t             _uid;
     int64_t             _duration;

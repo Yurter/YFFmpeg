@@ -18,8 +18,8 @@ public:
 
     virtual YCode       open() = 0;                                 ///< Функция открывает медиа-контекст.
     virtual YCode       close();                                    ///< Функция закрывает медиа-контекст.
-    virtual bool        opened() const final;                       ///< Функция возвращает true, если контекст находится в открытом состоянии.
-    virtual bool        closed() const final;                       ///< Функция возвращает true, если контекст находится в закрытом состоянии.
+    bool                opened() const;                             ///< Функция возвращает true, если контекст находится в открытом состоянии.
+    bool                closed() const;                             ///< Функция возвращает true, если контекст находится в закрытом состоянии.
 
     YCode               createStream(YStream* new_stream);          ///< Функция создает поток к текущем контексте.
     YCode               createStream(YParameters* param);           ///< Функция создает поток к текущем контексте.
@@ -53,7 +53,6 @@ protected:
 private:
 
     void                setUid(int64_t uid);                        ///< Функция установки uid контекста, не допускает повторного вызовова.
-//    YStream*            bestVideoStream()
 
 protected:
 

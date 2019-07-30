@@ -1,4 +1,5 @@
 #include "YFFmpeg.hpp"
+#include <iterator>
 
 YFFmpeg::YFFmpeg() :
     _stream_map(new YMap)
@@ -68,8 +69,10 @@ void YFFmpeg::dump() const //TODO operator std::string()
 YCode YFFmpeg::init()
 {
     log_info("Initialization started...");
+    try_to(checkIOContexts());
     try_to(initContext());
     try_to(openContext());
+    try_to(initMap());
     try_to(determineSequences());
     try_to(initRefi());
     try_to(initCodec());
@@ -95,15 +98,22 @@ bool YFFmpeg::option(YOption option) const
     return _options & option;
 }
 
+YCode YFFmpeg::checkIOContexts()
+{
+    return_if(sources().empty(),      YCode::NOT_INITED);   //TODO thow YException("No source specified");
+    return_if(destinations().empty(), YCode::NOT_INITED);   //TODO thow YException("No destination specified");
+    return YCode::OK;
+}
+
 YCode YFFmpeg::initMap()
 {
     auto&& route_map = _stream_map->streamMap();
     if (route_map.empty()) {
         /* Пользователь не установил таблицу маршрутов явно,
          * определяются маршруты по умолчанию */
-        /* Проброс наилучшего видео-потока    */
+        /* Проброс наилучшего видео-потока */
         try_to(connectIOStreams(YMediaType::MEDIA_TYPE_VIDEO));
-        /* Проброс наилучшего аудио-потока    */
+        /* Проброс наилучшего аудио-потока */
         try_to(connectIOStreams(YMediaType::MEDIA_TYPE_AUDIO));
     }
     try_to(_stream_map->init());
@@ -184,75 +194,72 @@ YCode YFFmpeg::joinProcesors()
     return YCode::OK;
 }
 
-YCode YFFmpeg::determineSequences() //TODO
+YCode YFFmpeg::determineSequences()
 {
-    for (auto&& route : _stream_map->streamMap()) {
-        YContext* input_context = route.first.first;
-        YContext* output_context = route.second.first;
-        return_if_not(input_context->inited(), YCode::NOT_INITED);
-        return_if_not(output_context->inited(), YCode::NOT_INITED);
-        YStream* input_stream = input_context->stream(route.first.second);
-        YStream* output_stream = output_context->stream(route.second.second);
-        return_if_not(input_stream->type() == output_stream->type(), YCode::INVALID_INPUT);
-        return_if(input_context == output_context, YCode::INVALID_INPUT);
-        std::list<YObject*> sequence;
-        sequence.push_back(input_context);
-        sequence.push_back(_stream_map);
-        input_context->connectOutputTo(_stream_map);
-        auto io_streams = StreamPair(input_stream, output_stream);
-        if (input_stream->isVideo() && !option(YOption::COPY_VIDEO) && rescalerRequired(io_streams)) {
-            //
-            auto video_decoder = new YDecoder(input_stream);
-            sequence.push_back(video_decoder);
-            _data_processors_decoder.push_back(video_decoder);
-            //
-            auto rescaler = new YRescaler(io_streams);
+    StreamMap* stream_map = _map->streamMap();
+    for (auto&& stream_route : *stream_map) {
+        YStream* in_stream = stream_route.first;
+        YStream* out_stream = stream_route.second;
+        ProcessorSequence sequence;
+
+        sequence.push_back(in_stream->context());
+        sequence.push_back(_map);
+
+        bool rescaling_required   = utils::rescalingRequired({ in_stream, out_stream });
+        bool resampling_required  = utils::resamplingRequired({ in_stream, out_stream });
+        bool transcoding_required = utils::transcodingRequired({ in_stream, out_stream });
+
+        transcoding_required = (transcoding_required
+                                || rescaling_required
+                                || resampling_required);
+
+        if (transcoding_required) {
+            YDecoder* decoder = new YDecoder(in_stream);
+            sequence.push_back(decoder);
+            addElement(decoder);
+        }
+
+        if (rescaling_required) {
+            YRescaler* rescaler = new YRescaler({ in_stream, out_stream });
             sequence.push_back(rescaler);
-            _data_processors_refi.push_back(rescaler);
-            video_decoder->connectOutputTo(rescaler);
-            //
-            auto video_encoder = new YEncoder(output_stream);
-            sequence.push_back(video_encoder);
-            _data_processors_encoder.push_back(video_encoder);
-            rescaler->connectOutputTo(video_encoder);
-            //
-            sequence.push_back(output_context);
-            video_encoder->connectOutputTo(output_context);
-        } else {// TODO
-            if (input_stream->isVideo()) {
-                sequence.push_back(output_context);
-            }
+            addElement(rescaler);
         }
-        if (input_stream->isAudio() && !option(YOption::COPY_AUDIO) && resamplerRequired(io_streams)) {
-            //
-            auto audio_decoder = new YDecoder(input_stream);
-            sequence.push_back(audio_decoder);
-            _data_processors_decoder.push_back(audio_decoder);
-            //
-            auto resampler = new YResampler(io_streams);
+
+        if (resampling_required) {
+            YResampler* resampler = new YResampler({ in_stream, out_stream });
             sequence.push_back(resampler);
-            _data_processors_refi.push_back(resampler);
-            audio_decoder->connectOutputTo(resampler);
-            //
-            auto audio_encoder = new YEncoder(output_stream);
-            sequence.push_back(audio_encoder);
-            _data_processors_encoder.push_back(audio_encoder);
-            resampler->connectOutputTo(audio_encoder);
-            //
-            sequence.push_back(output_context);
-            audio_encoder->connectOutputTo(output_context);
-        } else {// TODO
-            if (input_stream->isAudio()) {
-                sequence.push_back(output_context);
+            addElement(resampler);
+        }
+
+        if (transcoding_required) {
+            YEncoder* encoder = new YEncoder(out_stream);
+            sequence.push_back(encoder);
+            addElement(encoder);
+        }
+
+        sequence.push_back(out_stream->context());
+
+        for (auto processor_it = sequence.begin(); processor_it != sequence.end(); processor_it++) {
+            auto next_processor_it = std::next(processor_it);
+            if (next_processor_it == sequence.end()) { break; }
+            if ((*processor_it)->is("YSource")) {
+                try_to(static_cast<YSource*>(*processor_it)->connectOutputTo(*next_processor_it));
+            } else if ((*processor_it)->is("YEncoder")) {
+                try_to(static_cast<YEncoder*>(*processor_it)->connectOutputTo(*next_processor_it));
+            } else if ((*processor_it)->is("YDecoder")) {
+                try_to(static_cast<YDecoder*>(*processor_it)->connectOutputTo(*next_processor_it));
+            } else if ((*processor_it)->is("YRescaler")) {
+                try_to(static_cast<YRescaler*>(*processor_it)->connectOutputTo(*next_processor_it));
+            } else if ((*processor_it)->is("YResampler")) {
+                try_to(static_cast<YResampler*>(*processor_it)->connectOutputTo(*next_processor_it));
             }
         }
-        // TODO PUSH output_context
-        auto first_proc_it = std::next(std::find(sequence.begin(), sequence.end(), _stream_map));
-        auto debug_test = *first_proc_it;
-        _stream_map->setRoute(input_stream, dynamic_cast<YAsyncQueue<YPacket>*>(*first_proc_it));
+
+        auto first_packet_processor = *(sequence.begin()++);
+        _map->setRoute(in_stream, dynamic_cast<PacketProcessor*>(first_packet_processor));
         _processor_sequences.push_back(sequence);
     }
-    return_if_not(_stream_map->inited(), YCode::NOT_INITED);
+
     return YCode::OK;
 }
 
@@ -355,7 +362,8 @@ YCode YFFmpeg::connectIOStreams(YMediaType media_type)
         log_warning("Destination requires a "
                     << utils::media_type_to_string(media_type)
                     << " stream that is not present in the source");
-        return YCode::INVALID_INPUT;
+//        return YCode::INVALID_INPUT;
+        return YCode::OK; //TODO ?? что возращать?
     }
     StreamList output_streams = getOutputStreams(media_type);
     /* Трансляция наилучшего потока на все потоки выхода того же медиа-типа */

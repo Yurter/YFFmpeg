@@ -18,6 +18,8 @@ typedef std::list<YEncoder*>        EncoderList;
 typedef std::list<YDecoder*>        DecoderList;
 typedef std::list<YRefi*>           RefiList;
 
+using ProcessorSequence = std::list<YObject*>;
+
 class YFFmpeg : public YThread
 {
 
@@ -37,7 +39,7 @@ public:
     void                setRoute(YContext* input_context, int64_t input_stream_index
                                  , YContext* output_context, int64_t output_stream_index);
 
-    void                dump() const;                       ///<
+    void                dump() const;                       ///< TODO description
 
 private:
 
@@ -45,6 +47,8 @@ private:
     YCode               run()   override;
 
     bool                option(YOption option) const;
+
+    YCode               checkIOContexts();
 
     YCode               initMap();
     YCode               initRefi();
@@ -78,9 +82,9 @@ private:
 
     ProcessorList       _data_processors;
 
-    std::list<std::list<YObject*>>      _processor_sequences; //TODO перенести внутрь YMap
+    std::list<std::list<YObject*>>      _processor_sequences; //TODO перенести внутрь YMap ?
 
-    YMap*         _stream_map;
+    YMap*               _map;
 
     // General
     volatile bool       _paused; 

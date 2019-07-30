@@ -41,6 +41,7 @@ bool YContext::closed() const
 YCode YContext::createStream(YStream* new_stream)
 {
     try_to(new_stream->init());
+    new_stream->setContext(this);
     new_stream->setUid(utils::gen_stream_uid(uid(), numberStream()));
     new_stream->parameters->setStreamIndex(numberStream());
     new_stream->parameters->setContextUid(uid());

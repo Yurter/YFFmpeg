@@ -75,6 +75,11 @@ YCode YStream::stampPacket(YPacket& packet)
     return YCode::OK;
 }
 
+void YStream::setContext(YObject* context)
+{
+    _context = context;
+}
+
 void YStream::setUid(int64_t uid)
 {
     if (invalid_int(_uid)) { _uid = uid; }
@@ -83,6 +88,11 @@ void YStream::setUid(int64_t uid)
 void YStream::setUsed(bool used)
 {
     _used = used;
+}
+
+YObject* YStream::context() const
+{
+    return _context;
 }
 
 int64_t YStream::uid() const

@@ -6,19 +6,14 @@
 #include "../context/YDestination.hpp"
 #include <map>
 
+using PacketProcessor = YAsyncQueue<YPacket>;
+
 /* Таблица соответствий входного и выходного потоков */
-typedef std::map<stream_context,stream_context> stream_map;
-
-/* Таблица соответствий uid входного потока и указателя на первый в последовательности обработчик пакета */
-typedef std::map<int64_t,YAsyncQueue<YPacket>*> packet_map;
-
+using StreamMap = std::map<YStream*,YStream*>;
 /* Таблица соответствий uid входного потока и локального индекса выходного потока */
-typedef std::map<int64_t,int64_t>               index_map;
-
-/* ? */
-typedef std::pair<stream_context, stream_context> Route;
-typedef std::list<YObject*> ProcessorList;
-typedef std::list<ProcessorList> ProcessingSequences;
+using IndexMap = std::map<int64_t,int64_t> ;
+/* Таблица соответствий uid входного потока и указателя на первый в последовательности обработчик пакета */
+using PacketMap = std::map<int64_t,PacketProcessor*>;
 
 class YMap : public YDataProcessor<YPacket,YPacket>
 {
@@ -28,30 +23,22 @@ public:
     YMap();
     virtual ~YMap() override = default;
 
-    YCode               init() override;
-    std::string         toString() const override; //TODO
+    virtual YCode       init() override;
+    virtual std::string toString() const override;
 
-    stream_map&         streamMap();
-    packet_map&         packetMap();
-    index_map&          indexMap();
+    StreamMap*          streamMap();
 
     YCode               addRoute(YStream* in_stream, YStream* out_stream);
-
-    ProcessorList&      getExtraProcessors();
-
-private:
-
-    YCode               processInputData(YPacket& input_data) override;
+    YCode               setRoute(YStream* src_stream, PacketProcessor* next_processor);
 
 private:
 
-    stream_map          _stream_map;
-    packet_map          _packet_map;
-    index_map           _index_map;
+    virtual YCode       processInputData(YPacket& input_data) override;
 
-    ProcessorList       _context_list;
-    ProcessorList       _extra_processors;
+private:
 
-    ProcessingSequences _processing_sequences;
+    StreamMap           _stream_map;
+    PacketMap           _packet_map;
+    IndexMap            _index_map;
 
 };

@@ -4,6 +4,9 @@
 #include "YThread.hpp"
 #include "YAsyncQueue.hpp"
 
+//TODO создать родительский нешаблонный класс и от наследовать YPacketProcessor и YFrameProcessor и тд
+//                                                  пакет-пакет, фрейм-фрейм, пакет-фрейм, фрейм-пакет
+//              объекдинение (декодера и энкодера); (ресемплера, рескейлера, аудио- и видео-фильтров ?)
 template <class inType, class outType>
 class YDataProcessor : public YThread
                         , public YAsyncQueue<inType>
@@ -23,9 +26,16 @@ public:
 
     virtual ~YDataProcessor() = default;
 
-    void connectOutputTo(NextProcessor* next_processor)
+//    void connectOutputTo(NextProcessor* next_processor)
+//    {
+//        _next_processor = next_processor;
+//    }
+    YCode connectOutputTo(YObject* next_processor)
     {
-        _next_processor = next_processor;
+        auto ptr = dynamic_cast<NextProcessor*>(next_processor);
+        return_if(not_inited_ptr(ptr), YCode::INVALID_INPUT);
+        _next_processor = ptr;
+        return YCode::OK;
     }
 
     void    setSkipType(YMediaType type) { _skip_types |= type; }
