@@ -73,6 +73,7 @@ AVMediaType utils::ymedia_type_to_avmedia_type(YMediaType media_type)
     case YMediaType::MEDIA_TYPE_AUDIO:
         return AVMEDIA_TYPE_AUDIO;
     }
+    throw YException("");
 }
 
 int64_t utils::gen_context_uid()
@@ -275,16 +276,6 @@ YAudioParameters* utils::default_audio_parameters(AVCodecID codec_id)
     return audio_params;
 }
 
-bool utils::transcodingRequired(StreamPair streams)
-{
-    auto in = streams.first->parameters;
-    auto out = streams.second->parameters;
-
-    return_if(in->codecId() != out->codecId(), true);
-
-    return false;
-}
-
 bool utils::rescalingRequired(StreamPair streams)
 {
     //TODO не реализован рескейлер
@@ -318,18 +309,18 @@ bool utils::resamplingRequired(StreamPair streams)
     return false;
 }
 
-YStream* utils::findBestStream(StreamVector& stream_list)
+bool utils::transcodingRequired(StreamPair streams)
+{
+    auto in = streams.first->parameters;
+    auto out = streams.second->parameters;
+
+    return_if(in->codecId() != out->codecId(), true);
+
+    return false;
+}
+
+YStream* utils::find_best_stream(StreamVector&& stream_list)
 {
     auto best_stream_it = std::max_element(stream_list.begin(), stream_list.end());
     return *best_stream_it;
-}
-
-YContext* utils::findContext(ProcessorList& contexts, YStream* stream)
-{
-    auto context_it = std::find_if(contexts.begin(), contexts.end(), 1);
-    if (context_it == contexts.end()) {
-        throw YException("Failed to find context of stream");
-    }
-    auto context_ptr = *context_it;
-    return static_cast<YContext*>(context_ptr);
 }

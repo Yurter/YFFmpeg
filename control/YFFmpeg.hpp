@@ -71,12 +71,12 @@ private:
 
     YCode               connectIOStreams(YMediaType media_type);
 
-    ContextList         contexts();
-    SourceList          sources();
-    DestinationList     destinations();
-    DecoderList         decoders();
-    EncoderList         encoders();
-    RefiList            refis();
+    ContextList         contexts()      const;
+    SourceList          sources()       const;
+    DestinationList     destinations()  const;
+    DecoderList         decoders()      const;
+    EncoderList         encoders()      const;
+    RefiList            refis()         const;
 
 private:
 

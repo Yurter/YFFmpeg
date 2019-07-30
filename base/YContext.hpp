@@ -4,8 +4,6 @@
 #include "../control/YVideoStream.hpp"
 #include "../control/YAudioStream.hpp"
 
-
-
 class YContext : public YDataProcessor<YPacket, YPacket>
 {
 
@@ -23,9 +21,7 @@ public:
 
     YCode               createStream(YStream* new_stream);          ///< Функция создает поток к текущем контексте.
     YCode               createStream(YParameters* param);           ///< Функция создает поток к текущем контексте.
-//    YStream*            bestStream(YMediaType type);                ///< Функция возвращает указатель на поток заданного типа с наилучшими параметрами; nullptr, если потока заданного типа нет.
-    YVideoStream*       bestVideoStream();
-    YAudioStream*       bestAudioStream();
+    YStream*            bestStream(YMediaType type);                ///< Функция возвращает указатель на поток заданного типа с наилучшими параметрами; nullptr, если потока заданного типа нет.
     void                reopenAfterFailure(int64_t timeout);        ///< Функция позволяет автоматически переоткрывать контекст в случаее его закрытия по заданному таймауту в секундах.
 
     int64_t             uid() const;                                ///< Функция возвращает uid.
@@ -41,6 +37,7 @@ public:
     bool                supportsVideo();
     bool                supportsAudio();
 
+    StreamVector        streams();
     StreamVector        streams(YMediaType media_type);
 
 protected:

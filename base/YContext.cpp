@@ -67,14 +67,9 @@ YCode YContext::createStream(YParameters* param)
     return createStream(new_stream);
 }
 
-YVideoStream* YContext::bestVideoStream()
+YStream* YContext::bestStream(YMediaType type)
 {
-    return static_cast<YVideoStream*>(utils::findBestVideoStream(_streams));
-}
-
-YAudioStream* YContext::bestAudioStream()
-{
-    return static_cast<YAudioStream*>(utils::findBestAudioStream(_streams));
+    return utils::find_best_stream(streams(type));
 }
 
 void YContext::reopenAfterFailure(int64_t timeout)
@@ -213,6 +208,11 @@ bool YContext::supportsAudio()
         return inited_codec_id(outputFormat()->audio_codec);
     }
     return false;
+}
+
+StreamVector YContext::streams()
+{
+    return _streams;
 }
 
 StreamVector YContext::streams(YMediaType media_type)

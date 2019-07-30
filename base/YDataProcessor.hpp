@@ -14,7 +14,7 @@ class YDataProcessor : public YThread
 
 public:
 
-    typedef YAsyncQueue<outType> NextProcessor;
+    using NextProcessor = YAsyncQueue<outType>;
 
     YDataProcessor() :
         _next_processor(nullptr),

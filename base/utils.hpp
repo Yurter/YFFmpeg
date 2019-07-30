@@ -45,12 +45,11 @@ public:
     static YVideoParameters*    default_video_parameters(AVCodecID codec_id);
     static YAudioParameters*    default_audio_parameters(AVCodecID codec_id);
 
-    static bool         transcodingRequired(StreamPair streams);
     static bool         rescalingRequired(StreamPair streams);
     static bool         resamplingRequired(StreamPair streams);
+    static bool         transcodingRequired(StreamPair streams);
 
-    static YStream*     findBestStream(StreamVector& stream_list);
-    static YContext*    findContext(ProcessorList& contexts, YStream* stream);
+    static YStream*     find_best_stream(StreamVector&& stream_list);
 
 };
 

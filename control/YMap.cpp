@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <iterator>
-#include <exception>
 
 YMap::YMap()
 {
@@ -11,7 +10,23 @@ YMap::YMap()
 
 std::string YMap::toString() const
 {
-    return "TODO"; //вывод цепочек процессоров
+    return_if(_stream_map.empty(), "Empty");
+    std::string str;
+    for (auto&& route : _stream_map) {
+        auto in_stream_id = route.first->index();
+        auto out_stream_id = route.second->index();
+        auto in_context_uid = utils::get_context_uid(route.first->uid());
+        auto out_context_uid = utils::get_context_uid(route.second->uid());
+        str += "[" + std::to_string(in_context_uid)
+                + ":"
+                + std::to_string(in_stream_id) + "]";
+        str += "-->";
+        str += "[" + std::to_string(out_context_uid)
+                + ":"
+                + std::to_string(out_stream_id) + "]";
+        str += " ";
+    }
+    return str;
 }
 
 StreamMap* YMap::streamMap()

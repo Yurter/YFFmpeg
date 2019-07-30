@@ -34,7 +34,7 @@ public:
 
     void                increaseDuration(int64_t value);
 
-    virtual bool        operator>(const YStream& other) const; //TODO func betterThen(YStream* other) ?
+    virtual bool        operator>(const YStream& other) const; //TODO func betterThen(YStream* other) ? нет, максимум дублировать, т.к. испольуется в std::max_element
 
 public:
 

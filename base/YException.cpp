@@ -1,6 +1,6 @@
 #include "YException.hpp"
 
-YException::YException()
+YException::YException(std::string error_message)
 {
 
 }

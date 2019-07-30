@@ -45,20 +45,15 @@ void YFFmpeg::addElement(YObject* element)
     _data_processors.push_back(element);
 }
 
-void YFFmpeg::setRoute(Route route)
-{
-    _map->addRoute(route);
-}
-
 void YFFmpeg::setRoute(YStream* input_stream, YStream* output_stream)
 {
     _map->addRoute(input_stream, output_stream);
 }
 
-void YFFmpeg::setRoute(YContext* input_context, int64_t input_stream_index, YContext* output_context, int64_t output_stream_index)
+void YFFmpeg::setRoute(YContext* input_context, int64_t input_stream_index, YContext* output_context, int64_t output_stream_index) //TODO
 {
-    _map->addRoute({ { input_context, input_stream_index }
-                            , { output_context, output_stream_index } });
+//    _map->addRoute({ { input_context, input_stream_index }
+//                            , { output_context, output_stream_index } });
 }
 
 void YFFmpeg::dump() const //TODO operator std::string()
@@ -270,23 +265,17 @@ void YFFmpeg::freeProcesors() //TODO объекты в смартпоинтер�
 
 std::string YFFmpeg::toString() const
 {
-    //input сами в опене TODO
-    //output сами в опене TODO
-    //chains
-//    for (auto&& context : _data_processors_context) { log_info(context->toString()); }
-
-
     std::string dump_str;
 
-    /* Вывод информации о контекстах */
-    /* Input #0, rtsp, from 'rtsp://admin:admin@192.168.10.3':
+    /* Вывод информации о контекстах
+     * Input #0, rtsp, from 'rtsp://admin:admin@192.168.10.3':
      *      Stream #0:0: Video: h264, 1920x1080 [16:9], 23 fps, 400 kb/s
      *      Stream #0:1: Audio: pcm_mulaw, 16000 Hz, 1 channels, s16, 128 kb/s
      * Output #0, flv, to 'rtmp://a.rtmp.youtube.com/live2/ytub-8t5w-asjj-avyf':
      *      Stream #0:0: Video: h264, 1920x1080, 400 kb/s
      *      Stream #0:1: Audio: aac, 44100 Hz, stereo, 128 kb/s
     */
-    for (auto&& context : _data_processors_context) {
+    for (auto&& context : contexts()) {
         dump_str += "\n" + context->toString();
         for (auto i = 0; i < context->numberStream(); i++) {
             dump_str += "\n";
@@ -294,7 +283,7 @@ std::string YFFmpeg::toString() const
         }
     }
 
-    /* Вывод информации о последовательностях обработки потоков */ //TODO move code to YMap::toString() etc.
+    /* Вывод информации о последовательностях обработки потоков */
     dump_str += "\nProcessing sequences";
     int64_t i = 0;
     std::string delimeter = " -> ";
@@ -330,14 +319,14 @@ YStream* YFFmpeg::findBestInputStream(YMediaType media_type)
         for (auto&& source : sources()) {
             all_video_streams.push_back(source->bestVideoStream());
         }
-        return static_cast<YVideoStream*>(utils::findBestStream(all_video_streams));
+        return static_cast<YVideoStream*>(utils::find_best_stream(all_video_streams));
     }
     case YMediaType::MEDIA_TYPE_AUDIO: {
         StreamVector all_audio_streams;
         for (auto&& source : sources()) {
             all_audio_streams.push_back(source->bestAudioStream());
         }
-        return static_cast<YAudioStream*>(utils::findBestStream(all_audio_streams));
+        return static_cast<YAudioStream*>(utils::find_best_stream(all_audio_streams));
     }
     default:
         return nullptr;
@@ -373,7 +362,7 @@ YCode YFFmpeg::connectIOStreams(YMediaType media_type)
     return YCode::OK;
 }
 
-ContextList YFFmpeg::contexts()
+ContextList YFFmpeg::contexts() const
 {
     ContextList context_list;
     for (auto&& processor : _data_processors) {
@@ -383,7 +372,7 @@ ContextList YFFmpeg::contexts()
     return context_list;
 }
 
-SourceList YFFmpeg::sources()
+SourceList YFFmpeg::sources() const
 {
     SourceList source_list;
     for (auto&& processor : _data_processors) {
@@ -393,7 +382,7 @@ SourceList YFFmpeg::sources()
     return source_list;
 }
 
-DestinationList YFFmpeg::destinations()
+DestinationList YFFmpeg::destinations() const
 {
     DestinationList destination_list;
     for (auto&& processor : _data_processors) {
@@ -403,7 +392,7 @@ DestinationList YFFmpeg::destinations()
     return destination_list;
 }
 
-DecoderList YFFmpeg::decoders()
+DecoderList YFFmpeg::decoders() const
 {
     DecoderList decoder_list;
     for (auto&& processor : _data_processors) {
