@@ -71,5 +71,3 @@ protected:
     AVFormatContext*	_format_context;
 
 };
-
-typedef std::pair<YContext*,int64_t> stream_context;

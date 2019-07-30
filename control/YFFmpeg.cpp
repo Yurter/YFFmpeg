@@ -2,10 +2,10 @@
 #include <iterator>
 
 YFFmpeg::YFFmpeg() :
-    _stream_map(new YMap)
+    _map(new YMap)
 {
     setName("YFFmpeg");
-    _data_processors.push_back(_stream_map);
+    _data_processors.push_back(_map);
 }
 
 YFFmpeg::~YFFmpeg()
@@ -47,17 +47,17 @@ void YFFmpeg::addElement(YObject* element)
 
 void YFFmpeg::setRoute(Route route)
 {
-    _stream_map->addRoute(route);
+    _map->addRoute(route);
 }
 
-void YFFmpeg::setRoute(stream_context input_stream_context, stream_context output_stream_context)
+void YFFmpeg::setRoute(YStream* input_stream, YStream* output_stream)
 {
-    _stream_map->addRoute({ input_stream_context, output_stream_context });
+    _map->addRoute(input_stream, output_stream);
 }
 
 void YFFmpeg::setRoute(YContext* input_context, int64_t input_stream_index, YContext* output_context, int64_t output_stream_index)
 {
-    _stream_map->addRoute({ { input_context, input_stream_index }
+    _map->addRoute({ { input_context, input_stream_index }
                             , { output_context, output_stream_index } });
 }
 
@@ -100,15 +100,15 @@ bool YFFmpeg::option(YOption option) const
 
 YCode YFFmpeg::checkIOContexts()
 {
-    return_if(sources().empty(),      YCode::NOT_INITED);   //TODO thow YException("No source specified");
-    return_if(destinations().empty(), YCode::NOT_INITED);   //TODO thow YException("No destination specified");
+    return_if(sources().empty(),      YCode::NOT_INITED);   //TODO throw YException("No source specified");
+    return_if(destinations().empty(), YCode::NOT_INITED);   //TODO throw YException("No destination specified");
     return YCode::OK;
 }
 
 YCode YFFmpeg::initMap()
 {
-    auto&& route_map = _stream_map->streamMap();
-    if (route_map.empty()) {
+    auto stream_map = _map->streamMap();
+    if (stream_map->empty()) {
         /* Пользователь не установил таблицу маршрутов явно,
          * определяются маршруты по умолчанию */
         /* Проброс наилучшего видео-потока */
@@ -116,7 +116,7 @@ YCode YFFmpeg::initMap()
         /* Проброс наилучшего аудио-потока */
         try_to(connectIOStreams(YMediaType::MEDIA_TYPE_AUDIO));
     }
-    try_to(_stream_map->init());
+    try_to(_map->init());
     return YCode::OK;
 }
 
@@ -368,7 +368,7 @@ YCode YFFmpeg::connectIOStreams(YMediaType media_type)
     StreamList output_streams = getOutputStreams(media_type);
     /* Трансляция наилучшего потока на все потоки выхода того же медиа-типа */
     for (auto&& out_stream : output_streams) {
-        try_to(_stream_map->addRoute(best_stream, out_stream));
+        try_to(_map->addRoute(best_stream, out_stream));
     }
     return YCode::OK;
 }

@@ -28,14 +28,14 @@ public:
     YFFmpeg(); //TODO hwaccel flag_enum|set_method
     ~YFFmpeg() override;
 
-    bool                stop();                             ///< Функция завершает работу класса.
+    bool                stop();                             ///< Функция прерывает работу класса.
     void                pause();                            ///< Функция приостанавливает работу класса.
     void                unpause();                          ///< Функция возобновляет работу класса.
 
-    void                setOptions(int64_t options);        ///< Функция устанавливает переданные ей опции.
-    void                addElement(YObject* element);       ///< Функция добавляет процессор меди-данных в кучу.
-    void                setRoute(Route route);              ///< Функция устанавливает соответствие между входным и выходным потоками.
-    void                setRoute(stream_context input_stream_context, stream_context output_stream_context);
+    void                setOptions(int64_t options);        ///< Функция устанавливает переданные ей опции YOption.
+    void                addElement(YObject* element);       ///< Функция добавляет процессор медиа-данных в кучу.
+
+    void                setRoute(YStream* input_stream, YStream* output_stream);            ///< Функция устанавливает соответствие между входным и выходным потоками.
     void                setRoute(YContext* input_context, int64_t input_stream_index
                                  , YContext* output_context, int64_t output_stream_index);
 
@@ -43,8 +43,8 @@ public:
 
 private:
 
-    YCode               init()  override;
-    YCode               run()   override;
+    virtual YCode       init()  override;
+    virtual YCode       run()   override;
 
     bool                option(YOption option) const;
 
@@ -62,7 +62,7 @@ private:
     YCode               determineSequences();
     void                freeProcesors();
 
-    std::string         toString() const override;
+    virtual std::string toString() const override;
 
     // TODO
 

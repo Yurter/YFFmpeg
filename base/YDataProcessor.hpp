@@ -26,10 +26,6 @@ public:
 
     virtual ~YDataProcessor() = default;
 
-//    void connectOutputTo(NextProcessor* next_processor)
-//    {
-//        _next_processor = next_processor;
-//    }
     YCode connectOutputTo(YObject* next_processor)
     {
         auto ptr = dynamic_cast<NextProcessor*>(next_processor);

@@ -9,11 +9,6 @@ YMap::YMap()
     setName("YMap");
 }
 
-YCode YMap::init()
-{
-    //TODO
-}
-
 std::string YMap::toString() const
 {
     return "TODO"; //вывод цепочек процессоров

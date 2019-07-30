@@ -23,13 +23,12 @@ public:
     YMap();
     virtual ~YMap() override = default;
 
-    virtual YCode       init() override;
     virtual std::string toString() const override;
 
     StreamMap*          streamMap();
 
-    YCode               addRoute(YStream* in_stream, YStream* out_stream);
-    YCode               setRoute(YStream* src_stream, PacketProcessor* next_processor);
+    YCode               addRoute(YStream* in_stream, YStream* out_stream);              ///< Связвание входного и выходного потоков.
+    YCode               setRoute(YStream* src_stream, PacketProcessor* next_processor); ///< Связывание источника данных с первым обработчиком в последоваельности.
 
 private:
 
