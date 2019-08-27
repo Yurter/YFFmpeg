@@ -1,9 +1,10 @@
 #include "YLogger.hpp"
 #include "utils.hpp"
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <sstream>
-#include <windows.h>
+#include <Windows.h>
 
 YLogger::YLogger() :
     _messages(new MessageQueue),
@@ -92,22 +93,20 @@ void YLogger::print(const YObject* caller, YLogLevel log_level, std::string mess
 {
     if (ignoreMessage(log_level)) { return; }
 
-    std::stringstream ss;
+
+    std::string header;
 
     if (log_level > YLogLevel::Quiet) {
-        ss << "[" << caller->name() << "]";
+        header += "[" + caller->name() + "]";
     }
-    if (log_level == YLogLevel::Debug) { //TODO вывод сигнатуры функции
-        ss << "[" << current_thread_id() << "]";
+    if (log_level == YLogLevel::Debug) {
+        header += "[" + (std::stringstream() << current_thread_id()).str() + "]";
     }
 
-    ss << " " << message;
+    std::stringstream ss;
+
+    ss << std::setw(30) << std::left << header << " " << message;
+
     guaranteed_push(_messages, Message(log_level, ss.str()));
-}
-
-std::string YLogger::toString() const
-{
-    std::string str = "TODO";
-    return str;
 }
 

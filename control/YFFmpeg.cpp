@@ -58,7 +58,7 @@ void YFFmpeg::setRoute(YContext* input_context, int64_t input_stream_index, YCon
 
 void YFFmpeg::dump() const //TODO operator std::string()
 {
-    log_info(this);
+    log_info(__FUNCTION__);
 }
 
 YCode YFFmpeg::init()

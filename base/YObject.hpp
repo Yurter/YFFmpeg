@@ -20,9 +20,8 @@ public:
     void                setInited(bool inited);
     bool                inited() const;
 
-    virtual std::string     toString()      const;
-    operator                std::string()   const;
-    friend std::ostream&    operator<<(std::ostream& os, const YObject& obj);
+    virtual std::string toString()      const;
+    operator            std::string()   const;
 
 private:
 

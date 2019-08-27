@@ -16,8 +16,6 @@ public:
     void                setFfmpegLogLevel(YLogLevel log_level);
     void                print(const YObject* caller, YLogLevel log_level, std::string message);
 
-    std::string         toString() const final;
-
 private:
 
     YLogger();

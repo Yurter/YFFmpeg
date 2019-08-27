@@ -47,6 +47,7 @@ YCode YThread::start()
             }
             _running = false;
         } catch (std::exception e) {
+            log_error("std::exception: " << e.what());
             _exit_code = YCode::EXCEPTION;
             _exit_message = e.what();
             return;
