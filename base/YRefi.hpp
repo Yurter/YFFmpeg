@@ -4,7 +4,6 @@
 #include "YFrame.hpp"
 #include "YStream.hpp"
 
-//TODO class name: YRefi? YRefi?
 class YRefi : public YDataProcessor<YFrame,YFrame>
 {
 

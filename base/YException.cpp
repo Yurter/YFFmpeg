@@ -2,5 +2,5 @@
 
 YException::YException(std::string error_message)
 {
-
+    setName("YException");
 }

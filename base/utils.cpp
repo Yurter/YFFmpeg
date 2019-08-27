@@ -319,7 +319,7 @@ bool utils::transcodingRequired(StreamPair streams)
     return false;
 }
 
-YStream* utils::find_best_stream(StreamVector&& stream_list)
+YStream* utils::find_best_stream(const StreamVector& stream_list)
 {
     auto best_stream_it = std::max_element(stream_list.begin(), stream_list.end());
     return *best_stream_it;

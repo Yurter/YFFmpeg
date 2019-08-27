@@ -2,10 +2,11 @@
 
 #include "ffmpeg.hpp"
 #include "YLogger.hpp"
-#include "YContext.hpp"
+//#include "YContext.hpp"
 #include "YException.hpp"
-#include "../control/YVideoStream.hpp"
-#include "../control/YAudioStream.hpp"
+//#include "../control/YVideoStream.hpp"
+//#include "../control/YAudioStream.hpp"
+#include "../base/YStream.hpp"
 #include "../control/YVideoParameters.hpp"
 #include "../control/YAudioParameters.hpp"
 #include <string>
@@ -20,6 +21,11 @@ class utils
 {
 
 public:
+
+    utils()         = delete;
+    ~utils()        = delete;
+    utils(utils&)   = delete;
+    utils(utils&&)  = delete;
 
     static std::string  media_type_to_string(YMediaType media_type);
     static std::string  pts_to_string(int64_t pts);
@@ -49,7 +55,7 @@ public:
     static bool         resamplingRequired(StreamPair streams);
     static bool         transcodingRequired(StreamPair streams);
 
-    static YStream*     find_best_stream(StreamVector&& stream_list);
+    static YStream*     find_best_stream(const StreamVector& stream_list);
 
 };
 

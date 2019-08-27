@@ -1,8 +1,8 @@
 #pragma once
 
-#include "base/YAbstractFilter.hpp"
+#include "base/YFilter.hpp"
 
-class YVideoFilter : public YAbstractFilter
+class YVideoFilter : public YFilter
 {
 public:
     YVideoFilter();

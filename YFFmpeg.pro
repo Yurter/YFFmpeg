@@ -7,6 +7,7 @@ CONFIG += c++17
 SOURCES += \
     base/YContext.cpp \
     base/YException.cpp \
+    base/YFilter.cpp \
     base/YLogger.cpp \
     base/YMediaData.cpp \
     base/YRefi.cpp \
@@ -25,7 +26,7 @@ SOURCES += \
     base/utils.cpp \
     main.cpp \
     base\YContext.cpp \
-    base\YAbstractFilter.cpp \
+    base\YFilter.cpp \
     base\YFrame.cpp \
     base\YPacket.cpp \
     base\YParameters.cpp \
@@ -40,6 +41,7 @@ HEADERS += \
     base/YCodec.hpp \
     base/YContext.hpp \
     base/YException.hpp \
+    base/YFilter.hpp \
     base/YLogger.hpp \
     base/YMediaData.hpp \
     base/YRefi.hpp \
@@ -63,7 +65,7 @@ HEADERS += \
     base\ffmpeg.hpp \
     base\YCodec.hpp \
     base\YContext.hpp \
-    base\YAbstractFilter.hpp \
+    base\YFilter.hpp \
     base\YFrame.hpp \
     base\YPacket.hpp \
     base\YParameters.hpp \

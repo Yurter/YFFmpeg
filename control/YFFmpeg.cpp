@@ -130,7 +130,7 @@ YCode YFFmpeg::initCodec()
         auto decoder = dynamic_cast<YDecoder*>(processor);
         if (inited_ptr(decoder)) { try_to(decoder->init()); continue; }
         auto encoder = dynamic_cast<YEncoder*>(processor);
-        if (inited_ptr(encoder)) { try_to(decoder->init()); continue; }
+        if (inited_ptr(encoder)) { try_to(encoder->init()); continue; }
     }
     return YCode::OK;
 }
@@ -317,14 +317,14 @@ YStream* YFFmpeg::findBestInputStream(YMediaType media_type)
     case YMediaType::MEDIA_TYPE_VIDEO: {
         StreamVector all_video_streams;
         for (auto&& source : sources()) {
-            all_video_streams.push_back(source->bestVideoStream());
+            all_video_streams.push_back(source->bestStream(YMediaType::MEDIA_TYPE_VIDEO));
         }
         return static_cast<YVideoStream*>(utils::find_best_stream(all_video_streams));
     }
     case YMediaType::MEDIA_TYPE_AUDIO: {
         StreamVector all_audio_streams;
         for (auto&& source : sources()) {
-            all_audio_streams.push_back(source->bestAudioStream());
+            all_audio_streams.push_back(source->bestStream(YMediaType::MEDIA_TYPE_AUDIO));
         }
         return static_cast<YAudioStream*>(utils::find_best_stream(all_audio_streams));
     }

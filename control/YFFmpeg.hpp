@@ -20,6 +20,7 @@ typedef std::list<YRefi*>           RefiList;
 
 using ProcessorSequence = std::list<YObject*>;
 
+//TODO Rename YFFmpeg to YCascade? YMediaCascade? YMultimediaCascade?
 class YFFmpeg : public YThread
 {
 

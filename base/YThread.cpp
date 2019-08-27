@@ -38,8 +38,13 @@ YCode YThread::start()
         try {
             log_debug("Thread started");
             while (_running && !utils::exit_code(_exit_code = _loop_function())) {}
-            log_debug("Thread finished with code: " << _exit_code
-                      << " - " << utils::code_to_string(_exit_code));
+            if (utils::exit_code(_exit_code)) {
+                log_error("Thread finished with code: " << _exit_code
+                          << " - " << utils::code_to_string(_exit_code));
+            } else {
+                log_debug("Thread correctly finished with code: " << _exit_code
+                          << " - " << utils::code_to_string(_exit_code));
+            }
             _running = false;
         } catch (std::exception e) {
             _exit_code = YCode::EXCEPTION;
