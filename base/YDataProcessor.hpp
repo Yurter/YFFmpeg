@@ -53,8 +53,7 @@ protected:
 
 private:
 
-    [[nodiscard]] YCode run() override final
-    {
+    [[nodiscard]] YCode run() override final {
         inType input_data;
         guaranteed_pop(this, input_data);
         return_if(ignoreType(input_data.type()), YCode::AGAIN);

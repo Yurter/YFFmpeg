@@ -6,8 +6,7 @@ YDecoder::YDecoder(YStream *stream) :
     setName("YDecoder");
 }
 
-YCode YDecoder::processInputData(YPacket& input_data)
-{
+YCode YDecoder::processInputData(YPacket& input_data) {
     if (!input_data.empty()) {
         if (avcodec_send_packet(_codec_context, &input_data.raw()) != 0) {
             log_error("Could not send packet");

@@ -11,7 +11,7 @@ using PacketProcessor = YAsyncQueue<YPacket>;
 /* Таблица соответствий входного и выходного потоков */
 using StreamMap = std::map<YStream*,YStream*>;
 /* Таблица соответствий uid входного потока и локального индекса выходного потока */
-using IndexMap = std::map<int64_t,int64_t> ;
+using IndexMap = std::map<int64_t,int64_t>;
 /* Таблица соответствий uid входного потока и указателя на первый в последовательности обработчик пакета */
 using PacketMap = std::map<int64_t,PacketProcessor*>;
 
@@ -27,6 +27,8 @@ public:
 
     StreamMap*          streamMap();
 
+//    YCode               setRoute(YContext* input_context, int64_t input_stream_index
+//                                 , YContext* output_context, int64_t output_stream_index);
     YCode               addRoute(YStream* in_stream, YStream* out_stream);              ///< Связвание входного и выходного потоков.
     YCode               setRoute(YStream* src_stream, PacketProcessor* next_processor); ///< Связывание источника данных с первым обработчиком в последоваельности.
 

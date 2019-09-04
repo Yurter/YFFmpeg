@@ -14,19 +14,14 @@ YLogger::YLogger() :
     start();
 }
 
-YLogger::~YLogger()
-{
+YLogger::~YLogger() {
+    _messages->clear();
     delete _messages;
 }
 
-YCode YLogger::run()
-{
+YCode YLogger::run() {
     Message message;
     guaranteed_pop(_messages, message);
-//    if (!_messages->pop(message)) {
-//        utils::sleep_for(SHORT_DELAY_MS);
-//        return YCode::AGAIN;
-//    }
 
     HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -52,24 +47,20 @@ YCode YLogger::run()
     return YCode::OK;
 }
 
-bool YLogger::ignoreMessage(YLogLevel message_log_level)
-{
+bool YLogger::ignoreMessage(YLogLevel message_log_level) {
     return message_log_level > _log_level;
 }
 
-YLogger &YLogger::instance()
-{
+YLogger& YLogger::instance() {
     static YLogger _logger;
     return _logger;
 }
 
-void YLogger::setLogLevel(YLogLevel log_level)
-{
+void YLogger::setLogLevel(YLogLevel log_level) {
     _log_level = log_level;
 }
 
-void YLogger::setFfmpegLogLevel(YLogLevel log_level)
-{
+void YLogger::setFfmpegLogLevel(YLogLevel log_level) {
     switch (log_level) {
     case YLogLevel::Quiet:
         av_log_set_level(AV_LOG_QUIET);
@@ -89,18 +80,20 @@ void YLogger::setFfmpegLogLevel(YLogLevel log_level)
     }
 }
 
-void YLogger::print(const YObject* caller, YLogLevel log_level, std::string message)
-{
+void YLogger::print(const YObject* caller, std::string code_position, YLogLevel log_level, std::string message) {
     if (ignoreMessage(log_level)) { return; }
-
 
     std::string header;
 
     if (log_level > YLogLevel::Quiet) {
         header += "[" + caller->name() + "]";
     }
-    if (log_level == YLogLevel::Debug) {
-        header += "[" + (std::stringstream() << current_thread_id()).str() + "]";
+    if (log_level >= YLogLevel::Debug) {
+        header += "\n";
+        header += "  Thread id: " + (std::stringstream() << current_thread_id()).str();
+        header += "\n";
+        header += "  Code position: " + code_position;
+        header += "\n";
     }
 
     std::stringstream ss;
@@ -109,4 +102,3 @@ void YLogger::print(const YObject* caller, YLogLevel log_level, std::string mess
 
     guaranteed_push(_messages, Message(log_level, ss.str()));
 }
-

@@ -68,13 +68,16 @@ public:
 #define stop_log()              logger.quit(); logger.join() //TODO не работает, вылет при завершении - поток лога не завершается
 
 /* Макросы для отправки строковых сообщений в лог */
-#define print_info(x)       logger.print(this, YLogLevel::Info,    x)
-#define print_warning(x)    logger.print(this, YLogLevel::Warning, x)
-#define print_error(x)      logger.print(this, YLogLevel::Error,   x)
-#define print_debug(x)      logger.print(this, YLogLevel::Debug,   x)
+#define print_info(x)       logger.print(this, code_pos, YLogLevel::Info,    x)
+#define print_warning(x)    logger.print(this, code_pos, YLogLevel::Warning, x)
+#define print_error(x)      logger.print(this, code_pos, YLogLevel::Error,   x)
+#define print_debug(x)      logger.print(this, code_pos, YLogLevel::Debug,   x)
 
 /* Макросы для отправки потоковых сообщений в лог */
 #define log_info(x)         { std::stringstream log_ss; log_ss << x; print_info(log_ss.str());      } SEMICOLON_REQUIREMENT
 #define log_warning(x)      { std::stringstream log_ss; log_ss << x; print_warning(log_ss.str());   } SEMICOLON_REQUIREMENT
 #define log_error(x)        { std::stringstream log_ss; log_ss << x; print_error(log_ss.str());     } SEMICOLON_REQUIREMENT
 #define log_debug(x)        { std::stringstream log_ss; log_ss << x; print_debug(log_ss.str());     } SEMICOLON_REQUIREMENT
+
+/* ? */
+#define code_pos            __FUNCTION__

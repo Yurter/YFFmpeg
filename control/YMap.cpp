@@ -34,24 +34,32 @@ StreamMap* YMap::streamMap()
     return &_stream_map;
 }
 
-YCode YMap::addRoute(YStream* in_stream, YStream* out_stream)
-{
+//YCode YMap::setRoute(YContext* input_context, int64_t input_stream_index
+//                     , YContext* output_context, int64_t output_stream_index) {
+//    return_if(not_inited_ptr(input_context), YCode::INVALID_INPUT);
+//    return_if(not_inited_ptr(output_context), YCode::INVALID_INPUT);
+//    return_if(input_stream_index < 0, YCode::INVALID_INPUT);
+//    return_if(output_stream_index < 0, YCode::INVALID_INPUT);
+
+//    return YCode::OK;
+//}
+
+YCode YMap::addRoute(YStream* in_stream, YStream* out_stream) {
     return_if(in_stream->type() != out_stream->type(), YCode::INVALID_INPUT);
     return_if(in_stream->uid() == out_stream->uid(),   YCode::INVALID_INPUT);
     _stream_map.insert({ in_stream, out_stream });
+    _index_map.insert({ in_stream->uid(), out_stream->parameters->streamIndex() });
     return YCode::OK;
 }
 
-YCode YMap::setRoute(YStream* src_stream, PacketProcessor* next_processor)
-{
+YCode YMap::setRoute(YStream* src_stream, PacketProcessor* next_processor) {
     return_if(invalid_int(src_stream->uid()), YCode::INVALID_INPUT);
     _packet_map.insert({src_stream->uid(), next_processor});
     setInited(true);
     return YCode::OK;
 }
 
-YCode YMap::processInputData(YPacket& input_data)
-{
+YCode YMap::processInputData(YPacket& input_data) {
     /* Определение локального индекса выходного потока */
     int64_t out_stream_index = INVALID_INT;
     try {

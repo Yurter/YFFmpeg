@@ -45,20 +45,20 @@ void YFFmpeg::addElement(YObject* element)
     _data_processors.push_back(element);
 }
 
-void YFFmpeg::setRoute(YStream* input_stream, YStream* output_stream)
-{
-    _map->addRoute(input_stream, output_stream);
+//void YFFmpeg::setRoute(YStream* input_stream, YStream* output_stream)
+//{
+//    _map->addRoute(input_stream, output_stream);
+//}
+
+//TODO
+void YFFmpeg::setRoute(YContext* input_context, int64_t input_stream_index
+                       , YContext* output_context, int64_t output_stream_index) {
+    _metamap.push_back({{ input_context->uid(), input_stream_index }
+                    , { output_context->uid(), output_stream_index }});
 }
 
-void YFFmpeg::setRoute(YContext* input_context, int64_t input_stream_index, YContext* output_context, int64_t output_stream_index) //TODO
-{
-//    _map->addRoute({ { input_context, input_stream_index }
-//                            , { output_context, output_stream_index } });
-}
-
-void YFFmpeg::dump() const //TODO operator std::string()
-{
-    log_info(__FUNCTION__);
+void YFFmpeg::dump() const {
+    log_info(toString());
 }
 
 YCode YFFmpeg::init()
@@ -192,6 +192,7 @@ YCode YFFmpeg::joinProcesors()
 YCode YFFmpeg::determineSequences()
 {
     StreamMap* stream_map = _map->streamMap();
+    return_if(stream_map->empty(), YCode::NOT_INITED);
     for (auto&& stream_route : *stream_map) {
         YStream* in_stream = stream_route.first;
         YStream* out_stream = stream_route.second;
@@ -237,8 +238,11 @@ YCode YFFmpeg::determineSequences()
         for (auto processor_it = sequence.begin(); processor_it != sequence.end(); processor_it++) {
             auto next_processor_it = std::next(processor_it);
             if (next_processor_it == sequence.end()) { break; }
+//            log_error((*processor_it)->name() + " -> " + (*next_processor_it)->name());
             if ((*processor_it)->is("YSource")) {
                 try_to(static_cast<YSource*>(*processor_it)->connectOutputTo(*next_processor_it));
+//            } else if ((*processor_it)->is("YMap")) {
+//                try_to(static_cast<YMap*>(*processor_it)->connectOutputTo(*next_processor_it));
             } else if ((*processor_it)->is("YEncoder")) {
                 try_to(static_cast<YEncoder*>(*processor_it)->connectOutputTo(*next_processor_it));
             } else if ((*processor_it)->is("YDecoder")) {
@@ -247,10 +251,15 @@ YCode YFFmpeg::determineSequences()
                 try_to(static_cast<YRescaler*>(*processor_it)->connectOutputTo(*next_processor_it));
             } else if ((*processor_it)->is("YResampler")) {
                 try_to(static_cast<YResampler*>(*processor_it)->connectOutputTo(*next_processor_it));
+            } else {
+                log_error("FAIL " + (*processor_it)->name());
             }
         }
 
-        auto first_packet_processor = *(sequence.begin()++);
+//        auto first_packet_processor = *(++++sequence.begin());
+        auto it = sequence.begin();
+        std::advance(it, 2);
+        auto first_packet_processor = *it;
         _map->setRoute(in_stream, dynamic_cast<PacketProcessor*>(first_packet_processor));
         _processor_sequences.push_back(sequence);
     }
@@ -358,6 +367,8 @@ YCode YFFmpeg::connectIOStreams(YMediaType media_type)
     /* Трансляция наилучшего потока на все потоки выхода того же медиа-типа */
     for (auto&& out_stream : output_streams) {
         try_to(_map->addRoute(best_stream, out_stream));
+        best_stream->setUsed(true);
+        out_stream->setUsed(true);
     }
     return YCode::OK;
 }

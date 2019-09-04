@@ -178,7 +178,7 @@ YCode YDestination::parseOutputFormat()
         //TODO:                                   ↓ mp3 AVOutputFormat дает видеокодек PNG ↓
         auto& video_codec_id = _output_format->video_codec;
         if (inited_codec_id(video_codec_id) && _output_format->video_codec != AV_CODEC_ID_PNG) {
-            try_to(createStream(utils::default_audio_parameters(video_codec_id)));
+            try_to(createStream(utils::default_video_parameters(video_codec_id)));
         }
     }
     {

@@ -3,8 +3,8 @@
 #include "YAsyncQueue.hpp"
 #include "YThread.hpp"
 
-typedef std::pair<YLogLevel,std::string>    Message;
-typedef YAsyncQueue<Message>                MessageQueue;
+using Message = std::pair<YLogLevel,std::string>;
+using MessageQueue = YAsyncQueue<Message>;
 
 class YLogger : public YThread
 {
@@ -14,7 +14,7 @@ public:
     static YLogger&     instance();
     void                setLogLevel(YLogLevel log_level);
     void                setFfmpegLogLevel(YLogLevel log_level);
-    void                print(const YObject* caller, YLogLevel log_level, std::string message);
+    void                print(const YObject* caller, std::string code_position, YLogLevel log_level, std::string message);
 
 private:
 
@@ -22,6 +22,7 @@ private:
     virtual ~YLogger() override;
 
     YLogger(YLogger const&)               = delete;
+    YLogger(YLogger const&&)              = delete;
     YLogger& operator=(YLogger const&)    = delete;
 
 private:

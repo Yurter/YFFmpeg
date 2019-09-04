@@ -18,6 +18,10 @@ typedef std::list<YEncoder*>        EncoderList;
 typedef std::list<YDecoder*>        DecoderList;
 typedef std::list<YRefi*>           RefiList;
 
+using MetaStream = std::pair<uint64_t,uint64_t>;
+using MetaRoute = std::pair<MetaStream,MetaStream>;
+using MetaMap = std::list<MetaRoute>;
+
 using ProcessorSequence = std::list<YObject*>;
 
 //TODO Rename YFFmpeg to YCascade? YMediaCascade? YMultimediaCascade?
@@ -36,7 +40,8 @@ public:
     void                setOptions(int64_t options);        ///< Функция устанавливает переданные ей опции YOption.
     void                addElement(YObject* element);       ///< Функция добавляет процессор медиа-данных в кучу.
 
-    void                setRoute(YStream* input_stream, YStream* output_stream);            ///< Функция устанавливает соответствие между входным и выходным потоками.
+    // До старта потоков нет возможности указать потоки явно
+//    void                setRoute(YStream* input_stream, YStream* output_stream);            ///< Функция устанавливает соответствие между входным и выходным потоками.
     void                setRoute(YContext* input_context, int64_t input_stream_index
                                  , YContext* output_context, int64_t output_stream_index);
 
@@ -86,6 +91,8 @@ private:
     std::list<std::list<YObject*>>      _processor_sequences; //TODO перенести внутрь YMap ?
 
     YMap*               _map;
+
+    MetaMap             _metamap;
 
     // General
     volatile bool       _paused; 
