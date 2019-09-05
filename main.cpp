@@ -23,13 +23,13 @@ int main()
 //    std::string mrl_dst = "camera_sound.aac";
 
     auto source = new YSource(mrl_src);
-//    auto destination = new YDestination(mrl_dst, YMediaPreset::YouTube);
-    auto destination = new YDestination(mrl_dst);
+    auto destination = new YDestination(mrl_dst, YMediaPreset::YouTube);
+//    auto destination = new YDestination(mrl_dst);
 
     YFFmpeg ffmpeg;
     ffmpeg.addElement(source);
     ffmpeg.addElement(destination);
-    ffmpeg.setOptions(COPY_VIDEO);
+//    ffmpeg.setOptions(COPY_VIDEO);
 
 //    ffmpeg.setRoute(source, 0, destination, 0);
 //    ffmpeg.setRoute(source, 1, destination, 1);
