@@ -1,11 +1,9 @@
 #pragma once
-
 #include "ffmpeg.hpp"
 #include <string>
 #include <iostream>
 
-class YObject
-{
+class YObject {
 
 public:
 
@@ -29,3 +27,9 @@ private:
     bool                _inited;
 
 };
+
+//TODO
+namespace fpp {
+    // FFmpeg++
+    // fpp
+}
