@@ -1,5 +1,4 @@
 #pragma once
-
 #include "YDataProcessor.hpp"
 #include "../base/YStream.hpp"
 #include "../base/YFrame.hpp"
@@ -12,8 +11,7 @@ public:
 
     YCodec(YStream* stream) :
         _stream(stream),
-        _codec_context(nullptr)
-    {
+        _codec_context(nullptr) {
         setName("YCodec");
     }
 
@@ -55,15 +53,13 @@ public:
         return YCode::OK;
     }
 
-    std::string toString() const override final
-    {
+    std::string toString() const override final {
         std::string str = std::string(_codec_context->codec->name)
                 + " codec";
         return str;
     }
 
-    AVCodecContext* codecContext()
-    {
+    AVCodecContext* codecContext() {
         return _codec_context;
     }
 

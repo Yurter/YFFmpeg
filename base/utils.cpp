@@ -96,7 +96,7 @@ std::string utils::guess_format_short_name(std::string media_resurs_locator) {
 AVCodec* utils::find_codec(std::string codec_short_name) {
     AVCodec* codec;
     codec = avcodec_find_decoder_by_name(codec_short_name.c_str());
-    if (inited_ptr(codec)) {
+    if (inited_ptr(codec) && (codec_short_name != "aac")) {
         return codec;
     }
     codec = avcodec_find_encoder_by_name(codec_short_name.c_str());

@@ -34,14 +34,15 @@ YCode YDestination::init() {
         /* Audio */
         auto audio_parameters = new YAudioParameters;
         audio_parameters->setSampleRate(44'100);
+//        audio_parameters->setSampleFormat(AV_SAMPLE_FMT_FLTP);
         audio_parameters->setSampleFormat(AV_SAMPLE_FMT_FLTP);
         audio_parameters->setBitrate(128'000);
-//        audio_parameters->setChannelLayout(AV_CH_LAYOUT_STEREO);
-//        audio_parameters->setChannels(2);
-//        audio_parameters->setCodec("mp3");
-        audio_parameters->setChannelLayout(AV_CH_LAYOUT_MONO);
-        audio_parameters->setChannels(1);
+        audio_parameters->setChannelLayout(AV_CH_LAYOUT_STEREO);
+        audio_parameters->setChannels(2);
         audio_parameters->setCodec("aac");
+//        audio_parameters->setChannelLayout(AV_CH_LAYOUT_MONO);
+//        audio_parameters->setChannels(1);
+//        audio_parameters->setCodec("aac");
         audio_parameters->setContextUid(uid());
         try_to(createStream(audio_parameters));
         break;

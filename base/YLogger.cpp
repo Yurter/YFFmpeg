@@ -8,7 +8,7 @@
 
 YLogger::YLogger() :
     _messages(new MessageQueue),
-    _log_level(YLogLevel::Warning)
+    _log_level(YLogLevel::Info)
 {
     setName("YLogger");
     start();

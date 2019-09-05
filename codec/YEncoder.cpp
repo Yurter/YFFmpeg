@@ -12,7 +12,7 @@ YCode YEncoder::processInputData(YFrame& input_data) {
     int ret;
     if ((ret = avcodec_send_frame(_codec_context, input_data.raw())) != 0) {
         log_error(input_data.toString());
-//        log_error(_codec_context->)
+        log_error(_codec_context->codec->name);
         log_error("Could not send frame " << ret);
         return YCode::ERR;
     }

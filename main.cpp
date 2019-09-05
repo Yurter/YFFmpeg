@@ -3,8 +3,11 @@
 
 using namespace std;
 
-int main()
-{
+void manualFFmpeg();
+
+int main() {
+
+    manualFFmpeg();
 
     cout << "[main] Program started..." << endl;
 
@@ -18,8 +21,8 @@ int main()
 //    std::string mrl_src = "rtsp://192.168.0.14:8080/h264";
 
 //    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/2qqv-7ttx-xhk0-az48";
-    std::string mrl_dst = "remuxed.flv";
-//    std::string mrl_dst = "remuxed.avi";
+//    std::string mrl_dst = "remuxed.flv";
+    std::string mrl_dst = "remuxed.avi";
 //    std::string mrl_dst = "camera_sound.aac";
 
     auto source = new YSource(mrl_src);
@@ -43,4 +46,8 @@ int main()
     cout << "[main] Program finished." << endl;
     return 0;
 
+}
+
+void manualFFmpeg() {
+    return;
 }
