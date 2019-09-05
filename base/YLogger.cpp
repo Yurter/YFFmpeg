@@ -90,15 +90,19 @@ void YLogger::print(const YObject* caller, std::string code_position, YLogLevel 
     }
     if (log_level >= YLogLevel::Debug) {
         header += "\n";
-        header += "  Thread id: " + (std::stringstream() << current_thread_id()).str();
+        header += (std::stringstream() << TAB << std::setw(20) << std::left << "Thread id: " << current_thread_id()).str();
         header += "\n";
-        header += "  Code position: " + code_position;
+        header += (std::stringstream() << TAB << std::setw(20) << std::left << "Code position: " << code_position).str();
         header += "\n";
+    }
+
+    if (log_level >= YLogLevel::Debug) {
+        message = (std::stringstream() << TAB << std::setw(20) << std::left << "Message: " << message).str();
     }
 
     std::stringstream ss;
 
-    ss << std::setw(30) << std::left << header << " " << message;
+    ss << std::setw(22) << std::left << header << message;
 
     guaranteed_push(_messages, Message(log_level, ss.str()));
 }
