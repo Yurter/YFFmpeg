@@ -118,8 +118,7 @@ YCode YSource::read()
     return YCode::OK;
 }
 
-YCode YSource::processInputData(YPacket& input_data)
-{
+YCode YSource::processInputData(YPacket& input_data) {
     auto packet_stream = stream(input_data.raw().stream_index);
     return_if(not_inited_ptr(packet_stream), YCode::INVALID_INPUT);
     input_data.setType(packet_stream->type());

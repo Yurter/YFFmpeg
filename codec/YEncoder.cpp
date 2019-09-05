@@ -1,18 +1,17 @@
 #include "YEncoder.hpp"
 
 YEncoder::YEncoder(YStream* stream) :
-    YCodec(stream)
-{
+    YCodec(stream) {
     setName("YEncoder");
 }
 
-YCode YEncoder::processInputData(YFrame& input_data) //TODO
-{
+YCode YEncoder::processInputData(YFrame& input_data) {
     YPacket output_data;
-    output_data.init();
+    try_to(output_data.init());
     output_data.setType(_stream->type());
     int ret;
     if ((ret = avcodec_send_frame(_codec_context, input_data.raw())) != 0) {
+        log_error(input_data.toString());
         log_error("Could not send frame " << ret);
         return YCode::ERR;
     }

@@ -40,7 +40,7 @@ public:
             return YCode::ERR;
         }
         utils::parameters_to_context(_stream->parameters, _codec_context);
-        if (avcodec_open2(_codec_context, codec, nullptr) < 0) {
+        if (avcodec_open2(_codec_context, codec, nullptr) != 0) {
             log_error("Cannot open codec");
             return YCode::ERR;
         }

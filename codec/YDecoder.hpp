@@ -1,9 +1,7 @@
 #pragma once
-
 #include "../base/YCodec.hpp"
 
-class YDecoder : public YCodec<YPacket,YFrame>
-{
+class YDecoder : public YCodec<YPacket,YFrame> {
 
 public:
 
@@ -12,6 +10,6 @@ public:
 
 private:
 
-    YCode               processInputData(YPacket& input_data) override;
+    YCode processInputData(YPacket& input_data) override;
 
 };

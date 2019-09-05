@@ -3,18 +3,15 @@
 
 YDestination::YDestination(const std::string& mrl, YMediaPreset preset) :
     YContext(mrl, preset),
-    _output_format(nullptr)
-{
+    _output_format(nullptr) {
     setName("YDestination");
 }
 
-YDestination::~YDestination()
-{
+YDestination::~YDestination() {
     close();
 }
 
-YCode YDestination::init()
-{
+YCode YDestination::init() {
     createContext();
     switch (_preset) {
     case Auto: {

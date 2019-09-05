@@ -1,8 +1,7 @@
 #include "utils.hpp"
 #include <thread>
 
-std::string utils::media_type_to_string(YMediaType media_type)
-{
+std::string utils::media_type_to_string(YMediaType media_type) {
     switch (media_type) {
     case YMediaType::MEDIA_TYPE_UNKNOWN:
         return "Unknown";
@@ -14,18 +13,15 @@ std::string utils::media_type_to_string(YMediaType media_type)
     return "Invalid";
 }
 
-std::string utils::pts_to_string(int64_t pts)
-{
+std::string utils::pts_to_string(int64_t pts) {
     return pts == AV_NOPTS_VALUE ? "NOPTS" : std::to_string(pts);
 }
 
-void utils::sleep_for(int64_t milliseconds)
-{
+void utils::sleep_for(int64_t milliseconds) {
     std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }
 
-bool utils::exit_code(YCode code)
-{
+bool utils::exit_code(YCode code) {
     if (code == YCode::ERR)             { return true; }
     if (code == YCode::NOT_INITED)      { return true; }
     if (code == YCode::END_OF_FILE)     { return true; }
@@ -34,8 +30,7 @@ bool utils::exit_code(YCode code)
     return false;
 }
 
-std::string utils::code_to_string(YCode code)
-{
+std::string utils::code_to_string(YCode code) {
     if (code == YCode::OK)              { return "OK";              }
     if (code == YCode::ERR)             { return "Error";           }
     if (code == YCode::AGAIN)           { return "Again";           }
@@ -45,16 +40,14 @@ std::string utils::code_to_string(YCode code)
     return "Unknown error code: " + std::to_string(code);
 }
 
-std::string utils::rational_to_string(AVRational rational)
-{
+std::string utils::rational_to_string(AVRational rational) {
     std::string str = std::to_string(rational.num)
                         + "/"
                         + std::to_string(rational.den);
     return str;
 }
 
-bool utils::compatibleWithSampleFormat(AVCodecContext *codec_context, AVSampleFormat sample_format)
-{
+bool utils::compatibleWithSampleFormat(AVCodecContext *codec_context, AVSampleFormat sample_format) {
     auto smp_fmt = codec_context->codec->sample_fmts;
     while (smp_fmt[0] != AV_SAMPLE_FMT_NONE) {
         if (smp_fmt[0] == sample_format) { return true; }
@@ -63,8 +56,7 @@ bool utils::compatibleWithSampleFormat(AVCodecContext *codec_context, AVSampleFo
     return false;
 }
 
-AVMediaType utils::ymedia_type_to_avmedia_type(YMediaType media_type)
-{
+AVMediaType utils::ymedia_type_to_avmedia_type(YMediaType media_type) {
     switch (media_type) {
     case YMediaType::MEDIA_TYPE_UNKNOWN:
         return AVMEDIA_TYPE_UNKNOWN;
@@ -76,23 +68,19 @@ AVMediaType utils::ymedia_type_to_avmedia_type(YMediaType media_type)
     throw YException("");
 }
 
-int64_t utils::gen_context_uid()
-{
+int64_t utils::gen_context_uid() {
     return object_uid_handle++;
 }
 
-int64_t utils::gen_stream_uid(int64_t context_uid, int64_t stream_index)
-{
+int64_t utils::gen_stream_uid(int64_t context_uid, int64_t stream_index) {
     return (context_uid + 1) * 100 + stream_index;
 }
 
-int64_t utils::get_context_uid(int64_t stream_uid)
-{
+int64_t utils::get_context_uid(int64_t stream_uid) {
     return stream_uid / 100 - 1;
 }
 
-std::string utils::guess_format_short_name(std::string media_resurs_locator)
-{
+std::string utils::guess_format_short_name(std::string media_resurs_locator) {
     if (media_resurs_locator.find("rtsp://") != std::string::npos) {
         return std::string("rtsp");
     }
@@ -105,8 +93,7 @@ std::string utils::guess_format_short_name(std::string media_resurs_locator)
     return std::string();
 }
 
-AVCodec* utils::find_codec(std::string codec_short_name)
-{
+AVCodec* utils::find_codec(std::string codec_short_name) {
     AVCodec* codec;
     codec = avcodec_find_decoder_by_name(codec_short_name.c_str());
     if (inited_ptr(codec)) {
@@ -119,8 +106,7 @@ AVCodec* utils::find_codec(std::string codec_short_name)
     return nullptr;
 }
 
-AVCodec* utils::find_codec(AVCodecID codec_id)
-{
+AVCodec* utils::find_codec(AVCodecID codec_id) {
     AVCodec *codec;
     codec = avcodec_find_decoder(codec_id);
     if (inited_ptr(codec)) {
@@ -133,8 +119,7 @@ AVCodec* utils::find_codec(AVCodecID codec_id)
     return nullptr;
 }
 
-YCode utils::init_codecpar(AVCodecParameters* codecpar, AVCodec* codec)
-{
+YCode utils::init_codecpar(AVCodecParameters* codecpar, AVCodec* codec) {
     auto codec_context = avcodec_alloc_context3(codec);
     return_if(not_inited_ptr(codec_context), YCode::ERR);
     return_if(avcodec_parameters_from_context(codecpar, codec_context) < 0, YCode::ERR);
@@ -142,8 +127,7 @@ YCode utils::init_codecpar(AVCodecParameters* codecpar, AVCodec* codec)
     return YCode::OK;
 }
 
-void utils::parameters_to_context(YParameters* parametres, AVCodecContext* codec)
-{
+void utils::parameters_to_context(YParameters* parametres, AVCodecContext* codec) {
     codec->codec_id = parametres->codecId();
     codec->bit_rate = parametres->bitrate();
 
@@ -170,8 +154,7 @@ void utils::parameters_to_context(YParameters* parametres, AVCodecContext* codec
     }
 }
 
-void utils::parameters_from_context(YParameters* parametres, AVCodecContext* codec)
-{
+void utils::parameters_from_context(YParameters* parametres, AVCodecContext* codec) {
     parametres->setCodec(codec->codec_id);
     parametres->setBitrate(codec->bit_rate);
 
@@ -197,8 +180,8 @@ void utils::parameters_from_context(YParameters* parametres, AVCodecContext* cod
     }
 }
 
-void utils::parameters_to_avcodecpar(YParameters* parametres, AVCodecParameters* codecpar) //TODO
-{
+//TODO
+void utils::parameters_to_avcodecpar(YParameters* parametres, AVCodecParameters* codecpar) {
     codecpar->codec_id = parametres->codecId();
     codecpar->bit_rate = parametres->bitrate();
 
@@ -222,8 +205,8 @@ void utils::parameters_to_avcodecpar(YParameters* parametres, AVCodecParameters*
     }
 }
 
-void utils::parameters_from_avcodecpar(YParameters* parametres, AVCodecParameters* codecpar) //TODO
-{
+//TODO
+void utils::parameters_from_avcodecpar(YParameters* parametres, AVCodecParameters* codecpar) {
     parametres->setCodec(codecpar->codec_id);
     parametres->setBitrate(codecpar->bit_rate);
 
@@ -249,8 +232,7 @@ void utils::parameters_from_avcodecpar(YParameters* parametres, AVCodecParameter
     }
 }
 
-YVideoParameters* utils::default_video_parameters(AVCodecID codec_id)
-{
+YVideoParameters* utils::default_video_parameters(AVCodecID codec_id) {
     auto video_params = new YVideoParameters;
     video_params->setCodec(codec_id);
     video_params->setBitrate(400000); //TODO расчитывать
@@ -263,8 +245,7 @@ YVideoParameters* utils::default_video_parameters(AVCodecID codec_id)
     return video_params;
 }
 
-YAudioParameters* utils::default_audio_parameters(AVCodecID codec_id)
-{
+YAudioParameters* utils::default_audio_parameters(AVCodecID codec_id) {
     auto audio_params = new YAudioParameters;
     audio_params->setCodec(codec_id);
     audio_params->setBitrate(192000); //TODO расчитывать
@@ -276,8 +257,7 @@ YAudioParameters* utils::default_audio_parameters(AVCodecID codec_id)
     return audio_params;
 }
 
-bool utils::rescalingRequired(StreamPair streams)
-{
+bool utils::rescalingRequired(StreamPair streams) {
     //TODO не реализован рескейлер
     return false;
     //
@@ -293,8 +273,7 @@ bool utils::rescalingRequired(StreamPair streams)
     return false;
 }
 
-bool utils::resamplingRequired(StreamPair streams)
-{
+bool utils::resamplingRequired(StreamPair streams) {
     return_if(streams.first->isVideo(),  false); //TODO throw YException, надо ли?
     return_if(streams.second->isVideo(), false);
 
@@ -309,8 +288,7 @@ bool utils::resamplingRequired(StreamPair streams)
     return false;
 }
 
-bool utils::transcodingRequired(StreamPair streams)
-{
+bool utils::transcodingRequired(StreamPair streams) {
     auto in = streams.first->parameters;
     auto out = streams.second->parameters;
 
@@ -319,8 +297,8 @@ bool utils::transcodingRequired(StreamPair streams)
     return false;
 }
 
-YStream* utils::find_best_stream(const StreamVector& stream_list)
-{
+YStream* utils::find_best_stream(const StreamVector& stream_list) {
     auto best_stream_it = std::max_element(stream_list.begin(), stream_list.end());
+    return_if(best_stream_it == stream_list.end(), nullptr);
     return *best_stream_it;
 }

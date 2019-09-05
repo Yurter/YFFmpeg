@@ -1,8 +1,7 @@
 #include "YDecoder.hpp"
 
 YDecoder::YDecoder(YStream *stream) :
-    YCodec(stream)
-{
+    YCodec(stream) {
     setName("YDecoder");
 }
 
@@ -18,6 +17,7 @@ YCode YDecoder::processInputData(YPacket& input_data) {
     switch (ret) {
     case 0:
         output_data.setType(input_data.type());
+//        log_error("decoded: " << output_data.toString());
 //        output_data.setStreamIndex(input_data.streamIndex());
         return sendOutputData(output_data);
     case AVERROR(EAGAIN):

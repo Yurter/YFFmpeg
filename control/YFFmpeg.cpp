@@ -35,8 +35,7 @@ void YFFmpeg::unpause()
     _paused = false;
 }
 
-void YFFmpeg::setOptions(int64_t options)
-{
+void YFFmpeg::setOptions(int64_t options) {
     _options = options;
 }
 
@@ -61,8 +60,7 @@ void YFFmpeg::dump() const {
     log_info(toString());
 }
 
-YCode YFFmpeg::init()
-{
+YCode YFFmpeg::init() {
     log_info("Initialization started...");
     try_to(checkIOContexts());
     try_to(initContext());
@@ -100,8 +98,7 @@ YCode YFFmpeg::checkIOContexts()
     return YCode::OK;
 }
 
-YCode YFFmpeg::initMap()
-{
+YCode YFFmpeg::initMap() {
     auto stream_map = _map->streamMap();
     if (stream_map->empty()) {
         /* Пользователь не установил таблицу маршрутов явно,
@@ -203,6 +200,7 @@ YCode YFFmpeg::determineSequences() {
         bool rescaling_required   = utils::rescalingRequired({ in_stream, out_stream });
         bool resampling_required  = utils::resamplingRequired({ in_stream, out_stream });
         bool transcoding_required = utils::transcodingRequired({ in_stream, out_stream });
+        log_error(rescaling_required << " " << resampling_required << " " << transcoding_required);
 
         transcoding_required = (transcoding_required
                                 || rescaling_required
@@ -316,8 +314,7 @@ std::string YFFmpeg::toString() const
     return dump_str;
 }
 
-YStream* YFFmpeg::findBestInputStream(YMediaType media_type)
-{
+YStream* YFFmpeg::findBestInputStream(YMediaType media_type) {
     switch (media_type) {
     case YMediaType::MEDIA_TYPE_VIDEO: {
         StreamVector all_video_streams;
