@@ -52,7 +52,7 @@ void YVideoParameters::setFrameRate(AVRational frame_rate)
     if (frame_rate.den == 0) {
         _frame_rate = -1.f;
     } else {
-        _frame_rate = frame_rate.num / frame_rate.den;
+        _frame_rate = float(frame_rate.num) / float(frame_rate.den);
     }
 }
 

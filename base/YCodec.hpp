@@ -6,8 +6,7 @@
 #include "../base/YPacket.hpp"
 
 template <class inType, class outType>
-class YCodec : public YDataProcessor<inType,outType>
-{
+class YCodec : public YDataProcessor<inType,outType> {
 
 public:
 
@@ -18,15 +17,13 @@ public:
         setName("YCodec");
     }
 
-    virtual ~YCodec()
-    {
+    virtual ~YCodec() {
         if (inited_ptr(_codec_context)) {
             avcodec_close(_codec_context);
         }
     }
 
-    YCode init()
-    {
+    YCode init() {
         auto codec = _stream->parameters->codec();
         return_if(not_inited_ptr(codec), YCode::INVALID_INPUT);
         {

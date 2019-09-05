@@ -26,8 +26,7 @@ public:
 
     virtual ~YDataProcessor() = default;
 
-    YCode connectOutputTo(YObject* next_processor)
-    {
+    YCode connectOutputTo(YObject* next_processor) {
         auto ptr = dynamic_cast<NextProcessor*>(next_processor);
         return_if(not_inited_ptr(ptr), YCode::INVALID_INPUT);
         _next_processor = ptr;
@@ -42,10 +41,9 @@ public:
 
 protected:
 
-    [[nodiscard]] virtual YCode processInputData(inType& input_data) = 0;
-    [[nodiscard]] YCode sendOutputData(outType output_data
-                                       , NextProcessor* next_proc = nullptr)
-    {
+    virtual YCode processInputData(inType& input_data) = 0;
+
+    YCode sendOutputData(outType output_data, NextProcessor* next_proc = nullptr) {
         auto pointer = inited_ptr(next_proc) ? next_proc : _next_processor;
         guaranteed_push(pointer, output_data);
         return YCode::OK;
@@ -53,7 +51,7 @@ protected:
 
 private:
 
-    [[nodiscard]] YCode run() override final {
+    YCode run() override final {
         inType input_data;
         guaranteed_pop(this, input_data);
         return_if(ignoreType(input_data.type()), YCode::AGAIN);

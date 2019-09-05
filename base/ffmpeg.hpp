@@ -36,7 +36,7 @@ enum YMediaPreset {
 };
 
 /* Коды результата выполнения некоторых функций */
-enum YCode {
+enum [[nodiscard]] YCode {
     OK,
     ERR,
     AGAIN,

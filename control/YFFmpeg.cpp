@@ -189,8 +189,7 @@ YCode YFFmpeg::joinProcesors()
     return YCode::OK;
 }
 
-YCode YFFmpeg::determineSequences()
-{
+YCode YFFmpeg::determineSequences() {
     StreamMap* stream_map = _map->streamMap();
     return_if(stream_map->empty(), YCode::NOT_INITED);
     for (auto&& stream_route : *stream_map) {
@@ -238,11 +237,9 @@ YCode YFFmpeg::determineSequences()
         for (auto processor_it = sequence.begin(); processor_it != sequence.end(); processor_it++) {
             auto next_processor_it = std::next(processor_it);
             if (next_processor_it == sequence.end()) { break; }
-//            log_error((*processor_it)->name() + " -> " + (*next_processor_it)->name());
+            log_debug((*processor_it)->name() + " connected to " + (*next_processor_it)->name());
             if ((*processor_it)->is("YSource")) {
                 try_to(static_cast<YSource*>(*processor_it)->connectOutputTo(*next_processor_it));
-//            } else if ((*processor_it)->is("YMap")) {
-//                try_to(static_cast<YMap*>(*processor_it)->connectOutputTo(*next_processor_it));
             } else if ((*processor_it)->is("YEncoder")) {
                 try_to(static_cast<YEncoder*>(*processor_it)->connectOutputTo(*next_processor_it));
             } else if ((*processor_it)->is("YDecoder")) {
@@ -252,11 +249,10 @@ YCode YFFmpeg::determineSequences()
             } else if ((*processor_it)->is("YResampler")) {
                 try_to(static_cast<YResampler*>(*processor_it)->connectOutputTo(*next_processor_it));
             } else {
-                log_error("FAIL " + (*processor_it)->name());
+                log_warning("didn't connected: " + (*processor_it)->name());
             }
         }
 
-//        auto first_packet_processor = *(++++sequence.begin());
         auto it = sequence.begin();
         std::advance(it, 2);
         auto first_packet_processor = *it;
