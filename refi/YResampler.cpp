@@ -2,21 +2,18 @@
 
 YResampler::YResampler(StreamPair audio_streams) :
     YRefi(audio_streams),
-    _resampler_context(nullptr)
-{
+    _resampler_context(nullptr) {
     setName("YResampler");
     setSkipType(YMediaType::MEDIA_TYPE_VIDEO);
 }
 
-YResampler::~YResampler()
-{
+YResampler::~YResampler() {
     if (_resampler_context != nullptr) {
         swr_free(&_resampler_context);
     }
 }
 
-YCode YResampler::init()
-{
+YCode YResampler::init() {
     return_if(inited(), YCode::INVALID_CALL_ORDER);
 //    return_if_not(_io_streams.first->inited(), YCode::INVALID_INPUT); //TODO
 //    return_if_not(_io_streams.second->inited(), YCode::INVALID_INPUT);
@@ -49,9 +46,7 @@ YCode YResampler::init()
     return YCode::OK;
 }
 
-YCode YResampler::processInputData(YFrame& input_data)
-{
-    return_if_not(inited(), YCode::NOT_INITED); //TODO убрать в YDataProcessor
+YCode YResampler::processInputData(YFrame& input_data) {
     if (swr_convert_frame(_resampler_context, nullptr, input_data.raw()) != 0) {
         log_error("swr_convert_frame failed"); //TODO формулировка
         return YCode::ERR;
@@ -79,8 +74,7 @@ YCode YResampler::processInputData(YFrame& input_data)
     return YCode::OK;
 }
 
-bool YResampler::initOutputFrame(AVFrame** frame, int frame_size)
-{
+bool YResampler::initOutputFrame(AVFrame** frame, int frame_size) {
     frame_size = 1024; //TODO critical!
     auto in_param = dynamic_cast<YAudioParameters*>(_io_streams.first->parameters); //TODO
     auto out_param = dynamic_cast<YAudioParameters*>(_io_streams.second->parameters);
@@ -109,8 +103,7 @@ bool YResampler::initOutputFrame(AVFrame** frame, int frame_size)
 }
 
 //bool YResampler::configChanged(const AVFrame *in, const AVFrame *out)
-bool YResampler::configChanged(AVFrame* in, AVFrame* out)
-{
+bool YResampler::configChanged(AVFrame* in, AVFrame* out) {
     auto in_param = dynamic_cast<YAudioParameters*>(_io_streams.first->parameters); //TODO
     auto out_param = dynamic_cast<YAudioParameters*>(_io_streams.second->parameters);
 

@@ -45,6 +45,7 @@ protected:
 
     YCode sendOutputData(outType output_data, NextProcessor* next_proc = nullptr) {
         auto pointer = inited_ptr(next_proc) ? next_proc : _next_processor;
+        return_if(not_inited_ptr(pointer), YCode::ERR);
         guaranteed_push(pointer, output_data);
         return YCode::OK;
     }

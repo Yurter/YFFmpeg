@@ -2,20 +2,17 @@
 #include <iterator>
 
 YFFmpeg::YFFmpeg() :
-    _map(new YMap)
-{
+    _map(new YMap) {
     setName("YFFmpeg");
     _data_processors.push_back(_map);
 }
 
-YFFmpeg::~YFFmpeg()
-{
+YFFmpeg::~YFFmpeg() {
     freeProcesors();
     stop();
 }
 
-bool YFFmpeg::stop()
-{
+bool YFFmpeg::stop() {
     stopProcesors();
     joinProcesors();
     log_info("Stopped");
@@ -23,14 +20,12 @@ bool YFFmpeg::stop()
     return true;
 }
 
-void YFFmpeg::pause()
-{
+void YFFmpeg::pause() {
     _paused = true;
     log_info("Paused");
 }
 
-void YFFmpeg::unpause()
-{
+void YFFmpeg::unpause() {
     log_info("Unpaused");
     _paused = false;
 }
@@ -39,8 +34,7 @@ void YFFmpeg::setOptions(int64_t options) {
     _options = options;
 }
 
-void YFFmpeg::addElement(YObject* element)
-{
+void YFFmpeg::addElement(YObject* element) {
     _data_processors.push_back(element);
 }
 
@@ -75,8 +69,7 @@ YCode YFFmpeg::init() {
     return YCode::OK;
 }
 
-YCode YFFmpeg::run()
-{
+YCode YFFmpeg::run() {
     for (auto&& processor : _data_processors) {
         auto thread_processor = static_cast<YThread*>(processor);
         return_if_not(thread_processor->running()
@@ -86,13 +79,11 @@ YCode YFFmpeg::run()
     return YCode::OK;
 }
 
-bool YFFmpeg::option(YOption option) const
-{
+bool YFFmpeg::option(YOption option) const {
     return _options & option;
 }
 
-YCode YFFmpeg::checkIOContexts()
-{
+YCode YFFmpeg::checkIOContexts() {
     return_if(sources().empty(),      YCode::NOT_INITED);   //TODO throw YException("No source specified");
     return_if(destinations().empty(), YCode::NOT_INITED);   //TODO throw YException("No destination specified");
     return YCode::OK;
@@ -112,8 +103,7 @@ YCode YFFmpeg::initMap() {
     return YCode::OK;
 }
 
-YCode YFFmpeg::initRefi()
-{
+YCode YFFmpeg::initRefi() {
     for (auto&& processor : _data_processors) {
         auto refi = dynamic_cast<YRefi*>(processor);
         if (inited_ptr(refi)) { try_to(refi->init()); }
@@ -121,8 +111,7 @@ YCode YFFmpeg::initRefi()
     return YCode::OK;
 }
 
-YCode YFFmpeg::initCodec()
-{
+YCode YFFmpeg::initCodec() {
     for (auto&& processor : _data_processors) {
         auto decoder = dynamic_cast<YDecoder*>(processor);
         if (inited_ptr(decoder)) { try_to(decoder->init()); continue; }
@@ -132,8 +121,7 @@ YCode YFFmpeg::initCodec()
     return YCode::OK;
 }
 
-YCode YFFmpeg::initContext()
-{
+YCode YFFmpeg::initContext() {
     for (auto&& processor : _data_processors) {
         auto context = dynamic_cast<YContext*>(processor);
         if (inited_ptr(context)) { try_to(context->init()); }
@@ -141,8 +129,7 @@ YCode YFFmpeg::initContext()
     return YCode::OK;
 }
 
-YCode YFFmpeg::openContext()
-{
+YCode YFFmpeg::openContext() {
     for (auto&& processor : _data_processors) {
         auto context = dynamic_cast<YContext*>(processor);
         if (inited_ptr(context)) { try_to(context->open()); }
@@ -150,8 +137,7 @@ YCode YFFmpeg::openContext()
     return YCode::OK;
 }
 
-YCode YFFmpeg::closeContext()
-{
+YCode YFFmpeg::closeContext() {
     for (auto&& processor : _data_processors) {
         auto context = dynamic_cast<YContext*>(processor);
         if (inited_ptr(context)) { try_to(context->close()); }
@@ -159,8 +145,7 @@ YCode YFFmpeg::closeContext()
     return YCode::OK;
 }
 
-YCode YFFmpeg::startProcesors()
-{
+YCode YFFmpeg::startProcesors() {
     for (auto&& processor : _data_processors) {
         auto thread_processor = static_cast<YThread*>(processor);
         try_to(thread_processor->start());
@@ -168,8 +153,7 @@ YCode YFFmpeg::startProcesors()
     return YCode::OK;
 }
 
-YCode YFFmpeg::stopProcesors()
-{
+YCode YFFmpeg::stopProcesors() {
     for (auto&& processor : _data_processors) {
         auto thread_processor = static_cast<YThread*>(processor);
         try_to(thread_processor->quit());
@@ -177,8 +161,7 @@ YCode YFFmpeg::stopProcesors()
     return YCode::OK;
 }
 
-YCode YFFmpeg::joinProcesors()
-{
+YCode YFFmpeg::joinProcesors() {
     for (auto&& processor : _data_processors) {
         auto thread_processor = static_cast<YThread*>(processor);
         thread_processor->join();
@@ -197,37 +180,42 @@ YCode YFFmpeg::determineSequences() {
         sequence.push_back(in_stream->context());
         sequence.push_back(_map);
 
-        bool rescaling_required   = utils::rescalingRequired({ in_stream, out_stream });
-        bool resampling_required  = utils::resamplingRequired({ in_stream, out_stream });
-        bool transcoding_required = utils::transcodingRequired({ in_stream, out_stream });
-        log_error(rescaling_required << " " << resampling_required << " " << transcoding_required);
+        bool processing_required =
+                (in_stream->isVideo() && !option(YOption::COPY_VIDEO))
+                || (in_stream->isAudio() && !option(YOption::COPY_AUDIO)) ;
 
-        transcoding_required = (transcoding_required
-                                || rescaling_required
-                                || resampling_required);
+        if (processing_required) {
+            bool rescaling_required   = utils::rescalingRequired({ in_stream, out_stream });
+            bool resampling_required  = utils::resamplingRequired({ in_stream, out_stream });
+            bool transcoding_required = utils::transcodingRequired({ in_stream, out_stream });
 
-        if (transcoding_required) {
-            YDecoder* decoder = new YDecoder(in_stream);
-            sequence.push_back(decoder);
-            addElement(decoder);
-        }
+            transcoding_required = (transcoding_required
+                                    || rescaling_required
+                                    || resampling_required);
 
-        if (rescaling_required) {
-            YRescaler* rescaler = new YRescaler({ in_stream, out_stream });
-            sequence.push_back(rescaler);
-            addElement(rescaler);
-        }
+            if (transcoding_required) {
+                YDecoder* decoder = new YDecoder(in_stream);
+                sequence.push_back(decoder);
+                addElement(decoder);
+            }
 
-        if (resampling_required) {
-            YResampler* resampler = new YResampler({ in_stream, out_stream });
-            sequence.push_back(resampler);
-            addElement(resampler);
-        }
+            if (rescaling_required) {
+                YRescaler* rescaler = new YRescaler({ in_stream, out_stream });
+                sequence.push_back(rescaler);
+                addElement(rescaler);
+            }
 
-        if (transcoding_required) {
-            YEncoder* encoder = new YEncoder(out_stream);
-            sequence.push_back(encoder);
-            addElement(encoder);
+            if (resampling_required) {
+                YResampler* resampler = new YResampler({ in_stream, out_stream });
+                sequence.push_back(resampler);
+                addElement(resampler);
+            }
+
+            if (transcoding_required) {
+                YEncoder* encoder = new YEncoder(out_stream);
+                sequence.push_back(encoder);
+                addElement(encoder);
+            }
         }
 
         sequence.push_back(out_stream->context());
@@ -266,8 +254,7 @@ void YFFmpeg::freeProcesors() //TODO объекты в смартпоинтер�
     //см TODO ↗
 }
 
-std::string YFFmpeg::toString() const
-{
+std::string YFFmpeg::toString() const {
     std::string dump_str;
 
     /* Вывод информации о контекстах
@@ -346,8 +333,7 @@ StreamList YFFmpeg::getOutputStreams(YMediaType media_type)
     return output_streams;
 }
 
-YCode YFFmpeg::connectIOStreams(YMediaType media_type)
-{
+YCode YFFmpeg::connectIOStreams(YMediaType media_type) {
     YStream* best_stream = findBestInputStream(media_type);
     if (not_inited_ptr(best_stream)) {
         log_warning("Destination requires a "
@@ -366,8 +352,7 @@ YCode YFFmpeg::connectIOStreams(YMediaType media_type)
     return YCode::OK;
 }
 
-ContextList YFFmpeg::contexts() const
-{
+ContextList YFFmpeg::contexts() const {
     ContextList context_list;
     for (auto&& processor : _data_processors) {
         auto context = dynamic_cast<YContext*>(processor);
@@ -376,8 +361,7 @@ ContextList YFFmpeg::contexts() const
     return context_list;
 }
 
-SourceList YFFmpeg::sources() const
-{
+SourceList YFFmpeg::sources() const {
     SourceList source_list;
     for (auto&& processor : _data_processors) {
         auto source = dynamic_cast<YSource*>(processor);
@@ -386,8 +370,7 @@ SourceList YFFmpeg::sources() const
     return source_list;
 }
 
-DestinationList YFFmpeg::destinations() const
-{
+DestinationList YFFmpeg::destinations() const {
     DestinationList destination_list;
     for (auto&& processor : _data_processors) {
         auto destination = dynamic_cast<YDestination*>(processor);
@@ -396,8 +379,7 @@ DestinationList YFFmpeg::destinations() const
     return destination_list;
 }
 
-DecoderList YFFmpeg::decoders() const
-{
+DecoderList YFFmpeg::decoders() const {
     DecoderList decoder_list;
     for (auto&& processor : _data_processors) {
         auto decoder = dynamic_cast<YDecoder*>(processor);

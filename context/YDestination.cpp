@@ -12,7 +12,7 @@ YDestination::~YDestination() {
 }
 
 YCode YDestination::init() {
-    createContext();
+    try_to(createContext());
     switch (_preset) {
     case Auto: {
         try_to(guessOutputFromat());
@@ -36,8 +36,11 @@ YCode YDestination::init() {
         audio_parameters->setSampleRate(44'100);
         audio_parameters->setSampleFormat(AV_SAMPLE_FMT_FLTP);
         audio_parameters->setBitrate(128'000);
-        audio_parameters->setChannelLayout(AV_CH_LAYOUT_STEREO);
-        audio_parameters->setChannels(2);
+//        audio_parameters->setChannelLayout(AV_CH_LAYOUT_STEREO);
+//        audio_parameters->setChannels(2);
+//        audio_parameters->setCodec("mp3");
+        audio_parameters->setChannelLayout(AV_CH_LAYOUT_MONO);
+        audio_parameters->setChannels(1);
         audio_parameters->setCodec("aac");
         audio_parameters->setContextUid(uid());
         try_to(createStream(audio_parameters));
@@ -57,8 +60,7 @@ YCode YDestination::init() {
     return YCode::OK;
 }
 
-YCode YDestination::open()
-{
+YCode YDestination::open() {
     return_if(opened(), YCode::INVALID_CALL_ORDER);
     return_if_not(inited(), YCode::NOT_INITED);
     _output_format = _format_context->oformat; //TODO оператор "болтается в воздухе"
@@ -83,8 +85,7 @@ YCode YDestination::close()
     return YCode::OK;
 }
 
-std::string YDestination::toString() const
-{
+std::string YDestination::toString() const {
     /* Output #0, flv, to 'rtmp://a.rtmp.youtube.com/live2/ytub-8t5w-asjj-avyf'*/
     std::string str = "Output #"
             + std::to_string(uid()) + ", "
@@ -93,13 +94,11 @@ std::string YDestination::toString() const
     return str;
 }
 
-AVOutputFormat* YDestination::outputFrormat() const
-{
+AVOutputFormat* YDestination::outputFrormat() const {
     return _output_format;
 }
 
-YCode YDestination::guessOutputFromat()
-{
+YCode YDestination::guessOutputFromat() {
     AVOutputFormat* output_format = av_guess_format(nullptr, _media_resource_locator.c_str(), nullptr);
     if (output_format == nullptr) {
         log_error("Failed guess output format: " << _media_resource_locator);
@@ -109,8 +108,7 @@ YCode YDestination::guessOutputFromat()
     return YCode::OK;
 }
 
-YCode YDestination::createContext()
-{
+YCode YDestination::createContext() {
     std::string format_short_name = utils::guess_format_short_name(_media_resource_locator);
     const char* format_name = format_short_name.empty() ? nullptr : format_short_name.c_str();
     if (avformat_alloc_output_context2(&_format_context, nullptr, format_name, _media_resource_locator.c_str()) < 0) {
@@ -120,8 +118,7 @@ YCode YDestination::createContext()
     return YCode::OK;
 }
 
-YCode YDestination::openContext()
-{
+YCode YDestination::openContext() {
     log_info("Destination: \"" << _media_resource_locator << "\" is opening...");
     if (!(_format_context->flags & AVFMT_NOFILE)) {
         if (avio_open(&_format_context->pb, _media_resource_locator.c_str(), AVIO_FLAG_WRITE) < 0) {
@@ -143,13 +140,11 @@ YCode YDestination::openContext()
     }
 }
 
-YCode YDestination::write()
-{
+YCode YDestination::write() {
     return YCode::OK;
 }
 
-YCode YDestination::writePacket(YPacket& packet)
-{
+YCode YDestination::writePacket(YPacket& packet) {
 //    log_debug(packet);
     if (av_interleaved_write_frame(_format_context, &packet.raw()) < 0) {
 //    if (av_write_frame(_format_context, &packet.raw()) < 0) {
@@ -159,8 +154,7 @@ YCode YDestination::writePacket(YPacket& packet)
     return YCode::OK;
 }
 
-YCode YDestination::processInputData(YPacket& input_data)
-{
+YCode YDestination::processInputData(YPacket& input_data) {
     if (input_data.isVideo()) { //Debug if
         try_to(stream(input_data.streamIndex())->stampPacket(input_data));
     }
@@ -168,8 +162,7 @@ YCode YDestination::processInputData(YPacket& input_data)
     return YCode::OK;
 }
 
-YCode YDestination::parseOutputFormat()
-{
+YCode YDestination::parseOutputFormat() {
     return_if_not(inited_ptr(_output_format), YCode::INVALID_CALL_ORDER);
     {
         //TODO:                                   ↓ mp3 AVOutputFormat дает видеокодек PNG ↓

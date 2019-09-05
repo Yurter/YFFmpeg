@@ -1,13 +1,11 @@
 #pragma once
-
 #include "YObject.hpp"
 #include <thread>
 #include <functional>
 
 typedef std::function<YCode(void)> LoopFunction;
 
-class YThread : public YObject
-{
+class YThread : public YObject {
 
 public:
 

@@ -3,34 +3,29 @@
 #include <exception>
 
 YThread::YThread() :
-    YThread(std::bind(&YThread::run,this))
-{
+    YThread(std::bind(&YThread::run,this)) {
     EMPTY_CONSTRUCTOR
 }
 
 YThread::YThread(LoopFunction loop_function) :
     _running(false),
-    _exit_code(YCode::NOT_INITED),
-    _loop_function(loop_function)
-{
+    _exit_code(YCode::OK),
+    _loop_function(loop_function) {
     setName("YThread");
 }
 
-YThread& YThread::operator=(YThread&& other)
-{
+YThread& YThread::operator=(YThread&& other) {
     _thread         = std::move(other._thread);
     _running        = other._running;
     _loop_function  = other._loop_function;
     return *this;
 }
 
-YThread::~YThread()
-{
+YThread::~YThread() {
     quit();
 }
 
-YCode YThread::start()
-{
+YCode YThread::start() {
     return_if(running(), YCode::INVALID_CALL_ORDER);
     if_not(inited()) { try_to(init()); }
     _running = true;
@@ -57,8 +52,8 @@ YCode YThread::start()
     return YCode::OK;
 }
 
-YCode YThread::quit() //TODO join?
-{
+//TODO join?
+YCode YThread::quit() {
     return_if_not(running(), YCode::INVALID_CALL_ORDER);
     _running = false;
     try { /* TODO */
@@ -71,22 +66,18 @@ YCode YThread::quit() //TODO join?
     return YCode::OK;
 }
 
-bool YThread::running()
-{
+bool YThread::running() {
     return _running;
 }
 
-void YThread::join()
-{
+void YThread::join() {
     while (running()) { utils::sleep_for(MEDIUM_DELAY_MS); }
 }
 
-YCode YThread::exitCode() const
-{
+YCode YThread::exitCode() const {
     return _exit_code;
 }
 
-YCode YThread::run()
-{
+YCode YThread::run() {
     return YCode::NOT_INITED;
 }
