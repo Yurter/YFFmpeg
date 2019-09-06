@@ -56,12 +56,12 @@ enum YOption {
     VIDEO_REQUIRED  = 1 << 0x0003,
     AUDIO_REQUIRED  = 1 << 0x0004,
 };
-//enum YOption {
-//    COPY_VIDEO      = 0x0001,
-//    COPY_AUDIO      = 0x0002,
-//    VIDEO_REQUIRED  = 0x0004,
-//    AUDIO_REQUIRED  = 0x0008,
-//};
+
+/* ? */
+enum YCodecType {
+    Decoder,
+    Encoder
+};
 
 /* Медиа тип потока/пакета/фрейма */
 enum YMediaType {

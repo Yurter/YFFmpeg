@@ -93,30 +93,20 @@ std::string utils::guess_format_short_name(std::string media_resurs_locator) {
     return std::string();
 }
 
-AVCodec* utils::find_codec(std::string codec_short_name) {
-    AVCodec* codec;
-    codec = avcodec_find_decoder_by_name(codec_short_name.c_str());
-    if (inited_ptr(codec) && (codec_short_name != "aac")) {
-        return codec;
-    }
-    codec = avcodec_find_encoder_by_name(codec_short_name.c_str());
-    if (inited_ptr(codec)) {
-        return codec;
-    }
-    return nullptr;
+AVCodec* utils::find_decoder(std::string codec_short_name) {
+    return avcodec_find_decoder_by_name(codec_short_name.c_str());
 }
 
-AVCodec* utils::find_codec(AVCodecID codec_id) {
-    AVCodec *codec;
-    codec = avcodec_find_decoder(codec_id);
-    if (inited_ptr(codec)) {
-        return codec;
-    }
-    codec = avcodec_find_encoder(codec_id);
-    if (inited_ptr(codec)) {
-        return codec;
-    }
-    return nullptr;
+AVCodec* utils::find_decoder(AVCodecID codec_id) {
+    return avcodec_find_decoder(codec_id);
+}
+
+AVCodec* utils::find_encoder(std::string codec_short_name) {
+    return avcodec_find_encoder_by_name(codec_short_name.c_str());
+}
+
+AVCodec* utils::find_encoder(AVCodecID codec_id) {
+    return avcodec_find_encoder(codec_id);
 }
 
 YCode utils::init_codecpar(AVCodecParameters* codecpar, AVCodec* codec) {

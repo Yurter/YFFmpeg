@@ -39,8 +39,10 @@ public:
     static int64_t      gen_stream_uid(int64_t context_uid, int64_t stream_index);
     static int64_t      get_context_uid(int64_t stream_uid);
     static std::string  guess_format_short_name(std::string media_resurs_locator);
-    static AVCodec*     find_codec(std::string codec_short_name);
-    static AVCodec*     find_codec(AVCodecID codec_id);
+    static AVCodec*     find_decoder(std::string codec_short_name);
+    static AVCodec*     find_decoder(AVCodecID codec_id);
+    static AVCodec*     find_encoder(std::string codec_short_name);
+    static AVCodec*     find_encoder(AVCodecID codec_id);
 
     static YCode        init_codecpar(AVCodecParameters* codecpar, AVCodec* codec);
     static void         parameters_to_context(YParameters* parametres, AVCodecContext* codec);

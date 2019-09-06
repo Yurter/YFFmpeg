@@ -10,8 +10,8 @@ public:
     YParameters(YMediaType type = YMediaType::MEDIA_TYPE_UNKNOWN);
     virtual ~YParameters() override = default;
 
-    void                setCodec(AVCodecID codec_id);
-    void                setCodec(std::string _codec_short_name);
+    void                setCodec(AVCodecID codec_id, YCodecType codec_type);
+    void                setCodec(std::string _codec_short_name, YCodecType codec_type);
     void                setCodec(AVCodec* codec);
     void                setBitrate(int64_t bitrate);
     void                setDuration(int64_t duration);

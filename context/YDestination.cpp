@@ -27,7 +27,7 @@ YCode YDestination::init() {
         video_parameters->setAspectRatio({16,9});
         video_parameters->setFrameRate(24); //TODO
         video_parameters->setBitrate(400'000);
-        video_parameters->setCodec("libx264");
+        video_parameters->setCodec("libx264", YCodecType::Decoder);
         video_parameters->setTimeBase({ 1, 1000 });
         video_parameters->setContextUid(uid());
         try_to(createStream(video_parameters));
@@ -39,7 +39,7 @@ YCode YDestination::init() {
         audio_parameters->setBitrate(128'000);
         audio_parameters->setChannelLayout(AV_CH_LAYOUT_STEREO);
         audio_parameters->setChannels(2);
-        audio_parameters->setCodec("aac");
+        audio_parameters->setCodec("aac", YCodecType::Encoder);
 //        audio_parameters->setChannelLayout(AV_CH_LAYOUT_MONO);
 //        audio_parameters->setChannels(1);
 //        audio_parameters->setCodec("aac");
