@@ -5,75 +5,75 @@ CONFIG -= qt
 CONFIG += c++17
 
 SOURCES += \
-    base/YContext.cpp \
-    base/YException.cpp \
-    base/YFilter.cpp \
-    base/YLogger.cpp \
-    base/YMediaData.cpp \
-    base/YRefi.cpp \
-    codec/YDecoder.cpp \
-    codec/YEncoder.cpp \
-    control/YAudioStream.cpp \
-    context/YDestination.cpp \
+    base/Context.cpp \
+    base/Exception.cpp \
+    base/Filter.cpp \
+    base/Logger.cpp \
+    base/MediaData.cpp \
+    base/Object.cpp \
+    base/Refi.cpp \
+    base/Thread.cpp \
+    codec/Decoder.cpp \
+    codec/Encoder.cpp \
+    context/Sink.cpp \
+    context/Source.cpp \
+    control/AudioParameters.cpp \
+    control/AudioStream.cpp \
+    control/VideoParameters.cpp \
+    control/VideoStream.cpp \
     control/YMap.cpp \
-    refi/YResampler.cpp \
-    refi/YRescaler.cpp \
-    context/YSource.cpp \
-    control/YVideoStream.cpp \
-    base/YObject.cpp \
-    base/YStream.cpp \
-    base/YThread.cpp \
+    refi/AudioFilter.cpp \
+    refi/MediaFilter.cpp \
+    refi/Resampler.cpp \
+    base/Stream.cpp \
     base/utils.cpp \
     main.cpp \
-    base\YContext.cpp \
-    base\YFilter.cpp \
-    base\YFrame.cpp \
-    base\YPacket.cpp \
-    base\YParameters.cpp \
-    control/YVideoParameters.cpp \
-    control/YAudioParameters.cpp \
+    base\Context.cpp \
+    base\Filter.cpp \
+    base\Frame.cpp \
+    base\Packet.cpp \
+    base\Parameters.cpp \
     control/YFFmpeg.cpp \
-    refi/YVideoFilter.cpp \
-    refi/YAudioFilter.cpp \
-    refi/YMediaFilter.cpp \
+    refi/Rescaler.cpp \ \
+    refi/VideoFilter.cpp
 
 HEADERS += \
-    base/YCodec.hpp \
-    base/YContext.hpp \
-    base/YException.hpp \
-    base/YFilter.hpp \
-    base/YLogger.hpp \
-    base/YMediaData.hpp \
-    base/YRefi.hpp \
+    base/AsyncQueue.hpp \
+    base/Codec.hpp \
+    base/Context.hpp \
+    base/Data.hpp \
+    base/DataProcessor.hpp \
+    base/Exception.hpp \
+    base/Filter.hpp \
+    base/Logger.hpp \
+    base/MediaData.hpp \
+    base/Object.hpp \
+    base/Refi.hpp \
+    base/Stream.hpp \
+    base/Thread.hpp \
     base/utils.hpp \
-    codec/YDecoder.hpp \
-    codec/YEncoder.hpp \
-    control/YAudioStream.hpp \
-    context/YDestination.hpp \
+    codec/Decoder.hpp \
+    codec/Encoder.hpp \
+    context/Sink.hpp \
+    context/Source.hpp \
+    control/AudioParameters.hpp \
+    control/AudioStream.hpp \
+    control/VideoParameters.hpp \
+    control/VideoStream.hpp \
     control/YFFmpeg.hpp \
     control/YMap.hpp \
-    refi/YResampler.hpp \
-    refi/YRescaler.hpp \
-    context/YSource.hpp \
-    control/YVideoStream.hpp \
-    base/YAsyncQueue.hpp \
-    base/YData.hpp \
-    base/YDataProcessor.hpp \
-    base/YObject.hpp \
-    base/YStream.hpp \
-    base/YThread.hpp \
+    refi/AudioFilter.hpp \
+    refi/MediaFilter.hpp \
+    refi/Resampler.hpp \
     base\ffmpeg.hpp \
-    base\YCodec.hpp \
-    base\YContext.hpp \
+    base\Codec.hpp \
+    base\Context.hpp \
     base\YFilter.hpp \
-    base\YFrame.hpp \
-    base\YPacket.hpp \
-    base\YParameters.hpp \
-    control/YVideoParameters.hpp \
-    control/YAudioParameters.hpp \
-    refi/YMediaFilter.hpp \
-    refi/YAudioFilter.hpp \
-    refi/YVideoFilter.hpp \
+    base\Frame.hpp \
+    base\Packet.hpp \
+    base\Parameters.hpp \
+    refi/Rescaler.hpp \ \
+    refi/VideoFilter.hpp
 
 #-- Home --
 INCLUDEPATH += G:\dev\FFmpeg\ffmpeg-4.1.1-win64-dev\include

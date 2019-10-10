@@ -1,101 +1,113 @@
 #pragma once
-
-#include "context/YSource.hpp"
-#include "context/YDestination.hpp"
-#include "codec/YDecoder.hpp"
-#include "codec/YEncoder.hpp"
-#include "refi/YRescaler.hpp"
-#include "refi/YResampler.hpp"
-#include "refi/YVideoFilter.hpp"
-#include "refi/YAudioFilter.hpp"
+#include "context/Source.hpp"
+#include "context/Sink.hpp"
+#include "codec/Decoder.hpp"
+#include "codec/Encoder.hpp"
+#include "refi/Rescaler.hpp"
+#include "refi/Resampler.hpp"
+#include "refi/VideoFilter.hpp"
+#include "refi/AudioFilter.hpp"
 #include "YMap.hpp"
 
-typedef std::list<YObject*>         ProcessorList;
-typedef std::list<YSource*>         SourceList;
-typedef std::list<YDestination*>    DestinationList;
-typedef std::list<YContext*>        ContextList;
-typedef std::list<YEncoder*>        EncoderList;
-typedef std::list<YDecoder*>        DecoderList;
-typedef std::list<YRefi*>           RefiList;
+namespace fpp {
 
-using MetaStream = std::pair<uint64_t,uint64_t>;
-using MetaRoute = std::pair<MetaStream,MetaStream>;
-using MetaMap = std::list<MetaRoute>;
 
-using ProcessorSequence = std::list<YObject*>;
+//    typedef std::list<Object*>         ProcessorList;
+//    typedef std::list<Source*>         SourceList;
+//    typedef std::list<Destination*>    DestinationList;
+//    typedef std::list<Context*>        ContextList;
+//    typedef std::list<Encoder*>        EncoderList;
+//    typedef std::list<Decoder*>        DecoderList;
+//    typedef std::list<Refi*>           RefiList;
 
-//TODO Rename YFFmpeg to YCascade? YMediaCascade? YMultimediaCascade?
-class YFFmpeg : public YThread
-{
 
-public:
+    using ProcessorList = std::list<Object*>;
+    using SourceList = std::list<Source*>;
+    using DestinationList = std::list<Sink*>;
+    using ContextList = std::list<Context*>;
+    using EncoderList = std::list<Encoder*>;
+    using DecoderList = std::list<Decoder*>;
+    using RefiList = std::list<Refi*>;
 
-    YFFmpeg(); //TODO hwaccel flag_enum|set_method
-    ~YFFmpeg() override;
+    using MetaStream = std::pair<uint64_t,uint64_t>;
+    using MetaRoute = std::pair<MetaStream,MetaStream>;
+    using MetaMap = std::list<MetaRoute>;
 
-    bool                stop();                             ///< Функция прерывает работу класса.
-    void                pause();                            ///< Функция приостанавливает работу класса.
-    void                unpause();                          ///< Функция возобновляет работу класса.
+    using ProcessorSequence = std::list<Object*>;
 
-    void                setOptions(int64_t options);        ///< Функция устанавливает переданные ей опции YOption.
-    void                addElement(YObject* element);       ///< Функция добавляет процессор медиа-данных в кучу.
+    //TODO Rename YFFmpeg to YCascade? YMediaCascade? YMultimediaCascade? PipeLine
+    class YFFmpeg : public Thread {
 
-    // До старта потоков нет возможности указать потоки явно
-//    void                setRoute(YStream* input_stream, YStream* output_stream);            ///< Функция устанавливает соответствие между входным и выходным потоками.
-    void                setRoute(YContext* input_context, int64_t input_stream_index
-                                 , YContext* output_context, int64_t output_stream_index);
+    public:
 
-    void                dump() const;                       ///< TODO description
+        YFFmpeg(); //TODO hwaccel flag_enum|set_method
+        ~YFFmpeg() override;
 
-private:
+        bool                stop();                             ///< Функция прерывает работу класса.
+        void                pause();                            ///< Функция приостанавливает работу класса.
+        void                unpause();                          ///< Функция возобновляет работу класса.
 
-    virtual YCode       init()  override;
-    virtual YCode       run()   override;
+        void                setOptions(int64_t options);        ///< Функция устанавливает переданные ей опции Option.
+        void                addElement(Object* element);       ///< Функция добавляет процессор медиа-данных в кучу.
 
-    bool                option(YOption option) const;
+        // До старта потоков нет возможности указать потоки явно
+    //    void                setRoute(Stream* input_stream, Stream* output_stream);            ///< Функция устанавливает соответствие между входным и выходным потоками.
+        void                setRoute(Context* input_context, int64_t input_stream_index
+                                     , Context* output_context, int64_t output_stream_index);
 
-    YCode               checkIOContexts();
+        void                dump() const;                       ///< TODO description
 
-    YCode               initMap();
-    YCode               initRefi();
-    YCode               initCodec();
-    YCode               initContext();
-    YCode               openContext();
-    YCode               closeContext();
-    YCode               startProcesors();
-    YCode               stopProcesors();
-    YCode               joinProcesors();
-    YCode               determineSequences();
-    void                freeProcesors();
+    private:
 
-    virtual std::string toString() const override;
+        virtual Code        init()  override;
+        virtual Code        run()   override;
 
-    // TODO
+        bool                option(Option option) const;
 
-    YStream*            findBestInputStream(YMediaType media_type);
-    StreamList          getOutputStreams(YMediaType media_type);
+        Code                checkIOContexts();
 
-    YCode               connectIOStreams(YMediaType media_type);
+        Code                initMap();
+        Code                initRefi();
+        Code                initCodec();
+        Code                initContext();
+        Code                openContext();
+        Code                closeContext();
+        Code                startProcesors();
+        Code                stopProcesors();
+        Code                joinProcesors();
+        Code                determineSequences();
+        void                freeProcesors();
 
-    ContextList         contexts()      const;
-    SourceList          sources()       const;
-    DestinationList     destinations()  const;
-    DecoderList         decoders()      const;
-    EncoderList         encoders()      const;
-    RefiList            refis()         const;
+        virtual std::string toString() const override;
 
-private:
+        // TODO
 
-    ProcessorList       _data_processors;
+        Stream*             findBestInputStream(MediaType media_type);
+        StreamList          getOutputStreams(MediaType media_type);
 
-    std::list<std::list<YObject*>>      _processor_sequences; //TODO перенести внутрь YMap ?
+        Code                connectIOStreams(MediaType media_type);
 
-    YMap*               _map;
+        ContextList         contexts()      const;
+        SourceList          sources()       const;
+        DestinationList     destinations()  const;
+        DecoderList         decoders()      const;
+        EncoderList         encoders()      const;
+        RefiList            refis()         const;
 
-    MetaMap             _metamap;
+    private:
 
-    // General
-    volatile bool       _paused; 
-    int64_t             _options;
+        ProcessorList       _data_processors;
 
-};
+        std::list<std::list<Object*>>      _processor_sequences; //TODO перенести внутрь YMap ?
+
+        YMap*               _map;
+
+        MetaMap             _metamap;
+
+        // General
+        volatile bool       _paused;
+        int64_t             _options;
+
+    };
+
+} // namespace fpp

@@ -18,57 +18,77 @@ extern "C" {
 #include <libswresample/swresample.h>
 }
 
-/* ? */
-//enum Yode {hwaccel
-//    //
-//};
+namespace fpp {
 
-/* Варианты для быстрой преднастройки */
-/* параметров медиа-контекстов        */
-enum YMediaPreset {
-    Auto,
-    /* Input */
-    Virtual,
-    Memory,
-    /* Output */
-    YouTube,
-    Timelapse
-};
+    /* ? */
+    //enum Yode {hwaccel
+    //    //
+    //};
 
-/* Коды результата выполнения некоторых функций */
-enum [[nodiscard]] YCode {
-    OK,
-    ERR,
-    AGAIN,
-    NOT_INITED,
-    END_OF_FILE,
-    INVALID_INPUT,
-    INVALID_CALL_ORDER,
-    FFMPEG_ERROR,
-    EXCEPTION
-    //TODO код возрата без ошибки, что-то типа варнинга
-};
+    /* Варианты для быстрой преднастройки */
+    /* параметров медиа-контекстов        */
+    enum MediaPreset {
+        Auto,
+        /* Input */
+        Virtual,
+        Memory,
+        /* Output */
+        YouTube,
+        Timelapse
+    };
 
-/* Опции для YFFmpeg */
-enum YOption {
-    COPY_VIDEO      = 1 << 0x0001,
-    COPY_AUDIO      = 1 << 0x0002,
-    VIDEO_REQUIRED  = 1 << 0x0003,
-    AUDIO_REQUIRED  = 1 << 0x0004,
-};
+    /* Коды результата выполнения некоторых функций */
+    enum /*class*/ [[nodiscard]] Code {
+        OK,
+        ERR,
+        AGAIN,
+        NOT_INITED,
+        END_OF_FILE,
+        INVALID_INPUT,
+        INVALID_CALL_ORDER,
+        FFMPEG_ERROR,
+        EXCEPTION
+        //TODO код возрата без ошибки, что-то типа варнинга
+    };
 
-/* ? */
-enum YCodecType {
-    Decoder,
-    Encoder
-};
+    /* Опции для YFFmpeg */
+    enum Option {
+        COPY_VIDEO      = 1 << 0x0001,
+        COPY_AUDIO      = 1 << 0x0002,
+        VIDEO_REQUIRED  = 1 << 0x0003,
+        AUDIO_REQUIRED  = 1 << 0x0004,
+    };
 
-/* Медиа тип потока/пакета/фрейма */
-enum YMediaType {
-    MEDIA_TYPE_UNKNOWN  = 0x0001,
-    MEDIA_TYPE_VIDEO    = 0x0002,
-    MEDIA_TYPE_AUDIO    = 0x0004,
-};
+    /* ? */
+    enum class CodecType { //TODO конфликт имён
+        Decoder,
+        Encoder
+    };
+
+    /* Медиа тип потока/пакета/фрейма */
+    enum MediaType {
+        MEDIA_TYPE_UNKNOWN  = 0x0001,
+        MEDIA_TYPE_VIDEO    = 0x0002,
+        MEDIA_TYPE_AUDIO    = 0x0004,
+    };
+
+    /* Категории сообщений, которые выводятся в консоль.
+     * Каждый последующий уровень включает в себя предыдущий */
+    enum LogLevel {
+        /* Сообщения не выводится */
+        Quiet,
+        /* Сообщения об ошибках */
+        Error,
+        /* Сообщения о некорректно установленных параметрах,
+         * которые могут привести к проблемам */
+        Warning,
+        /* Стандартная информация */
+        Info,
+        /* Сообщения, используемые при отладке кода */
+        Debug
+    };
+
+} // namespace fpp
 
 /* Значения по умолчанию для видео- и аудиопараметров */ //TODO по умолчанию невалидные, добавить по умолчанию валидные
 #define INVALID_INT             -1
@@ -100,22 +120,6 @@ enum YMediaType {
 #define inited_ptr(x)           ((x) != nullptr)
 #define inited_codec_id(x)      ((x) != DEFAULT_CODEC_ID)
 
-/* Категории сообщений, которые выводятся в консоль.
- * Каждый последующий уровень включает в себя предыдущий */
-enum YLogLevel {
-    /* Сообщения не выводится */
-    Quiet,
-    /* Сообщения об ошибках */
-    Error,
-    /* Сообщения о некорректно установленных параметрах,
-     * которые могут привести к проблемам */
-    Warning,
-    /* Стандартная информация */
-    Info,
-    /* Сообщения, используемые при отладке кода */
-    Debug
-};
-
 /* ? */
 #define guaranteed_push(proc,data) while (!proc->push(data)) { utils::sleep_for(SHORT_DELAY_MS); } SEMICOLON_REQUIREMENT
 #define guaranteed_pop(proc,data)  while (!proc->pop(data))  { utils::sleep_for(SHORT_DELAY_MS); } SEMICOLON_REQUIREMENT
@@ -132,6 +136,16 @@ enum YLogLevel {
                         return ret;\
                     }\
                   } SEMICOLON_REQUIREMENT
+
+/* ? */ // В случае ошибки не возвращать ее код, а выбрасывать исключение (ex. в деструкторах); добавить параметр - текст ошибки
+//#define try_and_throw(x,msg) { auto ret = x;\
+//                    if (utils::exit_code(ret)) {\
+//                        log_error("Function " << (#x)\
+//                        << " failed with code: " << ret\
+//                        << " - " << utils::code_to_string(ret));\
+//                        return ret;\
+//                    }\
+//                  } SEMICOLON_REQUIREMENT
 
 /* ? */
 //TODO
