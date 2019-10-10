@@ -4,52 +4,54 @@
 using namespace std;
 using namespace fpp;
 
-void manualFFmpeg();
-
 int main() {
-
-    manualFFmpeg();
 
     cout << "[main] Program started..." << endl;
 
-//    set_log_level(LogLevel::Debug);
-//    set_log_level(LogLevel::Quiet);
-//    set_ffmpeg_log_level(LogLevel::Quiet);
+    try {
+        set_log_level(LogLevel::Debug);
+    //    set_log_level(LogLevel::Quiet);
+    //    set_ffmpeg_log_level(LogLevel::Quiet);
 
-    /* Запись rtsp с камеры в flv/YouTube */
-//     std::string mrl_src = "camera_video.avi";
-//    std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
-    std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
-//    std::string mrl_src = "rtsp://192.168.0.14:8080/h264";
+        /* Запись rtsp с камеры в flv/YouTube */
+    //     std::string mrl_src = "camera_video.avi";
+    //    std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
+    //    std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
+        std::string mrl_src = "camera_video.flv";
+    //    std::string mrl_src = "rtsp://192.168.0.14:8080/h264";
 
-//    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/2qqv-7ttx-xhk0-az48";
-//    std::string mrl_dst = "remuxed.flv";
-    std::string mrl_dst = "remuxed.avi";
-//    std::string mrl_dst = "camera_sound.aac";
+    //    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/2qqv-7ttx-xhk0-az48";
+    //    std::string mrl_dst = "remuxed.flv";
+    //    std::string mrl_dst = "remuxed.avi";
+        std::string mrl_dst = "filtered_video.mp4";
+    //    std::string mrl_dst = "camera_sound.aac";
 
-    auto source = new Source(mrl_src);
-    auto destination = new Sink(mrl_dst, MediaPreset::YouTube);
-//    auto destination = new Sink(mrl_dst);
+        auto source = new Source(mrl_src);
+        auto destination = new Sink(mrl_dst/*, MediaPreset::YouTube*/);
+    //    auto destination = new Sink(mrl_dst);
 
-    YFFmpeg ffmpeg;
-    ffmpeg.addElement(source);
-    ffmpeg.addElement(destination);
-//    ffmpeg.setOptions(Option::COPY_AUDIO);
-//    ffmpeg.setOptions(Option::COPY_VIDEO);
+        YFFmpeg ffmpeg;
+        ffmpeg.addElement(source);
+        ffmpeg.addElement(destination);
+    //    ffmpeg.setOptions(Option::COPY_AUDIO);
+    //    ffmpeg.setOptions(Option::COPY_VIDEO);
 
-//    ffmpeg.setRoute(source, 0, destination, 0);
-//    ffmpeg.setRoute(source, 1, destination, 1);
+    //    ffmpeg.setRoute(source, 0, destination, 0);
+    //    ffmpeg.setRoute(source, 1, destination, 1);
 
-    if (auto ret = ffmpeg.start(); ret != Code::OK) {
-        cout << "[main] YFFmpeg start failed: " << ret << " - " << utils::code_to_string(ret) << endl;
+        if (auto ret = ffmpeg.start(); ret != Code::OK) {
+            cout << "[main] YFFmpeg start failed: " << ret << " - " << utils::code_to_string(ret) << endl;
+        }
+        ffmpeg.join();
+
+        cout << "[main] Program finished." << endl;
+
+    } catch (std::exception e) {
+        cout << "[main] exception: " << e.what() << endl;
+    } catch (...) {
+        cout << "[main] exception: unknown" << endl;
     }
-    ffmpeg.join();
 
-    cout << "[main] Program finished." << endl;
     return 0;
 
-}
-
-void manualFFmpeg() {
-    return;
 }

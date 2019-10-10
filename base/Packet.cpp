@@ -4,7 +4,7 @@
 namespace fpp {
 
     Packet::Packet() :
-        YData<AVPacket>(),
+        Data<AVPacket>(),
         _stream_uid(INVALID_INT)
     {
         setName("Packet");

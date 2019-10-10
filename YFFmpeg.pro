@@ -28,13 +28,13 @@ SOURCES += \
     base/Stream.cpp \
     base/utils.cpp \
     main.cpp \
-    base\Context.cpp \
-    base\Filter.cpp \
-    base\Frame.cpp \
-    base\Packet.cpp \
-    base\Parameters.cpp \
+    base/Context.cpp \
+    base/Filter.cpp \
+    base/Frame.cpp \
+    base/Packet.cpp \
+    base/Parameters.cpp \
     control/YFFmpeg.cpp \
-    refi/Rescaler.cpp \ \
+    refi/Rescaler.cpp \
     refi/VideoFilter.cpp
 
 HEADERS += \
@@ -65,14 +65,14 @@ HEADERS += \
     refi/AudioFilter.hpp \
     refi/MediaFilter.hpp \
     refi/Resampler.hpp \
-    base\ffmpeg.hpp \
-    base\Codec.hpp \
-    base\Context.hpp \
-    base\YFilter.hpp \
-    base\Frame.hpp \
-    base\Packet.hpp \
-    base\Parameters.hpp \
-    refi/Rescaler.hpp \ \
+    base/ffmpeg.hpp \
+    base/Codec.hpp \
+    base/Context.hpp \
+    base/YFilter.hpp \
+    base/Frame.hpp \
+    base/Packet.hpp \
+    base/Parameters.hpp \
+    refi/Rescaler.hpp \
     refi/VideoFilter.hpp
 
 #-- Home --

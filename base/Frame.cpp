@@ -10,7 +10,7 @@ namespace fpp {
     }
 
     Frame::Frame(AVFrame *frame) :
-        YData<AVFrame*>(frame)//,
+        Data<AVFrame*>(frame)//,
     //    _stream_index(INVALID_INT)
     {
         setName("Frame");

@@ -10,7 +10,7 @@ namespace fpp {
     }
 
     Stream::Stream(AVStream* stream, Parameters* param) :
-        YData<AVStream*>(stream, param->type()),
+        Data<AVStream*>(stream, param->type()),
         parameters(param),
         _context(nullptr),
         _uid(INVALID_INT),

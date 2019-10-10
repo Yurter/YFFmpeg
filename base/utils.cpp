@@ -199,7 +199,7 @@ namespace fpp {
 
     //TODO
     void utils::parameters_from_avcodecpar(Parameters* parametres, AVCodecParameters* codecpar) {
-        parametres->setCodec(codecpar->codec_id);
+//        parametres->setCodec(codecpar->codec_id);
         parametres->setBitrate(codecpar->bit_rate);
 
         switch (parametres->type()) {
