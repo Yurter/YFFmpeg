@@ -2,6 +2,7 @@
 #include "ffmpeg.hpp"
 #include <string>
 #include <iostream>
+#include <sstream>
 
 namespace fpp {
 
@@ -23,6 +24,11 @@ namespace fpp {
         virtual std::string toString()      const;
         operator            std::string()   const;
 
+        friend std::ostream& operator<<(std::ostream& os, const Object& object) {
+            os << object.toString();
+            return os;
+        }
+
     private:
 
         std::string         _name;
@@ -31,12 +37,3 @@ namespace fpp {
     };
 
 } // namespace fpp
-
-////TODO
-//namespace fpp {
-//    // FFmpeg++
-//    // fpp
-//    // AVPipeLine
-//    // YPipeLine
-//    // PipeLine
-//}

@@ -27,8 +27,7 @@ int main() {
     //    std::string mrl_dst = "camera_sound.aac";
 
         auto source = new Source(mrl_src);
-        auto destination = new Sink(mrl_dst/*, MediaPreset::YouTube*/);
-    //    auto destination = new Sink(mrl_dst);
+        auto destination = new Sink(mrl_dst);
 
         Pipeline pipeline;
         pipeline.addElement(source);
