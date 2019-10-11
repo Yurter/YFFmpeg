@@ -1,5 +1,5 @@
 #include <iostream>
-#include "control/YFFmpeg.hpp"
+#include "fpp.hpp"
 
 using namespace std;
 using namespace fpp;
@@ -30,25 +30,27 @@ int main() {
         auto destination = new Sink(mrl_dst/*, MediaPreset::YouTube*/);
     //    auto destination = new Sink(mrl_dst);
 
-        YFFmpeg ffmpeg;
-        ffmpeg.addElement(source);
-        ffmpeg.addElement(destination);
+        Pipeline pipeline;
+        pipeline.addElement(source);
+        pipeline.addElement(destination);
     //    ffmpeg.setOptions(Option::COPY_AUDIO);
     //    ffmpeg.setOptions(Option::COPY_VIDEO);
 
     //    ffmpeg.setRoute(source, 0, destination, 0);
     //    ffmpeg.setRoute(source, 1, destination, 1);
 
-        if (auto ret = ffmpeg.start(); ret != Code::OK) {
-            cout << "[main] YFFmpeg start failed: " << ret << " - " << utils::code_to_string(ret) << endl;
+        if (auto ret = pipeline.start(); ret != Code::OK) {
+            cout << "[main] Pipeline start failed: " << ret << " - " << utils::code_to_string(ret) << endl;
         }
-        ffmpeg.join();
+        pipeline.join();
 
         cout << "[main] Program finished." << endl;
 
-    } catch (std::exception e) {
+    }
+    catch (std::exception e) {
         cout << "[main] exception: " << e.what() << endl;
-    } catch (...) {
+    }
+    catch (...) {
         cout << "[main] exception: unknown" << endl;
     }
 

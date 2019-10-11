@@ -100,7 +100,7 @@ namespace fpp {
         return _output_format;
     }
 
-    Code Sink::guessOutputFromat() {
+    Code Sink::guessOutputFromat() {// см: _format_context->oformat
         AVOutputFormat* output_format = av_guess_format(nullptr, _media_resource_locator.c_str(), nullptr);
         if (output_format == nullptr) {
             log_error("Failed guess output format: " << _media_resource_locator);

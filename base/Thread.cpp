@@ -45,7 +45,8 @@ namespace fpp {
                               << " - " << utils::code_to_string(_exit_code));
                 }
                 _running = false;
-            } catch (std::exception e) {
+            }
+            catch (std::exception e) {
                 log_error("std::exception: " << e.what());
                 _exit_code = Code::EXCEPTION;
                 _exit_message = e.what();

@@ -1,21 +1,21 @@
-#include "YFFmpeg.hpp"
+#include "Pipeline.hpp"
 #include <iterator>
 
 namespace fpp {
 
-    YFFmpeg::YFFmpeg() :
+    Pipeline::Pipeline() :
         _map(new YMap)
     {
-        setName("YFFmpeg");
+        setName("Pipeline");
         _data_processors.push_back(_map);
     }
 
-    YFFmpeg::~YFFmpeg() {
+    Pipeline::~Pipeline() {
         freeProcesors();
         stop();
     }
 
-    bool YFFmpeg::stop() {
+    bool Pipeline::stop() {
         stopProcesors();
         joinProcesors();
         log_info("Stopped");
@@ -23,41 +23,41 @@ namespace fpp {
         return true;
     }
 
-    void YFFmpeg::pause() {
+    void Pipeline::pause() {
         _paused = true;
         log_info("Paused");
     }
 
-    void YFFmpeg::unpause() {
+    void Pipeline::unpause() {
         log_info("Unpaused");
         _paused = false;
     }
 
-    void YFFmpeg::setOptions(int64_t options) {
+    void Pipeline::setOptions(int64_t options) {
         _options = options;
     }
 
-    void YFFmpeg::addElement(Object* element) {
+    void Pipeline::addElement(Object* element) {
         _data_processors.push_back(element);
     }
 
-    //void YFFmpeg::setRoute(Stream* input_stream, Stream* output_stream)
+    //void Pipeline::setRoute(Stream* input_stream, Stream* output_stream)
     //{
     //    _map->addRoute(input_stream, output_stream);
     //}
 
     //TODO
-    void YFFmpeg::setRoute(Context* input_context, int64_t input_stream_index
+    void Pipeline::setRoute(Context* input_context, int64_t input_stream_index
                            , Context* output_context, int64_t output_stream_index) {
         _metamap.push_back({{ input_context->uid(), input_stream_index }
                         , { output_context->uid(), output_stream_index }});
     }
 
-    void YFFmpeg::dump() const {
+    void Pipeline::dump() const {
         log_info(toString());
     }
 
-    Code YFFmpeg::init() {
+    Code Pipeline::init() {
         log_info("Initialization started...");
         try_to(checkIOContexts());
         try_to(initContext());
@@ -72,7 +72,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code YFFmpeg::run() {
+    Code Pipeline::run() {
         for (auto&& processor : _data_processors) {
             auto thread_processor = static_cast<Thread*>(processor);
             return_if_not(thread_processor->running()
@@ -82,17 +82,17 @@ namespace fpp {
         return Code::OK;
     }
 
-    bool YFFmpeg::option(Option option) const {
+    bool Pipeline::option(Option option) const {
         return _options & option;
     }
 
-    Code YFFmpeg::checkIOContexts() {
+    Code Pipeline::checkIOContexts() {
         return_if(sources().empty(),      Code::NOT_INITED);   //TODO throw YException("No source specified");
         return_if(destinations().empty(), Code::NOT_INITED);   //TODO throw YException("No destination specified");
         return Code::OK;
     }
 
-    Code YFFmpeg::initMap() {
+    Code Pipeline::initMap() {
         auto stream_map = _map->streamMap();
         if (stream_map->empty()) {
             /* Пользователь не установил таблицу маршрутов явно,
@@ -106,7 +106,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code YFFmpeg::initRefi() {
+    Code Pipeline::initRefi() {
         for (auto&& processor : _data_processors) {
             auto refi = dynamic_cast<Refi*>(processor);
             if (inited_ptr(refi)) { try_to(refi->init()); }
@@ -114,7 +114,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code YFFmpeg::initCodec() {
+    Code Pipeline::initCodec() {
         for (auto&& processor : _data_processors) {
             auto decoder = dynamic_cast<Decoder*>(processor);
             if (inited_ptr(decoder)) { try_to(decoder->init()); continue; }
@@ -124,7 +124,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code YFFmpeg::initContext() {
+    Code Pipeline::initContext() {
         for (auto&& processor : _data_processors) {
             auto context = dynamic_cast<Context*>(processor);
             if (inited_ptr(context)) { try_to(context->init()); }
@@ -132,7 +132,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code YFFmpeg::openContext() {
+    Code Pipeline::openContext() {
         for (auto&& processor : _data_processors) {
             auto context = dynamic_cast<Context*>(processor);
             if (inited_ptr(context)) { try_to(context->open()); }
@@ -140,7 +140,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code YFFmpeg::closeContext() {
+    Code Pipeline::closeContext() {
         for (auto&& processor : _data_processors) {
             auto context = dynamic_cast<Context*>(processor);
             if (inited_ptr(context)) { try_to(context->close()); }
@@ -148,7 +148,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code YFFmpeg::startProcesors() {
+    Code Pipeline::startProcesors() {
         for (auto&& processor : _data_processors) {
             auto thread_processor = static_cast<Thread*>(processor);
             try_to(thread_processor->start());
@@ -156,7 +156,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code YFFmpeg::stopProcesors() {
+    Code Pipeline::stopProcesors() {
         for (auto&& processor : _data_processors) {
             auto thread_processor = static_cast<Thread*>(processor);
             try_to(thread_processor->quit());
@@ -164,7 +164,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code YFFmpeg::joinProcesors() {
+    Code Pipeline::joinProcesors() {
         for (auto&& processor : _data_processors) {
             auto thread_processor = static_cast<Thread*>(processor);
             thread_processor->join();
@@ -172,7 +172,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code YFFmpeg::determineSequences() {
+    Code Pipeline::determineSequences() {
         StreamMap* stream_map = _map->streamMap();
         return_if(stream_map->empty(), Code::NOT_INITED);
         for (auto&& stream_route : *stream_map) {
@@ -209,7 +209,7 @@ namespace fpp {
                 }
 
                 if (resampling_required) {
-                    YResampler* resampler = new YResampler({ in_stream, out_stream });
+                    Resampler* resampler = new Resampler({ in_stream, out_stream });
                     sequence.push_back(resampler);
                     addElement(resampler);
                 }
@@ -235,8 +235,8 @@ namespace fpp {
                     try_to(static_cast<Decoder*>(*processor_it)->connectOutputTo(*next_processor_it));
                 } else if ((*processor_it)->is("Rescaler")) {
                     try_to(static_cast<Rescaler*>(*processor_it)->connectOutputTo(*next_processor_it));
-                } else if ((*processor_it)->is("YResampler")) {
-                    try_to(static_cast<YResampler*>(*processor_it)->connectOutputTo(*next_processor_it));
+                } else if ((*processor_it)->is("Resampler")) {
+                    try_to(static_cast<Resampler*>(*processor_it)->connectOutputTo(*next_processor_it));
                 } else {
                     log_warning("didn't connected: " + (*processor_it)->name());
                 }
@@ -252,12 +252,12 @@ namespace fpp {
         return Code::OK;
     }
 
-    void YFFmpeg::freeProcesors() //TODO объекты в смартпоинтеры
+    void Pipeline::freeProcesors() //TODO объекты в смартпоинтеры
     {
         //см TODO ↗
     }
 
-    std::string YFFmpeg::toString() const {
+    std::string Pipeline::toString() const {
         std::string dump_str;
 
         /* Вывод информации о контекстах
@@ -282,7 +282,7 @@ namespace fpp {
         std::string delimeter = " -> ";
     //    auto& stream_map = _stream_map->streamMap();
         //TODO
-        // #1 Source[0:1] -> Decoder pcm_mulaw -> YResampler -> Encoder aac -> Sink[1:1]
+        // #1 Source[0:1] -> Decoder pcm_mulaw -> Resampler -> Encoder aac -> Sink[1:1]
         for (auto&& sequence : _processor_sequences) {
             dump_str += "\n";
             dump_str +=  TAB;
@@ -304,7 +304,7 @@ namespace fpp {
         return dump_str;
     }
 
-    Stream* YFFmpeg::findBestInputStream(MediaType media_type) {
+    Stream* Pipeline::findBestInputStream(MediaType media_type) {
         switch (media_type) {
         case MediaType::MEDIA_TYPE_VIDEO: {
             StreamVector all_video_streams;
@@ -325,7 +325,7 @@ namespace fpp {
         }
     }
 
-    StreamList YFFmpeg::getOutputStreams(MediaType media_type)
+    StreamList Pipeline::getOutputStreams(MediaType media_type)
     {
         StreamList output_streams;
         for (auto&& destination : destinations()) {
@@ -336,7 +336,7 @@ namespace fpp {
         return output_streams;
     }
 
-    Code YFFmpeg::connectIOStreams(MediaType media_type) {
+    Code Pipeline::connectIOStreams(MediaType media_type) {
         Stream* best_stream = findBestInputStream(media_type);
         if (not_inited_ptr(best_stream)) {
             log_warning("Destination requires a "
@@ -355,7 +355,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    ContextList YFFmpeg::contexts() const {
+    ContextList Pipeline::contexts() const {
         ContextList context_list;
         for (auto&& processor : _data_processors) {
             auto context = dynamic_cast<Context*>(processor);
@@ -364,7 +364,7 @@ namespace fpp {
         return context_list;
     }
 
-    SourceList YFFmpeg::sources() const {
+    SourceList Pipeline::sources() const {
         SourceList source_list;
         for (auto&& processor : _data_processors) {
             auto source = dynamic_cast<Source*>(processor);
@@ -373,7 +373,7 @@ namespace fpp {
         return source_list;
     }
 
-    DestinationList YFFmpeg::destinations() const {
+    DestinationList Pipeline::destinations() const {
         DestinationList destination_list;
         for (auto&& processor : _data_processors) {
             auto destination = dynamic_cast<Sink*>(processor);
@@ -382,7 +382,7 @@ namespace fpp {
         return destination_list;
     }
 
-    DecoderList YFFmpeg::decoders() const {
+    DecoderList Pipeline::decoders() const {
         DecoderList decoder_list;
         for (auto&& processor : _data_processors) {
             auto decoder = dynamic_cast<Decoder*>(processor);

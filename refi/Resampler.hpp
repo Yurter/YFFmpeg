@@ -4,12 +4,12 @@
 
 namespace fpp {
 
-    class YResampler : public Refi {
+    class Resampler : public Refi {
 
     public:
 
-        YResampler(StreamPair audio_streams);
-        virtual ~YResampler() override;
+        Resampler(StreamPair audio_streams);
+        virtual ~Resampler() override;
 
         virtual Code       init() override;
 

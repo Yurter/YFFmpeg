@@ -35,13 +35,12 @@ namespace fpp {
 
     using ProcessorSequence = std::list<Object*>;
 
-    //TODO Rename YFFmpeg to YCascade? YMediaCascade? YMultimediaCascade? PipeLine
-    class YFFmpeg : public Thread {
+    class Pipeline : public Thread {
 
     public:
 
-        YFFmpeg(); //TODO hwaccel flag_enum|set_method
-        ~YFFmpeg() override;
+        Pipeline(); //TODO hwaccel flag_enum|set_method
+        ~Pipeline() override;
 
         bool                stop();                             ///< Функция прерывает работу класса.
         void                pause();                            ///< Функция приостанавливает работу класса.

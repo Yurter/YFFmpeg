@@ -51,7 +51,7 @@ namespace fpp {
         //TODO код возрата без ошибки, что-то типа варнинга
     };
 
-    /* Опции для YFFmpeg */
+    /* Опции для Pipeline */
     enum Option {
         COPY_VIDEO      = 1 << 0x0001,
         COPY_AUDIO      = 1 << 0x0002,

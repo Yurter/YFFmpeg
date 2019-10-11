@@ -19,6 +19,7 @@ SOURCES += \
     context/Source.cpp \
     control/AudioParameters.cpp \
     control/AudioStream.cpp \
+    control/Pipeline.cpp \
     control/VideoParameters.cpp \
     control/VideoStream.cpp \
     control/YMap.cpp \
@@ -33,7 +34,6 @@ SOURCES += \
     base/Frame.cpp \
     base/Packet.cpp \
     base/Parameters.cpp \
-    control/YFFmpeg.cpp \
     refi/Rescaler.cpp \
     refi/VideoFilter.cpp
 
@@ -58,10 +58,11 @@ HEADERS += \
     context/Source.hpp \
     control/AudioParameters.hpp \
     control/AudioStream.hpp \
+    control/Pipeline.hpp \
     control/VideoParameters.hpp \
     control/VideoStream.hpp \
-    control/YFFmpeg.hpp \
     control/YMap.hpp \
+    fpp.hpp \
     refi/AudioFilter.hpp \
     refi/MediaFilter.hpp \
     refi/Resampler.hpp \

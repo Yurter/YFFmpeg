@@ -2,20 +2,20 @@
 
 namespace fpp {
 
-    YResampler::YResampler(StreamPair audio_streams) :
+    Resampler::Resampler(StreamPair audio_streams) :
         Refi(audio_streams),
         _resampler_context(nullptr) {
-        setName("YResampler");
+        setName("Resampler");
         setSkipType(MediaType::MEDIA_TYPE_VIDEO);
     }
 
-    YResampler::~YResampler() {
+    Resampler::~Resampler() {
         if (_resampler_context != nullptr) {
             swr_free(&_resampler_context);
         }
     }
 
-    Code YResampler::init() {
+    Code Resampler::init() {
         return_if(inited(), Code::INVALID_CALL_ORDER);
     //    return_if_not(_io_streams.first->inited(), Code::INVALID_INPUT); //TODO
     //    return_if_not(_io_streams.second->inited(), Code::INVALID_INPUT);
@@ -48,7 +48,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code YResampler::processInputData(Frame& input_data) {
+    Code Resampler::processInputData(Frame& input_data) {
         if (swr_convert_frame(_resampler_context, nullptr, input_data.raw()) != 0) {
             log_error("swr_convert_frame failed"); //TODO формулировка
             return Code::ERR;
@@ -76,7 +76,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    bool YResampler::initOutputFrame(AVFrame** frame, int frame_size) {
+    bool Resampler::initOutputFrame(AVFrame** frame, int frame_size) {
         frame_size = 1024; //TODO critical!
         auto in_param = dynamic_cast<AudioParameters*>(_io_streams.first->parameters); //TODO
         auto out_param = dynamic_cast<AudioParameters*>(_io_streams.second->parameters);
@@ -104,8 +104,8 @@ namespace fpp {
         return true;
     }
 
-    //bool YResampler::configChanged(const AVFrame *in, const AVFrame *out)
-    bool YResampler::configChanged(AVFrame* in, AVFrame* out) {
+    //bool Resampler::configChanged(const AVFrame *in, const AVFrame *out)
+    bool Resampler::configChanged(AVFrame* in, AVFrame* out) {
         auto in_param = dynamic_cast<AudioParameters*>(_io_streams.first->parameters); //TODO
         auto out_param = dynamic_cast<AudioParameters*>(_io_streams.second->parameters);
 

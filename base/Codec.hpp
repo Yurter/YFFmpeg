@@ -24,7 +24,7 @@ namespace fpp {
             }
         }
 
-        Code init() {
+        virtual Code init() override {
             auto codec = _stream->parameters->codec();
             return_if(not_inited_ptr(codec), Code::INVALID_INPUT);
             {
