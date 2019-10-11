@@ -22,4 +22,6 @@ namespace fpp {
 
     };
 
+    using RefiList = std::list<Refi*>;
+
 } // namespace fpp

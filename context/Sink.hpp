@@ -39,4 +39,6 @@ namespace fpp {
 
     };
 
+    using SinkList = std::list<Sink*>;
+
 } // namespace fpp

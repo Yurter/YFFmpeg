@@ -16,4 +16,6 @@ namespace fpp {
 
     };
 
+    using DecoderList = std::list<Decoder*>;
+
 } // namespace fpp

@@ -37,4 +37,6 @@ namespace fpp {
 
     };
 
+    using SourceList = std::list<Source*>;
+
 } // namespace fpp

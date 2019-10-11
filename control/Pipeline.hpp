@@ -11,23 +11,7 @@
 
 namespace fpp {
 
-
-//    typedef std::list<Object*>         ProcessorList;
-//    typedef std::list<Source*>         SourceList;
-//    typedef std::list<Destination*>    DestinationList;
-//    typedef std::list<Context*>        ContextList;
-//    typedef std::list<Encoder*>        EncoderList;
-//    typedef std::list<Decoder*>        DecoderList;
-//    typedef std::list<Refi*>           RefiList;
-
-
     using ProcessorList = std::list<Object*>;
-    using SourceList = std::list<Source*>;
-    using DestinationList = std::list<Sink*>;
-    using ContextList = std::list<Context*>;
-    using EncoderList = std::list<Encoder*>;
-    using DecoderList = std::list<Decoder*>;
-    using RefiList = std::list<Refi*>;
 
     using MetaStream = std::pair<uint64_t,uint64_t>;
     using MetaRoute = std::pair<MetaStream,MetaStream>;
@@ -88,7 +72,7 @@ namespace fpp {
 
         ContextList         contexts()      const;
         SourceList          sources()       const;
-        DestinationList     destinations()  const;
+        SinkList            sinks()         const;
         DecoderList         decoders()      const;
         EncoderList         encoders()      const;
         RefiList            refis()         const;
@@ -97,6 +81,7 @@ namespace fpp {
 
         ProcessorList       _data_processors;
 
+                                         // DataFlow? Pipe? Pipeline?
         std::list<std::list<Object*>>      _processor_sequences; //TODO перенести внутрь YMap ?
 
         YMap*               _map;

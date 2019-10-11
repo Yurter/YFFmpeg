@@ -16,4 +16,6 @@ namespace fpp {
 
     };
 
+    using EncoderList = std::list<Encoder*>;
+
 } // namespace fpp

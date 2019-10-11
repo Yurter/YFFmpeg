@@ -4,7 +4,6 @@
 
 namespace fpp {
 
-
     class Packet : public Data<AVPacket> {
 
     public:
@@ -29,7 +28,7 @@ namespace fpp {
         int64_t             streamUid()     const;
 
         bool                empty()         const;
-        std::string         toString()      const override;
+        virtual std::string toString()      const override;
 
     private:
 

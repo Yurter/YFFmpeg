@@ -69,4 +69,6 @@ namespace fpp {
 
     };
 
+    using ContextList = std::list<Context*>;
+
 } // namespace fpp

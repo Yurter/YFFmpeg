@@ -87,8 +87,8 @@ namespace fpp {
     }
 
     Code Pipeline::checkIOContexts() {
-        return_if(sources().empty(),      Code::NOT_INITED);   //TODO throw YException("No source specified");
-        return_if(destinations().empty(), Code::NOT_INITED);   //TODO throw YException("No destination specified");
+        return_if(sources().empty(),    Code::NOT_INITED);  //TODO throw YException("No source specified");
+        return_if(sinks().empty(),      Code::NOT_INITED);  //TODO throw YException("No destination specified");
         return Code::OK;
     }
 
@@ -325,11 +325,10 @@ namespace fpp {
         }
     }
 
-    StreamList Pipeline::getOutputStreams(MediaType media_type)
-    {
+    StreamList Pipeline::getOutputStreams(MediaType media_type) {
         StreamList output_streams;
-        for (auto&& destination : destinations()) {
-            for (auto&& video_stream : destination->streams(media_type)) {
+        for (auto&& sink : sinks()) {
+            for (auto&& video_stream : sink->streams(media_type)) {
                 output_streams.push_back(video_stream);
             }
         }
@@ -339,7 +338,7 @@ namespace fpp {
     Code Pipeline::connectIOStreams(MediaType media_type) {
         Stream* best_stream = findBestInputStream(media_type);
         if (not_inited_ptr(best_stream)) {
-            log_warning("Destination requires a "
+            log_warning("Sink requires a "
                         << utils::media_type_to_string(media_type)
                         << " stream that is not present in the source");
     //        return Code::INVALID_INPUT;
@@ -373,13 +372,13 @@ namespace fpp {
         return source_list;
     }
 
-    DestinationList Pipeline::destinations() const {
-        DestinationList destination_list;
+    SinkList Pipeline::sinks() const {
+        SinkList sink_list;
         for (auto&& processor : _data_processors) {
-            auto destination = dynamic_cast<Sink*>(processor);
-            if (inited_ptr(destination)) { destination_list.push_back(destination); }
+            auto sink = dynamic_cast<Sink*>(processor);
+            if (inited_ptr(sink)) { sink_list.push_back(sink); }
         }
-        return destination_list;
+        return sink_list;
     }
 
     DecoderList Pipeline::decoders() const {
