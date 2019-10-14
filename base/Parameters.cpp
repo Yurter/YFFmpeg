@@ -5,13 +5,15 @@ namespace fpp {
 
     Parameters::Parameters(MediaType type) :
         MediaData(type),
-        _codec_id(DEFAULT_CODEC_ID),
-        _codec_name(DEFAULT_STRING),
-        _bitrate(DEFAULT_INT),
-        _duration(DEFAULT_INT),
-        _stream_index(INVALID_INT),
-        _time_base(DEFAULT_RATIONAL),
-        _context_uid(INVALID_INT) {
+        _codec(nullptr)
+        , _codec_id(DEFAULT_CODEC_ID)
+        , _codec_name(DEFAULT_STRING)
+        , _bitrate(DEFAULT_INT)
+        , _duration(DEFAULT_INT)
+        , _stream_index(INVALID_INT)
+        , _time_base(DEFAULT_RATIONAL)
+        , _context_uid(INVALID_INT)
+    {
         setName("Parameters");
     }
 
@@ -39,9 +41,9 @@ namespace fpp {
 
     void Parameters::setCodec(AVCodec* codec) {
         if (inited_ptr(codec)) {
+            _codec = codec;
             _codec_id = codec->id;
             _codec_name = codec->name;
-            _codec = codec;
         }
     }
 

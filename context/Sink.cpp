@@ -51,8 +51,20 @@ namespace fpp {
             try_to(createStream(audio_parameters));
             break;
         }
-        case Timelapse:
+        case Timelapse: {
+            /* Video */
+            auto video_parameters = new VideoParameters;
+            video_parameters->setWidth(1920);
+            video_parameters->setHeight(1080);
+            video_parameters->setAspectRatio({16,9});
+            video_parameters->setFrameRate(24); //TODO
+            video_parameters->setBitrate(400'000);
+            video_parameters->setCodec("libx264", CodecType::Encoder);
+            video_parameters->setTimeBase({ 1, 1000 });
+            video_parameters->setContextUid(uid());
+            try_to(createStream(video_parameters));
             break;
+        }
         default:
             log_error("Invalid preset");
             break;
@@ -61,6 +73,7 @@ namespace fpp {
 //            log_error("No streams to mux were specified");
 //            return Code::NOT_INITED;
 //        }
+        log_debug("Created");
         setInited(true);
         return Code::OK;
     }

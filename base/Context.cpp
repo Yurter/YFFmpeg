@@ -53,6 +53,8 @@ namespace fpp {
     }
 
     Code Context::createStream(Parameters* param) {
+        auto test1 = _format_context;
+        auto test2 = param->codec();
         auto avstream = avformat_new_stream(_format_context, param->codec());
         return_if(not_inited_ptr(avstream), Code::ERR);
         Stream* new_stream = nullptr;

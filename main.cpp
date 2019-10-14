@@ -28,11 +28,12 @@ int main() {
     //    std::string mrl_dst = "camera_sound.aac";
 
         auto source = new Source(mrl_src);
-        auto destination = new Sink(mrl_dst);
+//        auto sink = new Sink(mrl_dst);
+        auto sink = new Sink(mrl_dst, MediaPreset::Timelapse);
 
         Pipeline pipeline;
         pipeline.addElement(source);
-        pipeline.addElement(destination);
+        pipeline.addElement(sink);
     //    ffmpeg.setOptions(Option::COPY_AUDIO);
     //    ffmpeg.setOptions(Option::COPY_VIDEO);
 
