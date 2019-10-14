@@ -106,6 +106,7 @@ namespace fpp {
             try_to(connectIOStreams(MediaType::MEDIA_TYPE_AUDIO));
         }
         try_to(_map->init());
+        log_debug(_map->toString());
         return Code::OK;
     }
 
@@ -375,6 +376,7 @@ namespace fpp {
                          << " stream "
                          << sink->mediaResourceLocator());
             }
+            output_streams = getOutputStreams(media_type);
         }
         /* Трансляция наилучшего потока на все потоки выхода того же медиа-типа */
         for (auto&& out_stream : output_streams) {
