@@ -11,10 +11,11 @@ namespace fpp {
 
     public:
 
-        static Logger&     instance();
+        static Logger&      instance();
         void                setLogLevel(LogLevel log_level);
         void                setFfmpegLogLevel(LogLevel log_level);
-        void                print(const Object* caller, std::string code_position, LogLevel log_level, std::string message);
+        void                print(const Object* caller, std::string code_position, LogLevel log_level, const std::string message);
+        void                static_print(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message);
 
     private:
 
@@ -28,7 +29,10 @@ namespace fpp {
     private:
 
         Code                run() override;
+        std::string         formatMessage(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message);
         bool                ignoreMessage(LogLevel message_log_level);
+        static void         log_callback(void* ptr, int level, const char* fmt, va_list vl);
+        static LogLevel     convertLogLevel(int ffmpeg_level);
 
     private:
 
