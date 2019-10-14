@@ -10,10 +10,10 @@ namespace fpp {
         Sink(const std::string& mrl, MediaPreset preset = MediaPreset::Auto);
         virtual ~Sink() override;
 
-        Code                init() override;
-        Code                open() override;
-        Code                close() override;
-        std::string         toString() const override;
+        virtual Code        init() override;
+        virtual Code        open() override;
+        virtual Code        close() override;
+        virtual std::string toString() const override;
 
         AVOutputFormat*     outputFrormat() const; //TODO убрать?
 
@@ -21,14 +21,14 @@ namespace fpp {
 
     private:
 
-        Code                createContext() override;
-        Code                openContext() override;
+        virtual Code        createContext() override;
+        virtual Code        openContext() override;
 
         Code                write();
 
         Code                writePacket(Packet& packet);
 
-        Code                processInputData(Packet& input_data) override;
+        virtual Code        processInputData(Packet& input_data) override;
 
         Code                parseOutputFormat();
 

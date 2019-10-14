@@ -53,7 +53,11 @@ namespace fpp {
         Code                initRefi();
         Code                initCodec();
         Code                initContext();
-        Code                openContext();
+
+//        Code                openContext();
+        Code                openSources();
+        Code                openSinks();
+
         Code                closeContext();
         Code                startProcesors();
         Code                stopProcesors();

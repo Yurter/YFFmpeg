@@ -16,10 +16,11 @@ namespace fpp {
     }
 
     bool Pipeline::stop() {
+        log_info("Stopping...");
         stopProcesors();
         joinProcesors();
-        log_info("Stopped");
         stop_log();
+        log_info("Done");
         return true;
     }
 
@@ -61,8 +62,10 @@ namespace fpp {
         log_info("Initialization started...");
         try_to(checkIOContexts());
         try_to(initContext());
-        try_to(openContext());
+        try_to(openSources());
         try_to(initMap());
+        try_to(openSinks());
+        /* try_to(openContext()); */
         try_to(determineSequences());
         try_to(initRefi());
         try_to(initCodec());
@@ -132,13 +135,29 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Pipeline::openContext() {
+    Code Pipeline::openSources() {
         for (auto&& processor : _data_processors) {
-            auto context = dynamic_cast<Context*>(processor);
-            if (inited_ptr(context)) { try_to(context->open()); }
+            auto source = dynamic_cast<Source*>(processor);
+            if (inited_ptr(source)) { try_to(source->open()); }
         }
         return Code::OK;
     }
+
+    Code Pipeline::openSinks() {
+        for (auto&& processor : _data_processors) {
+            auto sink = dynamic_cast<Sink*>(processor);
+            if (inited_ptr(sink)) { try_to(sink->open()); }
+        }
+        return Code::OK;
+    }
+
+//    Code Pipeline::openContext() {
+//        for (auto&& processor : _data_processors) {
+//            auto context = dynamic_cast<Context*>(processor);
+//            if (inited_ptr(context)) { try_to(context->open()); }
+//        }
+//        return Code::OK;
+//    }
 
     Code Pipeline::closeContext() {
         for (auto&& processor : _data_processors) {
@@ -338,13 +357,25 @@ namespace fpp {
     Code Pipeline::connectIOStreams(MediaType media_type) {
         Stream* best_stream = findBestInputStream(media_type);
         if (not_inited_ptr(best_stream)) {
-            log_warning("Sink requires a "
-                        << utils::media_type_to_string(media_type)
-                        << " stream that is not present in the source");
-    //        return Code::INVALID_INPUT;
-            return Code::OK; //TODO ?? что возращать?
+            log_warning(utils::media_type_to_string(media_type)
+                        << " stream is not present in the sources");
+
+            return Code::OK; //TODO ?? что возращать? //        return Code::INVALID_INPUT; ?
         }
         StreamList output_streams = getOutputStreams(media_type);
+        if (output_streams.empty()) {
+            log_warning("Sinks does not have any "
+                        << utils::media_type_to_string(media_type)
+                        << " stream");
+            log_info("Creating " << utils::media_type_to_string(media_type) << " stream in every sink...");
+            for (auto&& sink : sinks()) {
+                try_to(sink->createStream(best_stream->parameters));
+                log_info("Created "
+                         << utils::media_type_to_string(media_type)
+                         << " stream "
+                         << sink->mediaResourceLocator());
+            }
+        }
         /* Трансляция наилучшего потока на все потоки выхода того же медиа-типа */
         for (auto&& out_stream : output_streams) {
             try_to(_map->addRoute(best_stream, out_stream));

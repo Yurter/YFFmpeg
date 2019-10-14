@@ -5,7 +5,8 @@ namespace fpp {
 
     Sink::Sink(const std::string& mrl, MediaPreset preset) :
         Context(mrl, preset),
-        _output_format(nullptr) {
+        _output_format(nullptr)
+    {
         setName("Sink");
     }
 
@@ -18,7 +19,8 @@ namespace fpp {
         switch (_preset) {
         case Auto: {
             try_to(guessOutputFromat());
-            try_to(parseOutputFormat());
+//            try_to(parseOutputFormat());  // В автоматическом режиме Синк не должен самостоятельно создаввать потоки (устанавливать требования),
+                                            // только повторять входные.
             break;
         }
         case YouTube: {
@@ -55,10 +57,10 @@ namespace fpp {
             log_error("Invalid preset");
             break;
         }
-        if (numberStream() == 0) {
-            log_error("No streams to mux were specified");
-            return Code::NOT_INITED;
-        }
+//        if (numberStream() == 0) {
+//            log_error("No streams to mux were specified");
+//            return Code::NOT_INITED;
+//        }
         setInited(true);
         return Code::OK;
     }
@@ -122,6 +124,10 @@ namespace fpp {
 
     Code Sink::openContext() {
         log_info("Destination: \"" << _media_resource_locator << "\" is opening...");
+        if (_streams.empty()) {
+            log_error("No streams to mux were specified");
+            return Code::NOT_INITED;
+        }
         if (!(_format_context->flags & AVFMT_NOFILE)) {
             if (avio_open(&_format_context->pb, _media_resource_locator.c_str(), AVIO_FLAG_WRITE) < 0) {
                 log_error("Could not open output: " << _media_resource_locator);
@@ -132,7 +138,7 @@ namespace fpp {
         //AVSTREAM_INIT_IN_INIT_OUTPUT
     //    avformat_write_header(_format_context, nullptr); //TODO check return value?
         if (avformat_write_header(_format_context, nullptr) < 0) {
-            log_error("Error occurred when opening output");
+            log_error("Error occurred when opening output: " << _media_resource_locator);
             return Code::ERR;
         }
         {

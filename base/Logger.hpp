@@ -29,6 +29,7 @@ namespace fpp {
     private:
 
         Code                run() override;
+        void                flush();
         std::string         formatMessage(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message);
         bool                ignoreMessage(LogLevel message_log_level);
         static void         log_callback(void* ptr, int level, const char* fmt, va_list vl);

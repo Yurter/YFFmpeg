@@ -11,7 +11,7 @@ int main() {
     try {
         set_log_level(LogLevel::Debug);
     //    set_log_level(LogLevel::Quiet);
-    //    set_ffmpeg_log_level(LogLevel::Quiet);
+        set_ffmpeg_log_level(LogLevel::Quiet);
 
         /* Запись rtsp с камеры в flv/YouTube */
     //     std::string mrl_src = "camera_video.avi";
@@ -23,7 +23,8 @@ int main() {
     //    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/2qqv-7ttx-xhk0-az48";
     //    std::string mrl_dst = "remuxed.flv";
     //    std::string mrl_dst = "remuxed.avi";
-        std::string mrl_dst = "filtered_video.mp4";
+//        std::string mrl_dst = "filtered_video.mp4";
+        std::string mrl_dst = "filtered_video.flv";
     //    std::string mrl_dst = "camera_sound.aac";
 
         auto source = new Source(mrl_src);
