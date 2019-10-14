@@ -89,4 +89,4 @@ namespace fpp {
 #define log_debug(x)        { std::stringstream log_ss; log_ss << x; print_debug(log_ss.str());     } SEMICOLON_REQUIREMENT
 
 /* ? */
-#define code_pos            __FUNCTION__
+#define code_pos            std::string(__FUNCTION__) + ", line: " + std::to_string(__LINE__)

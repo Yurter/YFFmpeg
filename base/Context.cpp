@@ -22,6 +22,7 @@ namespace fpp {
     }
 
     Code Context::close() {
+        log_debug("closing " << mediaResourceLocator() << " " << closed());
         return_if(closed(), Code::INVALID_CALL_ORDER);
     //    _io_thread.quit(); //TODO вызывать в абстрактном класса
         avformat_free_context(_format_context);
@@ -35,6 +36,10 @@ namespace fpp {
 
     bool Context::closed() const {
         return !_opened;
+    }
+
+    void Context::setOpened(bool opened) {
+        _opened = opened;
     }
 
     Code Context::createStream(Stream* new_stream) {

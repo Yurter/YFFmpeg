@@ -3,8 +3,9 @@
 namespace fpp {
 
     Source::Source(const std::string& mrl, MediaPreset preset) :
-        Context(mrl, preset),
-        _input_format(nullptr)
+        Context(mrl, preset)
+        , _input_format(nullptr)
+        , _eof_flag(false)
     {
         setName("Source");
     }
@@ -43,11 +44,13 @@ namespace fpp {
 
     Code Source::close()//TODO
     {
+        log_debug("closing " << mediaResourceLocator() << " " << closed());
         return_if(closed(), Code::INVALID_CALL_ORDER);
         _io_thread.quit(); //TODO
         quit();
         if (_format_context != nullptr) { avformat_close_input(&_format_context); }
-        return_if_not(Context::close(), Code::ERR);
+        try_to(Context::close());
+        return_if_not(closed(), Code::ERR);
         log_info("Source: \"" << _media_resource_locator << "\" closed.");
         return Code::OK;
     }
@@ -99,21 +102,37 @@ namespace fpp {
             av_dump_format(_format_context, 0, _media_resource_locator.c_str(), 0);
             setInited(true);
             log_info("Source: \"" << _media_resource_locator << "\" opened.");
+            setOpened(true);
             return Code::OK;
         }
     }
 
     Code Source::read() {
         Packet packet;
-        if (av_read_frame(mediaFormatContext(), &packet.raw()) != 0) { //TODO parse return value
-            log_error("Cannot read source: \"" << _media_resource_locator << "\". Error or EOF.");
+        if (int ret = av_read_frame(mediaFormatContext(), &packet.raw()); ret != 0) { //TODO parse return value
+            if (ret == AVERROR_EOF) {
+                log_info("Source reading completed");
+                _eof_flag = true;
+                return Code::END_OF_FILE;
+            }
+            log_error("Cannot read source: \"" << _media_resource_locator << "\". Error " << ret);
             return Code::ERR;
         }
         guaranteed_push(this, packet);
         return Code::OK;
     }
+//    Code Source::read() {
+//        Packet packet;
+//        if (av_read_frame(mediaFormatContext(), &packet.raw()) != 0) { //TODO parse return value
+//            log_error("Cannot read source: \"" << _media_resource_locator << "\". Error or EOF.");
+//            return Code::ERR;
+//        }
+//        guaranteed_push(this, packet);
+//        return Code::OK;
+//    }
 
     Code Source::processInputData(Packet& input_data) {
+        if (_eof_flag) return Code::END_OF_FILE; //TODO
         auto packet_stream = stream(input_data.raw().stream_index);
         return_if(not_inited_ptr(packet_stream), Code::INVALID_INPUT);
         input_data.setType(packet_stream->type());

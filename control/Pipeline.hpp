@@ -58,7 +58,7 @@ namespace fpp {
         Code                openSources();
         Code                openSinks();
 
-        Code                closeContext();
+        Code                closeContexts();
         Code                startProcesors();
         Code                stopProcesors();
         Code                joinProcesors();

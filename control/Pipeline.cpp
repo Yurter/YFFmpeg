@@ -18,6 +18,7 @@ namespace fpp {
     bool Pipeline::stop() {
         log_info("Stopping...");
         stopProcesors();
+        closeContexts();
         joinProcesors();
         stop_log();
         log_info("Done");
@@ -160,7 +161,7 @@ namespace fpp {
 //        return Code::OK;
 //    }
 
-    Code Pipeline::closeContext() {
+    Code Pipeline::closeContexts() {
         for (auto&& processor : _data_processors) {
             auto context = dynamic_cast<Context*>(processor);
             if (inited_ptr(context)) { try_to(context->close()); }
@@ -373,7 +374,7 @@ namespace fpp {
                 try_to(sink->createStream(best_stream->parameters));
                 log_info("Created "
                          << utils::media_type_to_string(media_type)
-                         << " stream "
+                         << " stream in "
                          << sink->mediaResourceLocator());
             }
             output_streams = getOutputStreams(media_type);

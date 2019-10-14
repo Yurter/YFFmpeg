@@ -78,6 +78,7 @@ namespace fpp {
     }
 
     Code Sink::close() {
+        log_debug("closing " << mediaResourceLocator() << " " << closed());
         return_if(closed(), Code::INVALID_CALL_ORDER);
         quit();
         if (av_write_trailer(_format_context) != 0) {
@@ -144,6 +145,7 @@ namespace fpp {
         {
             av_dump_format(_format_context, 0, _media_resource_locator.c_str(), 1);
             log_info("Destination: \"" << _media_resource_locator << "\" opened.");
+            setOpened(true);
             return Code::OK;
         }
     }
