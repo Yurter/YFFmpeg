@@ -3,7 +3,7 @@
 namespace fpp {
 
     Encoder::Encoder(Stream* stream) :
-        Codec(stream)
+        Codec(stream, CodecType::Encoder)
     {
         setName("Encoder");
     }

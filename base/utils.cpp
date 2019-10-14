@@ -129,7 +129,8 @@ namespace fpp {
             codec->pix_fmt      = video_parameters->pixelFormat();
             codec->width        = int(video_parameters->width());
             codec->height       = int(video_parameters->height());
-            codec->time_base    = DEFAULT_TIME_BASE;
+//            codec->time_base    = DEFAULT_TIME_BASE;
+            codec->time_base    = parametres->timeBase();
     //        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
             break;
         }
@@ -183,6 +184,7 @@ namespace fpp {
             codecpar->width                  = int(video_parameters->width());
             codecpar->height                 = int(video_parameters->height());
     //        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
+            codecpar->format                = int(video_parameters->pixelFormat());
             break;
         }
         case MediaType::MEDIA_TYPE_AUDIO: {
