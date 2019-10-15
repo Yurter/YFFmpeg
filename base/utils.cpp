@@ -253,7 +253,7 @@ namespace fpp {
 
     bool utils::rescalingRequired(StreamPair streams) {
         //TODO не реализован рескейлер
-        return false;
+//        return false;
         //
         return_if(streams.first->isAudio(),  false);
         return_if(streams.second->isAudio(), false);

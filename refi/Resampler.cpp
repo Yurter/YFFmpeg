@@ -3,8 +3,9 @@
 namespace fpp {
 
     Resampler::Resampler(StreamPair audio_streams) :
-        Refi(audio_streams),
-        _resampler_context(nullptr) {
+        Refi(audio_streams)
+      , _resampler_context(nullptr)
+    {
         setName("Resampler");
         setSkipType(MediaType::MEDIA_TYPE_VIDEO);
     }

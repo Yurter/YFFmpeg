@@ -54,10 +54,10 @@ namespace fpp {
         case Timelapse: {
             /* Video */
             auto video_parameters = new VideoParameters;
-//            video_parameters->setWidth(1920);
-//            video_parameters->setHeight(1080);
-            video_parameters->setWidth(640);
-            video_parameters->setHeight(480);
+            video_parameters->setWidth(1920);
+            video_parameters->setHeight(1080);
+//            video_parameters->setWidth(640);
+//            video_parameters->setHeight(480);
             video_parameters->setAspectRatio({16,9});
             video_parameters->setFrameRate(24); //TODO
             video_parameters->setBitrate(400'000);

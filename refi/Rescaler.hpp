@@ -17,8 +17,7 @@ namespace fpp {
 
     private:
 
-        //FFmpeg
-        //
+        SwsContext*         _rescaler_context;
 
     };
 

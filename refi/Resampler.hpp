@@ -21,7 +21,6 @@ namespace fpp {
 
     protected:
 
-        // FFmpeg
         SwrContext*         _resampler_context;
 
     };

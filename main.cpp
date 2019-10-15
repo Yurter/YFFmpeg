@@ -18,14 +18,14 @@ int main() {
     //     std::string mrl_src = "camera_video.avi";
     //    std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
     //    std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
-        std::string mrl_src = "camera_video.flv";
+        std::string mrl_src = "camera_video_10.flv";
     //    std::string mrl_src = "rtsp://192.168.0.14:8080/h264";
 
     //    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/2qqv-7ttx-xhk0-az48";
     //    std::string mrl_dst = "remuxed.flv";
     //    std::string mrl_dst = "remuxed.avi";
 //        std::string mrl_dst = "filtered_video.mp4";
-        std::string mrl_dst = "filtered_video.flv";
+         std::string mrl_dst = "result_video.flv";
 //        std::string mrl_dst = "filtered_video.avi";
     //    std::string mrl_dst = "camera_sound.aac";
 
