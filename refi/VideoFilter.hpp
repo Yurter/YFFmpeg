@@ -7,7 +7,7 @@ namespace fpp {
 
     public:
 
-        VideoFilter();
+        VideoFilter(StreamPair io_streams, std::string filters_descr);
 
     };
 

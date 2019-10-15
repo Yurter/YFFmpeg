@@ -134,7 +134,8 @@ namespace fpp {
     Code Source::processInputData(Packet& input_data) {
         if (_eof_flag) return Code::END_OF_FILE; //TODO
         auto packet_stream = stream(input_data.raw().stream_index);
-        return_if(not_inited_ptr(packet_stream), Code::INVALID_INPUT);
+//        return_if(not_inited_ptr(packet_stream), Code::INVALID_INPUT);
+        return_if(not_inited_ptr(packet_stream), Code::AGAIN);
         input_data.setType(packet_stream->type());
         input_data.setStreamUid(packet_stream->uid());
         if (inited_int(_artificial_delay)) { utils::sleep_for(_artificial_delay); } //todo

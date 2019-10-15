@@ -1,6 +1,8 @@
 #include "utils.hpp"
 #include <thread>
 
+#define FLOAT_EPSILON 0.0001f
+
 namespace fpp {
 
     std::string utils::media_type_to_string(MediaType media_type) {
@@ -25,10 +27,11 @@ namespace fpp {
 
     bool utils::exit_code(Code code) {
         if (code == Code::ERR)             { return true; }
+        if (code == Code::EXCEPTION)       { return true; }
         if (code == Code::NOT_INITED)      { return true; }
         if (code == Code::END_OF_FILE)     { return true; }
+        if (code == Code::FFMPEG_ERROR)    { return true; }
         if (code == Code::INVALID_INPUT)   { return true; }
-        if (code == Code::EXCEPTION)       { return true; }
         return false;
     }
 
@@ -251,7 +254,7 @@ namespace fpp {
         return audio_params;
     }
 
-    bool utils::rescalingRequired(StreamPair streams) {
+    bool utils::rescaling_required(const StreamPair streams) {
         //TODO не реализован рескейлер
 //        return false;
         //
@@ -267,7 +270,7 @@ namespace fpp {
         return false;
     }
 
-    bool utils::resamplingRequired(StreamPair streams) {
+    bool utils::resampling_required(const StreamPair streams) {
         return_if(streams.first->isVideo(),  false); //TODO throw YException, надо ли?
         return_if(streams.second->isVideo(), false);
 
@@ -282,7 +285,23 @@ namespace fpp {
         return false;
     }
 
-    bool utils::transcodingRequired(StreamPair streams) {
+    bool utils::video_filter_required(const StreamPair streams) {
+        return_if(streams.first->isAudio(),  false);
+        return_if(streams.second->isAudio(), false);
+
+        auto in = dynamic_cast<VideoParameters*>(streams.first->parameters);
+        auto out = dynamic_cast<VideoParameters*>(streams.second->parameters);
+
+        return_if(!compareFloat(in->frameRate(), out->frameRate()),  true);
+
+        return false;
+    }
+
+    bool utils::audio_filter_required(const StreamPair streams) {
+        return false;
+    }
+
+    bool utils::transcoding_required(const StreamPair streams) {
         auto in = streams.first->parameters;
         auto out = streams.second->parameters;
 
@@ -295,6 +314,10 @@ namespace fpp {
         auto best_stream_it = std::max_element(stream_list.begin(), stream_list.end());
         return_if(best_stream_it == stream_list.end(), nullptr);
         return *best_stream_it;
+    }
+
+    bool utils::compareFloat(float a, float b) {
+        return fabs(a - b) < FLOAT_EPSILON;
     }
 
 } // namespace fpp

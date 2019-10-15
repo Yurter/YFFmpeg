@@ -31,7 +31,7 @@ namespace fpp {
             video_parameters->setAspectRatio({16,9});
             video_parameters->setFrameRate(24); //TODO
             video_parameters->setBitrate(400'000);
-            video_parameters->setCodec("libx264", CodecType::Decoder);
+            video_parameters->setCodec("libx264", CodecType::Encoder);
             video_parameters->setTimeBase({ 1, 1000 });
             video_parameters->setContextUid(uid());
             try_to(createStream(video_parameters));
@@ -56,9 +56,7 @@ namespace fpp {
             auto video_parameters = new VideoParameters;
             video_parameters->setWidth(1920);
             video_parameters->setHeight(1080);
-//            video_parameters->setWidth(640);
-//            video_parameters->setHeight(480);
-            video_parameters->setAspectRatio({16,9});
+            video_parameters->setAspectRatio({ 16, 9 });
             video_parameters->setFrameRate(24); //TODO
             video_parameters->setBitrate(400'000);
             video_parameters->setCodec("libx264", CodecType::Encoder);

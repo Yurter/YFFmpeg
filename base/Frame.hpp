@@ -17,7 +17,7 @@ namespace fpp {
 
         bool                empty() const;
         Code                init() override;
-        std::string         toString() const override;
+        virtual std::string toString() const override;
 
     };
 

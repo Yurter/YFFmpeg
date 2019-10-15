@@ -52,11 +52,15 @@ namespace fpp {
         static VideoParameters*    default_video_parameters(AVCodecID codec_id);
         static AudioParameters*    default_audio_parameters(AVCodecID codec_id);
 
-        static bool         rescalingRequired(StreamPair streams);
-        static bool         resamplingRequired(StreamPair streams);
-        static bool         transcodingRequired(StreamPair streams);
+        static bool         rescaling_required(const StreamPair streams);
+        static bool         resampling_required(const StreamPair streams);
+        static bool         video_filter_required(const StreamPair streams);
+        static bool         audio_filter_required(const StreamPair streams);
+        static bool         transcoding_required(const StreamPair streams);
 
         static Stream*      find_best_stream(const StreamVector& stream_list);
+
+        static bool         compareFloat(float a, float b);
 
     };
 

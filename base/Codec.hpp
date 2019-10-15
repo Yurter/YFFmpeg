@@ -19,7 +19,7 @@ namespace fpp {
             setName("Codec");
         }
 
-        virtual ~Codec() {
+        virtual ~Codec() override {
             if (inited_ptr(_codec_context)) {
                 avcodec_close(_codec_context);
             }

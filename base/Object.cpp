@@ -35,6 +35,7 @@ namespace fpp {
 
     std::string Object::toString() const {
         return "[" + _name + ":" + std::to_string(int64_t(this)) + "]";
+//        return "{" + std::string(typeid(*this).name()) + ":" + std::to_string(int64_t(this)) + "}";
     }
 
     Object::operator std::string() const {

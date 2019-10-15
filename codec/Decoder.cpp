@@ -10,7 +10,10 @@ namespace fpp {
     Code Decoder::processInputData(Packet& input_data) {
         if (!input_data.empty()) {
             if (avcodec_send_packet(_codec_context, &input_data.raw()) != 0) {
-                log_error("Could not send packet");
+//                log_error("Could not send packet");
+                log_error("Could not send packet: " << input_data);
+                log_error("Codeec_context's width: " << _codec_context->width
+                          << ", height: " << _codec_context->height);
                 return Code::ERR;
             }
         }

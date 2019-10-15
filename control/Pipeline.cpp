@@ -199,6 +199,7 @@ namespace fpp {
         for (auto&& stream_route : *stream_map) {
             Stream* in_stream = stream_route.first;
             Stream* out_stream = stream_route.second;
+            StreamPair in_out_streams { in_stream, out_stream };
             ProcessorSequence sequence;
 
             sequence.push_back(in_stream->context());
@@ -209,9 +210,11 @@ namespace fpp {
                     || (in_stream->isAudio() && !option(Option::COPY_AUDIO)) ;
 
             if (processing_required) {
-                bool rescaling_required   = utils::rescalingRequired({ in_stream, out_stream });
-                bool resampling_required  = utils::resamplingRequired({ in_stream, out_stream });
-                bool transcoding_required = utils::transcodingRequired({ in_stream, out_stream });
+                bool rescaling_required     = utils::rescaling_required(in_out_streams);
+                bool resampling_required    = utils::resampling_required(in_out_streams);
+                bool video_filter_required  = utils::video_filter_required(in_out_streams);
+                bool audio_filter_required  = utils::audio_filter_required(in_out_streams);
+                bool transcoding_required   = utils::transcoding_required(in_out_streams);
 
                 transcoding_required = (transcoding_required
                                         || rescaling_required
@@ -224,13 +227,24 @@ namespace fpp {
                 }
 
                 if (rescaling_required) {
-                    Rescaler* rescaler = new Rescaler({ in_stream, out_stream });
+                    Rescaler* rescaler = new Rescaler(in_out_streams);
                     sequence.push_back(rescaler);
                     addElement(rescaler);
                 }
 
+                if (video_filter_required) {
+                    std::string filters_descr = "select='not(mod(n,10))',setpts=N/FRAME_RATE/TB";
+                    VideoFilter* video_filter = new VideoFilter(in_out_streams, filters_descr);
+                    sequence.push_back(video_filter);
+                    addElement(video_filter);
+                }
+
+                if (audio_filter_required) {
+                    //
+                }
+
                 if (resampling_required) {
-                    Resampler* resampler = new Resampler({ in_stream, out_stream });
+                    Resampler* resampler = new Resampler(in_out_streams);
                     sequence.push_back(resampler);
                     addElement(resampler);
                 }
@@ -258,7 +272,9 @@ namespace fpp {
                     try_to(static_cast<Rescaler*>(*processor_it)->connectOutputTo(*next_processor_it));
                 } else if ((*processor_it)->is("Resampler")) {
                     try_to(static_cast<Resampler*>(*processor_it)->connectOutputTo(*next_processor_it));
-                } else {
+                } else if ((*processor_it)->is("VideoFilter")) {
+                    try_to(static_cast<VideoFilter*>(*processor_it)->connectOutputTo(*next_processor_it));
+                }else {
                     log_warning("didn't connected: " + (*processor_it)->name());
                 }
             }
