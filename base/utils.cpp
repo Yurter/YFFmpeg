@@ -35,6 +35,15 @@ namespace fpp {
         return false;
     }
 
+    bool utils::error_code(Code code) {
+        if (code == Code::ERR)             { return true; }
+        if (code == Code::EXCEPTION)       { return true; }
+        if (code == Code::NOT_INITED)      { return true; }
+        if (code == Code::FFMPEG_ERROR)    { return true; }
+        if (code == Code::INVALID_INPUT)   { return true; }
+        return false;
+    }
+
     std::string utils::code_to_string(Code code) {
         if (code == Code::OK)              { return "OK";              }
         if (code == Code::ERR)             { return "Error";           }

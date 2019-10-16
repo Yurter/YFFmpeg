@@ -37,11 +37,11 @@ namespace fpp {
             try {
                 log_debug("Thread started");
                 while (_running && !utils::exit_code(_exit_code = _loop_function())) {}
-                if (utils::exit_code(_exit_code)) {
+                if (utils::error_code(_exit_code)) {
                     log_error("Thread finished with code: " << _exit_code
                               << " - " << utils::code_to_string(_exit_code));
                 } else {
-                    log_debug("Thread correctly finished with code: " << _exit_code
+                    log_info("Thread correctly finished with code: " << _exit_code
                               << " - " << utils::code_to_string(_exit_code));
                 }
                 _running = false;
@@ -50,6 +50,12 @@ namespace fpp {
                 log_error("std::exception: " << e.what());
                 _exit_code = Code::EXCEPTION;
                 _exit_message = e.what();
+                return;
+            }
+            catch (...) {
+                log_error("unknown exception!");
+                _exit_code = Code::EXCEPTION;
+                _exit_message = "unknown";
                 return;
             }
         });

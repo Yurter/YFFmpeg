@@ -30,6 +30,7 @@ namespace fpp {
         static std::string  pts_to_string(int64_t pts);
         static void         sleep_for(int64_t milliseconds);
         static bool         exit_code(Code code);
+        static bool         error_code(Code code);
         static std::string  code_to_string(Code code);
         static std::string  rational_to_string(AVRational rational);
         static bool         compatibleWithSampleFormat(AVCodecContext* codec_context, AVSampleFormat sample_format);

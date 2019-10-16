@@ -315,23 +315,28 @@ namespace fpp {
         std::string dump_str;
 
         /* Вывод информации о контекстах
-         * Input #0, rtsp, from 'rtsp://admin:admin@192.168.10.3':
-         *      Stream #0:0: Video: h264, 1920x1080 [16:9], 23 fps, 400 kb/s
-         *      Stream #0:1: Audio: pcm_mulaw, 16000 Hz, 1 channels, s16, 128 kb/s
-         * Output #0, flv, to 'rtmp://a.rtmp.youtube.com/live2/ytub-8t5w-asjj-avyf':
-         *      Stream #0:0: Video: h264, 1920x1080, 400 kb/s
-         *      Stream #0:1: Audio: aac, 44100 Hz, stereo, 128 kb/s
+         * |  Input #0, rtsp, from 'rtsp://admin:admin@192.168.10.3':
+         * |    Stream #0:0: Video: h264, 1920x1080 [16:9], 23 fps, 400 kb/s
+         * |    Stream #0:1: Audio: pcm_mulaw, 16000 Hz, 1 channels, s16, 128 kb/s
+         * |  Output #0, flv, to 'rtmp://a.rtmp.youtube.com/live2/ytub-8t5w-asjj-avyf':
+         * |    Stream #0:0: Video: h264, 1920x1080, 400 kb/s
+         * |    Stream #0:1: Audio: aac, 44100 Hz, stereo, 128 kb/s
         */
         for (auto&& context : contexts()) {
-            dump_str += "\n" + context->toString();
+//            dump_str += "\n" + context->toString();
+            dump_str += "\n";
+            dump_str += TAB;
+            dump_str += context->toString();
             for (auto i = 0; i < context->numberStream(); i++) {
-                dump_str += "\n";
-                dump_str += TAB + context->stream(i)->toString(); //TODO tut
+                dump_str += ":\n";
+                dump_str += TAB;
+                dump_str += TAB;
+                dump_str += context->stream(i)->toString(); //TODO tut
             }
         }
 
         /* Вывод информации о последовательностях обработки потоков */
-        dump_str += "\nProcessing sequences";
+        dump_str += "\nProcessing sequences:";
         int64_t i = 0;
         std::string delimeter = " -> ";
     //    auto& stream_map = _stream_map->streamMap();
@@ -339,7 +344,7 @@ namespace fpp {
         // #1 Source[0:1] -> Decoder pcm_mulaw -> Resampler -> Encoder aac -> Sink[1:1]
         for (auto&& sequence : _processor_sequences) {
             dump_str += "\n";
-            dump_str +=  TAB;
+            dump_str += TAB;
             dump_str += "#" + std::to_string(i++) + " ";
             for (auto&& elem : sequence) {
                 if (elem->is("YMap")) { continue; }

@@ -11,7 +11,7 @@ int main() {
     try {
 //        set_log_level(LogLevel::Debug);
     //    set_log_level(LogLevel::Quiet);
-//        set_ffmpeg_log_level(LogLevel::Quiet);
+        set_ffmpeg_log_level(LogLevel::Quiet);
 //        set_ffmpeg_log_level(LogLevel::Debug);
 
         /* Запись rtsp с камеры в flv/YouTube */
