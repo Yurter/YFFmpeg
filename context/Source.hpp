@@ -37,7 +37,7 @@ namespace fpp {
         AVInputFormat*      _input_format; //TODO убрать, обращатся через mediaFormatContext()? IOFormat() ?
 
         //TODO
-        std::atomic_bool    _eof_flag;
+//        std::atomic_bool    _eof_flag;
 
     };
 

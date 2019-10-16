@@ -11,7 +11,7 @@ namespace fpp {
         Packet();
         virtual ~Packet() override;
 
-        Code                init() override;
+        virtual Code        init() override;
 
         void                setPts(int64_t pts);
         void                setDts(int64_t dts);

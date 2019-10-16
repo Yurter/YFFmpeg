@@ -77,14 +77,31 @@ namespace fpp {
     }
 
     Code Pipeline::run() {
+        bool all_processor_stopped = true;
         for (auto&& processor : _data_processors) {
             auto thread_processor = static_cast<Thread*>(processor);
-            return_if_not(thread_processor->running()
-                          , thread_processor->exitCode());
+            if (thread_processor->running() && !thread_processor->is("YMap")) {
+                log_info(thread_processor->name());
+//                if (thread_processor->is("Decoder flv")) {
+//                    log_info(dynamic_cast<AsyncQueue<Packet>*>(thread_processor));
+//                }
+                all_processor_stopped = false;
+//                break;
+            }
         }
+        return_if(all_processor_stopped, Code::END_OF_FILE);
         utils::sleep_for(LONG_DELAY_MS);
         return Code::OK;
     }
+//    Code Pipeline::run() {
+//        for (auto&& processor : _data_processors) {
+//            auto thread_processor = static_cast<Thread*>(processor);
+//            return_if_not(thread_processor->running()
+//                          , thread_processor->exitCode());
+//        }
+//        utils::sleep_for(LONG_DELAY_MS);
+//        return Code::OK;
+//    }
 
     bool Pipeline::option(Option option) const {
         return _options & option;

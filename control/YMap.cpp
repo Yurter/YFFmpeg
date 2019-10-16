@@ -62,12 +62,14 @@ namespace fpp {
         /* Определение локального индекса выходного потока */
         int64_t out_stream_index = INVALID_INT;
         try {
+//            log_info("Trying 1 " << input_data);
             out_stream_index = _index_map.at(input_data.streamUid());
         } catch (std::out_of_range) { return Code::INVALID_INPUT; }
 
         /* Определение первого обработчика пакета */
         NextProcessor* next_proc = nullptr;
         try {
+//            log_info("Trying 2");
             next_proc = _packet_map.at(input_data.streamUid());
         } catch (std::out_of_range) { return Code::INVALID_INPUT; }
 

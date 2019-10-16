@@ -48,16 +48,36 @@ namespace fpp {
         Code sendOutputData(outType output_data, NextProcessor* next_proc = nullptr) {
             auto pointer = inited_ptr(next_proc) ? next_proc : _next_processor;
             return_if(not_inited_ptr(pointer), Code::ERR);
+//            if (this->is("YMap")) {
+//                log_info("Sended " << output_data.empty() << " data to " << next_proc);
+//            }
+            if (output_data.empty()) {
+                log_warning("Sending empty data");
+            }
             guaranteed_push(pointer, output_data);
             return Code::OK;
         }
+//        Code sendOutputData(outType output_data, NextProcessor* next_proc = nullptr) {
+//            auto pointer = inited_ptr(next_proc) ? next_proc : _next_processor;
+//            return_if(not_inited_ptr(pointer), Code::ERR);
+//            guaranteed_push(pointer, output_data);
+//            return Code::OK;
+//        }
 
     private:
 
-        Code run() override final {
+        virtual Code run() override final {
             inType input_data;
             guaranteed_pop(this, input_data);
+//            if (this->is("Decoder flv")) {
+//                log_warning("Popped " << input_data.empty() << " data");
+//            }
             return_if(ignoreType(input_data.type()), Code::AGAIN);
+            if (input_data.empty() && !this->is("YMap") && !this->is("Source")) {
+                log_warning("Got Empty Data! Sending empty data to " << _next_processor);
+                sendOutputData(outType());
+                return Code::END_OF_FILE;
+            }
             return processInputData(input_data);
         }
 

@@ -28,7 +28,6 @@ namespace fpp {
 
     Code Rescaler::processInputData(Frame& input_data) {
 
-
         AVFrame* converted_frame = av_frame_alloc();
         return_if(not_inited_ptr(converted_frame), Code::ERR);
 
@@ -46,6 +45,9 @@ namespace fpp {
         av_frame_copy_props(converted_frame, input_data.raw());
 
         Frame output_data(converted_frame);
+        output_data.setType(MEDIA_TYPE_VIDEO);
+//        log_info("Input: " << input_data);
+//        log_info("Output: " << output_data);
         return sendOutputData(output_data);
     }
 

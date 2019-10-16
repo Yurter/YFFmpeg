@@ -9,7 +9,7 @@ namespace fpp {
 
     public:
 
-        AsyncQueue() : _queue_capacity(100) {}
+        AsyncQueue() : _queue_capacity(10000) {}
         ~AsyncQueue() { clear(); }
 
         [[nodiscard]]

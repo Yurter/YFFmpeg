@@ -169,7 +169,7 @@ namespace fpp {
     }
 
     Code Sink::writePacket(Packet& packet) {
-    //    log_debug(packet);
+        log_debug(packet);
         if (av_interleaved_write_frame(_format_context, &packet.raw()) < 0) {
     //    if (av_write_frame(_format_context, &packet.raw()) < 0) {
             log_error("Error muxing packet");

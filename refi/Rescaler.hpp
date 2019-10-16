@@ -12,8 +12,8 @@ namespace fpp {
         Rescaler(StreamPair audio_streams);
         virtual ~Rescaler() override;
 
-        Code                init() override;
-        Code                processInputData(Frame& input_data) override;
+        virtual Code        init() override;
+        virtual Code        processInputData(Frame& input_data) override;
 
     private:
 

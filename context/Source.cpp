@@ -5,7 +5,7 @@ namespace fpp {
     Source::Source(const std::string& mrl, MediaPreset preset) :
         Context(mrl, preset)
         , _input_format(nullptr)
-        , _eof_flag(false)
+//        , _eof_flag(false)
     {
         setName("Source");
     }
@@ -112,7 +112,8 @@ namespace fpp {
         if (int ret = av_read_frame(mediaFormatContext(), &packet.raw()); ret != 0) { //TODO parse return value
             if (ret == AVERROR_EOF) {
                 log_info("Source reading completed");
-                _eof_flag = true;
+//                _eof_flag = true;
+                guaranteed_push(this, Packet());
                 return Code::END_OF_FILE;
             }
             log_error("Cannot read source: \"" << _media_resource_locator << "\". Error " << ret);
@@ -132,7 +133,18 @@ namespace fpp {
 //    }
 
     Code Source::processInputData(Packet& input_data) {
-        if (_eof_flag) return Code::END_OF_FILE; //TODO
+//        if (_eof_flag) return Code::END_OF_FILE; //TODO
+        if (input_data.empty()) {
+            log_warning("processInputData EMPTY DATA");
+            for (auto&& stream : streams()) {
+                input_data.setType(stream->type());
+                input_data.setStreamUid(stream->uid());
+                log_warning("Send empty packet: " << input_data);
+                try_to(sendOutputData(input_data));
+            }
+            return Code::END_OF_FILE;
+//            return sendOutputData(input_data);
+        }
         auto packet_stream = stream(input_data.raw().stream_index);
 //        return_if(not_inited_ptr(packet_stream), Code::INVALID_INPUT);
         return_if(not_inited_ptr(packet_stream), Code::AGAIN);
