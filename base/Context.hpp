@@ -21,6 +21,8 @@ namespace fpp {
 
         void                setOpened(bool opened);                     ///< ...
 
+        MediaPreset         preset() const;
+
         Code                createStream(Stream* new_stream);           ///< Функция создает поток к текущем контексте.
         Code                createStream(Parameters* param);            ///< Функция создает поток к текущем контексте.
         Stream*             bestStream(MediaType type);                 ///< Функция возвращает указатель на поток заданного типа с наилучшими параметрами; nullptr, если потока заданного типа нет.
@@ -52,6 +54,7 @@ namespace fpp {
     private:
 
         void                setUid(int64_t uid);                        ///< Функция установки uid контекста, не допускает повторного вызовова.
+        virtual Code        onStop() override;                          ///< Функция ...
 
     protected:
 

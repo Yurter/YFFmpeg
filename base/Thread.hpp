@@ -1,6 +1,7 @@
 #pragma once
 #include <thread>
 #include <functional>
+#include <atomic>
 #include "Object.hpp"
 
 namespace fpp {
@@ -19,10 +20,11 @@ namespace fpp {
         Thread& operator=(const Thread&)    = delete;
         virtual ~Thread() override;
 
-        virtual Code        start()     final;
-        virtual Code        quit()      final;
-        virtual bool        running()   final;
-        virtual void        join()      final;
+        Code                start();
+        Code                stop();
+        Code                quit();
+        bool                running();
+        void                join();
 
         Code                exitCode()      const;
         std::string         exitMessage()   const;
@@ -30,11 +32,12 @@ namespace fpp {
     protected:
 
         virtual Code        run();
+        virtual Code        onStop();
 
     private:
 
         std::thread         _thread;
-        volatile bool       _running;
+        std::atomic_bool    _running;
         Code                _exit_code;
         std::string         _exit_message;
         LoopFunction        _loop_function;

@@ -11,10 +11,10 @@ namespace fpp {
         Source(const std::string& mrl, MediaPreset preset = MediaPreset::Auto);
         virtual ~Source() override;
 
-        Code                init() override;
-        Code                open() override;
-        Code                close() override;
-        std::string         toString() const override;
+        virtual Code        init() override;
+        virtual Code        open() override;
+        virtual Code        close() override;
+        virtual std::string toString() const override;
 //        operator            std::string() const; //TODO заменить метод на оператор
 
         AVInputFormat*      inputFormat() const;  //TODO убрать? IOFormat() ?
@@ -22,12 +22,14 @@ namespace fpp {
     private:
 
         Code                guessInputFromat();
-        Code                createContext() override;
-        Code                openContext() override;
+        virtual Code        createContext() override;
+        virtual Code        openContext() override;
 
         Code                read();
 
-        Code                processInputData(Packet& input_data) override;
+        virtual Code        processInputData(Packet& input_data) override;
+
+        Code                sendEofPacket();
 
         void                parseInputFormat(); //TODO : Context::parseIOFormat ?
 

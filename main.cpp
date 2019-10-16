@@ -6,7 +6,7 @@ using namespace fpp;
 
 int main() {
 
-    cout << "[main] Program started..." << endl;
+    static_log_info("main", "Program started...");
 
     try {
 //        set_log_level(LogLevel::Debug);
@@ -18,9 +18,9 @@ int main() {
     //     std::string mrl_src = "camera_video.avi";
     //    std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
     //    std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
-        std::string mrl_src = "camera_video_10.flv";
+//        std::string mrl_src = "camera_video_10.flv";
 //        std::string mrl_src = "big_buck_bunny.mp4";
-//        std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
+        std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
 
     //    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/2qqv-7ttx-xhk0-az48";
     //    std::string mrl_dst = "remuxed.flv";
@@ -34,28 +34,30 @@ int main() {
 //        auto sink = new Sink(mrl_dst);
         auto sink = new Sink(mrl_dst, MediaPreset::Timelapse);
 
+        std::thread([source]() {
+            utils::sleep_for(20'000);
+            Code ret = source->stop();
+            static_log_info("external_stop", "Source stopped: " << ret << " - " << utils::code_to_string(ret));
+        }).detach();
+
         Pipeline pipeline;
         pipeline.addElement(source);
         pipeline.addElement(sink);
-    //    ffmpeg.setOptions(Option::COPY_AUDIO);
-    //    ffmpeg.setOptions(Option::COPY_VIDEO);
-
-    //    ffmpeg.setRoute(source, 0, destination, 0);
-    //    ffmpeg.setRoute(source, 1, destination, 1);
 
         if (auto ret = pipeline.start(); ret != Code::OK) {
-            cout << "[main] Pipeline start failed: " << ret << " - " << utils::code_to_string(ret) << endl;
+//            cout << "[main] Pipeline start failed: " << ret << " - " << utils::code_to_string(ret) << endl;
+            static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
         }
         pipeline.join();
 
-        cout << "[main] Program finished." << endl;
+        static_print_info("main", "Program finished.");
 
     }
     catch (std::exception e) {
-        cout << "[main] exception: " << e.what() << endl;
+         static_log_error("main", "exception: " << e.what());
     }
     catch (...) {
-        cout << "[main] exception: unknown" << endl;
+        static_log_error("main", "exception: unknown");
     }
 
     return 0;

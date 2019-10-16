@@ -72,7 +72,7 @@ namespace fpp {
 /* Макрос получения экзмепляра объекта класса Logger */
 #define logger                  Logger::instance()
 
-/* Макрос установки уровня лога; сообщения, имеющие урень выше установленного, игнорируются */
+/* Макрос установки уровня лога - сообщения, имеющие урень выше установленного, игнорируются */
 #define set_log_level(x)        logger.setLogLevel(x)
 #define set_ffmpeg_log_level(x) logger.setFfmpegLogLevel(x)
 #define stop_log()              logger.quit()
@@ -83,17 +83,24 @@ namespace fpp {
 #define print_error(x)      logger.print(this, code_pos, LogLevel::Error,   x)
 #define print_debug(x)      logger.print(this, code_pos, LogLevel::Debug,   x)
 
+/* Макросы для отправки потоковых сообщений в лог */
+#define log_info(x)         { std::stringstream log_ss; log_ss << x; print_info(log_ss.str());      } SEMICOLON_REQUIREMENT
+#define log_warning(x)      { std::stringstream log_ss; log_ss << x; print_warning(log_ss.str());   } SEMICOLON_REQUIREMENT
+#define log_error(x)        { std::stringstream log_ss; log_ss << x; print_error(log_ss.str());     } SEMICOLON_REQUIREMENT
+#define log_debug(x)        { std::stringstream log_ss; log_ss << x; print_debug(log_ss.str());     } SEMICOLON_REQUIREMENT
+
+/* Макросы для отправки строковых сообщений в лог вне контекста fpp */
 #define static_print_info(caller_name,msg)      logger.static_print(caller_name, code_pos, LogLevel::Info,    msg)
 #define static_print_warning(caller_name,msg)   logger.static_print(caller_name, code_pos, LogLevel::Warning, msg)
 #define static_print_error(caller_name,msg)     logger.static_print(caller_name, code_pos, LogLevel::Error,   msg)
 #define static_print_debug(caller_name,msg)     logger.static_print(caller_name, code_pos, LogLevel::Debug,   msg)
 #define static_print_auto(caller_name,lvl,msg)  logger.static_print(caller_name, code_pos, static_cast<fpp::LogLevel>(lvl), msg)
 
-/* Макросы для отправки потоковых сообщений в лог */
-#define log_info(x)         { std::stringstream log_ss; log_ss << x; print_info(log_ss.str());      } SEMICOLON_REQUIREMENT
-#define log_warning(x)      { std::stringstream log_ss; log_ss << x; print_warning(log_ss.str());   } SEMICOLON_REQUIREMENT
-#define log_error(x)        { std::stringstream log_ss; log_ss << x; print_error(log_ss.str());     } SEMICOLON_REQUIREMENT
-#define log_debug(x)        { std::stringstream log_ss; log_ss << x; print_debug(log_ss.str());     } SEMICOLON_REQUIREMENT
+/* Макросы для отправки потоковых сообщений в лог вне контекста fpp */
+#define static_log_info(caller_name,x)      do { std::stringstream log_ss; log_ss << x; static_print_info(caller_name,log_ss.str());    } while (false)
+#define static_log_warning(caller_name,x)   do { std::stringstream log_ss; log_ss << x; static_print_warning(caller_name,log_ss.str()); } while (false)
+#define static_log_error(caller_name,x)     do { std::stringstream log_ss; log_ss << x; static_print_error(caller_name,log_ss.str());   } while (false)
+#define static_log_debug(caller_name,x)     do { std::stringstream log_ss; log_ss << x; static_print_debug(caller_name,log_ss.str());   } while (false)
 
 /* ? */
 #define code_pos            std::string(__FUNCTION__) + ", line: " + std::to_string(__LINE__)

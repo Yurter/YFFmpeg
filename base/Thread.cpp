@@ -20,7 +20,7 @@ namespace fpp {
 
     Thread& Thread::operator=(Thread&& other) {
         _thread         = std::move(other._thread);
-        _running        = other._running;
+        _running        = other._running.load();
         _loop_function  = other._loop_function;
         return *this;
     }
@@ -63,6 +63,12 @@ namespace fpp {
         return Code::OK;
     }
 
+    Code Thread::stop() {
+        try_to(quit());
+        try_to(onStop());
+        return Code::OK;
+    }
+
     //TODO join?
     Code Thread::quit() {
         return_if_not(running(), Code::INVALID_CALL_ORDER);
@@ -91,6 +97,10 @@ namespace fpp {
 
     Code Thread::run() {
         return Code::NOT_INITED;
+    }
+
+    Code Thread::onStop() {
+        return Code::OK;
     }
 
 } // namespace fpp

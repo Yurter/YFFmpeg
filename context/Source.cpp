@@ -42,9 +42,9 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Source::close()//TODO
-    {
-        log_debug("closing " << mediaResourceLocator() << " " << closed());
+    Code Source::close() { //TODO
+//        log_debug("closing " << mediaResourceLocator() << " " << closed());
+        sendEofPacket();
         return_if(closed(), Code::INVALID_CALL_ORDER);
         _io_thread.quit(); //TODO
         quit();
@@ -133,26 +133,54 @@ namespace fpp {
 //    }
 
     Code Source::processInputData(Packet& input_data) {
-//        if (_eof_flag) return Code::END_OF_FILE; //TODO
         if (input_data.empty()) {
-//            log_warning("processInputData EMPTY DATA");
-            for (auto&& stream : streams()) {
-                input_data.setType(stream->type());
-                input_data.setStreamUid(stream->uid());
-//                log_warning("Send empty packet: " << input_data);
-                try_to(sendOutputData(input_data));
-            }
-            return Code::END_OF_FILE;
-//            return sendOutputData(input_data);
+//            for (auto&& stream : streams()) {
+//                input_data.setType(stream->type());
+//                input_data.setStreamUid(stream->uid());
+//                try_to(sendOutputData(input_data));
+//            }
+//            return Code::END_OF_FILE;
+            return sendEofPacket();
         }
         auto packet_stream = stream(input_data.raw().stream_index);
-//        return_if(not_inited_ptr(packet_stream), Code::INVALID_INPUT);
         return_if(not_inited_ptr(packet_stream), Code::AGAIN);
+        return_if_not(packet_stream->used(), Code::AGAIN);
         input_data.setType(packet_stream->type());
         input_data.setStreamUid(packet_stream->uid());
         if (inited_int(_artificial_delay)) { utils::sleep_for(_artificial_delay); } //todo
         return sendOutputData(input_data);
     }
+
+    Code Source::sendEofPacket() {
+        Packet eof_packet;
+        for (auto&& stream : streams()) {
+            eof_packet.setType(stream->type());
+            eof_packet.setStreamUid(stream->uid());
+            try_to(sendOutputData(eof_packet));
+        }
+        return Code::END_OF_FILE;
+    }
+//    Code Source::processInputData(Packet& input_data) {
+////        if (_eof_flag) return Code::END_OF_FILE; //TODO
+//        if (input_data.empty()) {
+////            log_warning("processInputData EMPTY DATA");
+//            for (auto&& stream : streams()) {
+//                input_data.setType(stream->type());
+//                input_data.setStreamUid(stream->uid());
+////                log_warning("Send empty packet: " << input_data);
+//                try_to(sendOutputData(input_data));
+//            }
+//            return Code::END_OF_FILE;
+////            return sendOutputData(input_data);
+//        }
+//        auto packet_stream = stream(input_data.raw().stream_index);
+////        return_if(not_inited_ptr(packet_stream), Code::INVALID_INPUT);
+//        return_if(not_inited_ptr(packet_stream), Code::AGAIN);
+//        input_data.setType(packet_stream->type());
+//        input_data.setStreamUid(packet_stream->uid());
+//        if (inited_int(_artificial_delay)) { utils::sleep_for(_artificial_delay); } //todo
+//        return sendOutputData(input_data);
+//    }
 
     void Source::parseInputFormat() {
         // ? TODO зачем это?

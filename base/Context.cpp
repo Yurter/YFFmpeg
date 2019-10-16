@@ -22,7 +22,7 @@ namespace fpp {
     }
 
     Code Context::close() {
-        log_debug("closing " << mediaResourceLocator() << " " << closed());
+//        log_debug("closing " << mediaResourceLocator() << " " << closed());
         return_if(closed(), Code::INVALID_CALL_ORDER);
     //    _io_thread.quit(); //TODO вызывать в абстрактном класса
         avformat_free_context(_format_context);
@@ -40,6 +40,10 @@ namespace fpp {
 
     void Context::setOpened(bool opened) {
         _opened = opened;
+    }
+
+    MediaPreset Context::preset() const {
+        return _preset;
     }
 
     Code Context::createStream(Stream* new_stream) {
@@ -82,6 +86,10 @@ namespace fpp {
 
     void Context::setUid(int64_t uid) {
         if (invalid_int(_uid)) { _uid = uid; }
+    }
+
+    Code Context::onStop() {
+        return close();
     }
 
     int64_t Context::uid() const {

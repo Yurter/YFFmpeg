@@ -80,7 +80,7 @@ namespace fpp {
         bool all_processor_stopped = true;
         for (auto&& processor : _data_processors) {
             auto thread_processor = static_cast<Thread*>(processor);
-            if (thread_processor->running() && !thread_processor->is("YMap")) {
+            if (thread_processor->running() /*&& !thread_processor->is("YMap")*/) {
 //                log_info(thread_processor->name());
 //                if (thread_processor->is("Decoder flv")) {
 //                    log_info(dynamic_cast<AsyncQueue<Packet>*>(thread_processor));
@@ -409,13 +409,18 @@ namespace fpp {
                         << " stream");
             log_info("Creating " << utils::media_type_to_string(media_type) << " stream in every sink...");
             for (auto&& sink : sinks()) {
-                try_to(sink->createStream(best_stream->parameters));
-                log_info("Created "
-                         << utils::media_type_to_string(media_type)
-                         << " stream in "
-                         << sink->mediaResourceLocator());
+                if (sink->preset() == MediaPreset::Auto) {
+                    try_to(sink->createStream(best_stream->parameters));
+                    log_info("Created "
+                             << utils::media_type_to_string(media_type)
+                             << " stream in "
+                             << sink->mediaResourceLocator());
+                }
             }
             output_streams = getOutputStreams(media_type);
+        }
+        if (output_streams.empty()) {
+            log_warning("Ignoring: " << *best_stream);
         }
         /* Трансляция наилучшего потока на все потоки выхода того же медиа-типа */
         for (auto&& out_stream : output_streams) {

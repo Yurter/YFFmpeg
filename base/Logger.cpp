@@ -166,10 +166,10 @@ namespace fpp {
     }
 
     void Logger::static_print(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
-        std::cout << "static print: " << _log_level << " - " << log_level << std::endl;
+//        std::cout << "static print: " << _log_level << " - " << log_level << std::endl;
         if (ignoreMessage(log_level)) { return; }
         std::string formated_message = formatMessage(caller_name, code_position, log_level, message);
-        std::cout << "formated_message: " << formated_message << std::endl;
+//        std::cout << "formated_message: " << formated_message << std::endl;
         guaranteed_push(_messages, Message(log_level, formated_message));
     }
 
