@@ -135,11 +135,11 @@ namespace fpp {
     Code Source::processInputData(Packet& input_data) {
 //        if (_eof_flag) return Code::END_OF_FILE; //TODO
         if (input_data.empty()) {
-            log_warning("processInputData EMPTY DATA");
+//            log_warning("processInputData EMPTY DATA");
             for (auto&& stream : streams()) {
                 input_data.setType(stream->type());
                 input_data.setStreamUid(stream->uid());
-                log_warning("Send empty packet: " << input_data);
+//                log_warning("Send empty packet: " << input_data);
                 try_to(sendOutputData(input_data));
             }
             return Code::END_OF_FILE;

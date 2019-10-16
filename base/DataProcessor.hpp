@@ -51,9 +51,9 @@ namespace fpp {
 //            if (this->is("YMap")) {
 //                log_info("Sended " << output_data.empty() << " data to " << next_proc);
 //            }
-            if (output_data.empty()) {
-                log_warning("Sending empty data");
-            }
+//            if (output_data.empty()) {
+//                log_warning("Sending empty data");
+//            }
             guaranteed_push(pointer, output_data);
             return Code::OK;
         }
@@ -74,7 +74,7 @@ namespace fpp {
 //            }
             return_if(ignoreType(input_data.type()), Code::AGAIN);
             if (input_data.empty() && !this->is("YMap") && !this->is("Source")) {
-                log_warning("Got Empty Data! Sending empty data to " << _next_processor);
+//                log_warning("Got Empty Data! Sending empty data to " << _next_processor);
                 sendOutputData(outType());
                 return Code::END_OF_FILE;
             }
