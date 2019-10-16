@@ -92,7 +92,7 @@ namespace fpp {
     }
 
     Code Sink::close() {
-        log_debug("closing " << mediaResourceLocator() << " " << closed());
+//        log_debug("closing " << mediaResourceLocator() << " " << closed());
         return_if(closed(), Code::INVALID_CALL_ORDER);
         quit();
         if (av_write_trailer(_format_context) != 0) {

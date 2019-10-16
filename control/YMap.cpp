@@ -62,20 +62,60 @@ namespace fpp {
         /* Определение локального индекса выходного потока */
         int64_t out_stream_index = INVALID_INT;
         try {
-//            log_info("Trying 1 " << input_data);
             out_stream_index = _index_map.at(input_data.streamUid());
-        } catch (std::out_of_range) { return Code::INVALID_INPUT; }
+        } catch (std::out_of_range) {
+            log_error("First try failed: " << input_data);
+            return Code::INVALID_INPUT;
+        }
 
         /* Определение первого обработчика пакета */
         NextProcessor* next_proc = nullptr;
         try {
-//            log_info("Trying 2");
             next_proc = _packet_map.at(input_data.streamUid());
-        } catch (std::out_of_range) { return Code::INVALID_INPUT; }
+        } catch (std::out_of_range) {
+            log_error("Second try failed");
+            return Code::INVALID_INPUT;
+        }
 
         /* Инициализаця индекса потока и отправка пакета */
         input_data.setStreamIndex(out_stream_index);
-        return sendOutputData(input_data, next_proc);
+        try_to(sendOutputData(input_data, next_proc));
+        return checkInputs();
     }
+
+    Code YMap::checkInputs() {
+        bool all_stream_dead = true;
+        for (auto&& [in_stream, out_stream] : _stream_map) {
+            if (in_stream->used()) {
+                all_stream_dead = false;
+                break;
+            }
+        }
+        return_if(all_stream_dead, Code::END_OF_FILE);
+        return Code::OK;
+    }
+//    Code YMap::processInputData(Packet& input_data) {
+//        /* Определение локального индекса выходного потока */
+//        int64_t out_stream_index = INVALID_INT;
+//        try {
+//            out_stream_index = _index_map.at(input_data.streamUid());
+//        } catch (std::out_of_range) {
+//            log_error("First try failed: " << input_data);
+//            return Code::INVALID_INPUT;
+//        }
+
+//        /* Определение первого обработчика пакета */
+//        NextProcessor* next_proc = nullptr;
+//        try {
+//            next_proc = _packet_map.at(input_data.streamUid());
+//        } catch (std::out_of_range) {
+//            log_error("Second try failed");
+//            return Code::INVALID_INPUT;
+//        }
+
+//        /* Инициализаця индекса потока и отправка пакета */
+//        input_data.setStreamIndex(out_stream_index);
+//        return sendOutputData(input_data, next_proc);
+//    }
 
 } // namespace fpp

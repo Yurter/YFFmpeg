@@ -154,9 +154,12 @@ namespace fpp {
     Code Source::sendEofPacket() {
         Packet eof_packet;
         for (auto&& stream : streams()) {
-            eof_packet.setType(stream->type());
-            eof_packet.setStreamUid(stream->uid());
-            try_to(sendOutputData(eof_packet));
+            if (stream->used()) {
+                eof_packet.setType(stream->type());
+                eof_packet.setStreamUid(stream->uid());
+                try_to(sendOutputData(eof_packet));
+                stream->setUsed(false);
+            }
         }
         return Code::END_OF_FILE;
     }

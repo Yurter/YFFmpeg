@@ -21,7 +21,7 @@ namespace fpp {
         closeContexts();
         joinProcesors();
         stop_log();
-        log_info("Done");
+        log_info("Processing finished.");
         return true;
     }
 
@@ -73,6 +73,7 @@ namespace fpp {
         try_to(startProcesors());
         dump();
         setInited(true);
+        log_info("Processing started...");
         return Code::OK;
     }
 

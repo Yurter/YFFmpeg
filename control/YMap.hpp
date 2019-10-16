@@ -36,6 +36,8 @@ namespace fpp {
 
         virtual Code        processInputData(Packet& input_data) override;
 
+        Code                checkInputs();
+
     private:
 
         StreamMap           _stream_map;
