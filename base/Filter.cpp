@@ -23,7 +23,8 @@ namespace fpp {
         AVFilterInOut *outputs = avfilter_inout_alloc();
         AVFilterInOut *inputs  = avfilter_inout_alloc();
         AVRational time_base = out_params->timeBase();
-        enum AVPixelFormat pix_fmts[] = { AV_PIX_FMT_GRAY8, AV_PIX_FMT_NONE };
+//        enum AVPixelFormat pix_fmts[] = { AV_PIX_FMT_GRAY8, AV_PIX_FMT_NONE };
+        enum AVPixelFormat pix_fmts[] = { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE };
 
         _filter_graph = avfilter_graph_alloc();
         if (!outputs || !inputs || !_filter_graph) {

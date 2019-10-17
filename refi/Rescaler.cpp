@@ -27,10 +27,12 @@ namespace fpp {
                  << " [" << input_params->width()
                  << "x" << input_params->height()
                  << ", " << av_get_pix_fmt_name(input_params->pixelFormat())
+                 << "(" << input_params->pixelFormat() << ")"
                  << "] to"
                  << " [" << output_params->width()
                  << "x" << output_params->height()
                  << ", " << av_get_pix_fmt_name(output_params->pixelFormat())
+                 << "(" << output_params->pixelFormat() << ")"
                  << "]"
                  );
         return Code::OK;
