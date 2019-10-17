@@ -121,10 +121,6 @@ namespace fpp {
 #define inited_ptr(x)           ((x) != nullptr)
 #define inited_codec_id(x)      ((x) != DEFAULT_CODEC_ID)
 
-/* ? */
-#define guaranteed_push(proc,data) while (!proc->push(data)) { utils::sleep_for(SHORT_DELAY_MS); } SEMICOLON_REQUIREMENT
-//#define guaranteed_pop(proc,data)  while (!proc->pop(data))  { utils::sleep_for(SHORT_DELAY_MS); } SEMICOLON_REQUIREMENT
-
 /* Функция возвращает id потока, в котором вызвана */
 #define current_thread_id() std::this_thread::get_id()
 

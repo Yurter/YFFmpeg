@@ -9,7 +9,7 @@
 namespace fpp {
 
     Logger::Logger() :
-        _messages(new MessageQueue),
+//        _messages(new MessageQueue),
         _log_level(LogLevel::Info)
     {
         setName("Logger");
@@ -20,13 +20,13 @@ namespace fpp {
     Logger::~Logger() {
         flush();
         av_log_set_callback(nullptr);
-        delete _messages;
+//        delete _messages;
     }
 
     Code Logger::run() {
         Message message;
         return_if_not(wait_and_pop(message), Code::EXIT);
-        guaranteed_pop(_messages, message);
+//        guaranteed_pop(_messages, message);
 
         HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -55,7 +55,7 @@ namespace fpp {
     void Logger::flush() {
         /* Прекращение получения новых сообщений */
         setLogLevel(LogLevel::Quiet);
-        while (!_messages->empty()) {
+        while (!empty()) {
             run();
         }
     }
@@ -69,7 +69,7 @@ namespace fpp {
 //        }
 //    }
 
-    std::string Logger::formatMessage(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
+    std::string Logger::format_message(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
         std::string header;
 
         if (log_level > LogLevel::Quiet) {
@@ -94,7 +94,7 @@ namespace fpp {
         return ss.str();
     }
 
-    bool Logger::ignoreMessage(LogLevel message_log_level) {
+    bool Logger::ignore_message(LogLevel message_log_level) {
         return message_log_level > _log_level;
     }
 
@@ -107,9 +107,6 @@ namespace fpp {
         av_log_default_callback(ptr, level, fmt, vl);
         av_log_format_line(ptr, level, fmt, vl2, line, sizeof(line), &print_prefix);
         va_end(vl2);
-
-//        std::cout << "ffmgat say: level = " << level << ", " << line << ">" << std::endl;
-//        std::cout << "converted level = " << convertLogLevel(level) << std::endl;
 
         static_print_auto("static", convertLogLevel(level), line);
     }
@@ -161,17 +158,19 @@ namespace fpp {
     }
 
     void Logger::print(const Object* caller, std::string code_position, LogLevel log_level, const std::string message) {
-        if (ignoreMessage(log_level)) { return; }
-        std::string formated_message = formatMessage(caller->name(), code_position, log_level, message);
-        guaranteed_push(_messages, Message(log_level, formated_message));
+        if (ignore_message(log_level)) { return; }
+        std::string formated_message = format_message(caller->name(), code_position, log_level, message);
+        if (!wait_and_push(Message(log_level, formated_message))) {
+            // do nothing
+        }
     }
 
     void Logger::static_print(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
-//        std::cout << "static print: " << _log_level << " - " << log_level << std::endl;
-        if (ignoreMessage(log_level)) { return; }
-        std::string formated_message = formatMessage(caller_name, code_position, log_level, message);
-//        std::cout << "formated_message: " << formated_message << std::endl;
-        guaranteed_push(_messages, Message(log_level, formated_message));
+        if (ignore_message(log_level)) { return; }
+        std::string formated_message = format_message(caller_name, code_position, log_level, message);
+        if (!wait_and_push(Message(log_level, formated_message))) {
+            // do nothing
+        }
     }
 
 } // namespace fpp

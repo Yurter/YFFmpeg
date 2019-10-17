@@ -10,7 +10,7 @@ namespace fpp {
 
     public:
 
-        AsyncQueue(uint64_t queue_capacity = 1'000) :
+        AsyncQueue(uint64_t queue_capacity = 1000) :
             _queue_capacity(queue_capacity)
             , _stop_wait(false) {}
         virtual ~AsyncQueue() { clear(); }
@@ -21,8 +21,7 @@ namespace fpp {
             if (_queue.size() == _queue_capacity) {
                 return false;
             }
-            _queue.push(data);
-            _condition_variable_pushed.notify_one();
+            push_and_notify(data);
             return true;
         }
 
@@ -30,8 +29,28 @@ namespace fpp {
         bool pop(Type& data) {
             std::lock_guard<std::mutex> lock(_queue_mutex);
             if (_queue.empty()) { return false; }
-            data = _queue.front();
-            _queue.pop();
+            pop_and_notify(data);
+            return true;
+        }
+
+        [[nodiscard]]
+        bool wait_and_push(const Type& data) {
+            std::unique_lock<std::mutex> lock(_queue_mutex);
+            if (_queue.size() < _queue_capacity) {
+                push_and_notify(data);
+                return true;
+            }
+
+            _condition_variable_popped.wait(lock, [&]() {
+                return (_queue.size() < _queue_capacity) || _stop_wait;
+            });
+
+            if (_stop_wait) {
+                _stop_wait = false;
+                return false;
+            }
+
+            push_and_notify(data);
             return true;
         }
 
@@ -39,12 +58,11 @@ namespace fpp {
         bool wait_and_pop(Type& data) {
             std::unique_lock<std::mutex> lock(_queue_mutex);
             if (!_queue.empty()) {
-                data = _queue.front();
-                _queue.pop();
+                pop_and_notify(data);
                 return true;
             }
 
-            _condition_variable_pushed.wait(lock, [&](){
+            _condition_variable_pushed.wait(lock, [&]() {
                 return !_queue.empty() || _stop_wait;
             });
 
@@ -53,8 +71,7 @@ namespace fpp {
                 return false;
             }
 
-            data = _queue.front();
-            _queue.pop();
+            pop_and_notify(data);
             return true;
         }
 
@@ -79,13 +96,27 @@ namespace fpp {
             std::swap(_queue, empty);
         }
 
-        void setCapacity(uint64_t queue_capacity) {
+        void set_capacity(uint64_t queue_capacity) {
             _queue_capacity = queue_capacity;
         }
 
         void stop_wait() {
             _stop_wait = true;
             _condition_variable_pushed.notify_one();
+            _condition_variable_popped.notify_one();
+        }
+
+    private:
+
+        void push_and_notify(const Type& data) {
+            _queue.push(data);
+            _condition_variable_pushed.notify_one();
+        }
+
+        void pop_and_notify(Type& data) {
+            data = _queue.front();
+            _queue.pop();
+            _condition_variable_popped.notify_one();
         }
 
     private:
@@ -95,6 +126,7 @@ namespace fpp {
         uint64_t                _queue_capacity;
         std::atomic_bool        _stop_wait;
         std::condition_variable _condition_variable_pushed;
+        std::condition_variable _condition_variable_popped;
 
     };
 

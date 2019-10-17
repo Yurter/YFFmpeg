@@ -48,7 +48,8 @@ namespace fpp {
         Code sendOutputData(outType output_data, NextProcessor* next_proc = nullptr) {
             auto pointer = inited_ptr(next_proc) ? next_proc : _next_processor;
             return_if(not_inited_ptr(pointer), Code::ERR);
-            guaranteed_push(pointer, output_data);
+//            guaranteed_push(pointer, output_data);
+            pointer->wait_and_push(output_data);
             return Code::OK;
         }
 

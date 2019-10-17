@@ -112,34 +112,18 @@ namespace fpp {
         if (int ret = av_read_frame(mediaFormatContext(), &packet.raw()); ret != 0) { //TODO parse return value
             if (ret == AVERROR_EOF) {
                 log_info("Source reading completed");
-//                _eof_flag = true;
-                guaranteed_push(this, Packet());
+                return_if_not(wait_and_push(Packet()), Code::EXIT);
                 return Code::END_OF_FILE;
             }
             log_error("Cannot read source: \"" << _media_resource_locator << "\". Error " << ret);
             return Code::ERR;
         }
-        guaranteed_push(this, packet);
+        return_if_not(wait_and_push(packet), Code::EXIT);
         return Code::OK;
     }
-//    Code Source::read() {
-//        Packet packet;
-//        if (av_read_frame(mediaFormatContext(), &packet.raw()) != 0) { //TODO parse return value
-//            log_error("Cannot read source: \"" << _media_resource_locator << "\". Error or EOF.");
-//            return Code::ERR;
-//        }
-//        guaranteed_push(this, packet);
-//        return Code::OK;
-//    }
 
     Code Source::processInputData(Packet& input_data) {
         if (input_data.empty()) {
-//            for (auto&& stream : streams()) {
-//                input_data.setType(stream->type());
-//                input_data.setStreamUid(stream->uid());
-//                try_to(sendOutputData(input_data));
-//            }
-//            return Code::END_OF_FILE;
             return sendEofPacket();
         }
         auto packet_stream = stream(input_data.raw().stream_index);
@@ -163,27 +147,6 @@ namespace fpp {
         }
         return Code::END_OF_FILE;
     }
-//    Code Source::processInputData(Packet& input_data) {
-////        if (_eof_flag) return Code::END_OF_FILE; //TODO
-//        if (input_data.empty()) {
-////            log_warning("processInputData EMPTY DATA");
-//            for (auto&& stream : streams()) {
-//                input_data.setType(stream->type());
-//                input_data.setStreamUid(stream->uid());
-////                log_warning("Send empty packet: " << input_data);
-//                try_to(sendOutputData(input_data));
-//            }
-//            return Code::END_OF_FILE;
-////            return sendOutputData(input_data);
-//        }
-//        auto packet_stream = stream(input_data.raw().stream_index);
-////        return_if(not_inited_ptr(packet_stream), Code::INVALID_INPUT);
-//        return_if(not_inited_ptr(packet_stream), Code::AGAIN);
-//        input_data.setType(packet_stream->type());
-//        input_data.setStreamUid(packet_stream->uid());
-//        if (inited_int(_artificial_delay)) { utils::sleep_for(_artificial_delay); } //todo
-//        return sendOutputData(input_data);
-//    }
 
     void Source::parseInputFormat() {
         // ? TODO зачем это?

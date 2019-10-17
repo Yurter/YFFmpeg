@@ -5,9 +5,10 @@
 namespace fpp {
 
     using Message = std::pair<LogLevel,std::string>;
-    using MessageQueue = AsyncQueue<Message>;
+//    using MessageQueue = AsyncQueue<Message>;
 
-    class Logger : public Thread {
+    class Logger : public Thread
+            , public AsyncQueue<Message> {
 
     public:
 
@@ -30,14 +31,14 @@ namespace fpp {
 
         virtual Code        run() override;
         void                flush();
-        std::string         formatMessage(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message);
-        bool                ignoreMessage(LogLevel message_log_level);
+        std::string         format_message(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message);
+        bool                ignore_message(LogLevel message_log_level);
         static void         log_callback(void* ptr, int level, const char* fmt, va_list vl);
         static LogLevel     convertLogLevel(int ffmpeg_level);
 
     private:
 
-        MessageQueue*       _messages;
+//        MessageQueue*       _messages;
         LogLevel            _log_level;
 
     };
