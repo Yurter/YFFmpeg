@@ -329,42 +329,75 @@ namespace fpp {
         return fabs(a - b) < FLOAT_EPSILON;
     }
 
-    int utils::save_frame_as_jpeg(AVCodecContext *pCodecCtx, AVFrame *pFrame, int FrameNo) {
-//        AVCodec *jpegCodec = avcodec_find_encoder(AV_CODEC_ID_JPEG2000);
-//        if (!jpegCodec) {
-//            return -1;
-//        }
-//        AVCodecContext *jpegContext = avcodec_alloc_context3(jpegCodec);
-//        if (!jpegContext) {
-//            return -1;
-//        }
+    int utils::save_frame_as_jpeg(AVCodecContext* pCodecCtx, AVFrame* pFrame, int FrameNo) {
+        AVCodec *jpegCodec = avcodec_find_encoder(AV_CODEC_ID_JPEG2000);
+        if (!jpegCodec) {
+            return -1;
+        }
+        AVCodecContext *jpegContext = avcodec_alloc_context3(jpegCodec);
+        if (!jpegContext) {
+            return -1;
+        }
 
-//        jpegContext->pix_fmt = pCodecCtx->pix_fmt;
-//        jpegContext->height = pFrame->height;
-//        jpegContext->width = pFrame->width;
+        jpegContext->pix_fmt = pCodecCtx->pix_fmt;
+        jpegContext->height = pFrame->height;
+        jpegContext->width = pFrame->width;
 
-//        if (avcodec_open2(jpegContext, jpegCodec, NULL) < 0) {
-//            return -1;
-//        }
-//        FILE *JPEGFile;
-//        char JPEGFName[256];
+        if (avcodec_open2(jpegContext, jpegCodec, NULL) < 0) {
+            return -1;
+        }
+        FILE *JPEGFile;
+        char JPEGFName[256];
 
 //        AVPacket packet = {.data = NULL, .size = 0};
-//        av_init_packet(&packet);
-//        int gotFrame;
+        AVPacket packet;
+        packet.data = NULL;
+        packet.size = 0;
+        av_init_packet(&packet);
+        int gotFrame;
 
-//        if (avcodec_encode_video2(jpegContext, &packet, pFrame, &gotFrame) < 0) {
-//            return -1;
-//        }
+        if (avcodec_encode_video2(jpegContext, &packet, pFrame, &gotFrame) < 0) {
+            return -1;
+        }
 
-//        sprintf(JPEGFName, "dvr-%06d.jpg", FrameNo);
-//        JPEGFile = fopen(JPEGFName, "wb");
-//        fwrite(packet.data, 1, packet.size, JPEGFile);
-//        fclose(JPEGFile);
+        sprintf(JPEGFName, "dvr-%06d.jpg", FrameNo);
+        JPEGFile = fopen(JPEGFName, "wb");
+        fwrite(packet.data, 1, packet.size, JPEGFile);
+        fclose(JPEGFile);
 
-//        av_free_packet(&packet);
-//        avcodec_close(jpegContext);
+        av_free_packet(&packet);
+        avcodec_close(jpegContext);
         return 0;
+    }
+
+    void utils::SaveAvFrame(AVFrame *avFrame)
+    {
+        FILE *fDump = fopen("frame_yuv.jpg", "ab");
+
+        uint32_t pitchY = avFrame->linesize[0];
+        uint32_t pitchU = avFrame->linesize[1];
+        uint32_t pitchV = avFrame->linesize[2];
+
+        uint8_t *avY = avFrame->data[0];
+        uint8_t *avU = avFrame->data[1];
+        uint8_t *avV = avFrame->data[2];
+
+        for (uint32_t i = 0; i < avFrame->height; i++) {
+            fwrite(avY, avFrame->width, 1, fDump);
+            avY += pitchY;
+        }
+
+        for (uint32_t i = 0; i < avFrame->height/2; i++) {
+            fwrite(avU, avFrame->width/2, 1, fDump);
+            avU += pitchU;
+        }
+
+        for (uint32_t i = 0; i < avFrame->height/2; i++) {
+            fwrite(avV, avFrame->width/2, 1, fDump);
+            avV += pitchV;
+        }
+
+        fclose(fDump);
     }
 
 } // namespace fpp

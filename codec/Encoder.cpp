@@ -15,6 +15,9 @@ namespace fpp {
         int ret;
         if ((ret = avcodec_send_frame(_codec_context, input_data.raw())) != 0) {
             log_error(input_data);
+//            utils::save_frame_as_jpeg(_codec_context, input_data.raw(), 0);
+            log_error("Pxl_fmt: " << input_data.raw()->format << " cc: " << _codec_context->pix_fmt);
+            utils::SaveAvFrame(input_data.raw());
             log_error("Could not send frame " << ret);
             return Code::ERR;
         }

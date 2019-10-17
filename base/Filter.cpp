@@ -119,9 +119,23 @@ namespace fpp {
                 return Code::FFMPEG_ERROR;
             Frame output_data(filt_frame);
             output_data.setType(MEDIA_TYPE_VIDEO);
-            output_data.raw()->linesize[0] = input_data.raw()->linesize[0];
-            output_data.raw()->linesize[1] = input_data.raw()->linesize[1];
-            output_data.raw()->linesize[2] = input_data.raw()->linesize[2];
+            log_warning("In"
+                    << " px: " << input_data.raw()->format
+                    << " " << input_data.raw()->linesize[0]
+                    << " " << input_data.raw()->linesize[1]
+                    << " " << input_data.raw()->linesize[2]
+                    << " " << input_data.raw()->linesize[3]
+                       );
+            log_warning("Out"
+                    << " px: " << input_data.raw()->format
+                    << " " << output_data.raw()->linesize[0]
+                    << " " << output_data.raw()->linesize[1]
+                    << " " << output_data.raw()->linesize[2]
+                    << " " << output_data.raw()->linesize[3]
+                       );
+            output_data.raw()->linesize[0] = input_data.raw()->linesize[0];// ? input_data.raw()->linesize[0] : 0;
+            output_data.raw()->linesize[1] = input_data.raw()->linesize[1] ? input_data.raw()->linesize[1] : 0;
+//            output_data.raw()->linesize[2] = input_data.raw()->linesize[2] ? input_data.raw()->linesize[2] : 0;
             log_debug("Sending... " << output_data);
             try_to(sendOutputData(output_data));
         }

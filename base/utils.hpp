@@ -63,7 +63,8 @@ namespace fpp {
 
         static bool         compareFloat(float a, float b);
 
-        static int          save_frame_as_jpeg(AVCodecContext *pCodecCtx, AVFrame *pFrame, int FrameNo);
+        static int          save_frame_as_jpeg(AVCodecContext* pCodecCtx, AVFrame* pFrame, int FrameNo);
+        static void SaveAvFrame(AVFrame *avFrame);
 
     };
 

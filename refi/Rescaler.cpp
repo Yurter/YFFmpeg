@@ -23,6 +23,16 @@ namespace fpp {
                     , int(output_params->width()), int(output_params->height()), output_params->pixelFormat()
                     , SWS_BICUBIC, nullptr, nullptr, nullptr);
         return_if(not_inited_ptr(_rescaler_context), Code::ERR);
+        log_info("Inited from"
+                 << " [" << input_params->width()
+                 << "x" << input_params->height()
+                 << ", " << av_get_pix_fmt_name(input_params->pixelFormat())
+                 << "] to"
+                 << " [" << output_params->width()
+                 << "x" << output_params->height()
+                 << ", " << av_get_pix_fmt_name(output_params->pixelFormat())
+                 << "]"
+                 );
         return Code::OK;
     }
 
