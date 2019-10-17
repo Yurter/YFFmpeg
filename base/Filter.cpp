@@ -38,7 +38,7 @@ namespace fpp {
                 time_base.num, time_base.den,
                 out_params->aspectRatio().num, out_params->aspectRatio().den);
 
-        log_debug("args: " << args);
+//        log_debug("args: " << args);
 
         ret = avfilter_graph_create_filter(&_buffersrc_ctx, buffersrc, "in",
                                            args, nullptr, _filter_graph);
@@ -47,6 +47,8 @@ namespace fpp {
             return Code::FFMPEG_ERROR;
         }
 
+        log_info("Filter in inited with args: " << args);
+
         /* buffer video sink: to terminate the filter chain. */
         ret = avfilter_graph_create_filter(&_buffersink_ctx, buffersink, "out",
                                            nullptr, nullptr, _filter_graph);
@@ -54,6 +56,9 @@ namespace fpp {
             av_log(nullptr, AV_LOG_ERROR, "Cannot create buffer sink\n");
             return Code::FFMPEG_ERROR;
         }
+
+        snprintf(args, sizeof(args), "NULL");
+        log_info("Filter out inited with args: " << args);
 
         ret = av_opt_set_int_list(_buffersink_ctx, "pix_fmts", pix_fmts,
                                   AV_PIX_FMT_NONE, AV_OPT_SEARCH_CHILDREN);
@@ -90,8 +95,11 @@ namespace fpp {
         inputs->next       = nullptr;
 
         if ((ret = avfilter_graph_parse_ptr(_filter_graph, _filters_descr.c_str(),
-                                        &inputs, &outputs, nullptr)) < 0)
+                                            &inputs, &outputs, nullptr)) < 0) {
             return Code::FFMPEG_ERROR;
+        }
+
+        log_info("Filter description: " << _filters_descr);
 
         if ((ret = avfilter_graph_config(_filter_graph, nullptr)) < 0)
             return Code::FFMPEG_ERROR;
