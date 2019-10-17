@@ -125,14 +125,14 @@ namespace fpp {
 #define current_thread_id() std::this_thread::get_id()
 
 /* ? */
-#define try_to(x) { auto ret = x;\
-                    if (utils::exit_code(ret)) {\
-                        log_error("Function " << (#x)\
-                        << " failed with code: " << ret\
-                        << " - " << utils::code_to_string(ret));\
-                        return ret;\
-                    }\
-                  } SEMICOLON_REQUIREMENT
+#define try_to(x)   do { auto ret = x;\
+                        if (utils::exit_code(ret)) {\
+                            log_error("Function " << (#x)\
+                            << " failed with code: " << ret\
+                            << " - " << utils::code_to_string(ret));\
+                            return ret;\
+                        }\
+                    } while (false)
 
 /* ? */ // В случае ошибки не возвращать ее код, а выбрасывать исключение (ex. в деструкторах); добавить параметр - текст ошибки
 //#define try_and_throw(x,msg) { auto ret = x;\
@@ -149,7 +149,6 @@ namespace fpp {
 // Возрат кода и отправка сообщения в лог, сответствующий коду
 
 /* ? */
-//#define return_if(cond,ret_value) { if (cond) { return ret_value; } } SEMICOLON_REQUIREMENT
 #define return_if(cond,ret_value)   do {\
                                         if (cond) {\
                                             return ret_value;\
@@ -157,7 +156,6 @@ namespace fpp {
                                     } while(false)
 
 /* ? */
-//#define return_if_not(cond,ret_value) { if (!(cond)) { return ret_value; } } SEMICOLON_REQUIREMENT
 #define return_if_not(cond,ret_value)   do {\
                                             if (!(cond)) {\
                                                 return ret_value;\
@@ -178,9 +176,6 @@ namespace fpp {
 /* ? */
 //#define TAB                     "\t"
 #define TAB                     "  "
-
-/* ? */
-#define SEMICOLON_REQUIREMENT   void(0)
 
 /* ? */
 #define EMPTY_CONSTRUCTOR
