@@ -29,6 +29,18 @@ namespace fpp {
         std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
     }
 
+    void utils::sleep_for_ms(int64_t milliseconds) {
+        sleep_for(milliseconds);
+    }
+
+    void utils::sleep_for_sec(int64_t seconds) {
+        sleep_for_ms(seconds * 1'000);
+    }
+
+    void utils::sleep_for_min(int64_t minutes) {
+        sleep_for_sec(minutes * 60);
+    }
+
     bool utils::exit_code(Code code) {
         if (code == Code::ERR)             { return true; }
         if (code == Code::EXCEPTION)       { return true; }
@@ -376,7 +388,7 @@ namespace fpp {
 
     void utils::SaveAvFrame(AVFrame *avFrame)
     {
-        FILE *fDump = fopen("frame_yuv.jpg", "ab");
+        FILE *fDump = fopen("frame_yuv", "ab");
 
         uint32_t pitchY = avFrame->linesize[0];
         uint32_t pitchU = avFrame->linesize[1];

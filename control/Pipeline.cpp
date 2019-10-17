@@ -79,10 +79,11 @@ namespace fpp {
 
     Code Pipeline::run() {
         bool all_processor_stopped = true;
+        log_info("");
         for (auto&& processor : _data_processors) {
             auto thread_processor = static_cast<Thread*>(processor);
             if (thread_processor->running() /*&& !thread_processor->is("YMap")*/) {
-//                log_info(thread_processor->name());
+                log_info(thread_processor->name());
 //                if (thread_processor->is("Decoder flv")) {
 //                    log_info(dynamic_cast<AsyncQueue<Packet>*>(thread_processor));
 //                }
@@ -252,7 +253,8 @@ namespace fpp {
 
                 if (video_filter_required) {
 //                    std::string filters_descr = "select='not(mod(n,10))',setpts=N/FRAME_RATE/TB";
-                    std::string filters_descr = "setpts=N/(10*TB)";
+//                    std::string filters_descr = "setpts=N/(10*TB)";
+                    std::string filters_descr = "select='not(mod(n,10))";
                     VideoFilter* video_filter = new VideoFilter(in_out_streams, filters_descr);
                     sequence.push_back(video_filter);
                     addElement(video_filter);

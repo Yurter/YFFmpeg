@@ -29,7 +29,12 @@ namespace fpp {
         static std::string  media_type_to_string(MediaType media_type);
         static std::string  pts_to_string(int64_t pts);
         static std::string  bool_to_string(bool value);
+
         static void         sleep_for(int64_t milliseconds);
+        static void         sleep_for_ms(int64_t milliseconds);
+        static void         sleep_for_sec(int64_t seconds);
+        static void         sleep_for_min(int64_t minutes);
+
         static bool         exit_code(Code code);
         static bool         error_code(Code code);
         static std::string  code_to_string(Code code);

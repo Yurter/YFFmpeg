@@ -84,6 +84,7 @@ namespace fpp {
     }
 
     Code YMap::checkInputs() {
+        return_if_not(empty(), Code::OK);
         bool all_stream_dead = true;
         for (auto&& [in_stream, out_stream] : _stream_map) {
             if (in_stream->used()) {

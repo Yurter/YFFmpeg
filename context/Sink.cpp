@@ -54,9 +54,12 @@ namespace fpp {
         case Timelapse: {
             /* Video */
             auto video_parameters = new VideoParameters;
-            video_parameters->setWidth(1920);
-            video_parameters->setHeight(1080);
-            video_parameters->setAspectRatio({ 16, 9 });
+//            video_parameters->setWidth(1920);
+//            video_parameters->setHeight(1080);
+            video_parameters->setWidth(300);
+            video_parameters->setHeight(300);
+//            video_parameters->setAspectRatio({ 16, 9 });
+            video_parameters->setAspectRatio({ 1, 1 });
             video_parameters->setFrameRate(24); //TODO
             video_parameters->setBitrate(400'000);
             video_parameters->setCodec("libx264", CodecType::Encoder);
@@ -179,6 +182,7 @@ namespace fpp {
     }
 
     Code Sink::processInputData(Packet& input_data) {
+        log_debug("Got packet: " << input_data);
         if (input_data.isVideo()) { //Debug if
             try_to(stream(input_data.streamIndex())->stampPacket(input_data));
         }
