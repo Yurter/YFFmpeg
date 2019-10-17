@@ -43,6 +43,7 @@ namespace fpp {
 
     bool utils::exit_code(Code code) {
         if (code == Code::ERR)             { return true; }
+        if (code == Code::EXIT)            { return true; }
         if (code == Code::EXCEPTION)       { return true; }
         if (code == Code::NOT_INITED)      { return true; }
         if (code == Code::END_OF_FILE)     { return true; }
@@ -61,12 +62,13 @@ namespace fpp {
     }
 
     std::string utils::code_to_string(Code code) {
-        if (code == Code::OK)              { return "OK";              }
-        if (code == Code::ERR)             { return "Error";           }
-        if (code == Code::AGAIN)           { return "Again";           }
-        if (code == Code::NOT_INITED)      { return "Not inited";      }
-        if (code == Code::END_OF_FILE)     { return "EOF";             }
-        if (code == Code::INVALID_INPUT)   { return "Invalid input";   }
+        if (code == Code::OK)               { return "OK";              }
+        if (code == Code::ERR)              { return "Error";           }
+        if (code == Code::EXIT)             { return "Exit";            }
+        if (code == Code::AGAIN)            { return "Again";           }
+        if (code == Code::NOT_INITED)       { return "Not inited";      }
+        if (code == Code::END_OF_FILE)      { return "EOF";             }
+        if (code == Code::INVALID_INPUT)    { return "Invalid input";   }
         return "Unknown error code: " + std::to_string(code);
     }
 

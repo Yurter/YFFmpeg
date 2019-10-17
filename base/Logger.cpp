@@ -25,6 +25,7 @@ namespace fpp {
 
     Code Logger::run() {
         Message message;
+        return_if_not(wait_and_pop(message), Code::EXIT);
         guaranteed_pop(_messages, message);
 
         HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
