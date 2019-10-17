@@ -172,7 +172,7 @@ namespace fpp {
     }
 
     Code Sink::writePacket(Packet& packet) {
-        log_debug(packet);
+//        log_debug(packet);
         if (av_interleaved_write_frame(_format_context, &packet.raw()) < 0) {
     //    if (av_write_frame(_format_context, &packet.raw()) < 0) {
             log_error("Error muxing packet");
@@ -182,7 +182,7 @@ namespace fpp {
     }
 
     Code Sink::processInputData(Packet& input_data) {
-        log_debug("Got packet: " << input_data);
+//        log_debug("Got packet: " << input_data);
         if (input_data.isVideo()) { //Debug if
             try_to(stream(input_data.streamIndex())->stampPacket(input_data));
         }

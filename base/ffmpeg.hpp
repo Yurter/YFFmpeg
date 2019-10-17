@@ -34,7 +34,7 @@ namespace fpp {
         Memory,
         /* Output */
         YouTube,
-        Timelapse
+        Timelapse,
     };
 
     /* Коды результата выполнения некоторых функций */
@@ -43,13 +43,12 @@ namespace fpp {
         ERR,
         EXIT,
         AGAIN,
+        EXCEPTION,
         NOT_INITED,
         END_OF_FILE,
+        FFMPEG_ERROR,
         INVALID_INPUT,
         INVALID_CALL_ORDER,
-        FFMPEG_ERROR,
-        EXCEPTION
-        //TODO код возрата без ошибки, что-то типа варнинга
     };
 
     /* Опции для Pipeline */
@@ -63,7 +62,7 @@ namespace fpp {
     /* ? */
     enum class CodecType { //TODO конфликт имён
         Decoder,
-        Encoder
+        Encoder,
     };
 
     /* Медиа тип потока/пакета/фрейма */
@@ -86,7 +85,9 @@ namespace fpp {
         /* Стандартная информация */
         Info,
         /* Сообщения, используемые при отладке кода */
-        Debug
+        Debug,
+        /* Чрезвычайно подробный лог, полезный при разработке fpp */
+        Trace,
     };
 
 } // namespace fpp

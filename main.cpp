@@ -32,8 +32,8 @@ int main() {
     //    std::string mrl_dst = "camera_sound.aac";
 
         auto source = new Source(mrl_src);
-//        auto sink = new Sink(mrl_dst);
-        auto sink = new Sink(mrl_dst, MediaPreset::Timelapse);
+        auto sink = new Sink(mrl_dst);
+//        auto sink = new Sink(mrl_dst, MediaPreset::Timelapse);
 
         std::thread([source]() {
 //            utils::sleep_for(20'000);
