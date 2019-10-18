@@ -4,7 +4,6 @@
 
 //namespace fpp {
 
-
 //    template <typename Type>
 //    class Data : public MediaData {
 
