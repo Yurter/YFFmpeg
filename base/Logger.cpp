@@ -9,7 +9,6 @@
 namespace fpp {
 
     Logger::Logger() :
-//        _messages(new MessageQueue),
         _log_level(LogLevel::Info)
     {
         setName("Logger");
@@ -20,13 +19,11 @@ namespace fpp {
     Logger::~Logger() {
         flush();
         av_log_set_callback(nullptr);
-//        delete _messages;
     }
 
     Code Logger::run() {
         Message message;
         return_if_not(wait_and_pop(message), Code::EXIT);
-//        guaranteed_pop(_messages, message);
 
         HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -59,15 +56,6 @@ namespace fpp {
             run();
         }
     }
-//    void Logger::flush() {
-//        if (!_messages->empty()) {
-//            /* Прекращение получения новых сообщений */
-//            setLogLevel(LogLevel::Quiet);
-//            do {
-//                run();
-//            } while (!_messages->empty());
-//        }
-//    }
 
     std::string Logger::format_message(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
         std::string header;

@@ -1,5 +1,6 @@
 #include "Frame.hpp"
 #include "utils.hpp"
+#include <atomic>
 
 namespace fpp {
 
@@ -16,6 +17,10 @@ namespace fpp {
         setName("Frame");
     //    _data = frame;
         if (not_inited_ptr(_data)) { alloc(); }
+
+        static std::atomic_int memory_leak = 0;
+        memory_leak += sizeof (*_data);
+        log_warning("Allocated: " << memory_leak);
     //    if (_data == nullptr) { alloc(); }
     }
 
