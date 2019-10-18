@@ -87,9 +87,9 @@ namespace fpp {
         return_if_not(inited(), Code::NOT_INITED);
         _output_format = _format_context->oformat; //TODO оператор "болтается в воздухе"
         try_to(openContext());
-        _io_thread = Thread(std::bind(&Sink::write, this));
-        _io_thread.setName("IOThread");
-        _io_thread.start();
+//        _io_thread = Thread(std::bind(&Sink::write, this));
+//        _io_thread.setName("IOThread");
+//        _io_thread.start();
         setInited(true);
         return Code::OK;
     }
@@ -167,9 +167,9 @@ namespace fpp {
         }
     }
 
-    Code Sink::write() {
-        return Code::OK;
-    }
+//    Code Sink::write() {
+//        return Code::OK;
+//    }
 
     Code Sink::writePacket(Packet& packet) {
 //        log_debug(packet);
@@ -178,6 +178,7 @@ namespace fpp {
             log_error("Error muxing packet");
             return Code::ERR;
         }
+        av_packet_unref(&packet.raw()); //memfix
         return Code::OK;
     }
 

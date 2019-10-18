@@ -14,13 +14,13 @@ namespace fpp {
         output_data.setType(_stream->type());
         int ret;
 //        log_warning("Send frame: " << input_data);
-        log_warning(_codec_context->pix_fmt << ":" << input_data.raw()->format);
-        utils::SaveAvFrame(input_data.raw());
+//        log_warning(_codec_context->pix_fmt << ":" << input_data.raw()->format);
+//        utils::SaveAvFrame(input_data.raw());
         if ((ret = avcodec_send_frame(_codec_context, input_data.raw())) != 0) {
             log_error(input_data);
 //            utils::save_frame_as_jpeg(_codec_context, input_data.raw(), 0);
             log_error("Pxl_fmt: " << input_data.raw()->format << " cc: " << _codec_context->pix_fmt);
-            utils::SaveAvFrame(input_data.raw());
+//            utils::SaveAvFrame(input_data.raw());
             log_error("Could not send frame " << ret);
             return Code::ERR;
         }
@@ -28,10 +28,10 @@ namespace fpp {
 //            log_warning("avcodec_receive_packet failed");
             return Code::AGAIN;
         }
-        input_data.free(); //TODO
+        input_data.free(); //memfix
         output_data.setStreamIndex(_stream->parameters->streamIndex());
         output_data.setStreamUid(_stream->uid());
-        log_debug("Sending... " << output_data);
+//        log_debug("Sending... " << output_data);
         return sendOutputData(output_data);
     }
 

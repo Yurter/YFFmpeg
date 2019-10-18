@@ -1,4 +1,3 @@
-#include <iostream>
 #include "fpp.hpp"
 
 using namespace std;
@@ -20,8 +19,8 @@ int main() {
 //        std::string mrl_src = "camera_video_10.flv";
 //        std::string mrl_src = "big_buck_bunny.mp4";
 //        std::string mrl_src = "Walking.mp4";
-//        std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
-        std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
+        std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
+//        std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
 
     //    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/2qqv-7ttx-xhk0-az48";
     //    std::string mrl_dst = "remuxed.flv";
@@ -32,8 +31,8 @@ int main() {
     //    std::string mrl_dst = "camera_sound.aac";
 
         auto source = new Source(mrl_src);
-        auto sink = new Sink(mrl_dst);
-//        auto sink = new Sink(mrl_dst, MediaPreset::Timelapse);
+//        auto sink = new Sink(mrl_dst);
+        auto sink = new Sink(mrl_dst, MediaPreset::Timelapse);
 
         std::thread([source]() {
 //            utils::sleep_for(20'000);
@@ -48,7 +47,6 @@ int main() {
         pipeline.addElement(sink);
 
         if (auto ret = pipeline.start(); ret != Code::OK) {
-//            cout << "[main] Pipeline start failed: " << ret << " - " << utils::code_to_string(ret) << endl;
             static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
         }
         pipeline.join();

@@ -24,7 +24,7 @@ namespace fpp {
         virtual Code        createContext() override;
         virtual Code        openContext() override;
 
-        Code                write();
+//        Code                write();
 
         Code                writePacket(Packet& packet);
 
