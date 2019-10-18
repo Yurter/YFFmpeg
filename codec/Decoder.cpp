@@ -16,6 +16,7 @@ namespace fpp {
                           << ", height: " << _codec_context->height);
                 return Code::ERR;
             }
+            av_packet_unref(&input_data.raw());
         }
         Frame output_data;
         int ret = avcodec_receive_frame(_codec_context, output_data.raw());

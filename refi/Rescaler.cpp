@@ -52,7 +52,7 @@ namespace fpp {
 
         sws_scale(_rescaler_context
                     , input_data.raw()->data, input_data.raw()->linesize, 0
-                  , input_data.raw()->height, converted_frame->data, converted_frame->linesize);
+                    , input_data.raw()->height, converted_frame->data, converted_frame->linesize);
 
         av_frame_copy_props(converted_frame, input_data.raw());
 
@@ -60,6 +60,7 @@ namespace fpp {
         output_data.setType(MEDIA_TYPE_VIDEO);
 //        log_info("Input: " << input_data);
 //        log_info("Output: " << output_data);
+        input_data.free();
         return sendOutputData(output_data);
     }
 

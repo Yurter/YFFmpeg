@@ -24,11 +24,11 @@ namespace fpp {
             log_error("Could not send frame " << ret);
             return Code::ERR;
         }
+        input_data.free(); //memfix
         if ((ret = avcodec_receive_packet(_codec_context, &output_data.raw())) != 0) {
 //            log_warning("avcodec_receive_packet failed");
             return Code::AGAIN;
         }
-        input_data.free(); //memfix
         output_data.setStreamIndex(_stream->parameters->streamIndex());
         output_data.setStreamUid(_stream->uid());
 //        log_debug("Sending... " << output_data);

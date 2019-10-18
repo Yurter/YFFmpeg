@@ -145,6 +145,7 @@ namespace fpp {
             output_data.raw()->linesize[0] = input_data.raw()->linesize[0];
             output_data.raw()->linesize[1] = input_data.raw()->linesize[1];
             output_data.raw()->linesize[2] = input_data.raw()->linesize[2];
+            input_data.free();
 //            log_debug("Sending... " << output_data);
             try_to(sendOutputData(output_data));
         }

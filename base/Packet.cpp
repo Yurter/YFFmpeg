@@ -12,7 +12,7 @@ namespace fpp {
 
     Packet::~Packet() {
         // TODO ffmpeg ф-ии на отчистку
-        //avpacket_unref(&m_raw);
+//        av_packet_unref(&_data);
     }
 
     Code Packet::init() {
