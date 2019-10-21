@@ -62,7 +62,12 @@ namespace fpp {
         /* Определение локального индекса выходного потока */
         int64_t out_stream_index = INVALID_INT;
         try {
-            out_stream_index = _index_map.at(input_data.streamUid());
+//            out_stream_index = _index_map.at(input_data.streamUid());
+            auto result = _index_map.equal_range(input_data.streamUid());
+
+            for (auto it = result.first; it != result.second; it++) {
+                std::cout << it->second << std::endl;333
+            }
         } catch (std::out_of_range) {
             log_error("First try failed: " << input_data);
             return Code::INVALID_INPUT;

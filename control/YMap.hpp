@@ -12,9 +12,9 @@ namespace fpp {
     /* Таблица соответствий входного и выходного потоков */
     using StreamMap = std::multimap<Stream*,Stream*>;
     /* Таблица соответствий uid входного потока и локального индекса выходного потока */
-    using IndexMap = std::/*multi*/map<int64_t,int64_t>;
+    using IndexMap = std::multimap<int64_t,int64_t>;
     /* Таблица соответствий uid входного потока и указателя на первый в последовательности обработчик пакета */
-    using PacketMap = std::/*multi*/map<int64_t,PacketProcessor*>;
+    using PacketMap = std::multimap<int64_t,PacketProcessor*>;
 
     class YMap : public DataProcessor<Packet,Packet> {
 
