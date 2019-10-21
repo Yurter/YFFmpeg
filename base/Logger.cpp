@@ -17,6 +17,7 @@ namespace fpp {
     }
 
     Logger::~Logger() {
+        print_info("Clsoed.");
         flush();
         av_log_set_callback(nullptr);
     }

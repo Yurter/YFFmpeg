@@ -35,6 +35,7 @@ namespace fpp {
                  << "(" << output_params->pixelFormat() << ")"
                  << "]"
                  );
+        setInited(true);
         return Code::OK;
     }
 

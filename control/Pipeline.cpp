@@ -79,14 +79,11 @@ namespace fpp {
 
     Code Pipeline::run() {
         bool all_processor_stopped = true;
-//        log_info("");
         for (auto&& processor : _data_processors) {
             auto thread_processor = static_cast<Thread*>(processor);
-            if (thread_processor->running() /*&& !thread_processor->is("YMap")*/) {
-//                log_info(thread_processor->name());
-//                if (thread_processor->is("Decoder flv")) {
-//                    log_info(dynamic_cast<AsyncQueue<Packet>*>(thread_processor));
-//                }
+            return_if(utils::error_code(thread_processor->exitCode())
+                      , thread_processor->exitCode());
+            if (thread_processor->running()) {
                 all_processor_stopped = false;
 //                break;
             }
@@ -415,7 +412,8 @@ namespace fpp {
                         << " stream");
             log_info("Creating " << utils::media_type_to_string(media_type) << " stream in every sink...");
             for (auto&& sink : sinks()) {
-                if (sink->preset() == MediaPreset::Auto) {
+                if ((sink->preset() == MediaPreset::Auto)
+                        && (sink->ignoreType(media_type) == false)) {
                     try_to(sink->createStream(best_stream->parameters));
                     log_info("Created "
                              << utils::media_type_to_string(media_type)

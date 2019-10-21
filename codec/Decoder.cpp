@@ -9,13 +9,23 @@ namespace fpp {
 
     Code Decoder::processInputData(Packet& input_data) {
         if (!input_data.empty()) {
-            if (avcodec_send_packet(_codec_context, &input_data.raw()) != 0) {
-//                log_error("Could not send packet");
-                log_error("Could not send packet: " << input_data);
+//            if (input_data.raw().dts < 0) {
+//                input_data.raw().dts = 0;
+//            }
+            if (int ret = avcodec_send_packet(_codec_context, &input_data.raw()); ret != 0) {
+                char errstr[1024];
+                av_strerror(ret, errstr, 1024);
+                log_error("Could not send packet: " << errstr << " " << input_data);
                 log_error("Codeec_context's width: " << _codec_context->width
                           << ", height: " << _codec_context->height);
                 return Code::ERR;
             }
+//            if (avcodec_send_packet(_codec_context, &input_data.raw()) != 0) {
+//                log_error("Could not send packet: " << input_data);
+//                log_error("Codeec_context's width: " << _codec_context->width
+//                          << ", height: " << _codec_context->height);
+//                return Code::ERR;
+//            }
             av_packet_unref(&input_data.raw());
         }
         Frame output_data;
@@ -23,7 +33,6 @@ namespace fpp {
         switch (ret) {
         case 0:
             output_data.setType(input_data.type());
-//            log_warning("Sending: " << output_data);
             return sendOutputData(output_data);
         case AVERROR(EAGAIN):
             return Code::AGAIN;
