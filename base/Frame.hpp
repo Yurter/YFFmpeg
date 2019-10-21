@@ -9,14 +9,18 @@ namespace fpp {
     public:
 
         Frame();
+        Frame(const Frame& other);
+        Frame(const Frame&& other);
         Frame(AVFrame* frame);
         virtual ~Frame() override;
+
+        Frame& operator=(const Frame&& other);
 
         bool                alloc();
         void                free();
 
         bool                empty() const;
-        Code                init() override;
+        virtual Code        init() override;
         virtual std::string toString() const override;
 
     };

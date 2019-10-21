@@ -23,8 +23,7 @@ namespace fpp {
         switch (ret) {
         case 0:
             output_data.setType(input_data.type());
-    //        log_error("decoded: " << output_data.toString());
-    //        output_data.setStreamIndex(input_data.streamIndex());
+//            log_warning("Sending: " << output_data);
             return sendOutputData(output_data);
         case AVERROR(EAGAIN):
             return Code::AGAIN;

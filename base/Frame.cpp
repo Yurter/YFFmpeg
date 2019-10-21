@@ -10,6 +10,21 @@ namespace fpp {
         EMPTY_CONSTRUCTOR
     }
 
+    Frame::Frame(const Frame& other) {
+        setName("Frame");
+        if (not_inited_ptr(_data)) {
+            alloc();
+        }
+        av_frame_ref(_data, other._data);
+        setType(other.type());
+        setInited(true);
+//        log_error("Copy constructor " << other.toString());
+    }
+
+    Frame::Frame(const Frame&& other) {
+        log_error("MOVE FRAME");
+    }
+
     Frame::Frame(AVFrame *frame) :
         Data<AVFrame*>(frame)//,
     //    _stream_index(INVALID_INT)
@@ -18,9 +33,9 @@ namespace fpp {
     //    _data = frame;
         if (not_inited_ptr(_data)) { alloc(); }
 
-        static std::atomic_int memory_leak = 0;
-        memory_leak += sizeof (*_data);
-        log_warning("Allocated: " << memory_leak);
+//        static std::atomic_int memory_leak = 0;
+//        memory_leak += sizeof (*_data);
+//        log_warning("Allocated: " << memory_leak);
     //    if (_data == nullptr) { alloc(); }
     }
 
@@ -29,7 +44,17 @@ namespace fpp {
         // TODO ffmpeg ф-ии на отчистку
     //    if (_data != nullptr) {
     //        av_frame_free(&_data);
-    //    }
+        //    }
+    }
+
+    Frame& Frame::operator=(const Frame&& other) {
+        if (not_inited_ptr(_data)) {
+            alloc();
+        }
+        av_frame_ref(_data, other._data);
+        setType(other.type());
+        setInited(true);
+        return *this;
     }
 
     bool Frame::alloc() //TODO

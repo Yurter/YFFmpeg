@@ -114,7 +114,8 @@ namespace fpp {
         }
 
         void pop_and_notify(Type& data) {
-            data = _queue.front();
+//            data = _queue.front();
+            data = Type(_queue.front());
             _queue.pop();
             _condition_variable_popped.notify_one();
         }
