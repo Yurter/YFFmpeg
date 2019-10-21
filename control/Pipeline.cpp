@@ -338,7 +338,8 @@ namespace fpp {
         }
 
         /* Вывод информации о последовательностях обработки потоков */
-        dump_str += "\nProcessing sequences:";
+//        dump_str += "\nProcessing sequences:";
+        dump_str += "\nStream mapping:";
         int64_t i = 0;
         std::string delimeter = " -> ";
     //    auto& stream_map = _stream_map->streamMap();

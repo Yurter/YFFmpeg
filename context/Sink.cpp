@@ -145,7 +145,7 @@ namespace fpp {
     Code Sink::openContext() {
         log_info("Destination: \"" << _media_resource_locator << "\" is opening...");
         if (_streams.empty()) {
-            log_error("No streams to mux were specified");
+            log_error("No streams to mux were specified: " << _media_resource_locator);
             return Code::NOT_INITED;
         }
         if (!(_format_context->flags & AVFMT_NOFILE)) {
