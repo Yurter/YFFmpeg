@@ -48,11 +48,11 @@ namespace fpp {
         Code sendOutputData(const outType& output_data, NextProcessor* next_proc = nullptr) {
             auto pointer = inited_ptr(next_proc) ? next_proc : _next_processor;
             return_if(not_inited_ptr(pointer), Code::ERR);
-            if (this->is("Rescaler") || this->is("Decoder h264")) {
-                if (output_data.empty()) {
-                    log_error("Send: " << output_data << " -> " << output_data.empty());
-                }
-            }
+//            if (this->is("Rescaler") || this->is("Decoder h264")) {
+//                if (output_data.empty()) {
+//                    log_error("Send: " << output_data << " -> " << output_data.empty());
+//                }
+//            }
 //            log_warning("Send: " << output_data);
 //            if (output_data.empty()) {
 //                log_error("Send empty: " << output_data << " + " << output_data.empty());
@@ -67,14 +67,14 @@ namespace fpp {
             inType input_data;
             return_if_not(wait_and_pop(input_data), Code::EXIT);
 //            log_warning("Poped: " << input_data);
-            if (this->is("Rescaler") || this->is("Decoder h264")) {
-                if (input_data.empty()) {
-                    log_error("Poped: " << input_data << " -> " << input_data.empty());
-                }
-            }
+//            if (this->is("Rescaler") || this->is("Decoder h264")) {
+//                if (input_data.empty()) {
+//                    log_error("Poped: " << input_data << " -> " << input_data.empty());
+//                }
+//            }
             return_if(ignoreType(input_data.type()), Code::AGAIN);
             if (input_data.empty() && !this->is("YMap") && !this->is("Source")) {
-                log_warning("Sending empty data: " << outType());
+//                log_warning("Sending empty data: " << outType());
                 sendOutputData(outType());
                 return Code::END_OF_FILE;
             }

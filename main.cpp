@@ -26,22 +26,30 @@ int main() {
         std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
 //        std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
 
-    //    std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/2qqv-7ttx-xhk0-az48";
+        std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/vtpz-spss-u4eq-4k0e";
     //    std::string mrl_dst = "remuxed.flv";
     //    std::string mrl_dst = "remuxed.avi";
 //        std::string mrl_dst = "filtered_video.mp4";
-         std::string mrl_dst = "result_video.flv";
+//         std::string mrl_dst = "result_video.flv";
 //        std::string mrl_dst = "filtered_video.avi";
     //    std::string mrl_dst = "camera_sound.aac";
 
         auto source = new Source(mrl_src);
 //        auto sink = new Sink(mrl_dst);
-        auto sink = new Sink(mrl_dst, MediaPreset::Timelapse);
+//        auto sink = new Sink(mrl_dst, MediaPreset::Timelapse);
+        auto sink = new Sink(mrl_dst, MediaPreset::YouTube);
 
         std::thread([source]() {
 //            utils::sleep_for(20'000);
 //            utils::sleep_for_min(5);
-            utils::sleep_for_sec(60);
+//            utils::sleep_for_sec(60);
+            int step_sec = 2;
+            int delay_sec = 60;
+            for (auto i = 0; i < (delay_sec / step_sec); i++) {
+                utils::sleep_for_sec(step_sec);
+                int proc = int((float((i + 1) * step_sec) / delay_sec) * 100);
+                static_log_info("external_stop", "Progress " << proc << "%");
+            }
             Code ret = source->stop();
             static_log_info("external_stop", "Source stopped: " << ret << " - " << utils::code_to_string(ret));
         }).detach();
