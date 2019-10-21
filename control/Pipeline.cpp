@@ -66,7 +66,6 @@ namespace fpp {
         try_to(openSources());
         try_to(initMap());
         try_to(openSinks());
-        /* try_to(openContext()); */
         try_to(determineSequences());
         try_to(initRefi());
         try_to(initCodec());

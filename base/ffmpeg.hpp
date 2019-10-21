@@ -35,6 +35,7 @@ namespace fpp {
         /* Output */
         YouTube,
         Timelapse,
+        OpenCV,
     };
 
     /* Коды результата выполнения некоторых функций */

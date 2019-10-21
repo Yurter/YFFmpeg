@@ -3,10 +3,6 @@
 using namespace std;
 using namespace fpp;
 
-//void test_foo() {
-//    std::shared_ptr<AVFrame*>
-//}
-
 int main() {
 
     static_log_info("main", "Program started...");
@@ -38,20 +34,21 @@ int main() {
         auto source = new Source(mrl_src);
 //        auto sink = new Sink(mrl_dst);
         auto sink = new Sink(mrl_dst, MediaPreset::Timelapse);
+        auto sink = new Sink("");
 //        sink->ignoreType(MediaType::MEDIA_TYPE_AUDIO);
 //        auto sink = new Sink(mrl_dst, MediaPreset::YouTube);
 
-//        std::thread([source]() {
-//            int step_sec = 2;
-//            int delay_sec = 64;
-//            for (auto i = 0; i < (delay_sec / step_sec); i++) {
-//                utils::sleep_for_sec(step_sec);
-//                int proc = int((float((i + 1) * step_sec) / delay_sec) * 100);
-//                static_log_info("external_stop", "Progress " << proc << "%");
-//            }
-//            Code ret = source->stop();
-//            static_log_info("external_stop", "Source stopped: " << ret << " - " << utils::code_to_string(ret));
-//        }).detach();
+        std::thread([source]() {
+            int step_sec = 2;
+            int delay_sec = 64;
+            for (auto i = 0; i < (delay_sec / step_sec); i++) {
+                utils::sleep_for_sec(step_sec);
+                int proc = int((float((i + 1) * step_sec) / delay_sec) * 100);
+                static_log_info("external_stop", "Progress " << proc << "%");
+            }
+            Code ret = source->stop();
+            static_log_info("external_stop", "Source stopped: " << ret << " - " << utils::code_to_string(ret));
+        }).detach();
 
         Pipeline pipeline;
         pipeline.addElement(source);
