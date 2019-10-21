@@ -44,6 +44,8 @@ namespace fpp {
             _codec = codec;
             _codec_id = codec->id;
             _codec_name = codec->name;
+        } else {
+            log_error("Failed codec search");
         }
     }
 
