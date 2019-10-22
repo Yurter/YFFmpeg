@@ -237,7 +237,12 @@ namespace fpp {
                                         || rescaling_required
                                         || resampling_required);
 
-                if (transcoding_required) {
+                bool decoding_required = transcoding_required
+                        && (in_stream->parameters->codecId() != AV_CODEC_ID_NONE);
+                bool encoding_required = transcoding_required
+                        && (out_stream->parameters->codecId() != AV_CODEC_ID_NONE);
+
+                if (decoding_required) {
                     Decoder* decoder = new Decoder(in_stream);
                     sequence.push_back(decoder);
                     addElement(decoder);
@@ -268,7 +273,7 @@ namespace fpp {
                     addElement(resampler);
                 }
 
-                if (transcoding_required) {
+                if (encoding_required) {
                     Encoder* encoder = new Encoder(out_stream);
                     sequence.push_back(encoder);
                     addElement(encoder);
