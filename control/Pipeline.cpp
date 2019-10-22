@@ -84,6 +84,7 @@ namespace fpp {
             return_if(utils::error_code(thread_processor->exitCode())
                       , thread_processor->exitCode());
             if (thread_processor->running()) {
+                log_warning(thread_processor->name());
                 all_processor_stopped = false;
 //                break;
             }

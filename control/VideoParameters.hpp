@@ -23,7 +23,7 @@ namespace fpp {
         float               frameRate()     const;
         AVPixelFormat       pixelFormat()   const;
 
-        std::string         toString() const override;
+        virtual std::string toString() const override;
 
     //    void                softCopy(VideoParameters* other_parametrs);
         VideoParameters&   operator=(const VideoParameters& rhs);

@@ -38,7 +38,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    std::string Stream::toString() const {
+    std::string Stream::toString() const { //TODO дампить параметры
         return_if_not(inited(), "not inited!");
         std::string str = "[" + std::to_string(parameters->contextUid())
                 + ":" + std::to_string(parameters->streamIndex()) + "] "
@@ -50,6 +50,7 @@ namespace fpp {
                     + "pts_delta " + std::to_string(_packet_pts_delta) + ", "
     //              + "time_base " + utils::rational_to_string(timeBase()) + ", "
                     + "time_base " + utils::rational_to_string(parameters->timeBase()) + ", "
+//                    + "FPS " + std::to_string(static_cast<VideoParameters*>(parameters)->frameRate()) + ", "
                     + "duration " + std::to_string(_duration);
         } else {
             str += "not used";

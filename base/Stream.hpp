@@ -44,7 +44,7 @@ namespace fpp {
 
         virtual void        parseParametres();
 
-    protected:
+    protected: //TODO перенести поля в параметры
 
         Object*             _context;
 
@@ -62,9 +62,6 @@ namespace fpp {
 
     };
 
-//    typedef std::list<Stream*>          StreamList;
-//    typedef std::vector<Stream*>        StreamVector;
-//    typedef std::pair<Stream*,Stream*>  StreamPair;
     using StreamList = std::list<Stream*>;
     using StreamVector = std::vector<Stream*>;
     using StreamPair = std::pair<Stream*,Stream*>;

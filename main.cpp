@@ -22,7 +22,7 @@ int main() {
     static_log_info("main", "Program started...");
 
     try {
-        set_log_level(LogLevel::Debug);
+//        set_log_level(LogLevel::Debug);
     //    set_log_level(LogLevel::Quiet);
 
         set_ffmpeg_log_level(LogLevel::Quiet);
@@ -47,19 +47,26 @@ int main() {
 
         auto source = new Source(mrl_src); /* IP Camera */
 
-//        auto sink_event =       new Sink("group_video/event.flv");
-//        auto sink_opencv =      new Sink("OpenCV processing", MediaPreset::OpenCV);
-        auto sink_youtube =     new Sink("group_video/youtube.flv", MediaPreset::YouTube);
-        auto sink_timelapse =   new Sink("group_video/timelapse.flv", MediaPreset::Timelapse);
-//        auto sink_restream =    new Sink("group_video/restream.flv");
 
 
         Pipeline pipeline;
         pipeline.addElement(source);
+
+//        auto sink_event = new Sink("group_video/event.flv");
 //        pipeline.addElement(sink_event);
+
+//        auto sink_opencv = new Sink("OpenCV processing", MediaPreset::OpenCV);
 //        pipeline.addElement(sink_opencv);
+
+//        auto sink_youtube = new Sink("group_video/youtube.flv", MediaPreset::YouTube);
+//        pipeline.addElement(sink_youtube);
+        auto sink_youtube = new Sink("group_video/youtube.flv", MediaPreset::Timelapse);
         pipeline.addElement(sink_youtube);
+
+        auto sink_timelapse = new Sink("group_video/timelapse.flv", MediaPreset::Timelapse);
         pipeline.addElement(sink_timelapse);
+
+//        auto sink_restream = new Sink("group_video/restream.flv");
 //        pipeline.addElement(sink_restream);
 
         start_debug_timeout(source, 65);

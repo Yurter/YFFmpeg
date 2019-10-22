@@ -41,10 +41,6 @@ namespace fpp {
 
     Frame::~Frame() {
         av_frame_unref(_data);
-        // TODO ffmpeg ф-ии на отчистку
-    //    if (_data != nullptr) {
-    //        av_frame_free(&_data);
-        //    }
     }
 
     Frame& Frame::operator=(const Frame&& other) {
