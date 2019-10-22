@@ -12,6 +12,7 @@ namespace fpp {
 
     Packet::Packet(const Packet& other) {
         setName("Packet");
+        setType(other.type());
         setPts(other.pts());
         setDts(other.dts());
         setDuration(other.duration());
@@ -31,6 +32,7 @@ namespace fpp {
 
     Packet& Packet::operator=(const Packet&& other) {
         setName("Packet");
+        setType(other.type());
         setPts(other.pts());
         setDts(other.dts());
         setDuration(other.duration());

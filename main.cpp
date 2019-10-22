@@ -55,8 +55,8 @@ int main() {
 //        auto sink_event = new Sink("group_video/event.flv");
 //        pipeline.addElement(sink_event);
 
-//        auto sink_opencv = new Sink("OpenCV processing", MediaPreset::OpenCV);
-//        pipeline.addElement(sink_opencv);
+        auto sink_opencv = new Sink("OpenCV processing", MediaPreset::OpenCV);
+        pipeline.addElement(sink_opencv);
 
 //        auto sink_youtube = new Sink("group_video/youtube.flv", MediaPreset::YouTube);
 //        pipeline.addElement(sink_youtube);

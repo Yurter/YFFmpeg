@@ -33,6 +33,9 @@ namespace fpp {
         switch (ret) {
         case 0:
             output_data.setType(input_data.type());
+            if (output_data.empty()) {
+                log_error("Sending empty frame: " << output_data);
+            }
             return sendOutputData(output_data);
         case AVERROR(EAGAIN):
             return Code::AGAIN;
