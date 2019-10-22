@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Data.hpp"
 
 namespace fpp {

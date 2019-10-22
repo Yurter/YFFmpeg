@@ -3,7 +3,7 @@
 
 namespace fpp {
 
-    Sink::Sink(const std::string& mrl, MediaPreset preset) :
+    Sink::Sink(const std::string& mrl, IOType preset) :
         Context(mrl, preset),
         _output_format(nullptr)
     {

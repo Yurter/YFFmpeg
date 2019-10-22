@@ -2,7 +2,7 @@
 
 namespace fpp {
 
-    Context::Context(const std::string& mrl, MediaPreset preset) :
+    Context::Context(const std::string& mrl, IOType preset) :
         _uid(utils::gen_context_uid()),
 //        _uid(INVALID_INT),
         _media_resource_locator(mrl),
@@ -42,7 +42,7 @@ namespace fpp {
         _opened = opened;
     }
 
-    MediaPreset Context::preset() const {
+    IOType Context::preset() const {
         return _preset;
     }
 

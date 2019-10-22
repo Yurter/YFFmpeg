@@ -7,7 +7,7 @@ namespace fpp {
 
     public:
 
-        Sink(const std::string& mrl, MediaPreset preset = MediaPreset::Auto);
+        Sink(const std::string& mrl, IOType preset = IOType::Auto);
         virtual ~Sink() override;
 
         virtual Code        init() override;

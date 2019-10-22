@@ -418,7 +418,7 @@ namespace fpp {
                         << " stream");
             log_info("Creating " << utils::media_type_to_string(media_type) << " stream in every sink...");
             for (auto&& sink : sinks()) {
-                if ((sink->preset() == MediaPreset::Auto)
+                if ((sink->preset() == IOType::Auto)
                         && (sink->ignoreType(media_type) == false)) {
                     try_to(sink->createStream(best_stream->parameters));
                     log_info("Created "

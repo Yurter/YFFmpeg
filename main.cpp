@@ -55,15 +55,15 @@ int main() {
 //        auto sink_event = new Sink("group_video/event.flv");
 //        pipeline.addElement(sink_event);
 
-        auto sink_opencv = new Sink("OpenCV processing", MediaPreset::OpenCV);
+        auto sink_opencv = new Sink("OpenCV processing", IOType::OpenCV);
         pipeline.addElement(sink_opencv);
 
-//        auto sink_youtube = new Sink("group_video/youtube.flv", MediaPreset::YouTube);
+//        auto sink_youtube = new Sink("group_video/youtube.flv", IOType::YouTube);
 //        pipeline.addElement(sink_youtube);
-        auto sink_youtube = new Sink("group_video/youtube.flv", MediaPreset::Timelapse);
+        auto sink_youtube = new Sink("group_video/youtube.flv", IOType::Timelapse);
         pipeline.addElement(sink_youtube);
 
-        auto sink_timelapse = new Sink("group_video/timelapse.flv", MediaPreset::Timelapse);
+        auto sink_timelapse = new Sink("group_video/timelapse.flv", IOType::Timelapse);
         pipeline.addElement(sink_timelapse);
 
 //        auto sink_restream = new Sink("group_video/restream.flv");

@@ -27,12 +27,11 @@ namespace fpp {
 
     /* Варианты для быстрой преднастройки */
     /* параметров медиа-контекстов        */
-    enum MediaPreset {
+    enum IOType {
         Auto,
         Raw,
         /* Input */
         Virtual,
-        Memory,
         /* Output */
         YouTube,
         Timelapse,

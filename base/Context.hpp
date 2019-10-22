@@ -9,7 +9,7 @@ namespace fpp {
 
     public:
 
-        Context(const std::string& mrl, MediaPreset preset = MediaPreset::Auto); ///< mrl - media resource locator.
+        Context(const std::string& mrl, IOType preset = IOType::Auto); ///< mrl - media resource locator.
         Context(const Context& other)  = delete;
         Context(const Context&& other) = delete;
         virtual ~Context() override;
@@ -21,7 +21,7 @@ namespace fpp {
 
         void                setOpened(bool opened);                     ///< ...
 
-        MediaPreset         preset() const;
+        IOType         preset() const;
 
         Code                createStream(Stream* new_stream);           ///< Функция создает поток к текущем контексте.
         Code                createStream(Parameters* param);            ///< Функция создает поток к текущем контексте.
@@ -67,7 +67,7 @@ namespace fpp {
         bool                _reopening_after_failure;
         int64_t             _reopening_timeout;
         int64_t             _artificial_delay;
-        MediaPreset         _preset;
+        IOType         _preset;
 
         // FFmpeg
         AVFormatContext*	_format_context;

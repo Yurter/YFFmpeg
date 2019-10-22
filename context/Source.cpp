@@ -2,7 +2,7 @@
 
 namespace fpp {
 
-    Source::Source(const std::string& mrl, MediaPreset preset) :
+    Source::Source(const std::string& mrl, IOType preset) :
         Context(mrl, preset)
         , _input_format(nullptr)
 //        , _eof_flag(false)
