@@ -72,6 +72,7 @@ namespace fpp {
         try_to(startProcesors());
         dump();
         setInited(true);
+        log_warning(_map->toString());
         log_info("Processing started...");
         return Code::OK;
     }
@@ -301,7 +302,7 @@ namespace fpp {
             auto it = sequence.begin();
             std::advance(it, 2);
             auto first_packet_processor = *it;
-            _map->setRoute(in_stream, dynamic_cast<PacketProcessor*>(first_packet_processor));
+            try_to(_map->setRoute(in_stream, dynamic_cast<PacketProcessor*>(first_packet_processor)));
             _processor_sequences.push_back(sequence);
         }
 
@@ -325,7 +326,6 @@ namespace fpp {
          * |    Stream #0:1: Audio: aac, 44100 Hz, stereo, 128 kb/s
         */
         for (auto&& context : contexts()) {
-//            dump_str += "\n" + context->toString();
             dump_str += "\n";
             dump_str += TAB;
             dump_str += context->toString();
@@ -337,14 +337,14 @@ namespace fpp {
             }
         }
 
-        /* Вывод информации о последовательностях обработки потоков */
-//        dump_str += "\nProcessing sequences:";
+        /* Вывод информации о последовательностях обработки потоков
+         * |  #1 Source[0:1] -> Decoder pcm_mulaw -> Resampler -> Encoder aac -> Sink[1:1]
+         * |  #0 Source[0:0] -> Decoder flv -> Rescaler -> VideoFilter -> Encoder libx264 -> Sink[1:0]
+        */
         dump_str += "\nStream mapping:";
         int64_t i = 0;
         std::string delimeter = " -> ";
-    //    auto& stream_map = _stream_map->streamMap();
-        //TODO
-        // #1 Source[0:1] -> Decoder pcm_mulaw -> Resampler -> Encoder aac -> Sink[1:1]
+        auto stream_map = _map->streamMap();
         for (auto&& sequence : _processor_sequences) {
             dump_str += "\n";
             dump_str += TAB;

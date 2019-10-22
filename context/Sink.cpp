@@ -65,8 +65,8 @@ namespace fpp {
             video_parameters->setBitrate(400'000);
             video_parameters->setCodec("libx264", CodecType::Encoder);
             video_parameters->setTimeBase({ 1, 1000 });
-//            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
-            video_parameters->setPixelFormat(AV_PIX_FMT_BGR24);
+            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
+//            video_parameters->setPixelFormat(AV_PIX_FMT_BGR24);
             video_parameters->setContextUid(uid());
             try_to(createStream(video_parameters));
             break;

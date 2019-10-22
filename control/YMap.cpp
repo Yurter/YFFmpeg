@@ -53,40 +53,71 @@ namespace fpp {
 
     Code YMap::setRoute(Stream* src_stream, PacketProcessor* next_processor) {
         return_if(invalid_int(src_stream->uid()), Code::INVALID_INPUT);
-        _packet_map.insert({src_stream->uid(), next_processor});
+        _packet_map.insert({ src_stream->uid(), next_processor });
         setInited(true);
         return Code::OK;
     }
 
     Code YMap::processInputData(Packet& input_data) {
-        /* Определение локального индекса выходного потока */
-        int64_t out_stream_index = INVALID_INT;
         try {
-//            out_stream_index = _index_map.at(input_data.streamUid());
-            auto result = _index_map.equal_range(input_data.streamUid());
+            auto out_index_list = _index_map.equal_range(input_data.streamUid());
+            return_if(out_index_list.first == _index_map.end(), Code::INVALID_INPUT);
 
-            for (auto it = result.first; it != result.second; it++) {
-                std::cout << it->second << std::endl;333
+            for (auto it = out_index_list.first; it != out_index_list.second; it++) {
+                /* Определение локального индекса выходного потока */
+                int64_t out_stream_index = it->second;
+
+                /* Определение следующего обработчика пакета */
+                auto next_proc_list = _packet_map.equal_range(input_data.streamUid());
+                return_if(next_proc_list.first == _packet_map.end(), Code::INVALID_INPUT);
+
+                for (auto it2 = next_proc_list.first; it2 != next_proc_list.second; it2++) {
+                    NextProcessor* next_proc = it2->second;
+
+                    /* Инициализаця индекса потока и отправка пакета */
+                    input_data.setStreamIndex(out_stream_index);
+                    try_to(sendOutputData(input_data, next_proc));
+                }
             }
         } catch (std::out_of_range) {
             log_error("First try failed: " << input_data);
             return Code::INVALID_INPUT;
         }
 
-        /* Определение первого обработчика пакета */
-        NextProcessor* next_proc = nullptr;
-        try {
-            next_proc = _packet_map.at(input_data.streamUid());
-        } catch (std::out_of_range) {
-            log_error("Second try failed");
-            return Code::INVALID_INPUT;
-        }
-
-        /* Инициализаця индекса потока и отправка пакета */
-        input_data.setStreamIndex(out_stream_index);
-        try_to(sendOutputData(input_data, next_proc));
         return checkInputs();
     }
+
+//    Code YMap::processInputData(Packet& input_data) {
+//        /* Определение локального индекса выходного потока */
+//        int64_t out_stream_index = INVALID_INT;
+//        try {
+////            out_stream_index = _index_map.at(input_data.streamUid());
+//            auto result = _index_map.equal_range(input_data.streamUid());
+
+//            for (auto&& )
+
+//            for (auto it = result.first; it != result.second; it++) {
+//                std::cout << it->second << std::endl;333
+//            }
+//        } catch (std::out_of_range) {
+//            log_error("First try failed: " << input_data);
+//            return Code::INVALID_INPUT;
+//        }
+
+//        /* Определение первого обработчика пакета */
+//        NextProcessor* next_proc = nullptr;
+//        try {
+//            next_proc = _packet_map.at(input_data.streamUid());
+//        } catch (std::out_of_range) {
+//            log_error("Second try failed");
+//            return Code::INVALID_INPUT;
+//        }
+
+//        /* Инициализаця индекса потока и отправка пакета */
+//        input_data.setStreamIndex(out_stream_index);
+//        try_to(sendOutputData(input_data, next_proc));
+//        return checkInputs();
+//    }
 
     Code YMap::checkInputs() {
         return_if_not(empty(), Code::OK);

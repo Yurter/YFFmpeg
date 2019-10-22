@@ -29,9 +29,9 @@ int main() {
 //        set_ffmpeg_log_level(LogLevel::Debug);
 
         /* Запись rtsp с камеры в flv/YouTube */
-         std::string mrl_src = "camera_one_hour_realtime.flv";
+//         std::string mrl_src = "camera_one_hour_realtime.flv";
 //        std::string mrl_src = "camera_video_10.flv";
-//        std::string mrl_src = "camera_video.flv";
+        std::string mrl_src = "camera_video.flv";
 //        std::string mrl_src = "big_buck_bunny.mp4";
 //        std::string mrl_src = "Walking.mp4"; /* Не работает декодер! */
 //        std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
@@ -49,7 +49,7 @@ int main() {
 
 //        auto sink_event =       new Sink("group_video/event.flv");
 //        auto sink_opencv =      new Sink("OpenCV processing", MediaPreset::OpenCV);
-//        auto sink_youtube =     new Sink("group_video/youtube.flv", MediaPreset::YouTube);
+        auto sink_youtube =     new Sink("group_video/youtube.flv", MediaPreset::YouTube);
         auto sink_timelapse =   new Sink("group_video/timelapse.flv", MediaPreset::Timelapse);
 //        auto sink_restream =    new Sink("group_video/restream.flv");
 
@@ -58,7 +58,7 @@ int main() {
         pipeline.addElement(source);
 //        pipeline.addElement(sink_event);
 //        pipeline.addElement(sink_opencv);
-//        pipeline.addElement(sink_youtube);
+        pipeline.addElement(sink_youtube);
         pipeline.addElement(sink_timelapse);
 //        pipeline.addElement(sink_restream);
 
