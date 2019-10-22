@@ -24,7 +24,7 @@ namespace fpp {
     public:
 
         Pipeline(); //TODO hwaccel flag_enum|set_method
-        ~Pipeline() override;
+        virtual ~Pipeline() override;
 
         bool                stop();                             ///< Функция прерывает работу класса.
         void                pause();                            ///< Функция приостанавливает работу класса.

@@ -29,6 +29,7 @@ namespace fpp {
     /* параметров медиа-контекстов        */
     enum MediaPreset {
         Auto,
+        Raw,
         /* Input */
         Virtual,
         Memory,
