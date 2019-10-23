@@ -23,9 +23,12 @@ namespace fpp {
         void                setDiscardType(MediaType type);
         bool                discardType(MediaType type) const;
 
-    private:
+    protected:
 
         const Processor*    _next_processor;
+
+    private:
+
         int64_t             _skip_types;
         int64_t             _discard_types;
 

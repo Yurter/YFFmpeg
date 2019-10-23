@@ -13,7 +13,6 @@ SOURCES += \
     base/Logger.cpp \
     base/MediaData.cpp \
     base/Object.cpp \
-    base/P2PProcessor.cpp \
     base/PacketProcessror.cpp \
     base/PacketProducer.cpp \
     base/Processor.cpp \
@@ -21,8 +20,8 @@ SOURCES += \
     base/Thread.cpp \
     codec/Decoder.cpp \
     codec/Encoder.cpp \
-    context/RawSink.cpp \
-    context/RawSource.cpp \
+    context/FrameSource.cpp \
+    context/PacketSource.cpp \
     context/Sink.cpp \
     context/Source.cpp \
     control/AudioParameters.cpp \
@@ -61,7 +60,6 @@ HEADERS += \
     base/Logger.hpp \
     base/MediaData.hpp \
     base/Object.hpp \
-    base/P2PProcessor.hpp \
     base/Processor.hpp \
     base/Refi.hpp \
     base/Stream.hpp \
@@ -69,8 +67,8 @@ HEADERS += \
     base/utils.hpp \
     codec/Decoder.hpp \
     codec/Encoder.hpp \
-    context/RawSink.hpp \
-    context/RawSource.hpp \
+    context/FrameSource.hpp \
+    context/PacketSource.hpp \
     context/Sink.hpp \
     context/Source.hpp \
     control/AudioParameters.hpp \

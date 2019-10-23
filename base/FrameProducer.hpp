@@ -5,7 +5,7 @@
 
 namespace fpp {
 
-    class FrameProducer : public TemplateProcessor<Packet, Frame> {
+    class FrameProducer : public TemplateProcessor<Packet,Frame> {
 
     public:
 

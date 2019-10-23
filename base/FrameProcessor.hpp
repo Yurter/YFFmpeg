@@ -6,7 +6,7 @@
 
 namespace fpp {
 
-    class FrameProcessor : public TemplateProcessor<Frame, Frame> {
+    class FrameProcessor : public TemplateProcessor<Frame,Frame> {
 
     public:
 

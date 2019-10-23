@@ -4,16 +4,15 @@
 #include "AsyncQueue.hpp"
 #include "Processor.hpp"
 
-//TODO создать родительский нешаблонный класс и от наследовать PacketProcessor и FrameProcessor и тд
-//                                                  пакет-пакет, фрейм-фрейм, пакет-фрейм, фрейм-пакет
-//              объекдинение (декодера и энкодера); (ресемплера, рескейлера, аудио- и видео-фильтров ?)
-
 namespace fpp {
 
     template <class inType, class outType>
     class TemplateProcessor : public Processor {
 
     public:
+
+        using InputFunction = std::function<inType()>;
+        using OutputFunction = std::function<outType()>;
 
         TemplateProcessor()
         {
@@ -22,25 +21,26 @@ namespace fpp {
 
         virtual ~TemplateProcessor() = default;
 
-
-
     protected:
 
-        virtual Code processInputData(inType& input_data) = 0;
+        virtual Code processInputData(const inType& input_data) = 0;
 
-        Code sendOutputData(const outType& output_data, NextProcessor* next_proc = nullptr) {
+        Code setInputFunction(const InputFunction input_function) {
+            return_if(_input_function, Code::ERR);
+            return_if(_output_function, Code::ERR);
+            _input_function = input_function;
+        }
+
+        Code setOutputFunction(const OutputFunction output_function) {
+            return_if(_input_function, Code::ERR);
+            return_if(_output_function, Code::ERR);
+            _output_function = output_function;
+        }
+
+        Code sendOutputData(const outType& output_data, const Processor* next_proc = nullptr) {
             auto pointer = inited_ptr(next_proc) ? next_proc : _next_processor;
             return_if(not_inited_ptr(pointer), Code::ERR);
-//            if (this->is("Rescaler") || this->is("Decoder h264")) {
-//                if (output_data.empty()) {
-//                    log_error("Send: " << output_data << " -> " << output_data.empty());
-//                }
-//            }
-//            log_warning("Send: " << output_data);
-            if (output_data.empty()) {
-                log_error("Send empty: " << output_data << " + " << output_data.empty());
-            }
-            return_if_not(pointer->wait_and_push(output_data), Code::EXIT);
+            return_if_not(pointer->push(output_data), Code::EXIT);
             return Code::OK;
         }
 
@@ -49,20 +49,21 @@ namespace fpp {
         virtual Code run() override final {
             inType input_data;
             return_if_not(wait_and_pop(input_data), Code::EXIT);
-//            log_warning("Poped: " << input_data);
-//            if (this->is("Rescaler") || this->is("Decoder h264")) {
-                if (input_data.empty()) {
-                    log_error("Poped: " << input_data << " -> " << input_data.empty());
-                }
-//            }
             return_if(ignoreType(input_data.type()), Code::AGAIN);
-            if (input_data.empty() && !this->is("YMap") && !this->is("Source")) {
-//                log_warning("Sending empty data: " << outType());
+            if (input_data.empty() && !this->is("YMap") && !this->is("Source")) { //Source тоже?
                 sendOutputData(outType());
                 return Code::END_OF_FILE;
             }
             return processInputData(input_data);
         }
+
+    private:
+
+        AsyncQueue<inType>  _input_queue;
+
+        InputFunction       _input_function;
+        OutputFunction      _output_function;
+        Thread              _io_thread;
 
     };
 
