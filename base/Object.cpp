@@ -22,7 +22,7 @@ namespace fpp {
     }
 
     Code Object::init() {
-        return Code::OK;
+        return Code::NOT_IMPLEMENTED;
     }
 
     void Object::setInited(bool inited) {
@@ -39,7 +39,8 @@ namespace fpp {
     }
 
     Object::operator std::string() const {
-        return Object::toString();
+//        return Object::toString();
+        return toString();
     }
 
 } // namespace fpp

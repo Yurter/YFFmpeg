@@ -1,8 +1,8 @@
 #pragma once
-
 #include "utils.hpp"
 #include "Thread.hpp"
 #include "AsyncQueue.hpp"
+#include "Processor.hpp"
 
 //TODO создать родительский нешаблонный класс и от наследовать PacketProcessor и FrameProcessor и тд
 //                                                  пакет-пакет, фрейм-фрейм, пакет-фрейм, фрейм-пакет
@@ -11,35 +11,18 @@
 namespace fpp {
 
     template <class inType, class outType>
-    class DataProcessor : public Thread
-                            , public AsyncQueue<inType> {
+    class TemplateProcessor : public Processor {
 
     public:
 
-        using NextProcessor = AsyncQueue<outType>;
-
-        DataProcessor() :
-            _next_processor(nullptr),
-            _skip_types(0),
-            _ignore_types(0)
+        TemplateProcessor()
         {
-            setName("DataProcessor");
+            setName("TemplateProcessor");
         }
 
-        virtual ~DataProcessor() = default;
+        virtual ~TemplateProcessor() = default;
 
-        Code connectOutputTo(Object* next_processor) {
-            auto ptr = dynamic_cast<NextProcessor*>(next_processor);
-            return_if(not_inited_ptr(ptr), Code::INVALID_INPUT);
-            _next_processor = ptr;
-            return Code::OK;
-        }
 
-        void    setSkipType(MediaType type) { _skip_types |= type; }
-        bool    skipType(MediaType type) { return _skip_types & type; }
-
-        void    setIgnoreType(MediaType type) { _ignore_types |= type; }
-        bool    ignoreType(MediaType type) { return _ignore_types &= type; }
 
     protected:
 
@@ -80,12 +63,6 @@ namespace fpp {
             }
             return processInputData(input_data);
         }
-
-    private:
-
-        NextProcessor*      _next_processor;
-        int64_t             _skip_types;
-        int64_t             _ignore_types;
 
     };
 

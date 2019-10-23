@@ -49,6 +49,7 @@ namespace fpp {
         END_OF_FILE,
         FFMPEG_ERROR,
         INVALID_INPUT,
+        NOT_IMPLEMENTED,
         INVALID_CALL_ORDER,
     };
 

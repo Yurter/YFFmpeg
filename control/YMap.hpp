@@ -1,6 +1,6 @@
 #pragma once
 #include "base/Packet.hpp"
-#include "base/DataProcessor.hpp"
+#include "base/TemplateProcessor.hpp"
 #include "../context/Source.hpp"
 #include "../context/Sink.hpp"
 #include <map>
@@ -16,7 +16,7 @@ namespace fpp {
     /* Таблица соответствий uid входного потока и указателя на первый в последовательности обработчик пакета */
     using PacketMap = std::multimap<int64_t,PacketProcessor*>;
 
-    class YMap : public DataProcessor<Packet,Packet> {
+    class YMap : public TemplateProcessor<Packet,Packet> {
 
     public:
 

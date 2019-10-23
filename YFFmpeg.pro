@@ -1,5 +1,4 @@
 TEMPLATE = app
-#TEMPLATE = lib
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
@@ -10,9 +9,14 @@ SOURCES += \
     base/Exception.cpp \
     base/Filter.cpp \
     base/FrameProcessor.cpp \
+    base/FrameProducer.cpp \
     base/Logger.cpp \
     base/MediaData.cpp \
     base/Object.cpp \
+    base/P2PProcessor.cpp \
+    base/PacketProcessror.cpp \
+    base/PacketProducer.cpp \
+    base/Processor.cpp \
     base/Refi.cpp \
     base/Thread.cpp \
     codec/Decoder.cpp \
@@ -46,13 +50,19 @@ HEADERS += \
     base/Codec.hpp \
     base/Context.hpp \
     base/Data.hpp \
-    base/DataProcessor.hpp \
+    base/FrameProducer.hpp \
+    base/PacketProcessor.hpp \
+    base/PacketProducer.hpp \
+    base/TemplateProcessor.hpp \
+    base/TemplateProcessor.hpp \
     base/Exception.hpp \
     base/Filter.hpp \
     base/FrameProcessor.hpp \
     base/Logger.hpp \
     base/MediaData.hpp \
     base/Object.hpp \
+    base/P2PProcessor.hpp \
+    base/Processor.hpp \
     base/Refi.hpp \
     base/Stream.hpp \
     base/Thread.hpp \
@@ -83,19 +93,20 @@ HEADERS += \
     refi/Rescaler.hpp \
     refi/VideoFilter.hpp
 
+#FFmpeg
 #-- Home --
 INCLUDEPATH += G:\dev\FFmpeg\ffmpeg-4.1.1-win64-dev\include
 LIBS += -LG:\dev\FFmpeg\ffmpeg-4.1.1-win64-dev\lib
 
-#-- Office 1 --
-INCLUDEPATH += D:\dev\00_ffmpeg\ffmpeg-4.1.1-win64-dev\include
-LIBS += -LD:\dev\00_ffmpeg\ffmpeg-4.1.1-win64-dev\lib
-
-#-- Office 2 --
+#-- Office --
 INCLUDEPATH += D:\dev\00_ffmpeg\ffmpeg-4.1.3-win64-dev\include
 LIBS += -LD:\dev\00_ffmpeg\ffmpeg-4.1.3-win64-dev\lib
 
 LIBS += -lavcodec -lavformat -lavutil -lswscale -lavdevice -lavfilter -lpostproc -lswresample
 
-#QMAKE_CXXFLAGS_DEBUG += -pg
-#QMAKE_LFLAGS_DEBUG += -pg
+#OpenCV
+INCLUDEPATH += D:\dev\00_opencv\410\build\include
+LIBS += -LD:\dev\00_opencv\410\build\x64\vc15\lib
+LIBS += -LD:\dev\00_opencv\410\build\x64\vc15\bin
+LIBS += -lopencv_world410
+

@@ -1,11 +1,11 @@
 #pragma once
-#include "DataProcessor.hpp"
+#include "TemplateProcessor.hpp"
 #include "../control/VideoStream.hpp"
 #include "../control/AudioStream.hpp"
 
 namespace fpp {
 
-    class Context : public DataProcessor<Packet, Packet> {
+    class Context : public TemplateProcessor<Packet, Packet> {
 
     public:
 

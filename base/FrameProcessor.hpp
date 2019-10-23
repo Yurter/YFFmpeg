@@ -1,12 +1,12 @@
 #pragma once
-#include "DataProcessor.hpp"
+#include "TemplateProcessor.hpp"
 #include "Frame.hpp"
 #include "../control/VideoStream.hpp"
 #include "../control/AudioStream.hpp"
 
 namespace fpp {
 
-    class FrameProcessor : public DataProcessor<Frame, Frame> {
+    class FrameProcessor : public TemplateProcessor<Frame, Frame> {
 
     public:
 

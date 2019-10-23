@@ -1,5 +1,5 @@
 #pragma once
-#include "DataProcessor.hpp"
+#include "TemplateProcessor.hpp"
 #include "../base/Stream.hpp"
 #include "../base/Frame.hpp"
 #include "../base/Packet.hpp"
@@ -7,7 +7,7 @@
 namespace fpp {
 
     template <class inType, class outType>
-    class Codec : public DataProcessor<inType,outType> {
+    class Codec : public TemplateProcessor<inType,outType> {
 
     public:
 

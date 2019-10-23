@@ -1,11 +1,11 @@
 #pragma once
-#include "DataProcessor.hpp"
+#include "TemplateProcessor.hpp"
 #include "Frame.hpp"
 #include "Stream.hpp"
 
 namespace fpp {
 
-    class Refi : public DataProcessor<Frame,Frame> {
+    class Refi : public TemplateProcessor<Frame,Frame> {
 
     public:
 
