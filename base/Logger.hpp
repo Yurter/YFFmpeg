@@ -1,6 +1,6 @@
 #pragma once
-#include "AsyncQueue.hpp"
-#include "Thread.hpp"
+#include "core/AsyncQueue.hpp"
+#include "core/Thread.hpp"
 
 namespace fpp {
 

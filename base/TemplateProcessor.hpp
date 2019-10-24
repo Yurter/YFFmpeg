@@ -1,7 +1,7 @@
 #pragma once
-#include "utils.hpp"
-#include "Thread.hpp"
-#include "AsyncQueue.hpp"
+#include "core/utils.hpp"
+#include "core/Thread.hpp"
+#include "core/AsyncQueue.hpp"
 #include "Processor.hpp"
 
 namespace fpp {

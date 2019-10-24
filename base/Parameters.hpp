@@ -34,10 +34,6 @@ namespace fpp {
         virtual void        softCopy(Parameters* other_parametrs);
         Parameters&         operator=(const Parameters& rhs);
 
-//        friend unsigned long long operator "" _k(unsigned long long units) {
-//            return units * 1'000;
-//        }
-
     protected:
 
         AVCodec*            _codec;

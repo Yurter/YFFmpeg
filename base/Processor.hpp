@@ -1,5 +1,5 @@
 #pragma once
-#include "Thread.hpp"
+#include "core/Thread.hpp"
 
 namespace fpp {
 
