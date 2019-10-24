@@ -21,6 +21,10 @@ namespace fpp {
             stopInOutThread();
         }
 
+        bool buferIsEmpty() const {
+            return _input_queue.empty();
+        }
+
     protected:
 
         virtual Code processInputData(inType input_data) = 0;

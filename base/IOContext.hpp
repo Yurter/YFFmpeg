@@ -46,7 +46,7 @@ namespace fpp {
     private:
 
         void                setUid(int64_t uid);                        ///< Функция установки uid контекста, не допускает повторного вызовова.
-        virtual Code        onStop() override;                          ///< Функция ...
+//        virtual Code        onStop() override;                          ///< Функция ...
 
     protected:
 

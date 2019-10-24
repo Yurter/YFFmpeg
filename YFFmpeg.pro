@@ -34,7 +34,6 @@ SOURCES += \
     base/Stream.cpp \
     core/utils.cpp \
     main.cpp \
-    base/Filter.cpp \
     base/Frame.cpp \
     base/Packet.cpp \
     base/Parameters.cpp \

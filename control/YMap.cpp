@@ -51,14 +51,14 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code YMap::setRoute(Stream* src_stream, PacketProcessor* next_processor) {
+    Code YMap::setRoute(Stream* src_stream, Processor* next_processor) {
         return_if(invalid_int(src_stream->uid()), Code::INVALID_INPUT);
         _packet_map.insert({ src_stream->uid(), next_processor });
         setInited(true);
         return Code::OK;
     }
 
-    Code YMap::processInputData(Packet& input_data) {
+    Code YMap::processInputData(Packet input_data) {
         try {
             auto out_index_list = _index_map.equal_range(input_data.streamUid());
             return_if(out_index_list.first == _index_map.end(), Code::INVALID_INPUT);
@@ -72,7 +72,7 @@ namespace fpp {
                 return_if(next_proc_list.first == _packet_map.end(), Code::INVALID_INPUT);
 
                 for (auto it2 = next_proc_list.first; it2 != next_proc_list.second; it2++) {
-                    NextProcessor* next_proc = it2->second;
+                    Processor* next_proc = it2->second;
 
                     /* Инициализаця индекса потока и отправка пакета */
                     input_data.setStreamIndex(out_stream_index);
@@ -120,7 +120,7 @@ namespace fpp {
 //    }
 
     Code YMap::checkInputs() {
-        return_if_not(empty(), Code::OK);
+        return_if_not(buferIsEmpty(), Code::OK);
         bool all_stream_dead = true;
         for (auto&& [in_stream, out_stream] : _stream_map) {
             if (in_stream->used()) {

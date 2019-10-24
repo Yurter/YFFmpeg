@@ -35,8 +35,8 @@ namespace fpp {
 
         // До старта потоков нет возможности указать потоки явно
     //    void                setRoute(Stream* input_stream, Stream* output_stream);            ///< Функция устанавливает соответствие между входным и выходным потоками.
-        void                setRoute(Context* input_context, int64_t input_stream_index
-                                     , Context* output_context, int64_t output_stream_index);
+        void                setRoute(MediaSink* input_context, int64_t input_stream_index
+                                     , MediaSink* output_context, int64_t output_stream_index);
 
         void                dump() const;                       ///< TODO description
 

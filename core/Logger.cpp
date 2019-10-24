@@ -13,7 +13,7 @@ namespace fpp {
     {
         setName("Logger");
 //        av_log_set_callback(log_callback); //TODO later
-        start();
+        try_throw(start());
     }
 
     Logger::~Logger() {

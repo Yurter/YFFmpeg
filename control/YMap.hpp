@@ -14,7 +14,7 @@ namespace fpp {
     /* Таблица соответствий uid входного потока и локального индекса выходного потока */
     using IndexMap = std::multimap<int64_t,int64_t>;
     /* Таблица соответствий uid входного потока и указателя на первый в последовательности обработчик пакета */
-    using PacketMap = std::multimap<int64_t,PacketProcessor*>;
+    using PacketMap = std::multimap<int64_t,Processor*>;
 
     class YMap : public TemplateProcessor<Packet,Packet> {
 
@@ -30,11 +30,11 @@ namespace fpp {
     //    Code               setRoute(Context* input_context, int64_t input_stream_index
     //                                 , Context* output_context, int64_t output_stream_index);
         Code                addRoute(Stream* in_stream, Stream* out_stream);              ///< Связвание входного и выходного потоков.
-        Code                setRoute(Stream* src_stream, PacketProcessor* next_processor); ///< Связывание источника данных с первым обработчиком в последоваельности.
+        Code                setRoute(Stream* src_stream, Processor* next_processor); ///< Связывание источника данных с первым обработчиком в последоваельности.
 
     private:
 
-        virtual Code        processInputData(Packet& input_data) override;
+        virtual Code        processInputData(Packet input_data) override;
 
         Code                checkInputs();
 

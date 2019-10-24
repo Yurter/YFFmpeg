@@ -49,8 +49,8 @@ namespace fpp {
     //}
 
     //TODO
-    void Pipeline::setRoute(Context* input_context, int64_t input_stream_index
-                           , Context* output_context, int64_t output_stream_index) {
+    void Pipeline::setRoute(MediaSink *input_context, int64_t input_stream_index
+                           , MediaSink *output_context, int64_t output_stream_index) {
         _metamap.push_back({{ input_context->uid(), input_stream_index }
                         , { output_context->uid(), output_stream_index }});
     }
