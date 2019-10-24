@@ -4,7 +4,7 @@
 
 namespace fpp {
 
-    class FormatContext /*: public Object*/ {
+    class FormatContext : public Object {
 
     public:
 
@@ -14,6 +14,12 @@ namespace fpp {
         virtual ~FormatContext();
 
         IOType              preset() const;
+
+        Code                open();
+        Code                close();
+
+        bool                opened() const;
+        bool                closed() const;
 
         Code                createStream(Stream* new_stream);           ///< Функция создает поток к текущем контексте.
         Code                createStream(Parameters* param);            ///< Функция создает поток к текущем контексте.
@@ -45,8 +51,9 @@ namespace fpp {
 
     private:
 
+        void                setOpened(bool opened);
+
         void                setUid(int64_t uid);                        ///< Функция установки uid контекста, не допускает повторного вызовова.
-//        virtual Code        onStop() override;                          ///< Функция ...
 
     protected:
 

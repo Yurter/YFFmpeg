@@ -13,20 +13,17 @@ namespace fpp {
         _preset(preset),
         _format_context(nullptr)
     {
-        setName("Context");
-//        setUid(utils::gen_context_uid());
+        setName("FormatContext");
     }
 
     FormatContext::~FormatContext() {
-        close();
+        try_throw(close());
     }
 
     Code FormatContext::close() {
-//        log_debug("closing " << mediaResourceLocator() << " " << closed());
-        return_if(closed(), Code::INVALID_CALL_ORDER);
-    //    _io_thread.quit(); //TODO вызывать в абстрактном класса
+        return_if(closed(), Code::OK);
         avformat_free_context(_format_context);
-        _opened = false;
+        setOpened(false);
         return Code::OK;
     }
 
@@ -46,6 +43,12 @@ namespace fpp {
         return _preset;
     }
 
+    Code FormatContext::open() {
+        return_if(opened(), Code::INVALID_CALL_ORDER);
+        try_to(openContext());
+        return Code::OK;
+    }
+
     Code FormatContext::createStream(Stream* new_stream) {
         try_to(new_stream->init());
         new_stream->setContext(this);
@@ -57,8 +60,6 @@ namespace fpp {
     }
 
     Code FormatContext::createStream(Parameters* param) {
-        auto test1 = _format_context;
-        auto test2 = param->codec();
         auto avstream = avformat_new_stream(_format_context, param->codec());
         return_if(not_inited_ptr(avstream), Code::ERR);
         Stream* new_stream = nullptr;
@@ -86,10 +87,6 @@ namespace fpp {
 
     void FormatContext::setUid(int64_t uid) {
         if (invalid_int(_uid)) { _uid = uid; }
-    }
-
-    Code FormatContext::onStop() {
-        return close();
     }
 
     int64_t FormatContext::uid() const {
