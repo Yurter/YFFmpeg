@@ -173,7 +173,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code MediaSink::writeSourcePacket(Packet output_data) {
+    Code MediaSink::writeOutputData(Packet output_data) {
         if (output_data.isVideo()) { //Debug if
             try_to(stream(output_data.streamIndex())->stampPacket(output_data));
         }

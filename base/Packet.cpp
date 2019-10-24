@@ -30,6 +30,22 @@ namespace fpp {
         //        av_packet_unref(&_data);
     }
 
+    Packet& Packet::operator=(const Packet& other) {
+        setName("Packet");
+        setType(other.type());
+        setPts(other.pts());
+        setDts(other.dts());
+        setDuration(other.duration());
+        setPos(other.pos());
+        setStreamIndex(other.streamIndex());
+        setStreamUid(other.streamUid());
+        if (av_packet_ref(&_data, &other._data) != 0) {
+            log_error("av_packet_ref failed! " << other);
+        }
+        setInited(true);
+        return *this;
+    }
+
     Packet& Packet::operator=(const Packet&& other) {
         setName("Packet");
         setType(other.type());

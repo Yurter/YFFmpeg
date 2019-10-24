@@ -2,7 +2,7 @@
 
 namespace fpp {
 
-    IOContext::IOContext(const std::string& mrl, IOType preset) :
+    IOContext::IOContext(const std::string mrl, IOType preset) :
         _uid(utils::gen_context_uid()),
 //        _uid(INVALID_INT),
         _media_resource_locator(mrl),
@@ -96,7 +96,7 @@ namespace fpp {
         return _uid;
     }
 
-    Code IOContext::    parseFormatContext() {
+    Code IOContext::parseFormatContext() {
         if (_format_context == nullptr) {
             log_error("Format context not inited. Parsing failed");
             return Code::INVALID_INPUT;

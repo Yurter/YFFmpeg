@@ -4,11 +4,14 @@ namespace fpp {
 
     PacketProducer::PacketProducer() {
         setName("PacketProducer");
-        try_throw(setInOutFunction(std::bind(&PacketProducer::readSourcePacket, this)));
+        try_throw(setInOutFunction(std::bind(&PacketProducer::readPacket, this)));
     }
 
-    Code PacketProducer::readSourcePacket() {
-        return readInputData();
+    Code PacketProducer::readPacket() {
+        Packet packet;
+        try_to(readInputData(packet));
+        try_to(sendOutputData(packet, this));
+        return Code::OK;
     }
 
 } // namespace fpp

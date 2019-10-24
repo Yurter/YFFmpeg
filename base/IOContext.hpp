@@ -4,11 +4,11 @@
 
 namespace fpp {
 
-    class IOContext {
+    class IOContext : public Object {
 
     public:
 
-        IOContext(const std::string& mrl, IOType preset = IOType::Auto); ///< mrl - media resource locator.
+        IOContext(const std::string mrl, IOType preset = IOType::Auto); ///< mrl - media resource locator.
         IOContext(const IOContext& other)  = delete;
         IOContext(const IOContext&& other) = delete;
         virtual ~IOContext();

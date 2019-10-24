@@ -38,6 +38,7 @@ namespace fpp {
         static bool         exit_code(Code code);
         static bool         error_code(Code code);
         static std::string  code_to_string(Code code);
+        static std::string  codec_type_to_string(CodecType type);
         static std::string  rational_to_string(AVRational rational);
         static bool         compatibleWithSampleFormat(AVCodecContext* codec_context, AVSampleFormat sample_format);
         static AVMediaType  ymedia_type_to_avmedia_type(MediaType media_type);

@@ -10,7 +10,7 @@ namespace fpp {
         PacketSink();
         virtual ~PacketSink() override;
 
-//        virtual Code writeSourcePacket(Packet output_data) = 0;
+//        Code                writePacket();
 
     };
 

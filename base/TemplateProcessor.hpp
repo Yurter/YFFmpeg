@@ -24,7 +24,7 @@ namespace fpp {
     protected:
 
         virtual Code processInputData(inType input_data) = 0;
-        virtual Code readInputData() { return Code::NOT_IMPLEMENTED; }
+        virtual Code readInputData(inType& input_data) { UNUSED(input_data); return Code::NOT_IMPLEMENTED; }
         virtual Code writeOutputData(outType output_data) { UNUSED(output_data);  return Code::NOT_IMPLEMENTED; }
 
         Code setInOutFunction(const IOFunction io_function) {

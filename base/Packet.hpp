@@ -12,6 +12,7 @@ namespace fpp {
         Packet(const Packet&& other);
         virtual ~Packet() override;
 
+        Packet& operator=(const Packet& other);
         Packet& operator=(const Packet&& other);
 
         virtual Code        init() override;

@@ -20,8 +20,8 @@ namespace fpp {
 
         virtual Code        createContext() override;
         virtual Code        openContext() override;
+        virtual Code        readInputData(Packet& input_data) override;
         virtual Code        processInputData(Packet input_data) override;
-        virtual Code        readInputData() override;
         virtual Code        onStop() override;
 
         Code                guessInputFromat();

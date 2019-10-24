@@ -10,7 +10,9 @@ namespace fpp {
         PacketProducer();
         virtual ~PacketProducer() override;
 
-        Code                readSourcePacket();
+    private:
+
+        Code                readPacket();
 
     };
 

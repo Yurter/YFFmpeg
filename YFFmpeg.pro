@@ -5,6 +5,7 @@ CONFIG -= qt
 CONFIG += c++17
 
 SOURCES += \
+    base/Codec.cpp \
     base/Exception.cpp \
     base/Filter.cpp \
     base/FrameProcessor.cpp \

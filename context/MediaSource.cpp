@@ -7,7 +7,7 @@ namespace fpp {
         , _input_format(nullptr)
     {
         setName("MediaSource");
-        try_throw(setInOutFunction(std::bind(&MediaSource::readSourcePacket, this)));
+//        try_throw(setInOutFunction(std::bind(&MediaSource::readPacket, this)));
     }
 
     MediaSource::~MediaSource() {
@@ -87,6 +87,18 @@ namespace fpp {
         }
     }
 
+    Code MediaSource::readInputData(Packet& input_data) {
+        if (int ret = av_read_frame(mediaFormatContext(), &input_data.raw()); ret != 0) { //TODO parse return value
+            if (ret == AVERROR_EOF) {
+                log_info("Source reading completed");
+                return Code::END_OF_FILE;
+            }
+            log_error("Cannot read source: \"" << _media_resource_locator << "\". Error " << ret);
+            return Code::ERR;
+        }
+        return Code::OK;
+    }
+
     Code MediaSource::processInputData(Packet input_data) {
         if (input_data.empty()) {
             return sendEofPacket();
@@ -100,20 +112,20 @@ namespace fpp {
         return sendOutputData(input_data);
     }
 
-    Code MediaSource::readInputData() {
-        Packet packet;
-        if (int ret = av_read_frame(mediaFormatContext(), &packet.raw()); ret != 0) { //TODO parse return value
-            if (ret == AVERROR_EOF) {
-                log_info("Source reading completed");
-                return_if_not(sendOutputData(Packet(), this), Code::EXIT);
-                return Code::END_OF_FILE;
-            }
-            log_error("Cannot read source: \"" << _media_resource_locator << "\". Error " << ret);
-            return Code::ERR;
-        }
-        return_if_not(sendOutputData(packet, this), Code::EXIT);
-        return Code::OK;
-    }
+//    Code MediaSource::readInputData() {
+//        Packet packet;
+//        if (int ret = av_read_frame(mediaFormatContext(), &packet.raw()); ret != 0) { //TODO parse return value
+//            if (ret == AVERROR_EOF) {
+//                log_info("Source reading completed");
+//                return_if_not(sendOutputData(Packet(), this), Code::EXIT);
+//                return Code::END_OF_FILE;
+//            }
+//            log_error("Cannot read source: \"" << _media_resource_locator << "\". Error " << ret);
+//            return Code::ERR;
+//        }
+//        return_if_not(sendOutputData(packet, this), Code::EXIT);
+//        return Code::OK;
+//    }
 
     Code MediaSource::guessInputFromat() {
         auto shorn_name = utils::guess_format_short_name(_media_resource_locator);

@@ -16,13 +16,12 @@ namespace fpp {
         virtual Code close() override;
         virtual std::string toString() const override;
 
-
     private:
 
         virtual Code        createContext() override;
         virtual Code        openContext() override;
         virtual Code        processInputData(Packet input_data) override;
-        virtual Code        writeSourcePacket(Packet output_data) override;
+        virtual Code        writeOutputData(Packet output_data) override;
         virtual Code        onStop() override;
 
         Code                guessOutputFromat();
