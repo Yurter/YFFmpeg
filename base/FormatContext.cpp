@@ -22,6 +22,7 @@ namespace fpp {
 
     Code FormatContext::close() {
         return_if(closed(), Code::OK);
+        try_to(closeContext());
         avformat_free_context(_format_context);
         setOpened(false);
         return Code::OK;
@@ -97,11 +98,6 @@ namespace fpp {
         if (_format_context == nullptr) {
             log_error("Format context not inited. Parsing failed");
             return Code::INVALID_INPUT;
-        }
-
-        {
-    //        _input_format = _format_context->iformat;
-    //        _output_format = _format_context->oformat;
         }
 
         for (int64_t i = 0; i < _format_context->nb_streams; i++) {

@@ -1,19 +1,19 @@
 #pragma once
 #include "inout/PacketSource.hpp"
-#include "base/FormatContext.hpp"
+#include "base/InputFormatContext.hpp"
 
 namespace fpp {
 
-    class MediaSource : public PacketSource/*, public FormatContext*/ {
+    class MediaSource : public PacketSource {
 
     public:
 
         MediaSource(const std::string mrl, IOType preset = IOType::Auto);
         virtual ~MediaSource() override;
 
-        virtual Code init() override;
-        virtual Code open() override;
-        virtual Code close() override;
+        virtual Code        init() override;
+        virtual Code        open() override;
+        virtual Code        close() override;
         virtual std::string toString() const override;
 
     private:
@@ -22,12 +22,11 @@ namespace fpp {
         virtual Code        processInputData(Packet input_data) override;
         virtual Code        onStop() override;
 
-        Code                guessInputFromat();
         Code                sendEofPacket();
 
     private:
 
-        AVInputFormat*      _input_format; //TODO убрать, обращатся через mediaFormatContext()? IOFormat() ?
+        InputFormatContext  _input_format_context;
 
     };
 

@@ -132,7 +132,7 @@ namespace fpp {
         if (media_resurs_locator.find("aevalsrc") != std::string::npos) {
             return std::string("lavfi");
         }
-        return std::string();
+        return std::string(); //TODO use fmpeg funtion to get format list, нет нельзя: нужно возвращать пустую строку для логики в месте вызова
     }
 
     AVCodec* utils::find_decoder(std::string codec_short_name) {

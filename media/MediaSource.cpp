@@ -3,11 +3,9 @@
 namespace fpp {
 
     MediaSource::MediaSource(const std::string mrl, IOType preset) :
-        FormatContext(mrl, preset)
-        , _input_format(nullptr)
+        _input_format_context(mrl, preset)
     {
         setName("MediaSource");
-//        try_throw(setInOutFunction(std::bind(&MediaSource::readPacket, this)));
     }
 
     MediaSource::~MediaSource() {
@@ -15,54 +13,42 @@ namespace fpp {
     }
 
     Code MediaSource::init() {
-        switch (_preset) {
-        case Auto:
-            break;
-        case Virtual:
-            avdevice_register_all();
-            try_to(guessInputFromat());
-            _artificial_delay = 1024; //TODO: 1024 для аудио, для видео - ? (1000 / frame_rate)
-            break;
-        default:
-            log_error("Invalid preset");
-            break;
-        }
-        try_to(createContext());
+        try_to(_input_format_context.init());
         setInited(true);
         return Code::OK;
     }
 
     Code MediaSource::open() {
         return_if(opened(), Code::INVALID_CALL_ORDER);
-        try_to(openContext());
+        try_to(_input_format_context.open());
         return Code::OK;
     }
 
     Code MediaSource::close() {
+        return_if(closed(), Code::OK);
         try_to(sendEofPacket());
-        return_if(closed(), Code::INVALID_CALL_ORDER);
-        if (_format_context != nullptr) { avformat_close_input(&_format_context); }
-        return_if_not(closed(), Code::ERR);
-        log_info("Source: \"" << _media_resource_locator << "\" closed.");
+        try_to(_input_format_context.close());
+        setOpened(false);
+        log_info("Source: \"" << _input_format_context.mediaResourceLocator() << "\" closed.");
         return Code::OK;
     }
 
     std::string MediaSource::toString() const {
         /* Input #0, rtsp, from 'rtsp://admin:admin@192.168.10.3': */
         std::string str = "Input #"
-                + std::to_string(uid()) + ", "
-                + utils::guess_format_short_name(_media_resource_locator) + ", "
-                + "from '" + _media_resource_locator + "'";
+                + std::to_string(_input_format_context.uid()) + ", "
+                + utils::guess_format_short_name(_input_format_context.mediaResourceLocator()) + ", "
+                + "from '" + _input_format_context.mediaResourceLocator() + "'";
         return str;
     }
 
     Code MediaSource::readInputData(Packet& input_data) {
-        if (int ret = av_read_frame(mediaFormatContext(), &input_data.raw()); ret != 0) { //TODO parse return value
+        if (int ret = av_read_frame(_input_format_context.mediaFormatContext(), &input_data.raw()); ret != 0) { //TODO parse return value
             if (ret == AVERROR_EOF) {
                 log_info("Source reading completed");
                 return Code::END_OF_FILE;
             }
-            log_error("Cannot read source: \"" << _media_resource_locator << "\". Error " << ret);
+            log_error("Cannot read source: \"" << _input_format_context.mediaResourceLocator() << "\". Error " << ret);
             return Code::ERR;
         }
         return Code::OK;
@@ -72,29 +58,23 @@ namespace fpp {
         if (input_data.empty()) {
             return sendEofPacket();
         }
-        auto packet_stream = stream(input_data.raw().stream_index);
+        auto packet_stream = _input_format_context.stream(input_data.raw().stream_index);
         return_if(not_inited_ptr(packet_stream), Code::AGAIN);
         return_if_not(packet_stream->used(), Code::AGAIN);
         input_data.setType(packet_stream->type());
         input_data.setStreamUid(packet_stream->uid());
-        if (inited_int(_artificial_delay)) { utils::sleep_for(_artificial_delay); } //todo
+//        if (inited_int(_artificial_delay)) { utils::sleep_for(_artificial_delay); } //todo НЕ УДАЛЯТЬ
         return sendOutputData(input_data);
     }
 
-    Code MediaSource::guessInputFromat() {
-        auto shorn_name = utils::guess_format_short_name(_media_resource_locator);
-        AVInputFormat* input_format = av_find_input_format(shorn_name.c_str());
-        if (input_format == nullptr) {
-            log_error("Failed guess input format: " << _media_resource_locator);
-            return Code::INVALID_INPUT;
-        }
-        _input_format = input_format;
+    Code MediaSource::onStop() {
+        try_to(close());
         return Code::OK;
     }
 
     Code MediaSource::sendEofPacket() {
         Packet eof_packet;
-        for (auto&& stream : streams()) {
+        for (auto&& stream : _input_format_context.streams()) {
             if (stream->used()) {
                 eof_packet.setType(stream->type());
                 eof_packet.setStreamUid(stream->uid());

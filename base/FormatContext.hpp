@@ -1,6 +1,7 @@
 #pragma once
-#include "../control/VideoStream.hpp"
-#include "../control/AudioStream.hpp"
+#include "control/VideoStream.hpp"
+#include "control/AudioStream.hpp"
+#include "core/utils.hpp"
 
 namespace fpp {
 
@@ -11,7 +12,7 @@ namespace fpp {
         FormatContext(const std::string mrl, IOType preset = IOType::Auto); ///< mrl - media resource locator.
         FormatContext(const FormatContext& other)  = delete;
         FormatContext(const FormatContext&& other) = delete;
-        virtual ~FormatContext();
+        virtual ~FormatContext() override;
 
         IOType              preset() const;
 
@@ -46,6 +47,7 @@ namespace fpp {
 
         virtual Code        createContext() = 0;
         virtual Code        openContext()   = 0;
+        virtual Code        closeContext()   = 0;
 
         Code                parseFormatContext();
 
