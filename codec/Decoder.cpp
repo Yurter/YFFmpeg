@@ -3,15 +3,23 @@
 namespace fpp {
 
     Decoder::Decoder(Stream *stream) :
-        Codec(stream, CodecType::Decoder) {
+        Codec(stream, CodecType::Decoder)
+    {
         setName("Decoder");
     }
 
-    Code Decoder::processInputData(Packet& input_data) {
+    Code Decoder::initParams() {
+        utils::parameters_to_avcodecpar(_stream->parameters, _stream->codecParameters());
+        if (avcodec_parameters_to_context(_codec_context, _stream->codecParameters()) < 0) {
+            log_error("avcodec_parameters_to_context failed");
+            return Code::ERR;
+        }
+        utils::parameters_to_context(_stream->parameters, _codec_context);
+        return Code::OK;
+    }
+
+    Code Decoder::processInputData(Packet input_data) {
         if (!input_data.empty()) {
-//            if (input_data.raw().dts < 0) {
-//                input_data.raw().dts = 0;
-//            }
             if (int ret = avcodec_send_packet(_codec_context, &input_data.raw()); ret != 0) {
                 char errstr[1024];
                 av_strerror(ret, errstr, 1024);
@@ -20,12 +28,6 @@ namespace fpp {
                           << ", height: " << _codec_context->height);
                 return Code::ERR;
             }
-//            if (avcodec_send_packet(_codec_context, &input_data.raw()) != 0) {
-//                log_error("Could not send packet: " << input_data);
-//                log_error("Codeec_context's width: " << _codec_context->width
-//                          << ", height: " << _codec_context->height);
-//                return Code::ERR;
-//            }
             av_packet_unref(&input_data.raw());
         }
         Frame output_data;

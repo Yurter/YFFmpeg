@@ -8,7 +8,17 @@ namespace fpp {
         setName("Encoder");
     }
 
-    Code Encoder::processInputData(Frame& input_data) {
+    Code Encoder::initParams() {
+        utils::parameters_to_context(_stream->parameters, _codec_context);
+        utils::parameters_to_avcodecpar(_stream->parameters, _stream->codecParameters());
+        if (avcodec_parameters_to_context(_codec_context, _stream->codecParameters()) < 0) {
+            log_error("avcodec_parameters_to_context failed");
+            return Code::ERR;
+        }
+        return Code::OK;
+    }
+
+    Code Encoder::processInputData(Frame input_data) {
         Packet output_data;
         try_to(output_data.init());
         output_data.setType(_stream->type());
@@ -36,10 +46,3 @@ namespace fpp {
     }
 
 } // namespace fpp
-/*
-[Encoder libx264]     Send frame: Video frame: 3110400 bytes, pts 575730, key_frame true, width 1920, height 1080
-[Encoder libx264]     Send frame: Video frame: 3110400 bytes, pts 615330, key_frame false, width 1920, height 1080
-
-[Encoder libx264]     Send frame: Video frame: 3110400 bytes, pts 82800, key_frame true, width 1920, height 1080
-[Encoder libx264]     Send frame: Video frame: 3110400 bytes, pts 86400, key_frame false, width 1920, height 1080
-*/

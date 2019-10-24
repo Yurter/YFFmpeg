@@ -1,9 +1,12 @@
 #pragma once
-#include "../base/Codec.hpp"
+#include "base/TemplateProcessor.hpp"
+#include "base/Codec.hpp"
+#include "base/Frame.hpp"
+#include "base/Packet.hpp"
 
 namespace fpp {
 
-    class Encoder : public Codec<Frame,Packet> {
+    class Encoder : public TemplateProcessor<Frame,Packet>, public Codec {
 
     public:
 
@@ -12,7 +15,8 @@ namespace fpp {
 
     private:
 
-        virtual Code processInputData(Frame& input_data) override;
+        virtual Code        initParams() override;
+        virtual Code        processInputData(Frame input_data) override;
 
     };
 

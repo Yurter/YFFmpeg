@@ -6,37 +6,36 @@ CONFIG += c++17
 
 SOURCES += \
     base/Codec.cpp \
-    base/Exception.cpp \
+    core/Exception.cpp \
     base/Filter.cpp \
-    base/FrameProcessor.cpp \
-    base/FrameProducer.cpp \
+    inout/FrameProcessor.cpp \
     base/IOContext.cpp \
     base/Logger.cpp \
     base/MediaData.cpp \
-    base/Object.cpp \
+    core/Object.cpp \
     base/PacketProcessror.cpp \
-    base/PacketProducer.cpp \
     base/Processor.cpp \
     base/Refi.cpp \
-    base/Thread.cpp \
+    core/Thread.cpp \
     codec/Decoder.cpp \
     codec/Encoder.cpp \
-    context/FrameSource.cpp \
-    context/MediaSink.cpp \
-    context/MediaSource.cpp \
-    context/PacketSink.cpp \
-    context/PacketSource.cpp \
+    inout/FrameSource.cpp \
+    media/MediaSink.cpp \
+    media/MediaSource.cpp \
+    inout/PacketSink.cpp \
+    inout/PacketSource.cpp \
     control/AudioParameters.cpp \
     control/AudioStream.cpp \
     control/Pipeline.cpp \
     control/VideoParameters.cpp \
     control/VideoStream.cpp \
     control/YMap.cpp \
+    inout/FrameSource.cpp \
     refi/AudioFilter.cpp \
     refi/MediaFilter.cpp \
     refi/Resampler.cpp \
     base/Stream.cpp \
-    base/utils.cpp \
+    core/utils.cpp \
     main.cpp \
     base/Filter.cpp \
     base/Frame.cpp \
@@ -46,33 +45,30 @@ SOURCES += \
     refi/VideoFilter.cpp
 
 HEADERS += \
-    base/AsyncQueue.hpp \
+    core/AsyncQueue.hpp \
     base/Codec.hpp \
     base/Data.hpp \
-    base/FrameProducer.hpp \
     base/IOContext.hpp \
-    base/PacketProcessor.hpp \
-    base/PacketProducer.hpp \
     base/TemplateProcessor.hpp \
     base/TemplateProcessor.hpp \
-    base/Exception.hpp \
+    core/Exception.hpp \
     base/Filter.hpp \
-    base/FrameProcessor.hpp \
+    inout/FrameProcessor.hpp \
     base/Logger.hpp \
     base/MediaData.hpp \
-    base/Object.hpp \
+    core/Object.hpp \
     base/Processor.hpp \
     base/Refi.hpp \
     base/Stream.hpp \
-    base/Thread.hpp \
-    base/utils.hpp \
+    core/Thread.hpp \
+    core/utils.hpp \
     codec/Decoder.hpp \
     codec/Encoder.hpp \
-    context/FrameSource.hpp \
-    context/MediaSink.hpp \
-    context/MediaSource.hpp \
-    context/PacketSink.hpp \
-    context/PacketSource.hpp \
+    inout/FrameSource.hpp \
+    media/MediaSink.hpp \
+    media/MediaSource.hpp \
+    inout/PacketSink.hpp \
+    inout/PacketSource.hpp \
     control/AudioParameters.hpp \
     control/AudioStream.hpp \
     control/Pipeline.hpp \
@@ -80,6 +76,8 @@ HEADERS += \
     control/VideoStream.hpp \
     control/YMap.hpp \
     fpp.hpp \
+    inout/FrameSink.hpp \
+    inout/FrameSource.hpp \
     refi/AudioFilter.hpp \
     refi/MediaFilter.hpp \
     refi/Resampler.hpp \

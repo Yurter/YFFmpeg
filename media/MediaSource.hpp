@@ -4,7 +4,7 @@
 
 namespace fpp {
 
-    class MediaSource : public PacketProducer, public IOContext {
+    class MediaSource : public PacketSource, public IOContext {
 
     public:
 
