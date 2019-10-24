@@ -26,7 +26,7 @@ namespace fpp {
     }
 
     Thread::~Thread() {
-        quit();
+        try_throw(quit());
     }
 
     Code Thread::start() {

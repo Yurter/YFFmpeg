@@ -1,6 +1,6 @@
 #pragma once
-#include "context/Source.hpp"
-#include "context/Sink.hpp"
+#include "context/MediaSource.hpp"
+#include "context/MediaSink.hpp"
 #include "codec/Decoder.hpp"
 #include "codec/Encoder.hpp"
 #include "refi/Rescaler.hpp"

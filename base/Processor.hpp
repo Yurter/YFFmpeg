@@ -13,7 +13,10 @@ namespace fpp {
         virtual Code open()  = 0;
         virtual Code close() = 0;
 
-        virtual Code push()  = 0;
+        bool                opened() const;
+        bool                closed() const;
+
+        void                setOpened(bool opened);
 
         Code                connectTo(const Processor* other);
 

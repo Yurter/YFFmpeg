@@ -11,30 +11,25 @@ namespace fpp {
 
     public:
 
-        using InputFunction = std::function<inType()>;
-        using OutputFunction = std::function<outType()>;
+        using IOFunction = std::function<Code()>;
 
-        TemplateProcessor()
-        {
+        TemplateProcessor() {
             setName("TemplateProcessor");
         }
 
-        virtual ~TemplateProcessor() = default;
+        virtual ~TemplateProcessor() {
+            stopInOutThread();
+        }
 
     protected:
 
-        virtual Code processInputData(const inType& input_data) = 0;
+        virtual Code processInputData(inType input_data) = 0;
+        virtual Code readInputData() { return Code::NOT_IMPLEMENTED; }
+        virtual Code writeOutputData(outType output_data) { UNUSED(output_data);  return Code::NOT_IMPLEMENTED; }
 
-        Code setInputFunction(const InputFunction input_function) {
-            return_if(_input_function, Code::ERR);
-            return_if(_output_function, Code::ERR);
-            _input_function = input_function;
-        }
-
-        Code setOutputFunction(const OutputFunction output_function) {
-            return_if(_input_function, Code::ERR);
-            return_if(_output_function, Code::ERR);
-            _output_function = output_function;
+        Code setInOutFunction(const IOFunction io_function) {
+            return_if(_io_function, Code::ERR);
+            _io_function = io_function;
         }
 
         Code sendOutputData(const outType& output_data, const Processor* next_proc = nullptr) {
@@ -45,6 +40,10 @@ namespace fpp {
         }
 
     private:
+
+        virtual Code onStart() override final {
+            try_to(startInOutThread());
+        }
 
         virtual Code run() override final {
             inType input_data;
@@ -57,12 +56,21 @@ namespace fpp {
             return processInputData(input_data);
         }
 
+        Code startInOutThread() {
+            _io_thread = Thread(_io_function);
+            _io_thread.start();
+            _io_thread.setName(name() + " IO thread");
+        }
+
+        Code stopInOutThread() {
+            _io_thread.quit();
+            _io_thread.join();
+        }
+
     private:
 
         AsyncQueue<inType>  _input_queue;
-
-        InputFunction       _input_function;
-        OutputFunction      _output_function;
+        IOFunction          _io_function;
         Thread              _io_thread;
 
     };

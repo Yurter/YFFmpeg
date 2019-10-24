@@ -94,6 +94,8 @@ namespace fpp {
 
 } // namespace fpp
 
+#define UNUSED(x) (void)(x)
+
 /* Значения по умолчанию для видео- и аудиопараметров */ //TODO по умолчанию невалидные, добавить по умолчанию валидные
 #define INVALID_INT             -1
 #define DEFAULT_INT             0
@@ -136,6 +138,15 @@ namespace fpp {
                             return ret;\
                         }\
                     } while (false)
+
+/* ? */ //TODO throw fpp exception
+#define try_throw(x)    do { auto ret = x;\
+                            if (utils::exit_code(ret)) {\
+                                log_error("Function " << (#x)\
+                                << " failed with code: " << ret\
+                                << " - " << utils::code_to_string(ret));\
+                            }\
+                        } while (false)
 
 /* ? */ // В случае ошибки не возвращать ее код, а выбрасывать исключение (ex. в деструкторах); добавить параметр - текст ошибки
 //#define try_and_throw(x,msg) { auto ret = x;\

@@ -1,27 +1,19 @@
 #pragma once
-#include "TemplateProcessor.hpp"
 #include "../control/VideoStream.hpp"
 #include "../control/AudioStream.hpp"
 
 namespace fpp {
 
-    class Context : public TemplateProcessor<Packet, Packet> {
+    class IOContext {
 
     public:
 
-        Context(const std::string& mrl, IOType preset = IOType::Auto); ///< mrl - media resource locator.
-        Context(const Context& other)  = delete;
-        Context(const Context&& other) = delete;
-        virtual ~Context() override;
+        IOContext(const std::string& mrl, IOType preset = IOType::Auto); ///< mrl - media resource locator.
+        IOContext(const IOContext& other)  = delete;
+        IOContext(const IOContext&& other) = delete;
+        virtual ~IOContext();
 
-        virtual Code        open() = 0;                                 ///< Функция открывает медиа-контекст.
-        virtual Code        close();                                    ///< Функция закрывает медиа-контекст.
-        bool                opened() const;                             ///< Функция возвращает true, если контекст находится в открытом состоянии.
-        bool                closed() const;                             ///< Функция возвращает true, если контекст находится в закрытом состоянии.
-
-        void                setOpened(bool opened);                     ///< ...
-
-        IOType         preset() const;
+        IOType              preset() const;
 
         Code                createStream(Stream* new_stream);           ///< Функция создает поток к текущем контексте.
         Code                createStream(Parameters* param);            ///< Функция создает поток к текущем контексте.
@@ -63,7 +55,6 @@ namespace fpp {
         std::string			_media_resource_locator;
         bool				_opened;
         StreamVector        _streams;
-        Thread              _io_thread;
         bool                _reopening_after_failure;
         int64_t             _reopening_timeout;
         int64_t             _artificial_delay;
@@ -74,6 +65,6 @@ namespace fpp {
 
     };
 
-    using ContextList = std::list<Context*>;
+    using IOContextList = std::list<IOContext*>;
 
 } // namespace fpp

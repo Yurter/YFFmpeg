@@ -5,12 +5,11 @@
 
 namespace fpp {
 
-    class PacketProcessor: public TemplateProcessor<Packet,Packet> {
+    class PacketProcessor : public TemplateProcessor<Packet,Packet> {
 
     public:
 
         PacketProcessor();
-        void setInputFunction(const std::function<void()> input_function);
 
     };
 

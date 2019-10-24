@@ -3,23 +3,14 @@
 
 namespace fpp {
 
-    class PacketSource : public PacketProcessor {
+    class PacketProducer : public TemplateProcessor<Packet,Packet> {
 
     public:
 
-        PacketSource();
+        PacketProducer();
+        virtual ~PacketProducer() override;
 
-        Code init();
-        Code open();
-        Code close();
-        Code push();
-
-        std::string toString() const;
-
-    protected:
-
-        Code processInputData(const Packet& input_data);
-
+        Code                readSourcePacket();
 
     };
 

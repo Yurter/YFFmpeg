@@ -1,26 +1,24 @@
-#include "Sink.hpp"
+#include "MediaSink.hpp"
 #include <exception>
 
 namespace fpp {
 
-    Sink::Sink(const std::string& mrl, IOType preset) :
-        Context(mrl, preset),
+    MediaSink::MediaSink(const std::string mrl, IOType preset) :
+        IOContext(mrl, preset),
         _output_format(nullptr)
     {
-        setName("Sink");
+        setName("MediaSink");
     }
 
-    Sink::~Sink() {
-        close();
+    MediaSink::~MediaSink() {
+        try_throw(close());
     }
 
-    Code Sink::init() {
+    Code MediaSink::init() {
         try_to(createContext());
         switch (_preset) {
         case Auto: {
             try_to(guessOutputFromat());
-//            try_to(parseOutputFormat());  // В автоматическом режиме Синк не должен самостоятельно создаввать потоки (устанавливать требования),
-                                            // только повторять входные.
             break;
         }
         case YouTube: {
@@ -88,28 +86,21 @@ namespace fpp {
             log_error("Invalid preset");
             break;
         }
-//        if (numberStream() == 0) {
-//            log_error("No streams to mux were specified");
-//            return Code::NOT_INITED;
-//        }
         log_debug("Created");
         setInited(true);
         return Code::OK;
     }
 
-    Code Sink::open() {
+    Code MediaSink::open() {
         return_if(opened(), Code::INVALID_CALL_ORDER);
         return_if_not(inited(), Code::NOT_INITED);
         _output_format = _format_context->oformat; //TODO оператор "болтается в воздухе"
         try_to(openContext());
-//        _io_thread = Thread(std::bind(&Sink::write, this));
-//        _io_thread.setName("IOThread");
-//        _io_thread.start();
         setInited(true);
         return Code::OK;
     }
 
-    Code Sink::close() {
+    Code MediaSink::close() {
         return_if(closed(), Code::INVALID_CALL_ORDER);
         quit();
         if (av_write_trailer(_format_context) != 0) {
@@ -121,7 +112,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    std::string Sink::toString() const {
+    std::string MediaSink::toString() const {
         /* Output #0, flv, to 'rtmp://a.rtmp.youtube.com/live2/ytub-8t5w-asjj-avyf'*/
         std::string str = "Output #"
                 + std::to_string(uid()) + ", "
@@ -130,11 +121,7 @@ namespace fpp {
         return str;
     }
 
-    AVOutputFormat* Sink::outputFrormat() const {
-        return _output_format;
-    }
-
-    Code Sink::guessOutputFromat() {// см: _format_context->oformat
+    Code MediaSink::guessOutputFromat() {// см: _format_context->oformat
         AVOutputFormat* output_format = av_guess_format(nullptr, _media_resource_locator.c_str(), nullptr);
         if (output_format == nullptr) {
             log_error("Failed guess output format: " << _media_resource_locator);
@@ -144,7 +131,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Sink::createContext() {
+    Code MediaSink::createContext() {
         std::string format_short_name = utils::guess_format_short_name(_media_resource_locator);
         const char* format_name = format_short_name.empty() ? nullptr : format_short_name.c_str();
         if (avformat_alloc_output_context2(&_format_context, nullptr, format_name, _media_resource_locator.c_str()) < 0) {
@@ -154,7 +141,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Sink::openContext() {
+    Code MediaSink::openContext() {
         log_info("Destination: \"" << _media_resource_locator << "\" is opening...");
         if (_streams.empty()) {
             log_error("No streams to mux were specified: " << _media_resource_locator);
@@ -166,9 +153,6 @@ namespace fpp {
                 return Code::INVALID_INPUT;
             }
         }
-        //AVSTREAM_INIT_IN_WRITE_HEADER
-        //AVSTREAM_INIT_IN_INIT_OUTPUT
-    //    avformat_write_header(_format_context, nullptr); //TODO check return value?
         if (avformat_write_header(_format_context, nullptr) < 0) {
             log_error("Error occurred when opening output: " << _media_resource_locator);
             return Code::ERR;
@@ -181,23 +165,7 @@ namespace fpp {
         }
     }
 
-//    Code Sink::write() {
-//        return Code::OK;
-//    }
-
-    Code Sink::writePacket(Packet& packet) {
-//        log_debug(packet);
-        if (av_interleaved_write_frame(_format_context, &packet.raw()) < 0) {
-    //    if (av_write_frame(_format_context, &packet.raw()) < 0) {
-            log_error("Error muxing packet");
-            return Code::ERR;
-        }
-        av_packet_unref(&packet.raw()); //memfix
-        return Code::OK;
-    }
-
-    Code Sink::processInputData(Packet& input_data) {
-//        log_debug("Got packet: " << input_data);
+    Code MediaSink::processInputData(Packet input_data) {
         if (input_data.isVideo()) { //Debug if
             try_to(stream(input_data.streamIndex())->stampPacket(input_data));
         }
@@ -205,7 +173,20 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Sink::parseOutputFormat() {
+    Code MediaSink::writeSourcePacket(Packet output_data) {
+        if (output_data.isVideo()) { //Debug if
+            try_to(stream(output_data.streamIndex())->stampPacket(output_data));
+        }
+//        if (av_interleaved_write_frame(_format_context, &packet.raw()) < 0) {
+        if (av_write_frame(_format_context, &output_data.raw()) < 0) {
+            log_error("Error muxing packet");
+            return Code::ERR;
+        }
+        av_packet_unref(&output_data.raw()); //memfix
+        return Code::OK;
+    }
+
+    Code MediaSink::parseOutputFormat() {
         return_if_not(inited_ptr(_output_format), Code::INVALID_CALL_ORDER);
         {
             //TODO:                                   ↓ mp3 AVOutputFormat дает видеокодек PNG ↓

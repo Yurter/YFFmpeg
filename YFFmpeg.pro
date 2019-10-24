@@ -5,11 +5,11 @@ CONFIG -= qt
 CONFIG += c++17
 
 SOURCES += \
-    base/Context.cpp \
     base/Exception.cpp \
     base/Filter.cpp \
     base/FrameProcessor.cpp \
     base/FrameProducer.cpp \
+    base/IOContext.cpp \
     base/Logger.cpp \
     base/MediaData.cpp \
     base/Object.cpp \
@@ -21,9 +21,10 @@ SOURCES += \
     codec/Decoder.cpp \
     codec/Encoder.cpp \
     context/FrameSource.cpp \
+    context/MediaSink.cpp \
+    context/MediaSource.cpp \
+    context/PacketSink.cpp \
     context/PacketSource.cpp \
-    context/Sink.cpp \
-    context/Source.cpp \
     control/AudioParameters.cpp \
     control/AudioStream.cpp \
     control/Pipeline.cpp \
@@ -36,7 +37,6 @@ SOURCES += \
     base/Stream.cpp \
     base/utils.cpp \
     main.cpp \
-    base/Context.cpp \
     base/Filter.cpp \
     base/Frame.cpp \
     base/Packet.cpp \
@@ -47,9 +47,9 @@ SOURCES += \
 HEADERS += \
     base/AsyncQueue.hpp \
     base/Codec.hpp \
-    base/Context.hpp \
     base/Data.hpp \
     base/FrameProducer.hpp \
+    base/IOContext.hpp \
     base/PacketProcessor.hpp \
     base/PacketProducer.hpp \
     base/TemplateProcessor.hpp \
@@ -68,9 +68,10 @@ HEADERS += \
     codec/Decoder.hpp \
     codec/Encoder.hpp \
     context/FrameSource.hpp \
+    context/MediaSink.hpp \
+    context/MediaSource.hpp \
+    context/PacketSink.hpp \
     context/PacketSource.hpp \
-    context/Sink.hpp \
-    context/Source.hpp \
     control/AudioParameters.hpp \
     control/AudioStream.hpp \
     control/Pipeline.hpp \
@@ -83,7 +84,6 @@ HEADERS += \
     refi/Resampler.hpp \
     base/ffmpeg.hpp \
     base/Codec.hpp \
-    base/Context.hpp \
     base/YFilter.hpp \
     base/Frame.hpp \
     base/Packet.hpp \

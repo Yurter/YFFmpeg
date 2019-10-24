@@ -6,7 +6,6 @@
 
 namespace fpp {
 
-    //typedef std::function<Code(void)> LoopFunction;
     using LoopFunction = std::function<Code(void)>;
 
     class Thread : public Object {
@@ -32,6 +31,7 @@ namespace fpp {
     protected:
 
         virtual Code        run();
+        virtual Code        onStart();
         virtual Code        onStop();
 
     private:
