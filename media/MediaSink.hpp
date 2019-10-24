@@ -1,5 +1,5 @@
 #pragma once
-#include "PacketSink.hpp"
+#include "inout/PacketSink.hpp"
 #include "base/IOContext.hpp"
 
 namespace fpp {

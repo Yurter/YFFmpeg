@@ -1,9 +1,9 @@
 #pragma once
-#include "../base/PacketProcessor.hpp"
+#include "PacketProcessor.hpp"
 
 namespace fpp {
 
-    class PacketSink : public TemplateProcessor<Packet,Packet> {
+    class PacketSink : public PacketProcessor {
 
     public:
 

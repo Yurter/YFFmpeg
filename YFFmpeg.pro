@@ -7,6 +7,7 @@ CONFIG += c++17
 SOURCES += \
     base/Codec.cpp \
     core/Exception.cpp \
+    inout/PacketProcessor.cpp \
     refi/Filter.cpp \
     inout/FrameProcessor.cpp \
     base/IOContext.cpp \
@@ -48,6 +49,7 @@ HEADERS += \
     base/TemplateProcessor.hpp \
     base/TemplateProcessor.hpp \
     core/Exception.hpp \
+    inout/PacketProcessor.hpp \
     refi/Filter.hpp \
     inout/FrameProcessor.hpp \
     core/Logger.hpp \
