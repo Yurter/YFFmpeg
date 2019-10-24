@@ -1,22 +1,22 @@
 #pragma once
-#include "base/ffmpeg.hpp"
-#include "base/Refi.hpp"
+#include "inout/FrameProcessor.hpp"
 #include "../control/VideoStream.hpp"
 
 namespace fpp {
 
-    class Rescaler : public Refi {
+    class Rescaler : public FrameProcessor {
 
     public:
 
-        Rescaler(StreamPair audio_streams);
+        Rescaler(StreamPair video_streams);
         virtual ~Rescaler() override;
 
         virtual Code        init() override;
-        virtual Code        processInputData(Frame& input_data) override;
+        virtual Code        processInputData(Frame input_data) override;
 
     private:
 
+        StreamPair          _io_streams;
         SwsContext*         _rescaler_context;
 
     };

@@ -1,5 +1,5 @@
 #pragma once
-#include "base/Filter.hpp"
+#include "Filter.hpp"
 
 namespace fpp {
 
@@ -7,11 +7,11 @@ namespace fpp {
 
     public:
 
-        AudioFilter(StreamPair io_streams, std::string filters_descr);
+        AudioFilter(const Parameters* input_data_params, std::string filters_descr);
 
     private:
 
-        Code processInputData(Frame& input_data);
+        virtual Code processInputData(Frame input_data) override;
 
     };
 

@@ -1,10 +1,10 @@
 #pragma once
-#include "base/Refi.hpp"
+#include "inout/FrameProcessor.hpp"
 #include "../control/AudioStream.hpp"
 
 namespace fpp {
 
-    class Resampler : public Refi {
+    class Resampler : public FrameProcessor {
 
     public:
 
@@ -15,12 +15,13 @@ namespace fpp {
 
     private:
 
-        virtual Code        processInputData(Frame& input_data) override;
+        virtual Code        processInputData(Frame input_data) override;
         bool                initOutputFrame(AVFrame** frame, int frame_size);
         bool                configChanged(AVFrame* in, AVFrame* out);
 
     protected:
 
+        StreamPair          _io_streams;
         SwrContext*         _resampler_context;
 
     };

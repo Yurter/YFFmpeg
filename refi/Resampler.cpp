@@ -3,7 +3,7 @@
 namespace fpp {
 
     Resampler::Resampler(StreamPair audio_streams) :
-        Refi(audio_streams)
+        _io_streams(audio_streams)
       , _resampler_context(nullptr)
     {
         setName("Resampler");
@@ -49,7 +49,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Resampler::processInputData(Frame& input_data) {
+    Code Resampler::processInputData(Frame input_data) {
         if (swr_convert_frame(_resampler_context, nullptr, input_data.raw()) != 0) {
             log_error("swr_convert_frame failed"); //TODO формулировка
             return Code::ERR;

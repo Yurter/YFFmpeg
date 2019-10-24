@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    Filter::Filter(StreamPair io_streams, std::string filters_descr) :
-        Refi(io_streams)
+    Filter::Filter(const Parameters* input_data_params, std::string filters_descr) :
+        _input_data_params(input_data_params)
       , _filters_descr(filters_descr)
     {
         setName("Filter");
@@ -14,7 +14,7 @@ namespace fpp {
     }
 
     Code Filter::init() {
-        VideoParameters* out_params = dynamic_cast<VideoParameters*>(_io_streams.second->parameters);
+        auto out_params = dynamic_cast<const VideoParameters*>(_input_data_params);
 
         char args[512];
         int ret = 0;
@@ -113,7 +113,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Filter::processInputData(Frame& input_data) {
+    Code Filter::processInputData(Frame input_data) {
         if (av_buffersrc_add_frame_flags(_buffersrc_ctx, input_data.raw(), AV_BUFFERSRC_FLAG_KEEP_REF) < 0) {
             log_error("Error while feeding the filtergraph: " << input_data);
             return Code::FFMPEG_ERROR;
@@ -128,20 +128,6 @@ namespace fpp {
                 return Code::FFMPEG_ERROR;
             Frame output_data(filt_frame);
             output_data.setType(MEDIA_TYPE_VIDEO);
-//            log_warning("In"
-//                    << " px: " << input_data.raw()->format
-//                    << " " << input_data.raw()->linesize[0]
-//                    << " " << input_data.raw()->linesize[1]
-//                    << " " << input_data.raw()->linesize[2]
-//                    << " " << input_data.raw()->linesize[3]
-//                       );
-//            log_warning("Out"
-//                    << " px: " << input_data.raw()->format
-//                    << " " << output_data.raw()->linesize[0]
-//                    << " " << output_data.raw()->linesize[1]
-//                    << " " << output_data.raw()->linesize[2]
-//                    << " " << output_data.raw()->linesize[3]
-//                       );
             output_data.raw()->linesize[0] = input_data.raw()->linesize[0];
             output_data.raw()->linesize[1] = input_data.raw()->linesize[1];
             output_data.raw()->linesize[2] = input_data.raw()->linesize[2];

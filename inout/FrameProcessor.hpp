@@ -10,10 +10,10 @@ namespace fpp {
 
     public:
 
-        FrameProcessor(const std::string mrl, IOType preset = IOType::Auto); ///< mrl - media resource locator.
-        FrameProcessor(const FrameProcessor& other)  = delete;
-        FrameProcessor(const FrameProcessor&& other) = delete;
-        virtual ~FrameProcessor() override;
+//        FrameProcessor(const std::string mrl, IOType preset = IOType::Auto); ///< mrl - media resource locator.
+//        FrameProcessor(const FrameProcessor& other)  = delete;
+//        FrameProcessor(const FrameProcessor&& other) = delete;
+//        virtual ~FrameProcessor() override;
 
 //        virtual Code        open() = 0;                                 ///< Функция открывает медиа-контекст.
 //        virtual Code        close();                                    ///< Функция закрывает медиа-контекст.

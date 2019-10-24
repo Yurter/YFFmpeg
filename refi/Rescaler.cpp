@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    Rescaler::Rescaler(StreamPair audio_streams) :
-        Refi(audio_streams)
+    Rescaler::Rescaler(StreamPair video_streams) :
+        _io_streams(video_streams)
       , _rescaler_context(nullptr)
     {
         setName("Rescaler");

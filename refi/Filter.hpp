@@ -1,24 +1,24 @@
 #pragma once
-#include "Refi.hpp"
-#include "Frame.hpp"
+#include "inout/FrameProcessor.hpp"
 
 namespace fpp {
 
-    class Filter : public Refi {
+    class Filter : public FrameProcessor {
 
     public:
 
-        Filter(StreamPair io_streams, std::string filters_descr);
+        Filter(const Parameters* input_data_params, std::string filters_descr);
         virtual ~Filter() override;
 
         virtual Code init() override;
 
     private:
 
-        virtual Code processInputData(Frame& input_data) override;
+        virtual Code processInputData(Frame input_data) override;
 
     private:
 
+        const Parameters*   _input_data_params;
         std::string         _filters_descr;
         AVFilterGraph*      _filter_graph;
         AVFilterContext*    _buffersrc_ctx;

@@ -53,11 +53,14 @@ namespace fpp {
                                 );
                 }
             }
+            return Code::OK;
         }
         Code close() {
             if (inited_ptr(_codec_context)) {
+                // использовать ? avcodec_free_context(_codec_context)
                 avcodec_close(_codec_context);
             }
+            return Code::OK;
         }
 
         std::string toString() const override final {

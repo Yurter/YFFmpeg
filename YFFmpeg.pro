@@ -7,15 +7,13 @@ CONFIG += c++17
 SOURCES += \
     base/Codec.cpp \
     core/Exception.cpp \
-    base/Filter.cpp \
+    refi/Filter.cpp \
     inout/FrameProcessor.cpp \
     base/IOContext.cpp \
     core/Logger.cpp \
     base/MediaData.cpp \
     core/Object.cpp \
-    base/PacketProcessror.cpp \
     base/Processor.cpp \
-    base/Refi.cpp \
     core/Thread.cpp \
     codec/Decoder.cpp \
     codec/Encoder.cpp \
@@ -32,7 +30,6 @@ SOURCES += \
     control/YMap.cpp \
     inout/FrameSource.cpp \
     refi/AudioFilter.cpp \
-    refi/MediaFilter.cpp \
     refi/Resampler.cpp \
     base/Stream.cpp \
     core/utils.cpp \
@@ -52,13 +49,12 @@ HEADERS += \
     base/TemplateProcessor.hpp \
     base/TemplateProcessor.hpp \
     core/Exception.hpp \
-    base/Filter.hpp \
+    refi/Filter.hpp \
     inout/FrameProcessor.hpp \
     core/Logger.hpp \
     base/MediaData.hpp \
     core/Object.hpp \
     base/Processor.hpp \
-    base/Refi.hpp \
     base/Stream.hpp \
     core/Thread.hpp \
     core/utils.hpp \
@@ -79,11 +75,9 @@ HEADERS += \
     inout/FrameSink.hpp \
     inout/FrameSource.hpp \
     refi/AudioFilter.hpp \
-    refi/MediaFilter.hpp \
     refi/Resampler.hpp \
     core/ffmpeg.hpp \
     base/Codec.hpp \
-    base/YFilter.hpp \
     base/Frame.hpp \
     base/Packet.hpp \
     base/Parameters.hpp \
