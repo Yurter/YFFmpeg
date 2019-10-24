@@ -1,10 +1,10 @@
 #pragma once
 #include "inout/PacketSource.hpp"
-#include "base/IOContext.hpp"
+#include "base/FormatContext.hpp"
 
 namespace fpp {
 
-    class MediaSource : public PacketSource, public IOContext {
+    class MediaSource : public PacketSource/*, public FormatContext*/ {
 
     public:
 
@@ -18,8 +18,6 @@ namespace fpp {
 
     private:
 
-        virtual Code        createContext() override;
-        virtual Code        openContext() override;
         virtual Code        readInputData(Packet& input_data) override;
         virtual Code        processInputData(Packet input_data) override;
         virtual Code        onStop() override;

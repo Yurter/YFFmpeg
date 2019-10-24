@@ -47,7 +47,7 @@ namespace fpp {
 
         bool                option(Option option) const;
 
-        Code                checkIOContexts();
+        Code                checkFormatContexts();
 
         Code                initMap();
         Code                initRefi();

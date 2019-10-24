@@ -51,7 +51,7 @@ namespace fpp {
 
         virtual Code run() override final {
             inType input_data;
-            return_if_not(wait_and_pop(input_data), Code::EXIT);
+            return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
             return_if(ignoreType(input_data.type()), Code::AGAIN);
             if (input_data.empty() && !this->is("YMap") && !this->is("Source")) { //Source тоже?
                 sendOutputData(outType());

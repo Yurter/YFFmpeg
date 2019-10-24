@@ -6,11 +6,13 @@ CONFIG += c++17
 
 SOURCES += \
     base/Codec.cpp \
+    base/InputFormatContext.cpp \
+    base/OutputFormatContext.cpp \
     core/Exception.cpp \
     inout/PacketProcessor.cpp \
     refi/Filter.cpp \
     inout/FrameProcessor.cpp \
-    base/IOContext.cpp \
+    base/FormatContext.cpp \
     core/Logger.cpp \
     base/MediaData.cpp \
     core/Object.cpp \
@@ -42,10 +44,12 @@ SOURCES += \
     refi/VideoFilter.cpp
 
 HEADERS += \
+    base/InputFormatContext.hpp \
+    base/OutputFormatContext.hpp \
     core/AsyncQueue.hpp \
     base/Codec.hpp \
     base/Data.hpp \
-    base/IOContext.hpp \
+    base/FormatContext.hpp \
     base/TemplateProcessor.hpp \
     base/TemplateProcessor.hpp \
     core/Exception.hpp \

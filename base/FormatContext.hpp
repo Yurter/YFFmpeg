@@ -4,14 +4,14 @@
 
 namespace fpp {
 
-    class IOContext : public Object {
+    class FormatContext /*: public Object*/ {
 
     public:
 
-        IOContext(const std::string mrl, IOType preset = IOType::Auto); ///< mrl - media resource locator.
-        IOContext(const IOContext& other)  = delete;
-        IOContext(const IOContext&& other) = delete;
-        virtual ~IOContext();
+        FormatContext(const std::string mrl, IOType preset = IOType::Auto); ///< mrl - media resource locator.
+        FormatContext(const FormatContext& other)  = delete;
+        FormatContext(const FormatContext&& other) = delete;
+        virtual ~FormatContext();
 
         IOType              preset() const;
 
@@ -65,6 +65,6 @@ namespace fpp {
 
     };
 
-    using IOContextList = std::list<IOContext*>;
+    using FormatContextList = std::list<FormatContext*>;
 
 } // namespace fpp

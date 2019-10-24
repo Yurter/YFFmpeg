@@ -1,10 +1,10 @@
-﻿#include "IOContext.hpp"
+﻿#include "FormatContext.hpp"
+#include "core/utils.hpp"
 
 namespace fpp {
 
-    IOContext::IOContext(const std::string mrl, IOType preset) :
+    FormatContext::FormatContext(const std::string mrl, IOType preset) :
         _uid(utils::gen_context_uid()),
-//        _uid(INVALID_INT),
         _media_resource_locator(mrl),
         _opened(false),
         _reopening_after_failure(false),
@@ -17,11 +17,11 @@ namespace fpp {
 //        setUid(utils::gen_context_uid());
     }
 
-    IOContext::~IOContext() {
+    FormatContext::~FormatContext() {
         close();
     }
 
-    Code IOContext::close() {
+    Code FormatContext::close() {
 //        log_debug("closing " << mediaResourceLocator() << " " << closed());
         return_if(closed(), Code::INVALID_CALL_ORDER);
     //    _io_thread.quit(); //TODO вызывать в абстрактном класса
@@ -30,23 +30,23 @@ namespace fpp {
         return Code::OK;
     }
 
-    bool IOContext::opened() const {
+    bool FormatContext::opened() const {
         return _opened;
     }
 
-    bool IOContext::closed() const {
+    bool FormatContext::closed() const {
         return !_opened;
     }
 
-    void IOContext::setOpened(bool opened) {
+    void FormatContext::setOpened(bool opened) {
         _opened = opened;
     }
 
-    IOType IOContext::preset() const {
+    IOType FormatContext::preset() const {
         return _preset;
     }
 
-    Code IOContext::createStream(Stream* new_stream) {
+    Code FormatContext::createStream(Stream* new_stream) {
         try_to(new_stream->init());
         new_stream->setContext(this);
         new_stream->setUid(utils::gen_stream_uid(uid(), numberStream()));
@@ -56,7 +56,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code IOContext::createStream(Parameters* param) {
+    Code FormatContext::createStream(Parameters* param) {
         auto test1 = _format_context;
         auto test2 = param->codec();
         auto avstream = avformat_new_stream(_format_context, param->codec());
@@ -75,28 +75,28 @@ namespace fpp {
         return createStream(new_stream);
     }
 
-    Stream* IOContext::bestStream(MediaType type) {
+    Stream* FormatContext::bestStream(MediaType type) {
         return utils::find_best_stream(streams(type));
     }
 
-    void IOContext::reopenAfterFailure(int64_t timeout) {
+    void FormatContext::reopenAfterFailure(int64_t timeout) {
         _reopening_after_failure = true;
         _reopening_timeout = timeout;
     }
 
-    void IOContext::setUid(int64_t uid) {
+    void FormatContext::setUid(int64_t uid) {
         if (invalid_int(_uid)) { _uid = uid; }
     }
 
-    Code IOContext::onStop() {
+    Code FormatContext::onStop() {
         return close();
     }
 
-    int64_t IOContext::uid() const {
+    int64_t FormatContext::uid() const {
         return _uid;
     }
 
-    Code IOContext::parseFormatContext() {
+    Code FormatContext::parseFormatContext() {
         if (_format_context == nullptr) {
             log_error("Format context not inited. Parsing failed");
             return Code::INVALID_INPUT;
@@ -160,15 +160,15 @@ namespace fpp {
     //    setDuration(FFMAX(_video_duration, _audio_duration)); //TODO
     }
 
-    std::string IOContext::mediaResourceLocator() const {
+    std::string FormatContext::mediaResourceLocator() const {
         return _media_resource_locator;
     }
 
-    AVFormatContext* IOContext::mediaFormatContext() const {
+    AVFormatContext* FormatContext::mediaFormatContext() const {
         return _format_context;
     }
 
-    Stream* IOContext::stream(int64_t index) {
+    Stream* FormatContext::stream(int64_t index) {
         if (size_t(index) < _streams.size()) {
             return _streams[size_t(index)];
         } else {
@@ -176,19 +176,19 @@ namespace fpp {
         }
     }
 
-    int64_t IOContext::numberStream() const {
+    int64_t FormatContext::numberStream() const {
         return int64_t(_streams.size());
     }
 
-    AVInputFormat* IOContext::inputFormat() const {
+    AVInputFormat* FormatContext::inputFormat() const {
         return _format_context->iformat;
     }
 
-    AVOutputFormat* IOContext::outputFormat() const{
+    AVOutputFormat* FormatContext::outputFormat() const{
         return _format_context->oformat;
     }
 
-    bool IOContext::supportsVideo() {
+    bool FormatContext::supportsVideo() {
         // return inited_ptr(bestStream(MediaType::MEDIA_TYPE_VIDEO)); //TODO объеденить? сорс не знает о своих потоках до открытия..
         if (is("Source")) {
             return inited_ptr(bestStream(MediaType::MEDIA_TYPE_VIDEO));
@@ -199,7 +199,7 @@ namespace fpp {
         return false;
     }
 
-    bool IOContext::supportsAudio(){
+    bool FormatContext::supportsAudio(){
         if (this->is("Source")) {
             return inited_ptr(bestStream(MediaType::MEDIA_TYPE_AUDIO));
         }
@@ -209,11 +209,11 @@ namespace fpp {
         return false;
     }
 
-    StreamVector IOContext::streams() {
+    StreamVector FormatContext::streams() {
         return _streams;
     }
 
-    StreamVector IOContext::streams(MediaType media_type) {
+    StreamVector FormatContext::streams(MediaType media_type) {
         StreamVector streams;
         for (auto&& str : _streams) {
             if (str->typeIs(media_type)) { streams.push_back(str); }

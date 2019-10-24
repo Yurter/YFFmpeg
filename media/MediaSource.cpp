@@ -3,7 +3,7 @@
 namespace fpp {
 
     MediaSource::MediaSource(const std::string mrl, IOType preset) :
-        IOContext(mrl, preset)
+        FormatContext(mrl, preset)
         , _input_format(nullptr)
     {
         setName("MediaSource");
@@ -32,7 +32,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code MediaSource::open(){
+    Code MediaSource::open() {
         return_if(opened(), Code::INVALID_CALL_ORDER);
         try_to(openContext());
         return Code::OK;
@@ -54,37 +54,6 @@ namespace fpp {
                 + utils::guess_format_short_name(_media_resource_locator) + ", "
                 + "from '" + _media_resource_locator + "'";
         return str;
-    }
-
-    Code MediaSource::createContext() {
-        _format_context = avformat_alloc_context();
-        if (not_inited_ptr(_format_context)) {
-            log_error("Failed to alloc input context.");
-            return Code::ERR;
-        }
-        return Code::OK;
-    }
-
-    Code MediaSource::openContext() {
-        log_info("MediaSource: \"" << _media_resource_locator << "\" is opening...");
-        return_if(_media_resource_locator.empty(), Code::INVALID_INPUT);
-        if (avformat_open_input(&_format_context, _media_resource_locator.c_str(), _input_format, nullptr) < 0) {
-            log_error("Failed to open input context.");
-            return Code::INVALID_INPUT;
-        }
-        if (avformat_find_stream_info(_format_context, nullptr) < 0) {
-            log_error("Failed to retrieve input video stream information.");
-            return Code::ERR;
-        }
-        {
-            _input_format = _format_context->iformat;
-            try_to(parseFormatContext());
-            av_dump_format(_format_context, 0, _media_resource_locator.c_str(), 0);
-            log_info("MediaSource: \"" << _media_resource_locator << "\" opened.");
-            setInited(true);
-            setOpened(true);
-            return Code::OK;
-        }
     }
 
     Code MediaSource::readInputData(Packet& input_data) {
@@ -111,21 +80,6 @@ namespace fpp {
         if (inited_int(_artificial_delay)) { utils::sleep_for(_artificial_delay); } //todo
         return sendOutputData(input_data);
     }
-
-//    Code MediaSource::readInputData() {
-//        Packet packet;
-//        if (int ret = av_read_frame(mediaFormatContext(), &packet.raw()); ret != 0) { //TODO parse return value
-//            if (ret == AVERROR_EOF) {
-//                log_info("Source reading completed");
-//                return_if_not(sendOutputData(Packet(), this), Code::EXIT);
-//                return Code::END_OF_FILE;
-//            }
-//            log_error("Cannot read source: \"" << _media_resource_locator << "\". Error " << ret);
-//            return Code::ERR;
-//        }
-//        return_if_not(sendOutputData(packet, this), Code::EXIT);
-//        return Code::OK;
-//    }
 
     Code MediaSource::guessInputFromat() {
         auto shorn_name = utils::guess_format_short_name(_media_resource_locator);

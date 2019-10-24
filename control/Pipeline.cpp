@@ -61,7 +61,7 @@ namespace fpp {
 
     Code Pipeline::init() {
         log_info("Initialization started...");
-        try_to(checkIOContexts());
+        try_to(checkFormatContexts());
         try_to(initContext());
         try_to(openSources());
         try_to(initMap());
@@ -107,7 +107,7 @@ namespace fpp {
         return _options & option;
     }
 
-    Code Pipeline::checkIOContexts() {
+    Code Pipeline::checkFormatContexts() {
         return_if(sources().empty(),    Code::NOT_INITED);  //TODO throw YException("No source specified");
         return_if(sinks().empty(),      Code::NOT_INITED);  //TODO throw YException("No destination specified");
         return Code::OK;

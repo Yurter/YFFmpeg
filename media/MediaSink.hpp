@@ -1,10 +1,10 @@
 #pragma once
 #include "inout/PacketSink.hpp"
-#include "base/IOContext.hpp"
+#include "base/FormatContext.hpp"
 
 namespace fpp {
 
-    class MediaSink : public PacketSink, public IOContext {
+    class MediaSink : public PacketSink, public FormatContext {
 
     public:
 
