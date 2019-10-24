@@ -1,5 +1,4 @@
 #pragma once
-
 #include "ffmpeg.hpp"
 #include "Logger.hpp"
 #include "Exception.hpp"

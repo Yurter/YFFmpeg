@@ -10,7 +10,7 @@ SOURCES += \
     base/Filter.cpp \
     inout/FrameProcessor.cpp \
     base/IOContext.cpp \
-    base/Logger.cpp \
+    core/Logger.cpp \
     base/MediaData.cpp \
     core/Object.cpp \
     base/PacketProcessror.cpp \
@@ -54,7 +54,7 @@ HEADERS += \
     core/Exception.hpp \
     base/Filter.hpp \
     inout/FrameProcessor.hpp \
-    base/Logger.hpp \
+    core/Logger.hpp \
     base/MediaData.hpp \
     core/Object.hpp \
     base/Processor.hpp \
@@ -81,7 +81,7 @@ HEADERS += \
     refi/AudioFilter.hpp \
     refi/MediaFilter.hpp \
     refi/Resampler.hpp \
-    base/ffmpeg.hpp \
+    core/ffmpeg.hpp \
     base/Codec.hpp \
     base/YFilter.hpp \
     base/Frame.hpp \

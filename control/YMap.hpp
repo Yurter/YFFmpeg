@@ -1,8 +1,8 @@
 #pragma once
 #include "base/Packet.hpp"
 #include "base/TemplateProcessor.hpp"
-#include "../context/MediaSource.hpp"
-#include "../context/MediaSink.hpp"
+#include "media/MediaSource.hpp"
+#include "media/MediaSink.hpp"
 #include <map>
 
 namespace fpp {
