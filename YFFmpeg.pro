@@ -4,6 +4,8 @@ CONFIG -= app_bundle
 CONFIG -= qt
 CONFIG += c++17
 
+QMAKE_CXXFLAGS += /std:c++latest #Домашний креатор не может использовать c++17 атрибут nodiscard без этого флага
+
 SOURCES += \
     base/Codec.cpp \
     base/InputFormatContext.cpp \
