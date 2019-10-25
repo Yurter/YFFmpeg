@@ -6,17 +6,18 @@
 
 namespace fpp {
 
-    class Decoder : public TemplateProcessor<Packet,Frame>, public Codec {
+    class Decoder : public Codec {
 
     public:
 
         Decoder(Stream* stream);
-        virtual ~Decoder() override = default;
+        virtual ~Decoder() override;
+
+        Code                decode(Packet input_packet, Frame& output_frame);
 
     private:
 
         virtual Code        initParams() override;
-        virtual Code        processInputData(Packet input_data) override;
 
     };
 

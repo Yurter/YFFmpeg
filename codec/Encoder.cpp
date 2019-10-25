@@ -8,6 +8,30 @@ namespace fpp {
         setName("Encoder");
     }
 
+    Encoder::~Encoder() {
+        //
+    }
+
+    Code Encoder::encode(Frame input_frame, Packet& output_packet) {
+        try_to(output_packet.init());
+        output_packet.setType(_stream->type());
+        int ret;
+        if ((ret = avcodec_send_frame(_codec_context, input_frame.raw())) != 0) {
+            log_error(input_frame);
+            log_error("Pxl_fmt: " << input_frame.raw()->format << " cc: " << _codec_context->pix_fmt);
+            log_error("Could not send frame " << ret);
+            return Code::ERR;
+        }
+        input_frame.free(); //memfix
+        if ((ret = avcodec_receive_packet(_codec_context, &output_packet.raw())) != 0) {
+//            log_warning("avcodec_receive_packet failed");
+            return Code::AGAIN;
+        }
+        output_packet.setStreamIndex(_stream->parameters->streamIndex());
+        output_packet.setStreamUid(_stream->uid());
+        return Code::OK;
+    }
+
     Code Encoder::initParams() {
         utils::parameters_to_context(_stream->parameters, _codec_context);
         utils::parameters_to_avcodecpar(_stream->parameters, _stream->codecParameters());
@@ -16,33 +40,6 @@ namespace fpp {
             return Code::ERR;
         }
         return Code::OK;
-    }
-
-    Code Encoder::processInputData(Frame input_data) {
-        Packet output_data;
-        try_to(output_data.init());
-        output_data.setType(_stream->type());
-        int ret;
-//        log_warning("Send frame: " << input_data);
-//        log_warning(_codec_context->pix_fmt << ":" << input_data.raw()->format);
-//        utils::SaveAvFrame(input_data.raw());
-        if ((ret = avcodec_send_frame(_codec_context, input_data.raw())) != 0) {
-            log_error(input_data);
-//            utils::save_frame_as_jpeg(_codec_context, input_data.raw(), 0);
-            log_error("Pxl_fmt: " << input_data.raw()->format << " cc: " << _codec_context->pix_fmt);
-//            utils::SaveAvFrame(input_data.raw());
-            log_error("Could not send frame " << ret);
-            return Code::ERR;
-        }
-        input_data.free(); //memfix
-        if ((ret = avcodec_receive_packet(_codec_context, &output_data.raw())) != 0) {
-//            log_warning("avcodec_receive_packet failed");
-            return Code::AGAIN;
-        }
-        output_data.setStreamIndex(_stream->parameters->streamIndex());
-        output_data.setStreamUid(_stream->uid());
-//        log_debug("Sending... " << output_data);
-        return sendOutputData(output_data);
     }
 
 } // namespace fpp
