@@ -10,7 +10,8 @@ namespace fpp {
         InputFormatContext(const std::string mrl, IOType preset = IOType::Auto);
         virtual ~InputFormatContext() override;
 
-        virtual Code        init()          override;
+        virtual Code        init()           override;
+        virtual std::string toString() const override;
 
     private:
 

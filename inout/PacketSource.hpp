@@ -12,7 +12,7 @@ namespace fpp {
 
     private:
 
-//        Code                readPacket();
+        Code                readPacket();
 
     };
 

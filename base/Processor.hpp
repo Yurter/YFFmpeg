@@ -12,13 +12,14 @@ namespace fpp {
 
         virtual Code        open()  = 0;
         virtual Code        close() = 0;
+        virtual Code        push(const Object* input_data) = 0;
 
         bool                opened() const;
         bool                closed() const;
 
         void                setOpened(bool opened);
 
-        Code                connectTo(const Processor* other);
+        Code                connectTo(Processor* other);
 
         void                setSkipType(MediaType type);
         bool                skipType(MediaType type) const;
@@ -28,7 +29,7 @@ namespace fpp {
 
     protected:
 
-        const Processor*    _next_processor;
+        Processor*          _next_processor;
 
     private:
 

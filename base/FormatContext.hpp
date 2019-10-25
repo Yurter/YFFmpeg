@@ -67,7 +67,7 @@ namespace fpp {
         bool                _reopening_after_failure;
         int64_t             _reopening_timeout;
         int64_t             _artificial_delay;
-        IOType         _preset;
+        IOType              _preset;
 
         // FFmpeg
         AVFormatContext*	_format_context;

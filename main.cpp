@@ -19,6 +19,9 @@ void start_debug_timeout(Source* source, int delay) {
 
 int main() {
 
+    Packet test_packet;
+    Object* test_pointer = &test_packet;
+    Packet* another_packet = static_cast<Packet*>(test_pointer);AVPacket
     static_log_info("main", "Program started...");
 
     try {

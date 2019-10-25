@@ -10,7 +10,9 @@ namespace fpp {
         PacketSink();
         virtual ~PacketSink() override;
 
-//        Code                writePacket();
+    private:
+
+        Code                writePacket();
 
     };
 

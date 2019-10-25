@@ -2,7 +2,7 @@
 
 namespace fpp {
 
-    Code fpp::Processor::connectTo(const fpp::Processor* other) {
+    Code fpp::Processor::connectTo(fpp::Processor* other) {
         auto ptr = dynamic_cast<const Processor*>(other);
         return_if(not_inited_ptr(ptr), Code::INVALID_INPUT);
         _next_processor = ptr;

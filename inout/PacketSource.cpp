@@ -2,12 +2,12 @@
 
 namespace fpp {
 
-    PacketProducer::PacketProducer() {
+    PacketSource::PacketSource() {
         setName("PacketProducer");
-        try_throw(setInOutFunction(std::bind(&PacketProducer::readPacket, this)));
+        try_throw(setPreFunction(std::bind(&PacketSource::readPacket, this)));
     }
 
-    Code PacketProducer::readPacket() {
+    Code PacketSource::readPacket() {
         Packet packet;
         try_to(readInputData(packet));
         try_to(sendOutputData(packet, this));

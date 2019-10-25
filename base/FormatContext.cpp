@@ -47,6 +47,7 @@ namespace fpp {
     Code FormatContext::open() {
         return_if(opened(), Code::INVALID_CALL_ORDER);
         try_to(openContext());
+        setOpened(true);
         return Code::OK;
     }
 
