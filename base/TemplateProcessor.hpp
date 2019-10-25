@@ -54,14 +54,6 @@ namespace fpp {
         Code sendOutputData(const outType& output_data, Processor* next_proc = nullptr) {
             auto pointer = inited_ptr(next_proc) ? next_proc : _next_processor;
             return_if(not_inited_ptr(pointer), Code::ERR);
-
-            Object* test2;
-            pointer->push(test2);
-
-            Object test;
-            pointer->push(&test);
-
-
             return_if_not(pointer->push(&output_data), Code::EXIT);
             return Code::OK;
         }
