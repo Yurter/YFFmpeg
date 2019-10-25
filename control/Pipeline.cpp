@@ -49,10 +49,10 @@ namespace fpp {
     //}
 
     //TODO
-    void Pipeline::setRoute(MediaSink *input_context, int64_t input_stream_index
-                           , MediaSink *output_context, int64_t output_stream_index) {
-        _metamap.push_back({{ input_context->uid(), input_stream_index }
-                        , { output_context->uid(), output_stream_index }});
+    void Pipeline::setRoute(MediaSource* input_context, int64_t input_stream_index
+                            , MediaSink* output_context, int64_t output_stream_index) {
+        _metamap.push_back({{ input_context->inputFormatContext().uid(), input_stream_index }
+                        , { output_context->outputFormatContext().uid(), output_stream_index }});
     }
 
     void Pipeline::dump() const {
@@ -148,7 +148,7 @@ namespace fpp {
 
     Code Pipeline::initContext() {
         for (auto&& processor : _data_processors) {
-            auto context = dynamic_cast<Context*>(processor);
+            auto context = dynamic_cast<FormatContext*>(processor);
             if (inited_ptr(context)) { try_to(context->init()); }
         }
         return Code::OK;
@@ -156,7 +156,7 @@ namespace fpp {
 
     Code Pipeline::openSources() {
         for (auto&& processor : _data_processors) {
-            auto source = dynamic_cast<Source*>(processor);
+            auto source = dynamic_cast<MediaSource*>(processor);
             if (inited_ptr(source)) { try_to(source->open()); }
         }
         return Code::OK;
@@ -164,7 +164,7 @@ namespace fpp {
 
     Code Pipeline::openSinks() {
         for (auto&& processor : _data_processors) {
-            auto sink = dynamic_cast<Sink*>(processor);
+            auto sink = dynamic_cast<MediaSink*>(processor);
             if (inited_ptr(sink)) { try_to(sink->open()); }
         }
         return Code::OK;
@@ -180,7 +180,7 @@ namespace fpp {
 
     Code Pipeline::closeContexts() {
         for (auto&& processor : _data_processors) {
-            auto context = dynamic_cast<Context*>(processor);
+            auto context = dynamic_cast<FormatContext*>(processor);
             if (inited_ptr(context)) { try_to(context->close()); }
         }
         return Code::OK;
@@ -258,7 +258,7 @@ namespace fpp {
 //                    std::string filters_descr = "select='not(mod(n,10))',setpts=N/FRAME_RATE/TB";
 //                    std::string filters_descr = "setpts=N/(10*TB)";
                     std::string filters_descr = "select='not(mod(n,10))'";
-                    VideoFilter* video_filter = new VideoFilter(in_out_streams, filters_descr);
+                    VideoFilter* video_filter = new VideoFilter(out_stream->parameters, filters_descr);
                     sequence.push_back(video_filter);
                     addElement(video_filter);
                 }
@@ -287,17 +287,17 @@ namespace fpp {
                 if (next_processor_it == sequence.end()) { break; }
                 log_debug((*processor_it)->name() + " connected to " + (*next_processor_it)->name());
                 if ((*processor_it)->is("Source")) {
-                    try_to(static_cast<Source*>(*processor_it)->connectOutputTo(*next_processor_it));
+                    try_to(static_cast<MediaSource*>(*processor_it)->connectTo(*next_processor_it));
                 } else if ((*processor_it)->is("Encoder")) {
-                    try_to(static_cast<Encoder*>(*processor_it)->connectOutputTo(*next_processor_it));
+                    try_to(static_cast<Encoder*>(*processor_it)->connectTo(*next_processor_it));
                 } else if ((*processor_it)->is("Decoder")) {
-                    try_to(static_cast<Decoder*>(*processor_it)->connectOutputTo(*next_processor_it));
+                    try_to(static_cast<Decoder*>(*processor_it)->connectTo(*next_processor_it));
                 } else if ((*processor_it)->is("Rescaler")) {
-                    try_to(static_cast<Rescaler*>(*processor_it)->connectOutputTo(*next_processor_it));
+                    try_to(static_cast<Rescaler*>(*processor_it)->connectTo(*next_processor_it));
                 } else if ((*processor_it)->is("Resampler")) {
-                    try_to(static_cast<Resampler*>(*processor_it)->connectOutputTo(*next_processor_it));
+                    try_to(static_cast<Resampler*>(*processor_it)->connectTo(*next_processor_it));
                 } else if ((*processor_it)->is("VideoFilter")) {
-                    try_to(static_cast<VideoFilter*>(*processor_it)->connectOutputTo(*next_processor_it));
+                    try_to(static_cast<VideoFilter*>(*processor_it)->connectTo(*next_processor_it));
                 } else if ((*processor_it)->is("YMap")) {
                     continue;
                 } else {
@@ -441,28 +441,28 @@ namespace fpp {
         return Code::OK;
     }
 
-    ContextList Pipeline::contexts() const {
-        ContextList context_list;
+    FormatContextList Pipeline::contexts() const {
+        FormatContextList context_list;
         for (auto&& processor : _data_processors) {
-            auto context = dynamic_cast<Context*>(processor);
+            auto context = dynamic_cast<FormatContext*>(processor);
             if (inited_ptr(context)) { context_list.push_back(context); }
         }
         return context_list;
     }
 
-    SourceList Pipeline::sources() const {
-        SourceList source_list;
+    MediaSourceList Pipeline::sources() const {
+        MediaSourceList source_list;
         for (auto&& processor : _data_processors) {
-            auto source = dynamic_cast<Source*>(processor);
+            auto source = dynamic_cast<MediaSource*>(processor);
             if (inited_ptr(source)) { source_list.push_back(source); }
         }
         return source_list;
     }
 
-    SinkList Pipeline::sinks() const {
-        SinkList sink_list;
+    MediaSinkList Pipeline::sinks() const {
+        MediaSinkList sink_list;
         for (auto&& processor : _data_processors) {
-            auto sink = dynamic_cast<Sink*>(processor);
+            auto sink = dynamic_cast<MediaSink*>(processor);
             if (inited_ptr(sink)) { sink_list.push_back(sink); }
         }
         return sink_list;

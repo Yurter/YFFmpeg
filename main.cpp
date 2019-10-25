@@ -3,7 +3,7 @@
 using namespace std;
 using namespace fpp;
 
-void start_debug_timeout(Source* source, int delay) {
+void start_debug_timeout(MediaSource* source, int delay) {
     std::thread([source,delay]() {
         int step_sec = 2;
         int delay_sec = delay;
@@ -19,9 +19,6 @@ void start_debug_timeout(Source* source, int delay) {
 
 int main() {
 
-    Packet test_packet;
-    Object* test_pointer = &test_packet;
-    Packet* another_packet = static_cast<Packet*>(test_pointer);AVPacket
     static_log_info("main", "Program started...");
 
     try {
@@ -48,28 +45,28 @@ int main() {
 //        std::string mrl_dst = "filtered_video.avi";
     //    std::string mrl_dst = "camera_sound.aac";
 
-        auto source = new Source(mrl_src); /* IP Camera */
+        auto source = new MediaSource(mrl_src); /* IP Camera */
 
 
 
         Pipeline pipeline;
         pipeline.addElement(source);
 
-//        auto sink_event = new Sink("group_video/event.flv");
+//        auto sink_event = new MediaSink("group_video/event.flv");
 //        pipeline.addElement(sink_event);
 
-        auto sink_opencv = new Sink("OpenCV processing", IOType::OpenCV);
+        auto sink_opencv = new MediaSink("OpenCV processing", IOType::OpenCV);
         pipeline.addElement(sink_opencv);
 
 //        auto sink_youtube = new Sink("group_video/youtube.flv", IOType::YouTube);
 //        pipeline.addElement(sink_youtube);
-        auto sink_youtube = new Sink("group_video/youtube.flv", IOType::Timelapse);
+        auto sink_youtube = new MediaSink("group_video/youtube.flv", IOType::Timelapse);
         pipeline.addElement(sink_youtube);
 
-        auto sink_timelapse = new Sink("group_video/timelapse.flv", IOType::Timelapse);
+        auto sink_timelapse = new MediaSink("group_video/timelapse.flv", IOType::Timelapse);
         pipeline.addElement(sink_timelapse);
 
-//        auto sink_restream = new Sink("group_video/restream.flv");
+//        auto sink_restream = new MediaSink("group_video/restream.flv");
 //        pipeline.addElement(sink_restream);
 
         start_debug_timeout(source, 65);

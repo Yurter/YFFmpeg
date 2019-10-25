@@ -10,8 +10,8 @@ namespace fpp {
         Processor();
         virtual ~Processor() override;
 
-        virtual Code        open()  = 0;
-        virtual Code        close() = 0;
+        virtual Code        open();
+        virtual Code        close();
         virtual Code        push(const Object* input_data) = 0;
 
         bool                opened() const;

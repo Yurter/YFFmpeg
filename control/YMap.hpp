@@ -7,7 +7,7 @@
 
 namespace fpp {
 
-    using PacketProcessor = AsyncQueue<Packet>;
+//    using PacketProcessor = AsyncQueue<Packet>;
 
     /* Таблица соответствий входного и выходного потоков */
     using StreamMap = std::multimap<Stream*,Stream*>;

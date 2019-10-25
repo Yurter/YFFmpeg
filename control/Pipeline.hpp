@@ -35,7 +35,7 @@ namespace fpp {
 
         // До старта потоков нет возможности указать потоки явно
     //    void                setRoute(Stream* input_stream, Stream* output_stream);            ///< Функция устанавливает соответствие между входным и выходным потоками.
-        void                setRoute(MediaSink* input_context, int64_t input_stream_index
+        void                setRoute(MediaSource* input_context, int64_t input_stream_index
                                      , MediaSink* output_context, int64_t output_stream_index);
 
         void                dump() const;                       ///< TODO description
@@ -74,9 +74,9 @@ namespace fpp {
 
         Code                connectIOStreams(MediaType media_type);
 
-        ContextList         contexts()      const;
-        SourceList          sources()       const;
-        SinkList            sinks()         const;
+        FormatContextList   contexts()      const;
+        MediaSourceList     sources()       const;
+        MediaSinkList       sinks()         const;
         DecoderList         decoders()      const;
         EncoderList         encoders()      const;
         RefiList            refis()         const;

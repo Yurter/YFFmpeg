@@ -1,6 +1,6 @@
 #pragma once
 #include "inout/PacketSink.hpp"
-#include "base/OutputFormatContext.hpp"
+#include "format/OutputFormatContext.hpp"
 
 namespace fpp {
 
@@ -16,6 +16,8 @@ namespace fpp {
         virtual Code        close() override;
         virtual std::string toString() const override;
 
+        const OutputFormatContext& outputFormatContext() const;
+
     private:
 
         virtual Code        processInputData(Packet input_data) override;
@@ -28,6 +30,6 @@ namespace fpp {
 
     };
 
-    using MediaSinkkList = std::list<MediaSink*>;
+    using MediaSinkList = std::list<MediaSink*>;
 
 } // namespace fpp

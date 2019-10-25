@@ -39,7 +39,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Rescaler::processInputData(Frame& input_data) {
+    Code Rescaler::processInputData(Frame input_data) {
 
         AVFrame* converted_frame = av_frame_alloc();
         return_if(not_inited_ptr(converted_frame), Code::ERR);

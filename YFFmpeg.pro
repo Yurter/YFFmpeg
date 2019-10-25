@@ -12,7 +12,7 @@ SOURCES += \
     format/OutputFormatContext.cpp \
     core/Exception.cpp \
     inout/PacketProcessor.cpp \
-    refi/Filter.cpp \
+    base/Filter.cpp \
     inout/FrameProcessor.cpp \
     base/FormatContext.cpp \
     core/Logger.cpp \
@@ -56,7 +56,7 @@ HEADERS += \
     base/TemplateProcessor.hpp \
     core/Exception.hpp \
     inout/PacketProcessor.hpp \
-    refi/Filter.hpp \
+    base/Filter.hpp \
     inout/FrameProcessor.hpp \
     core/Logger.hpp \
     base/MediaData.hpp \
