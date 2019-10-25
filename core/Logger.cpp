@@ -2,8 +2,8 @@
 #include "utils.hpp"
 #include <iostream>
 #include <iomanip>
-#include <string>
 #include <sstream>
+#include <string>
 #include <Windows.h>
 
 namespace fpp {

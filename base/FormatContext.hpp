@@ -1,6 +1,6 @@
 #pragma once
-#include "control/VideoStream.hpp"
-#include "control/AudioStream.hpp"
+#include "stream/VideoStream.hpp"
+#include "stream/AudioStream.hpp"
 #include "core/utils.hpp"
 
 namespace fpp {

@@ -8,8 +8,8 @@ QMAKE_CXXFLAGS += /std:c++latest #Домашний креатор не може�
 
 SOURCES += \
     base/Codec.cpp \
-    base/InputFormatContext.cpp \
-    base/OutputFormatContext.cpp \
+    format/InputFormatContext.cpp \
+    format/OutputFormatContext.cpp \
     core/Exception.cpp \
     inout/PacketProcessor.cpp \
     refi/Filter.cpp \
@@ -27,11 +27,11 @@ SOURCES += \
     media/MediaSource.cpp \
     inout/PacketSink.cpp \
     inout/PacketSource.cpp \
-    control/AudioParameters.cpp \
-    control/AudioStream.cpp \
+    stream/AudioParameters.cpp \
+    stream/AudioStream.cpp \
     control/Pipeline.cpp \
-    control/VideoParameters.cpp \
-    control/VideoStream.cpp \
+    stream/VideoParameters.cpp \
+    stream/VideoStream.cpp \
     control/YMap.cpp \
     inout/FrameSource.cpp \
     refi/AudioFilter.cpp \
@@ -46,8 +46,8 @@ SOURCES += \
     refi/VideoFilter.cpp
 
 HEADERS += \
-    base/InputFormatContext.hpp \
-    base/OutputFormatContext.hpp \
+    format/InputFormatContext.hpp \
+    format/OutputFormatContext.hpp \
     core/AsyncQueue.hpp \
     base/Codec.hpp \
     base/Data.hpp \
@@ -72,11 +72,11 @@ HEADERS += \
     media/MediaSource.hpp \
     inout/PacketSink.hpp \
     inout/PacketSource.hpp \
-    control/AudioParameters.hpp \
-    control/AudioStream.hpp \
+    stream/AudioParameters.hpp \
+    stream/AudioStream.hpp \
     control/Pipeline.hpp \
-    control/VideoParameters.hpp \
-    control/VideoStream.hpp \
+    stream/VideoParameters.hpp \
+    stream/VideoStream.hpp \
     control/YMap.hpp \
     fpp.hpp \
     inout/FrameSink.hpp \

@@ -2,9 +2,9 @@
 #include "ffmpeg.hpp"
 #include "Logger.hpp"
 #include "Exception.hpp"
-#include "../base/Stream.hpp"
-#include "../control/VideoParameters.hpp"
-#include "../control/AudioParameters.hpp"
+#include "base/Stream.hpp"
+#include "stream/VideoParameters.hpp"
+#include "stream/AudioParameters.hpp"
 #include <string>
 #include <sstream>
 #include <algorithm>
