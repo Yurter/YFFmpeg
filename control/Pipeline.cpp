@@ -136,15 +136,15 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Pipeline::initCodec() {
-        for (auto&& processor : _data_processors) {
-            auto decoder = dynamic_cast<Decoder*>(processor);
-            if (inited_ptr(decoder)) { try_to(decoder->init()); continue; }
-            auto encoder = dynamic_cast<Encoder*>(processor);
-            if (inited_ptr(encoder)) { try_to(encoder->init()); continue; }
-        }
-        return Code::OK;
-    }
+//    Code Pipeline::initCodec() {
+//        for (auto&& processor : _data_processors) {
+//            auto decoder = dynamic_cast<Decoder*>(processor);
+//            if (inited_ptr(decoder)) { try_to(decoder->init()); continue; }
+//            auto encoder = dynamic_cast<Encoder*>(processor);
+//            if (inited_ptr(encoder)) { try_to(encoder->init()); continue; }
+//        }
+//        return Code::OK;
+//    }
 
     Code Pipeline::initContext() {
         for (auto&& processor : _data_processors) {
@@ -242,11 +242,11 @@ namespace fpp {
                 bool encoding_required = transcoding_required
                         && (out_stream->parameters->codecId() != AV_CODEC_ID_NONE);
 
-                if (decoding_required) {
-                    Decoder* decoder = new Decoder(in_stream);
-                    sequence.push_back(decoder);
-                    addElement(decoder);
-                }
+//                if (decoding_required) {
+//                    Decoder* decoder = new Decoder(in_stream);
+//                    sequence.push_back(decoder);
+//                    addElement(decoder);
+//                }
 
                 if (rescaling_required) {
                     Rescaler* rescaler = new Rescaler(in_out_streams);
@@ -273,36 +273,36 @@ namespace fpp {
                     addElement(resampler);
                 }
 
-                if (encoding_required) {
-                    Encoder* encoder = new Encoder(out_stream);
-                    sequence.push_back(encoder);
-                    addElement(encoder);
-                }
+//                if (encoding_required) {
+//                    Encoder* encoder = new Encoder(out_stream);
+//                    sequence.push_back(encoder);
+//                    addElement(encoder);
+//                }
             }
 
             sequence.push_back(static_cast<Processor*>(out_stream->context()));
 
             for (auto processor_it = sequence.begin(); processor_it != sequence.end(); processor_it++) {
-                auto next_processor_it = std::next(processor_it);
-                if (next_processor_it == sequence.end()) { break; }
-                log_debug((*processor_it)->name() + " connected to " + (*next_processor_it)->name());
-                if ((*processor_it)->is("Source")) {
-                    try_to(static_cast<MediaSource*>(*processor_it)->connectTo(*next_processor_it));
-                } else if ((*processor_it)->is("Encoder")) {
-                    try_to(static_cast<Encoder*>(*processor_it)->connectTo(*next_processor_it));
-                } else if ((*processor_it)->is("Decoder")) {
-                    try_to(static_cast<Decoder*>(*processor_it)->connectTo(*next_processor_it));
-                } else if ((*processor_it)->is("Rescaler")) {
-                    try_to(static_cast<Rescaler*>(*processor_it)->connectTo(*next_processor_it));
-                } else if ((*processor_it)->is("Resampler")) {
-                    try_to(static_cast<Resampler*>(*processor_it)->connectTo(*next_processor_it));
-                } else if ((*processor_it)->is("VideoFilter")) {
-                    try_to(static_cast<VideoFilter*>(*processor_it)->connectTo(*next_processor_it));
-                } else if ((*processor_it)->is("YMap")) {
-                    continue;
-                } else {
-                    log_warning("didn't connected: " + (*processor_it)->name());
-                }
+//                auto next_processor_it = std::next(processor_it);
+//                if (next_processor_it == sequence.end()) { break; }
+//                log_debug((*processor_it)->name() + " connected to " + (*next_processor_it)->name());
+//                if ((*processor_it)->is("Source")) {
+//                    try_to(static_cast<MediaSource*>(*processor_it)->connectTo(*next_processor_it));
+//                } else if ((*processor_it)->is("Encoder")) {
+//                    try_to(static_cast<Encoder*>(*processor_it)->connectTo(*next_processor_it));
+//                } else if ((*processor_it)->is("Decoder")) {
+//                    try_to(static_cast<Decoder*>(*processor_it)->connectTo(*next_processor_it));
+//                } else if ((*processor_it)->is("Rescaler")) {
+//                    try_to(static_cast<Rescaler*>(*processor_it)->connectTo(*next_processor_it));
+//                } else if ((*processor_it)->is("Resampler")) {
+//                    try_to(static_cast<Resampler*>(*processor_it)->connectTo(*next_processor_it));
+//                } else if ((*processor_it)->is("VideoFilter")) {
+//                    try_to(static_cast<VideoFilter*>(*processor_it)->connectTo(*next_processor_it));
+//                } else if ((*processor_it)->is("YMap")) {
+//                    continue;
+//                } else {
+//                    log_warning("didn't connected: " + (*processor_it)->name());
+//                }
             }
 
             auto it = sequence.begin();
@@ -373,72 +373,72 @@ namespace fpp {
     }
 
     Stream* Pipeline::findBestInputStream(MediaType media_type) {
-        switch (media_type) {
-        case MediaType::MEDIA_TYPE_VIDEO: {
-            StreamVector all_video_streams;
-            for (auto&& source : sources()) {
-                all_video_streams.push_back(source->bestStream(MediaType::MEDIA_TYPE_VIDEO));
-            }
-            return static_cast<VideoStream*>(utils::find_best_stream(all_video_streams));
-        }
-        case MediaType::MEDIA_TYPE_AUDIO: {
-            StreamVector all_audio_streams;
-            for (auto&& source : sources()) {
-                all_audio_streams.push_back(source->bestStream(MediaType::MEDIA_TYPE_AUDIO));
-            }
-            return static_cast<AudioStream*>(utils::find_best_stream(all_audio_streams));
-        }
-        default:
-            return nullptr;
-        }
+//        switch (media_type) {
+//        case MediaType::MEDIA_TYPE_VIDEO: {
+//            StreamVector all_video_streams;
+//            for (auto&& source : sources()) {
+//                all_video_streams.push_back(source->bestStream(MediaType::MEDIA_TYPE_VIDEO));
+//            }
+//            return static_cast<VideoStream*>(utils::find_best_stream(all_video_streams));
+//        }
+//        case MediaType::MEDIA_TYPE_AUDIO: {
+//            StreamVector all_audio_streams;
+//            for (auto&& source : sources()) {
+//                all_audio_streams.push_back(source->bestStream(MediaType::MEDIA_TYPE_AUDIO));
+//            }
+//            return static_cast<AudioStream*>(utils::find_best_stream(all_audio_streams));
+//        }
+//        default:
+//            return nullptr;
+//        }
     }
 
     StreamList Pipeline::getOutputStreams(MediaType media_type) {
-        StreamList output_streams;
-        for (auto&& sink : sinks()) {
-            for (auto&& video_stream : sink->streams(media_type)) {
-                output_streams.push_back(video_stream);
-            }
-        }
-        return output_streams;
+//        StreamList output_streams;
+//        for (auto&& sink : sinks()) {
+//            for (auto&& video_stream : sink->streams(media_type)) {
+//                output_streams.push_back(video_stream);
+//            }
+//        }
+//        return output_streams;
     }
 
     Code Pipeline::connectIOStreams(MediaType media_type) {
-        Stream* best_stream = findBestInputStream(media_type);
-        if (not_inited_ptr(best_stream)) {
-            log_warning(utils::media_type_to_string(media_type)
-                        << " stream is not present in the sources");
+//        Stream* best_stream = findBestInputStream(media_type);
+//        if (not_inited_ptr(best_stream)) {
+//            log_warning(utils::media_type_to_string(media_type)
+//                        << " stream is not present in the sources");
 
-            return Code::OK; //TODO ?? что возращать? //        return Code::INVALID_INPUT; ?
-        }
-        StreamList output_streams = getOutputStreams(media_type);
-        if (output_streams.empty()) {
-            log_warning("Sinks does not have any "
-                        << utils::media_type_to_string(media_type)
-                        << " stream");
-            log_info("Creating " << utils::media_type_to_string(media_type) << " stream in every sink...");
-            for (auto&& sink : sinks()) {
-                if ((sink->preset() == IOType::Auto)
-                        && (sink->ignoreType(media_type) == false)) {
-                    try_to(sink->createStream(best_stream->parameters));
-                    log_info("Created "
-                             << utils::media_type_to_string(media_type)
-                             << " stream in "
-                             << sink->mediaResourceLocator());
-                }
-            }
-            output_streams = getOutputStreams(media_type);
-        }
-        if (output_streams.empty()) {
-            log_warning("Ignoring: " << *best_stream);
-        }
-        /* Трансляция наилучшего потока на все потоки выхода того же медиа-типа */
-        for (auto&& out_stream : output_streams) {
-            try_to(_map->addRoute(best_stream, out_stream));
-            best_stream->setUsed(true);
-            out_stream->setUsed(true);
-        }
-        return Code::OK;
+//            return Code::OK; //TODO ?? что возращать? //        return Code::INVALID_INPUT; ?
+//        }
+//        StreamList output_streams = getOutputStreams(media_type);
+//        if (output_streams.empty()) {
+//            log_warning("Sinks does not have any "
+//                        << utils::media_type_to_string(media_type)
+//                        << " stream");
+//            log_info("Creating " << utils::media_type_to_string(media_type) << " stream in every sink...");
+//            for (auto&& sink : sinks()) {
+//                if ((sink->preset() == IOType::Auto)
+//                        && (sink->ignoreType(media_type) == false)) {
+//                    try_to(sink->createStream(best_stream->parameters));
+//                    log_info("Created "
+//                             << utils::media_type_to_string(media_type)
+//                             << " stream in "
+//                             << sink->mediaResourceLocator());
+//                }
+//            }
+//            output_streams = getOutputStreams(media_type);
+//        }
+//        if (output_streams.empty()) {
+//            log_warning("Ignoring: " << *best_stream);
+//        }
+//        /* Трансляция наилучшего потока на все потоки выхода того же медиа-типа */
+//        for (auto&& out_stream : output_streams) {
+//            try_to(_map->addRoute(best_stream, out_stream));
+//            best_stream->setUsed(true);
+//            out_stream->setUsed(true);
+//        }
+//        return Code::OK;
     }
 
     FormatContextList Pipeline::contexts() const {
@@ -468,13 +468,13 @@ namespace fpp {
         return sink_list;
     }
 
-    DecoderList Pipeline::decoders() const {
-        DecoderList decoder_list;
-        for (auto&& processor : _data_processors) {
-            auto decoder = dynamic_cast<Decoder*>(processor);
-            if (inited_ptr(decoder)) { decoder_list.push_back(decoder); }
-        }
-        return decoder_list;
-    }
+//    DecoderList Pipeline::decoders() const {
+//        DecoderList decoder_list;
+//        for (auto&& processor : _data_processors) {
+//            auto decoder = dynamic_cast<Decoder*>(processor);
+//            if (inited_ptr(decoder)) { decoder_list.push_back(decoder); }
+//        }
+//        return decoder_list;
+//    }
 
 } // namespace fpp

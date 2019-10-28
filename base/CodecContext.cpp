@@ -15,7 +15,7 @@ namespace fpp {
     }
 
     Code CodecContext::init() {
-        auto codec = _params->codec();
+        auto codec = _stream->parameters->codec();
         return_if(not_inited_ptr(codec), Code::INVALID_INPUT);
         {
             _codec_context = avcodec_alloc_context3(codec);

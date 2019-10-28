@@ -1,6 +1,9 @@
 #include "PacketProducer.hpp"
 
-PacketProducer::PacketProducer()
-{
+namespace fpp {
 
-}
+    PacketProducer::PacketProducer() {
+        setName("PacketProducer");
+    }
+
+} // namespace fpp

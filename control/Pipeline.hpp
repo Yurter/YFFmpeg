@@ -78,8 +78,8 @@ namespace fpp {
         FormatContextList   contexts()      const;
         MediaSourceList     sources()       const;
         MediaSinkList       sinks()         const;
-        DecoderList         decoders()      const;
-        EncoderList         encoders()      const;
+//        DecoderList         decoders()      const;
+//        EncoderList         encoders()      const;
         FrameProcessor      refis()         const;
 
     private:
