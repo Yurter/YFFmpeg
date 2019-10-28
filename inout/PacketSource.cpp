@@ -7,6 +7,10 @@ namespace fpp {
         try_throw(setPreFunction(std::bind(&PacketSource::readPacket, this)));
     }
 
+    PacketSource::~PacketSource() {
+        //TODO
+    }
+
     Code PacketSource::readPacket() {
         Packet packet;
         try_to(readInputData(packet));

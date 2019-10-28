@@ -14,6 +14,7 @@ namespace fpp {
     }
 
     Code Filter::init() {
+        return_if(inited(), Code::INVALID_CALL_ORDER);
         auto out_params = dynamic_cast<const VideoParameters*>(_input_data_params);
 
         char args[512];

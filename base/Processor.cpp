@@ -2,10 +2,40 @@
 
 namespace fpp {
 
+    Processor::Processor() :
+        _opened(false)
+    {
+        setName("Processor");
+    }
+
+    Processor::~Processor() {
+        //TODO
+    }
+
+    Code Processor::open() {
+        return Code::NOT_IMPLEMENTED;
+    }
+
+    Code Processor::close() {
+        return Code::NOT_IMPLEMENTED;
+    }
+
+    bool Processor::opened() const {
+        return _opened;
+    }
+
+    bool Processor::closed() const {
+        return !_opened;
+    }
+
+    void Processor::setOpened(bool opened) {
+        _opened = opened;
+    }
+
     Code fpp::Processor::connectTo(fpp::Processor* other) {
         auto ptr = dynamic_cast<const Processor*>(other);
         return_if(not_inited_ptr(ptr), Code::INVALID_INPUT);
-        _next_processor = ptr;
+        _next_processor = other;
         return Code::OK;
     }
 

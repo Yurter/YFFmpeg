@@ -33,6 +33,7 @@ namespace fpp {
 
     private:
 
+        bool                _opened;
         int64_t             _skip_types;
         int64_t             _discard_types;
 

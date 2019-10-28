@@ -8,7 +8,11 @@ namespace fpp {
     class FrameProducer : public TemplateProcessor<Packet,Frame> {
 
     public:
+
+        FrameProducer();
+
         using FrameProducerList = std::list<FrameProducer*>;
+
     };
 
 } // namespace fpp

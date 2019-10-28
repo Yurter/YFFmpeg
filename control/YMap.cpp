@@ -4,8 +4,7 @@
 
 namespace fpp {
 
-    YMap::YMap()
-    {
+    YMap::YMap() {
         setName("YMap");
     }
 

@@ -51,8 +51,8 @@ namespace fpp {
     //TODO
     void Pipeline::setRoute(MediaSource* input_context, int64_t input_stream_index
                             , MediaSink* output_context, int64_t output_stream_index) {
-        _metamap.push_back({{ input_context->inputFormatContext().uid(), input_stream_index }
-                        , { output_context->outputFormatContext().uid(), output_stream_index }});
+//        _metamap.push_back({{ input_context->inputFormatContext().uid(), input_stream_index }
+//                        , { output_context->outputFormatContext().uid(), output_stream_index }});
     }
 
     void Pipeline::dump() const {
@@ -68,7 +68,7 @@ namespace fpp {
         try_to(openSinks());
         try_to(determineSequences());
         try_to(initRefi());
-        try_to(initCodec());
+//        try_to(initCodec());
         try_to(startProcesors());
         dump();
         setInited(true);
@@ -391,16 +391,17 @@ namespace fpp {
 //        default:
 //            return nullptr;
 //        }
+        return nullptr; //debug return
     }
 
     StreamList Pipeline::getOutputStreams(MediaType media_type) {
-//        StreamList output_streams;
+        StreamList output_streams;
 //        for (auto&& sink : sinks()) {
 //            for (auto&& video_stream : sink->streams(media_type)) {
 //                output_streams.push_back(video_stream);
 //            }
 //        }
-//        return output_streams;
+        return output_streams;
     }
 
     Code Pipeline::connectIOStreams(MediaType media_type) {
@@ -438,7 +439,7 @@ namespace fpp {
 //            best_stream->setUsed(true);
 //            out_stream->setUsed(true);
 //        }
-//        return Code::OK;
+        return Code::OK;
     }
 
     FormatContextList Pipeline::contexts() const {

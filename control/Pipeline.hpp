@@ -52,7 +52,7 @@ namespace fpp {
 
         Code                initMap();
         Code                initRefi();
-        Code                initCodec();
+//        Code                initCodec();
         Code                initContext();
 
 //        Code                openContext();
@@ -80,7 +80,7 @@ namespace fpp {
         MediaSinkList       sinks()         const;
 //        DecoderList         decoders()      const;
 //        EncoderList         encoders()      const;
-        FrameProcessor      refis()         const;
+//        FrameProcessor      refis()         const;
 
     private:
 

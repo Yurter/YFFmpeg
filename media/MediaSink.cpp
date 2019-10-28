@@ -60,4 +60,9 @@ namespace fpp {
         return Code::OK;
     }
 
+    Code MediaSink::onStop() {
+        try_to(_output_format_context.close()); // Check it
+        return Code::OK;
+    }
+
 } // namespace fpp

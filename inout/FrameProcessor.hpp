@@ -10,6 +10,8 @@ namespace fpp {
 
     public:
 
+        FrameProcessor();
+
 //        FrameProcessor(const std::string mrl, IOType preset = IOType::Auto); ///< mrl - media resource locator.
 //        FrameProcessor(const FrameProcessor& other)  = delete;
 //        FrameProcessor(const FrameProcessor&& other) = delete;

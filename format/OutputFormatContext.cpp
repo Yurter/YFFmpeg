@@ -8,6 +8,10 @@ namespace fpp {
         setName("OutputFormatContext");
     }
 
+    OutputFormatContext::~OutputFormatContext() {
+        // TODO
+    }
+
     Code OutputFormatContext::init() {
         try_to(createContext());
         switch (_preset) {

@@ -11,8 +11,6 @@ namespace fpp {
         virtual ~Filter() override;
 
         virtual Code init() override;
-        Code open();
-        Code close();
 
     private:
 

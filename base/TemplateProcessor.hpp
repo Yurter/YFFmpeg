@@ -21,7 +21,7 @@ namespace fpp {
             //stopInOutThread();
         }
 
-        bool buferIsEmpty() const {
+        bool buferIsEmpty() {
             return _input_queue.empty();
         }
 

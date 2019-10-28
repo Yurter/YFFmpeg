@@ -99,8 +99,12 @@ namespace fpp {
         return Code::NOT_INITED;
     }
 
+    Code Thread::onStart() {
+        return Code::NOT_INITED;
+    }
+
     Code Thread::onStop() {
-        return Code::OK;
+        return Code::NOT_INITED;
     }
 
 } // namespace fpp

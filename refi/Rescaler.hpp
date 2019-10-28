@@ -12,8 +12,6 @@ namespace fpp {
         virtual ~Rescaler() override;
 
         virtual Code        init() override;
-        virtual Code        open() override;
-        virtual Code        close() override;
         virtual Code        processInputData(Frame input_data) override;
 
     private:

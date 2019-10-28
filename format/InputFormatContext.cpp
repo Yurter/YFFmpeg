@@ -30,6 +30,10 @@ namespace fpp {
         return Code::OK;
     }
 
+    std::string InputFormatContext::toString() const {
+        return "TODO";
+    }
+
     Code fpp::InputFormatContext::createContext() {
         _format_context = avformat_alloc_context();
         if (not_inited_ptr(_format_context)) {
