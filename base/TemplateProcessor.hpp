@@ -37,12 +37,12 @@ namespace fpp {
         virtual Code writeOutputData(outType output_data) { UNUSED(output_data);  return Code::NOT_IMPLEMENTED; }
 
         Code setPreFunction(const IOFunction pre_function) {
-            return_if(pre_function, Code::ERR);
+            return_if_not(pre_function, Code::ERR);
             _pre_function = pre_function;
         }
 
         Code setPostFunction(const IOFunction post_function) {
-            return_if(post_function, Code::ERR);
+            return_if_not(post_function, Code::ERR);
             _post_function = post_function;
         }
 

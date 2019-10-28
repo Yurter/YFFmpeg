@@ -3,7 +3,7 @@
 namespace fpp {
 
     PacketSource::PacketSource() {
-        setName("PacketProducer");
+        setName("PacketSource");
         try_throw(setPreFunction(std::bind(&PacketSource::readPacket, this)));
     }
 
