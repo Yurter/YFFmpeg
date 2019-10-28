@@ -47,7 +47,7 @@ namespace fpp {
 
         virtual Code        createContext() = 0;
         virtual Code        openContext()   = 0;
-        virtual Code        closeContext()   = 0;
+        virtual Code        closeContext()  = 0;
 
         Code                parseFormatContext();
 

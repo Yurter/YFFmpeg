@@ -69,7 +69,7 @@ int main() {
 //        auto sink_restream = new MediaSink("group_video/restream.flv");
 //        pipeline.addElement(sink_restream);
 
-        start_debug_timeout(source, 65);
+//        start_debug_timeout(source, 65); /* Таймаут для RTSP */
 
         if (auto ret = pipeline.start(); ret != Code::OK) {
             static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));

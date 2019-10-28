@@ -221,7 +221,7 @@ namespace fpp {
             StreamPair in_out_streams { in_stream, out_stream };
             ProcessorSequence sequence;
 
-            sequence.push_back(static_cast<Processor*>(in_stream->context()));
+            sequence.push_back(static_cast<Proce222ssor*>(in_stream->context()));
             sequence.push_back(_map);
 
             bool processing_required =
