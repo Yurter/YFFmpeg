@@ -4,6 +4,7 @@ namespace fpp {
 
     InputFormatContext::InputFormatContext(const std::string mrl, IOType preset) :
         FormatContext(mrl, preset)
+      , _input_format(nullptr)
     {
         setName("InputFormatContext");
     }
@@ -71,7 +72,7 @@ namespace fpp {
         return Code::INVALID_CALL_ORDER;
     }
 
-    Code InputFormatContext::guessInputFromat(){
+    Code InputFormatContext::guessInputFromat() {
         auto short_name = utils::guess_format_short_name(_media_resource_locator);
         AVInputFormat* input_format = av_find_input_format(short_name.c_str());
         if (input_format == nullptr) {
