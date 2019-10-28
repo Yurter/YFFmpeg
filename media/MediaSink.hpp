@@ -16,7 +16,7 @@ namespace fpp {
         virtual Code        close() override;
         virtual std::string toString() const override;
 
-        OutputFormatContext& outputFormatContext() const;
+        OutputFormatContext& outputFormatContext();
 
     private:
 

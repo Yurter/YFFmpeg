@@ -39,6 +39,10 @@ namespace fpp {
         return _output_format_context.toString();
     }
 
+    OutputFormatContext& MediaSink::outputFormatContext() {
+        return _output_format_context;
+    }
+
     Code MediaSink::processInputData(Packet input_data) {
         if (input_data.isVideo()) { //Debug if
             try_to(_output_format_context.stream(input_data.streamIndex())->stampPacket(input_data));

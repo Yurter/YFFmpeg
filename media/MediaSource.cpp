@@ -42,6 +42,10 @@ namespace fpp {
         return str;
     }
 
+    InputFormatContext& MediaSource::inputFormatContext() {
+        return _input_format_context;
+    }
+
     Code MediaSource::readInputData(Packet& input_data) {
         if (int ret = av_read_frame(_input_format_context.mediaFormatContext(), &input_data.raw()); ret != 0) { //TODO parse return value
             if (ret == AVERROR_EOF) {
