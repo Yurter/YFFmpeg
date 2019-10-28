@@ -63,7 +63,8 @@ namespace fpp {
         Code                openMediaSources();
         Code                openMediaSinks();
 
-        Code                closeContexts();
+        Code                closeMediaSources();
+        Code                closeMediaSinks();
         Code                startProcesors();
         Code                stopProcesors();
         Code                joinProcesors();

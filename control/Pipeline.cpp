@@ -7,7 +7,7 @@ namespace fpp {
         _map(new YMap)
     {
         setName("Pipeline");
-        _data_processors.push_back(_map);
+        _processors.push_back(_map);
     }
 
     Pipeline::~Pipeline() {
@@ -18,7 +18,8 @@ namespace fpp {
     bool Pipeline::stop() {
         log_info("Stopping...");
         try_to(stopProcesors());
-        try_to(closeContexts());
+        try_to(closeMediaSources());
+        try_to(closeMediaSinks());
         try_to(joinProcesors());
         try_to(stop_log());
         log_info("Processing finished.");
@@ -178,6 +179,22 @@ namespace fpp {
         return Code::OK;
     }
 
+    Code Pipeline::closeMediaSources() {
+        for (auto&& processor : _processors) {
+            auto source = dynamic_cast<MediaSource*>(processor);
+            if (inited_ptr(source)) { try_to(source->close()); }
+        }
+        return Code::OK;
+    }
+
+    Code Pipeline::closeMediaSinks() {
+        for (auto&& processor : _processors) {
+            auto sink = dynamic_cast<MediaSink*>(processor);
+            if (inited_ptr(sink)) { try_to(sink->close()); }
+        }
+        return Code::OK;
+    }
+
 //    Code Pipeline::openContext() {
 //        for (auto&& processor : _data_processors) {
 //            auto context = dynamic_cast<Context*>(processor);
@@ -186,16 +203,16 @@ namespace fpp {
 //        return Code::OK;
 //    }
 
-    Code Pipeline::closeContexts() {
-        for (auto&& processor : _data_processors) {
-            auto context = dynamic_cast<FormatContext*>(processor);
-            if (inited_ptr(context)) { try_to(context->close()); }
-        }
-        return Code::OK;
-    }
+//    Code Pipeline::closeContexts() {
+//        for (auto&& processor : _processors) {
+//            auto context = dynamic_cast<FormatContext*>(processor);
+//            if (inited_ptr(context)) { try_to(context->close()); }
+//        }
+//        return Code::OK;
+//    }
 
     Code Pipeline::startProcesors() {
-        for (auto&& processor : _data_processors) {
+        for (auto&& processor : _processors) {
             auto thread_processor = static_cast<Thread*>(processor);
             try_to(thread_processor->start());
         }
@@ -203,7 +220,7 @@ namespace fpp {
     }
 
     Code Pipeline::stopProcesors() {
-        for (auto&& processor : _data_processors) {
+        for (auto&& processor : _processors) {
             auto thread_processor = static_cast<Thread*>(processor);
             try_to(thread_processor->quit());
         }
@@ -211,7 +228,7 @@ namespace fpp {
     }
 
     Code Pipeline::joinProcesors() {
-        for (auto&& processor : _data_processors) {
+        for (auto&& processor : _processors) {
             auto thread_processor = static_cast<Thread*>(processor);
             thread_processor->join();
         }
@@ -339,15 +356,27 @@ namespace fpp {
          * |    Stream #0:0: Video: h264, 1920x1080, 400 kb/s
          * |    Stream #0:1: Audio: aac, 44100 Hz, stereo, 128 kb/s
         */
-        for (auto&& context : contexts()) {
+        for (auto&& source : mediaSources()) {
             dump_str += "\n";
             dump_str += TAB;
-            dump_str += context->toString();
-            for (auto i = 0; i < context->numberStream(); i++) {
+            dump_str += source->toString();
+            for (auto i = 0; i < source->inputFormatContext().numberStream(); i++) {
                 dump_str += ":\n";
                 dump_str += TAB;
                 dump_str += TAB;
-                dump_str += context->stream(i)->toString(); //TODO tut
+                dump_str += source->inputFormatContext().stream(i)->toString(); //TODO tut
+            }
+        }
+
+        for (auto&& sink : mediaSinks()) {
+            dump_str += "\n";
+            dump_str += TAB;
+            dump_str += sink->toString();
+            for (auto i = 0; i < sink->outputFormatContext().numberStream(); i++) {
+                dump_str += ":\n";
+                dump_str += TAB;
+                dump_str += TAB;
+                dump_str += sink->outputFormatContext().toString(); //TODO tut
             }
         }
 
