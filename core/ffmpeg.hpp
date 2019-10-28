@@ -130,11 +130,22 @@ namespace fpp {
 #define current_thread_id() std::this_thread::get_id()
 
 /* ? */
+//#define try_to(x)   do { auto ret = x;\
+//                        if (utils::exit_code(ret)) {\
+//                            log_error("Function " << (#x)\
+//                            << " failed with code: " << ret\
+//                            << " - " << utils::code_to_string(ret));\
+//                            return ret;\
+//                        }\
+//                    } while (false)
+
 #define try_to(x)   do { auto ret = x;\
                         if (utils::exit_code(ret)) {\
-                            log_error("Function " << (#x)\
-                            << " failed with code: " << ret\
-                            << " - " << utils::code_to_string(ret));\
+                            if (utils::error_code(ret)) {\
+                                log_error("Function " << (#x)\
+                                << " failed with code: " << ret\
+                                << " - " << utils::code_to_string(ret));\
+                            }\
                             return ret;\
                         }\
                     } while (false)
