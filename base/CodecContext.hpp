@@ -4,12 +4,12 @@
 
 namespace fpp {
 
-    class Codec : public Object {
+    class CodecContext : public Object {
 
     public:
 
-        Codec(Stream* stream, CodecType type);
-        virtual ~Codec() override;
+        CodecContext(Stream* stream, CodecType type);
+        virtual ~CodecContext() override;
 
         virtual Code initParams() = 0;
         virtual Code init() override;

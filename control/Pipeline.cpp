@@ -17,10 +17,10 @@ namespace fpp {
 
     bool Pipeline::stop() {
         log_info("Stopping...");
-        stopProcesors();
-        closeContexts();
-        joinProcesors();
-        stop_log();
+        try_to(stopProcesors());
+        try_to(closeContexts());
+        try_to(joinProcesors());
+        try_to(stop_log());
         log_info("Processing finished.");
         return true;
     }
@@ -130,7 +130,7 @@ namespace fpp {
 
     Code Pipeline::initRefi() {
         for (auto&& processor : _data_processors) {
-            auto refi = dynamic_cast<Refi*>(processor);
+            auto refi = dynamic_cast<FrameProcessor*>(processor);
             if (inited_ptr(refi)) { try_to(refi->init()); }
         }
         return Code::OK;
@@ -219,7 +219,7 @@ namespace fpp {
             StreamPair in_out_streams { in_stream, out_stream };
             ProcessorSequence sequence;
 
-            sequence.push_back(in_stream->context());
+            sequence.push_back(static_cast<Processor*>(in_stream->context()));
             sequence.push_back(_map);
 
             bool processing_required =
@@ -280,7 +280,7 @@ namespace fpp {
                 }
             }
 
-            sequence.push_back(out_stream->context());
+            sequence.push_back(static_cast<Processor*>(out_stream->context()));
 
             for (auto processor_it = sequence.begin(); processor_it != sequence.end(); processor_it++) {
                 auto next_processor_it = std::next(processor_it);
@@ -359,7 +359,7 @@ namespace fpp {
                 if (elem->is("YMap")) { continue; }
                 dump_str += elem->name();
                 if (elem->is("Source") || elem->is("Sink")) {
-                    auto context = dynamic_cast<Context*>(elem);
+                    auto context = dynamic_cast<FormatContext*>(elem);
                     dump_str += "[" + std::to_string(context->uid())
                             + ":"
                             + std::to_string(i-1) + "]"; //TODO stream_index, брать из _stream_map->streamMap();

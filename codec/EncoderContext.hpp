@@ -1,17 +1,17 @@
 #pragma once
 #include "base/TemplateProcessor.hpp"
-#include "base/Codec.hpp"
+#include "base/CodecContext.hpp"
 #include "base/Frame.hpp"
 #include "base/Packet.hpp"
 
 namespace fpp {
 
-    class Encoder : /*public TemplateProcessor<Frame,Packet>,*/ public Codec {
+    class EncoderContext : public CodecContext {
 
     public:
 
-        Encoder(Stream* stream);
-        virtual ~Encoder() override;
+        EncoderContext(Stream* stream);
+        virtual ~EncoderContext() override;
 
         Code                encode(Frame input_frame, Packet& output_packet);
 
@@ -21,6 +21,6 @@ namespace fpp {
 
     };
 
-    using EncoderList = std::list<Encoder*>;
+    using EncoderContextList = std::list<EncoderContext*>;
 
 } // namespace fpp

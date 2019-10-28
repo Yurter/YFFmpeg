@@ -7,10 +7,13 @@ CONFIG += c++17
 QMAKE_CXXFLAGS += /std:c++latest #Домашний креатор не может использовать c++17 атрибут nodiscard без этого флага
 
 SOURCES += \
-    base/Codec.cpp \
+    base/CodecContext.cpp \
+    codec/DecoderContext.cpp \
+    codec/EncoderContext.cpp \
     format/InputFormatContext.cpp \
     format/OutputFormatContext.cpp \
     core/Exception.cpp \
+    inout/FrameProducer.cpp \
     inout/PacketProcessor.cpp \
     base/Filter.cpp \
     inout/FrameProcessor.cpp \
@@ -20,9 +23,8 @@ SOURCES += \
     core/Object.cpp \
     base/Processor.cpp \
     core/Thread.cpp \
-    codec/Decoder.cpp \
-    codec/Encoder.cpp \
     inout/FrameSource.cpp \
+    inout/PacketProducer.cpp \
     media/MediaSink.cpp \
     media/MediaSource.cpp \
     inout/PacketSink.cpp \
@@ -46,15 +48,18 @@ SOURCES += \
     refi/VideoFilter.cpp
 
 HEADERS += \
+    base/CodecContext.hpp \
+    codec/DecoderContext.hpp \
+    codec/EncoderContext.hpp \
     format/InputFormatContext.hpp \
     format/OutputFormatContext.hpp \
     core/AsyncQueue.hpp \
-    base/Codec.hpp \
     base/Data.hpp \
     base/FormatContext.hpp \
     base/TemplateProcessor.hpp \
     base/TemplateProcessor.hpp \
     core/Exception.hpp \
+    inout/FrameProducer.hpp \
     inout/PacketProcessor.hpp \
     base/Filter.hpp \
     inout/FrameProcessor.hpp \
@@ -65,9 +70,8 @@ HEADERS += \
     base/Stream.hpp \
     core/Thread.hpp \
     core/utils.hpp \
-    codec/Decoder.hpp \
-    codec/Encoder.hpp \
     inout/FrameSource.hpp \
+    inout/PacketProducer.hpp \
     media/MediaSink.hpp \
     media/MediaSource.hpp \
     inout/PacketSink.hpp \
@@ -84,7 +88,6 @@ HEADERS += \
     refi/AudioFilter.hpp \
     refi/Resampler.hpp \
     core/ffmpeg.hpp \
-    base/Codec.hpp \
     base/Frame.hpp \
     base/Packet.hpp \
     base/Parameters.hpp \

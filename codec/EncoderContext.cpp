@@ -1,18 +1,18 @@
-#include "Encoder.hpp"
+#include "EncoderContext.hpp"
 
 namespace fpp {
 
-    Encoder::Encoder(Stream* stream) :
-        Codec(stream, CodecType::Encoder)
+    EncoderContext::EncoderContext(Stream* stream) :
+        CodecContext(stream, CodecType::Encoder)
     {
-        setName("Encoder");
+        setName("EncoderContext");
     }
 
-    Encoder::~Encoder() {
+    EncoderContext::~EncoderContext() {
         //
     }
 
-    Code Encoder::encode(Frame input_frame, Packet& output_packet) {
+    Code EncoderContext::encode(Frame input_frame, Packet& output_packet) {
         try_to(output_packet.init());
         output_packet.setType(_stream->type());
         int ret;
@@ -32,7 +32,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Encoder::initParams() {
+    Code EncoderContext::initParams() {
         utils::parameters_to_context(_stream->parameters, _codec_context);
         utils::parameters_to_avcodecpar(_stream->parameters, _stream->codecParameters());
         if (avcodec_parameters_to_context(_codec_context, _stream->codecParameters()) < 0) {

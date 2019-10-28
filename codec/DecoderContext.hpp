@@ -1,17 +1,17 @@
 #pragma once
 #include "base/TemplateProcessor.hpp"
-#include "base/Codec.hpp"
+#include "base/CodecContext.hpp"
 #include "base/Frame.hpp"
 #include "base/Packet.hpp"
 
 namespace fpp {
 
-    class Decoder : public Codec {
+    class DecoderContext : public CodecContext {
 
     public:
 
-        Decoder(Stream* stream);
-        virtual ~Decoder() override;
+        DecoderContext(Stream* stream);
+        virtual ~DecoderContext() override;
 
         Code                decode(Packet input_packet, Frame& output_frame);
 
@@ -21,6 +21,6 @@ namespace fpp {
 
     };
 
-    using DecoderList = std::list<Decoder*>;
+    using DecoderContextList = std::list<DecoderContext*>;
 
 } // namespace fpp

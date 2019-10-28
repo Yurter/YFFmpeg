@@ -1,8 +1,8 @@
 #pragma once
 #include "media/MediaSource.hpp"
 #include "media/MediaSink.hpp"
-#include "codec/Decoder.hpp"
-#include "codec/Encoder.hpp"
+#include "codec/DecoderContext.hpp"
+#include "codec/EncoderContext.hpp"
 #include "refi/Rescaler.hpp"
 #include "refi/Resampler.hpp"
 #include "refi/VideoFilter.hpp"
@@ -17,7 +17,8 @@ namespace fpp {
     using MetaRoute = std::pair<MetaStream,MetaStream>;
     using MetaMap = std::list<MetaRoute>;
 
-    using ProcessorSequence = std::list<Object*>;
+//    using ProcessorSequence = std::list<Object*>;
+    using ProcessorSequence = std::list<Processor*>;
 
     class Pipeline : public Thread {
 
@@ -79,14 +80,14 @@ namespace fpp {
         MediaSinkList       sinks()         const;
         DecoderList         decoders()      const;
         EncoderList         encoders()      const;
-        RefiList            refis()         const;
+        FrameProcessor      refis()         const;
 
     private:
 
         ProcessorList       _data_processors;
 
                                          // DataFlow? Pipe? Pipeline?
-        std::list<std::list<Object*>>      _processor_sequences; //TODO перенести внутрь YMap ?
+        std::list<ProcessorSequence>      _processor_sequences; //TODO перенести внутрь YMap ?
 
         YMap*               _map;
 

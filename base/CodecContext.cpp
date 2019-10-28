@@ -1,20 +1,20 @@
-#include "Codec.hpp"
+#include "CodecContext.hpp"
 
 namespace fpp {
 
-    Codec::Codec(Stream* stream, CodecType type) :
+    CodecContext::CodecContext(Stream* stream, CodecType type) :
         _stream(stream)
       , _codec_context(nullptr)
       , _type(type)
     {
-        setName("Codec");
+        setName("CodecContext");
     }
 
-    Codec::~Codec() {
+    CodecContext::~CodecContext() {
         try_throw(close());
     }
 
-    Code Codec::init() {
+    Code CodecContext::init() {
         auto codec = _stream->parameters->codec();
         return_if(not_inited_ptr(codec), Code::INVALID_INPUT);
         {
@@ -31,7 +31,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Codec::open() {
+    Code CodecContext::open() {
         auto codec = _stream->parameters->codec();
         if (int ret = avcodec_open2(_codec_context, codec, nullptr); ret != 0) {
             std::string codec_type = av_codec_is_decoder(codec) ? "decoder" : "encoder";
@@ -48,7 +48,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Codec::close() {
+    Code CodecContext::close() {
         if (inited_ptr(_codec_context)) {
             // использовать ? avcodec_free_context(_codec_context)
             avcodec_close(_codec_context);
@@ -56,13 +56,13 @@ namespace fpp {
         return Code::OK;
     }
 
-    std::string Codec::toString() const {
+    std::string CodecContext::toString() const {
         std::string str = std::string(_codec_context->codec->name)
                 + " codec";
         return str;
     }
 
-    AVCodecContext *Codec::codecContext() {
+    AVCodecContext* CodecContext::codecContext() {
         return _codec_context;
     }
 

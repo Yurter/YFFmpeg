@@ -1,18 +1,18 @@
-#include "Decoder.hpp"
+#include "DecoderContext.hpp"
 
 namespace fpp {
 
-    Decoder::Decoder(Stream *stream) :
-        Codec(stream, CodecType::Decoder)
+    DecoderContext::DecoderContext(Stream *stream) :
+        CodecContext(stream, CodecType::Decoder)
     {
-        setName("Decoder");
+        setName("DecoderContext");
     }
 
-    Decoder::~Decoder() {
+    DecoderContext::~DecoderContext() {
         //
     }
 
-    Code Decoder::decode(Packet input_packet, Frame& output_frame) {
+    Code DecoderContext::decode(Packet input_packet, Frame& output_frame) {
         if (!input_packet.empty()) {
             if (int ret = avcodec_send_packet(_codec_context, &input_packet.raw()); ret != 0) {
                 char errstr[1024];
@@ -44,7 +44,7 @@ namespace fpp {
         }
     }
 
-    Code Decoder::initParams() {
+    Code DecoderContext::initParams() {
         utils::parameters_to_avcodecpar(_stream->parameters, _stream->codecParameters());
         if (avcodec_parameters_to_context(_codec_context, _stream->codecParameters()) < 0) {
             log_error("avcodec_parameters_to_context failed");
