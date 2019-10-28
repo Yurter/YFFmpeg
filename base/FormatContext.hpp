@@ -74,6 +74,6 @@ namespace fpp {
 
     };
 
-    using FormatContextList = std::list<FormatContext*>;
+//    using FormatContextList = std::list<FormatContext*>;
 
 } // namespace fpp

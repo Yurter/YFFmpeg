@@ -40,7 +40,7 @@ namespace fpp {
     }
 
     void Pipeline::addElement(Object* element) {
-        _data_processors.push_back(element);
+        _processors.push_back(element);
     }
 
     //void Pipeline::setRoute(Stream* input_stream, Stream* output_stream)
@@ -61,16 +61,17 @@ namespace fpp {
 
     Code Pipeline::init() {
         log_info("Initialization started...");
-        try_to(checkFormatContexts());
-        try_to(initContext());
-        try_to(openSources());
-        try_to(initMap());
-        try_to(openSinks());
-        try_to(determineSequences());
-        try_to(initRefi());
-//        try_to(initCodec());
-        try_to(startProcesors());
-        dump();
+        try_to(checkFormatContexts());  /* Проверка на наличие входо-выходов                            */
+        try_to(initMedia());            /* Инициализация форматКонтекстов                               */
+        try_to(openMediaSources());     /* Открытие входов и формирование входных потоков               */
+        try_to(initMap());              /* Автоматический проброс потоков                               */
+        try_to(openMediaSinks());       /* Открытие выходов                                             */
+        try_to(determineSequences());   /* Формирование поледовательностей обработки входных потоков    */
+        try_to(initRefi());             /* Инициализация рефи                                           */
+        try_to(initCodec());            /* Инициализация кодеков                                        */
+        try_to(openCodec());            /* Открытие кодеков                                             */
+        try_to(startProcesors());       /* Запуск всех процессоров                                      */
+        dump();                         /* Дамп всей информации в лог                                   */
         setInited(true);
         log_warning(_map->toString());
         log_info("Processing started...");
@@ -79,7 +80,7 @@ namespace fpp {
 
     Code Pipeline::run() {
         bool all_processor_stopped = true;
-        for (auto&& processor : _data_processors) {
+        for (auto&& processor : _processors) {
             auto thread_processor = static_cast<Thread*>(processor);
             return_if(utils::error_code(thread_processor->exitCode())
                       , thread_processor->exitCode());
@@ -108,10 +109,17 @@ namespace fpp {
     }
 
     Code Pipeline::checkFormatContexts() {
-        return_if(sources().empty(),    Code::NOT_INITED);  //TODO throw YException("No source specified");
-        return_if(sinks().empty(),      Code::NOT_INITED);  //TODO throw YException("No destination specified");
+        return_if(mediaSources().empty(),   Code::NOT_INITED);  //TODO throw YException("No source specified");
+        return_if(mediaSinks().empty(),     Code::NOT_INITED);  //TODO throw YException("No destination specified");
         return Code::OK;
     }
+
+//    Code Pipeline::initProcessors() {
+//        for (auto&& proc : _processors) {
+//            try_to(proc->init());
+//        }
+//        return Code::OK;
+//    }
 
     Code Pipeline::initMap() {
         auto stream_map = _map->streamMap();
@@ -129,41 +137,41 @@ namespace fpp {
     }
 
     Code Pipeline::initRefi() {
-        for (auto&& processor : _data_processors) {
+        for (auto&& processor : _processors) {
             auto refi = dynamic_cast<FrameProcessor*>(processor);
             if (inited_ptr(refi)) { try_to(refi->init()); }
         }
         return Code::OK;
     }
 
-//    Code Pipeline::initCodec() {
-//        for (auto&& processor : _data_processors) {
-//            auto decoder = dynamic_cast<Decoder*>(processor);
-//            if (inited_ptr(decoder)) { try_to(decoder->init()); continue; }
-//            auto encoder = dynamic_cast<Encoder*>(processor);
-//            if (inited_ptr(encoder)) { try_to(encoder->init()); continue; }
-//        }
-//        return Code::OK;
-//    }
-
-    Code Pipeline::initContext() {
-        for (auto&& processor : _data_processors) {
-            auto context = dynamic_cast<FormatContext*>(processor);
-            if (inited_ptr(context)) { try_to(context->init()); }
-        }
+    Code Pipeline::initCodec() {
+        for (auto&& decoder : decoders()) { try_to(decoder->init()); }
+        for (auto&& encoder : encoders()) { try_to(encoder->init()); }
         return Code::OK;
     }
 
-    Code Pipeline::openSources() {
-        for (auto&& processor : _data_processors) {
+    Code Pipeline::initMedia() {
+        for (auto&& source : mediaSources()) { try_to(source->init()); }
+        for (auto&& sink   : mediaSinks())   { try_to(sink->init());   }
+        return Code::OK;
+    }
+
+    Code Pipeline::openCodec() {
+        for (auto&& decoder : decoders()) { try_to(decoder->open()); }
+        for (auto&& encoder : encoders()) { try_to(encoder->open()); }
+        return Code::OK;
+    }
+
+    Code Pipeline::openMediaSources() {
+        for (auto&& processor : _processors) {
             auto source = dynamic_cast<MediaSource*>(processor);
             if (inited_ptr(source)) { try_to(source->open()); }
         }
         return Code::OK;
     }
 
-    Code Pipeline::openSinks() {
-        for (auto&& processor : _data_processors) {
+    Code Pipeline::openMediaSinks() {
+        for (auto&& processor : _processors) {
             auto sink = dynamic_cast<MediaSink*>(processor);
             if (inited_ptr(sink)) { try_to(sink->open()); }
         }
@@ -442,40 +450,40 @@ namespace fpp {
         return Code::OK;
     }
 
-    FormatContextList Pipeline::contexts() const {
-        FormatContextList context_list;
-        for (auto&& processor : _data_processors) {
-            auto context = dynamic_cast<FormatContext*>(processor);
-            if (inited_ptr(context)) { context_list.push_back(context); }
-        }
-        return context_list;
-    }
-
-    MediaSourceList Pipeline::sources() const {
+    MediaSourceList Pipeline::mediaSources() const {
         MediaSourceList source_list;
-        for (auto&& processor : _data_processors) {
+        for (auto&& processor : _processors) {
             auto source = dynamic_cast<MediaSource*>(processor);
             if (inited_ptr(source)) { source_list.push_back(source); }
         }
         return source_list;
     }
 
-    MediaSinkList Pipeline::sinks() const {
+    MediaSinkList Pipeline::mediaSinks() const {
         MediaSinkList sink_list;
-        for (auto&& processor : _data_processors) {
+        for (auto&& processor : _processors) {
             auto sink = dynamic_cast<MediaSink*>(processor);
             if (inited_ptr(sink)) { sink_list.push_back(sink); }
         }
         return sink_list;
     }
 
-//    DecoderList Pipeline::decoders() const {
-//        DecoderList decoder_list;
-//        for (auto&& processor : _data_processors) {
-//            auto decoder = dynamic_cast<Decoder*>(processor);
-//            if (inited_ptr(decoder)) { decoder_list.push_back(decoder); }
-//        }
-//        return decoder_list;
-//    }
+    DecoderList Pipeline::decoders() const {
+        DecoderList decoder_list;
+        for (auto&& processor : _processors) {
+            auto decoder = dynamic_cast<Decoder*>(processor);
+            if (inited_ptr(decoder)) { decoder_list.push_back(decoder); }
+        }
+        return decoder_list;
+    }
+
+    EncoderList Pipeline::encoders() const {
+        EncoderList encoder_list;
+        for (auto&& processor : _processors) {
+            auto encoder = dynamic_cast<Encoder*>(processor);
+            if (inited_ptr(encoder)) { encoder_list.push_back(encoder); }
+        }
+        return encoder_list;
+    }
 
 } // namespace fpp

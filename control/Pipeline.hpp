@@ -1,8 +1,8 @@
 #pragma once
 #include "media/MediaSource.hpp"
 #include "media/MediaSink.hpp"
-#include "codec/DecoderContext.hpp"
-#include "codec/EncoderContext.hpp"
+#include "codec/Decoder.hpp"
+#include "codec/Encoder.hpp"
 #include "refi/Rescaler.hpp"
 #include "refi/Resampler.hpp"
 #include "refi/VideoFilter.hpp"
@@ -50,14 +50,18 @@ namespace fpp {
 
         Code                checkFormatContexts();
 
+//        Code                initProcessors();
+
         Code                initMap();
         Code                initRefi();
-//        Code                initCodec();
-        Code                initContext();
+        Code                initCodec();
+        Code                initMedia();
 
+
+        Code                openCodec();
 //        Code                openContext();
-        Code                openSources();
-        Code                openSinks();
+        Code                openMediaSources();
+        Code                openMediaSinks();
 
         Code                closeContexts();
         Code                startProcesors();
@@ -75,16 +79,15 @@ namespace fpp {
 
         Code                connectIOStreams(MediaType media_type);
 
-        FormatContextList   contexts()      const;
-        MediaSourceList     sources()       const;
-        MediaSinkList       sinks()         const;
-//        DecoderList         decoders()      const;
-//        EncoderList         encoders()      const;
+        MediaSourceList     mediaSources()  const;
+        MediaSinkList       mediaSinks()    const;
+        DecoderList         decoders()      const;
+        EncoderList         encoders()      const;
 //        FrameProcessor      refis()         const;
 
     private:
 
-        ProcessorList       _data_processors;
+        ProcessorList       _processors;
 
                                          // DataFlow? Pipe? Pipeline?
         std::list<ProcessorSequence>      _processor_sequences; //TODO перенести внутрь YMap ?

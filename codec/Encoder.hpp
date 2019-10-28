@@ -19,8 +19,8 @@ namespace fpp {
 
         EncoderContext      _encoder_context;
 
-        using EncoderList = std::list<Encoder*>;
-
     };
+
+    using EncoderList = std::list<Encoder*>;
 
 } // namespace fpp
