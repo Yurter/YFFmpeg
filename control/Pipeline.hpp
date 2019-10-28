@@ -59,7 +59,6 @@ namespace fpp {
 
 
         Code                openCodec();
-//        Code                openContext();
         Code                openMediaSources();
         Code                openMediaSinks();
 

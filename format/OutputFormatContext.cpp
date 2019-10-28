@@ -4,6 +4,7 @@ namespace fpp {
 
     OutputFormatContext::OutputFormatContext(const std::string mrl, IOType preset) :
         FormatContext(mrl, preset)
+      , _output_format(nullptr)
     {
         setName("OutputFormatContext");
     }
