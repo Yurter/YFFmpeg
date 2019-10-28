@@ -15,7 +15,7 @@ namespace fpp {
     }
 
     Code CodecContext::init() {
-        auto codec = _stream->parameters->codec();
+        auto codec = _params->codec();
         return_if(not_inited_ptr(codec), Code::INVALID_INPUT);
         {
             _codec_context = avcodec_alloc_context3(codec);
@@ -39,7 +39,7 @@ namespace fpp {
             return Code::ERR;
         }
         { /* Crutch */ //TODO
-            if (_stream->isAudio()) {
+            if (_stream->parameters->isAudio()) {
                 _codec_context->channel_layout = static_cast<uint64_t>(
                             av_get_default_channel_layout(_codec_context->channels)
                             );

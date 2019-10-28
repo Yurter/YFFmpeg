@@ -8,7 +8,9 @@ QMAKE_CXXFLAGS += /std:c++latest #Домашний креатор не може�
 
 SOURCES += \
     base/CodecContext.cpp \
+    codec/Decoder.cpp \
     codec/DecoderContext.cpp \
+    codec/Encoder.cpp \
     codec/EncoderContext.cpp \
     format/InputFormatContext.cpp \
     format/OutputFormatContext.cpp \
@@ -49,7 +51,9 @@ SOURCES += \
 
 HEADERS += \
     base/CodecContext.hpp \
+    codec/Decoder.hpp \
     codec/DecoderContext.hpp \
+    codec/Encoder.hpp \
     codec/EncoderContext.hpp \
     format/InputFormatContext.hpp \
     format/OutputFormatContext.hpp \

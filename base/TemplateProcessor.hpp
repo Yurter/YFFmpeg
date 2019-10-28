@@ -25,7 +25,7 @@ namespace fpp {
             return _input_queue.empty();
         }
 
-        virtual Code push(const Object* input_data) override {
+        virtual Code push(const Object* input_data) override final {
             return_if_not(_input_queue.wait_and_push(*static_cast<const inType*>(input_data)), Code::EXIT);
             return Code::OK;
         }

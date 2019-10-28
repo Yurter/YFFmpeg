@@ -2,14 +2,14 @@
 
 namespace fpp {
 
-    DecoderContext::DecoderContext(Stream *stream) :
+    DecoderContext::DecoderContext(Stream* stream) :
         CodecContext(stream, CodecType::Decoder)
     {
         setName("DecoderContext");
     }
 
     DecoderContext::~DecoderContext() {
-        //
+        // TODO
     }
 
     Code DecoderContext::decode(Packet input_packet, Frame& output_frame) {

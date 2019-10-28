@@ -9,7 +9,7 @@ namespace fpp {
     }
 
     EncoderContext::~EncoderContext() {
-        //
+        // TODO
     }
 
     Code EncoderContext::encode(Frame input_frame, Packet& output_packet) {
