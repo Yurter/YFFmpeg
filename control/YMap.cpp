@@ -58,6 +58,7 @@ namespace fpp {
     }
 
     Code YMap::processInputData(Packet input_data) {
+        log_info("work");
         try {
             auto out_index_list = _index_map.equal_range(input_data.streamUid());
             return_if(out_index_list.first == _index_map.end(), Code::INVALID_INPUT);

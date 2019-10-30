@@ -3,15 +3,16 @@
 
 namespace fpp {
 
-    FormatContext::FormatContext(const std::string mrl, IOType preset) :
-        _uid(utils::gen_context_uid()),
-        _media_resource_locator(mrl),
-        _opened(false),
-        _reopening_after_failure(false),
-        _reopening_timeout(INVALID_INT),
-        _artificial_delay(DEFAULT_INT),
-        _preset(preset),
-        _format_context(nullptr)
+    FormatContext::FormatContext(const std::string mrl, Object* media_ptr, IOType preset) :
+        _media_ptr(media_ptr)
+        , _uid(utils::gen_context_uid())
+        , _media_resource_locator(mrl)
+        , _opened(false)
+        , _reopening_after_failure(false)
+        , _reopening_timeout(INVALID_INT)
+        , _artificial_delay(DEFAULT_INT)
+        , _preset(preset)
+        , _format_context(nullptr)
     {
         setName("FormatContext");
     }

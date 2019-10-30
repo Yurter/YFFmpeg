@@ -75,15 +75,11 @@ namespace fpp {
 //        }
 
         virtual Code run() override final {
-            if (this->is("MediaSource")) {
-                int stop = 0;
-                stop = 34 * stop;
-            }
             if (_pre_function) { try_to(_pre_function()); }
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
             return_if(discardType(input_data.type()), Code::AGAIN);
-            if (input_data.empty() && !this->is("YMap") && !this->is("Source")) { //Source тоже?
+            if (input_data.empty() && !this->is("YMap") && !this->is("MediaSource")) { //MediaSource тоже?
                 sendOutputData(outType());
                 return Code::END_OF_FILE;
             }

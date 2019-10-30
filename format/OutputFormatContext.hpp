@@ -7,7 +7,7 @@ namespace fpp {
 
     public:
 
-        OutputFormatContext(const std::string mrl, IOType preset = IOType::Auto);
+        OutputFormatContext(const std::string mrl, Object* media_ptr, IOType preset = IOType::Auto);
         virtual ~OutputFormatContext() override;
 
         virtual Code        init()           override;

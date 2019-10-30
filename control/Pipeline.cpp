@@ -221,7 +221,7 @@ namespace fpp {
             StreamPair in_out_streams { in_stream, out_stream };
             ProcessorSequence sequence;
 
-            sequence.push_back(static_cast<Proce222ssor*>(in_stream->context()));
+            sequence.push_back(static_cast<Processor*>(static_cast<FormatContext*>(in_stream->context())->_media_ptr));//TODO Крайне кривая заплатка
             sequence.push_back(_map);
 
             bool processing_required =
@@ -288,7 +288,7 @@ namespace fpp {
                 auto next_processor_it = std::next(processor_it);
                 if (next_processor_it == sequence.end()) { break; }
                 log_debug((*processor_it)->name() + " connected to " + (*next_processor_it)->name());
-                if ((*processor_it)->is("Source")) {
+                if ((*processor_it)->is("MediaSource")) {
                     try_to(static_cast<MediaSource*>(*processor_it)->connectTo(*next_processor_it));
                 } else if ((*processor_it)->is("Encoder")) {
                     try_to(static_cast<Encoder*>(*processor_it)->connectTo(*next_processor_it));
@@ -300,8 +300,6 @@ namespace fpp {
                     try_to(static_cast<Resampler*>(*processor_it)->connectTo(*next_processor_it));
                 } else if ((*processor_it)->is("VideoFilter")) {
                     try_to(static_cast<VideoFilter*>(*processor_it)->connectTo(*next_processor_it));
-                } else if ((*processor_it)->is("YMap")) {
-                    continue;
                 } else {
                     log_warning("didn't connected: " + (*processor_it)->name());
                 }

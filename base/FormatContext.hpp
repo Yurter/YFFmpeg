@@ -9,7 +9,7 @@ namespace fpp {
 
     public:
 
-        FormatContext(const std::string mrl, IOType preset = IOType::Auto); ///< mrl - media resource locator.
+        FormatContext(const std::string mrl, Object* media_ptr, IOType preset = IOType::Auto); ///< mrl - media resource locator.
         FormatContext(const FormatContext& other)  = delete;
         FormatContext(const FormatContext&& other) = delete;
         virtual ~FormatContext() override;
@@ -43,6 +43,8 @@ namespace fpp {
         StreamVector        streams();                                  ///< Функция возвращает все потоки текущего контекста.
         StreamVector        streams(MediaType media_type);              ///< Функция потоки заданного медиа-типа.
 
+        Object*             _media_ptr;
+
     protected:
 
         virtual Code        createContext() = 0;
@@ -68,6 +70,7 @@ namespace fpp {
         int64_t             _reopening_timeout;
         int64_t             _artificial_delay;
         IOType              _preset;
+
 
         // FFmpeg
         AVFormatContext*	_format_context;

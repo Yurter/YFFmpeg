@@ -3,7 +3,7 @@
 namespace fpp {
 
     MediaSource::MediaSource(const std::string mrl, IOType preset) :
-        _input_format_context(mrl, preset)
+        _input_format_context(mrl, this, preset)
     {
         setName("MediaSource");
     }
@@ -55,6 +55,12 @@ namespace fpp {
             log_error("Cannot read source: \"" << _input_format_context.mediaResourceLocator() << "\". Error " << ret);
             return Code::ERR;
         }
+        //TODO этот код должен быть внутри processInputData()
+        auto packet_stream = _input_format_context.stream(input_data.raw().stream_index);
+        return_if(not_inited_ptr(packet_stream), Code::AGAIN);
+        return_if_not(packet_stream->used(), Code::AGAIN);
+        input_data.setType(packet_stream->type());
+        input_data.setStreamUid(packet_stream->uid());
         return Code::OK;
     }
 
@@ -62,11 +68,11 @@ namespace fpp {
         if (input_data.empty()) {
             return sendEofPacket();
         }
-        auto packet_stream = _input_format_context.stream(input_data.raw().stream_index);
-        return_if(not_inited_ptr(packet_stream), Code::AGAIN);
-        return_if_not(packet_stream->used(), Code::AGAIN);
-        input_data.setType(packet_stream->type());
-        input_data.setStreamUid(packet_stream->uid());
+//        auto packet_stream = _input_format_context.stream(input_data.raw().stream_index);
+//        return_if(not_inited_ptr(packet_stream), Code::AGAIN);
+//        return_if_not(packet_stream->used(), Code::AGAIN);
+//        input_data.setType(packet_stream->type());
+//        input_data.setStreamUid(packet_stream->uid());
 //        if (inited_int(_artificial_delay)) { utils::sleep_for(_artificial_delay); } //todo НЕ УДАЛЯТЬ
         return sendOutputData(input_data);
     }

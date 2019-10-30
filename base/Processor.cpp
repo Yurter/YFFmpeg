@@ -3,7 +3,8 @@
 namespace fpp {
 
     Processor::Processor() :
-        _opened(false)
+        _next_processor(nullptr)
+        , _opened(false)
     {
         setName("Processor");
     }
