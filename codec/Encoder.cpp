@@ -29,6 +29,7 @@ namespace fpp {
         return_if(utils::exit_code(ret), ret);
         if (ret == Code::OK) {
             try_to(sendOutputData(encoded_packet));
+//            log_info("work");
         }
         return ret;
     }
