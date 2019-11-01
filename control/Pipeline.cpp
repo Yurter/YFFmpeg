@@ -282,7 +282,8 @@ namespace fpp {
                 }
             }
 
-            sequence.push_back(static_cast<Processor*>(out_stream->context()));
+            sequence.push_back(static_cast<Processor*>(static_cast<FormatContext*>(out_stream->context())->_media_ptr));//TODO Крайне кривая заплатка
+//            sequence.push_back(static_cast<Processor*>(out_stream->context()));
 
             for (auto processor_it = sequence.begin(); processor_it != sequence.end(); processor_it++) {
                 auto next_processor_it = std::next(processor_it);
@@ -372,11 +373,17 @@ namespace fpp {
             for (auto&& elem : sequence) {
                 if (elem->is("YMap")) { continue; }
                 dump_str += elem->name();
-                if (elem->is("Source") || elem->is("Sink")) {
+                if (elem->is("Source") || elem->is("Sink")) { //TODO устаревший код
                     auto context = dynamic_cast<FormatContext*>(elem);
                     dump_str += "[" + std::to_string(context->uid())
                             + ":"
                             + std::to_string(i-1) + "]"; //TODO stream_index, брать из _stream_map->streamMap();
+                }
+                if (elem->is("Decoder")) {
+                    dump_str += " " + std::string(static_cast<Decoder*>(elem)->decoderContext()->codec->name);
+                }
+                if (elem->is("Encoder")) {
+                    dump_str += " " + std::string(static_cast<Encoder*>(elem)->encoderContext()->codec->name);
                 }
                 dump_str += delimeter;
             }

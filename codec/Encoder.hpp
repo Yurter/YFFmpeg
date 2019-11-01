@@ -15,6 +15,8 @@ namespace fpp {
         virtual Code        close() override;
         virtual Code        processInputData(Frame input_data) override;
 
+        AVCodecContext*     encoderContext();
+
     private:
 
         EncoderContext      _encoder_context;

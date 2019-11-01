@@ -33,4 +33,8 @@ namespace fpp {
         return ret;
     }
 
+    AVCodecContext* Encoder::encoderContext() {
+        return _encoder_context.codecContext();
+    }
+
 } // namespace fpp
