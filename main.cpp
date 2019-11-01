@@ -41,7 +41,7 @@ int main() {
     //    std::string mrl_dst = "remuxed.flv";
     //    std::string mrl_dst = "remuxed.avi";
 //        std::string mrl_dst = "filtered_video.mp4";
-         std::string mrl_dst = "result_video.flv";
+//         std::string mrl_dst = "result_video.flv";
 //        std::string mrl_dst = "filtered_video.avi";
     //    std::string mrl_dst = "camera_sound.aac";
 

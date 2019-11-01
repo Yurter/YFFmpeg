@@ -308,7 +308,9 @@ namespace fpp {
             auto it = sequence.begin();
             std::advance(it, 2);
             auto first_packet_processor = *it;
-            try_to(_map->setRoute(in_stream, dynamic_cast<PacketProcessor*>(first_packet_processor)));
+//            auto debug_0 = dynamic_cast<PacketProcessor*>(first_packet_processor);
+//            auto debug_1 = static_cast<PacketProcessor*>(first_packet_processor);
+            try_to(_map->setRoute(in_stream, dynamic_cast<Processor*>(first_packet_processor)));
             _processor_sequences.push_back(sequence);
         }
 
