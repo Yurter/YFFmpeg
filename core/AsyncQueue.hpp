@@ -10,7 +10,7 @@ namespace fpp {
 
     public:
 
-        AsyncQueue(uint64_t queue_capacity = 1000) :
+        AsyncQueue(uint64_t queue_capacity = 10) :
             _queue_capacity(queue_capacity)
             , _stop_wait(false) {}
         virtual ~AsyncQueue() { clear(); }
