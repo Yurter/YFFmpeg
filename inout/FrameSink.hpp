@@ -1,14 +1,18 @@
 #pragma once
-#include "base/TemplateProcessor.hpp"
-#include "base/Frame.hpp"
+#include "FrameProcessor.hpp"
 
 namespace fpp {
 
-    class FrameSink : public TemplateProcessor<Frame,Frame> {
+    class FrameSink : public FrameProcessor {
 
     public:
 
         FrameSink();
+        virtual ~FrameSink() override;
+
+    private:
+
+        Code                writeFrame();
 
     };
 

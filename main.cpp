@@ -55,8 +55,8 @@ int main() {
 //        auto sink_event = new MediaSink("group_video/event.flv");
 //        pipeline.addElement(sink_event);
 
-//        auto sink_opencv = new MediaSink("OpenCV processing", IOType::OpenCV);
-//        pipeline.addElement(sink_opencv);
+        auto sink_opencv = new OpenCVSink("OpenCV processing");
+        pipeline.addElement(sink_opencv);
 
 //        auto sink_youtube = new Sink("group_video/youtube.flv", IOType::YouTube);
 //        pipeline.addElement(sink_youtube);

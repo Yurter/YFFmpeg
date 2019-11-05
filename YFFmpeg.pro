@@ -16,6 +16,7 @@ SOURCES += \
     format/OutputFormatContext.cpp \
     core/Exception.cpp \
     inout/FrameProducer.cpp \
+    inout/FrameSink.cpp \
     inout/PacketProcessor.cpp \
     base/Filter.cpp \
     inout/FrameProcessor.cpp \
@@ -31,6 +32,7 @@ SOURCES += \
     media/MediaSource.cpp \
     inout/PacketSink.cpp \
     inout/PacketSource.cpp \
+    opencv/OpenCVSink.cpp \
     stream/AudioParameters.cpp \
     stream/AudioStream.cpp \
     control/Pipeline.cpp \
@@ -80,6 +82,7 @@ HEADERS += \
     media/MediaSource.hpp \
     inout/PacketSink.hpp \
     inout/PacketSource.hpp \
+    opencv/OpenCVSink.hpp \
     stream/AudioParameters.hpp \
     stream/AudioStream.hpp \
     control/Pipeline.hpp \

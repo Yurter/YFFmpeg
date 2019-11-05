@@ -1,4 +1,5 @@
 #pragma once
+#include "opencv/OpenCVSink.hpp"
 #include "media/MediaSource.hpp"
 #include "media/MediaSink.hpp"
 #include "codec/Decoder.hpp"
