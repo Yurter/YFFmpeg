@@ -17,8 +17,8 @@ namespace fpp {
     }
 
     Code OpenCVSink::init() {
-        cv::namedWindow(_sink_name, cv::WINDOW_AUTOSIZE);
-        cv::moveWindow(_sink_name, 0, 0);
+//        cv::namedWindow(_sink_name, cv::WINDOW_AUTOSIZE);
+//        cv::moveWindow(_sink_name, 0, 0);
         setInited(true);
         return Code::OK;
     }
@@ -28,7 +28,7 @@ namespace fpp {
     }
 
     Code OpenCVSink::close() {
-        cv::destroyWindow(name());
+        cv::destroyWindow(_sink_name);
         return Code::OK;
     }
 
@@ -46,7 +46,11 @@ namespace fpp {
     }
 
     Code OpenCVSink::writeOutputData(Frame output_data) {
-        cv::imshow(_sink_name, frameToMat(output_data));
+        static int counter = 0;
+//        cv::imwrite("debug_images/" + _sink_name + std::to_string(counter++)  + ".png", frameToMat(output_data));
+        cv::imshow("_sink_name", frameToMat(output_data).clone());
+//        utils::sleep_for(45);
+        cv::waitKey(5);
         return Code::OK;
     }
 

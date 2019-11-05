@@ -31,10 +31,10 @@ int main() {
         /* Запись rtsp с камеры в flv/YouTube */
 //         std::string mrl_src = "camera_one_hour_realtime.flv";
 //        std::string mrl_src = "camera_video_10.flv";
-        std::string mrl_src = "camera_video.flv";
+//        std::string mrl_src = "camera_video.flv";
 //        std::string mrl_src = "big_buck_bunny.mp4";
 //        std::string mrl_src = "Walking.mp4"; /* Не работает декодер! */
-//        std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12";
+        std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12"; //640x480
 //        std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
 
 //        std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/vtpz-spss-u4eq-4k0e";
@@ -55,16 +55,16 @@ int main() {
 //        auto sink_event = new MediaSink("group_video/event.flv");
 //        pipeline.addElement(sink_event);
 
-        auto video_params = new VideoParameters;
-        video_params->setWidth(500);
-        video_params->setHeight(500);
-        video_params->setFrameRate(25);
-        auto video_stream = new VideoStream(video_params);
-        auto sink_opencv = new OpenCVSink("OpenCV processing", video_stream);
-        pipeline.addElement(sink_opencv);
+//        auto video_params = new VideoParameters;
+//        video_params->setWidth(500);
+//        video_params->setHeight(500);
+//        video_params->setFrameRate(22);
+//        auto video_stream = new VideoStream(video_params);
+//        auto sink_opencv = new OpenCVSink("OpenCV processing", video_stream);
+//        pipeline.addElement(sink_opencv);
 
-//        auto sink_youtube = new MediaSink("group_video/youtube.flv", IOType::YouTube);
-//        pipeline.addElement(sink_youtube);
+        auto sink_youtube = new MediaSink("group_video/youtube.flv", IOType::YouTube);
+        pipeline.addElement(sink_youtube);
 
 //        auto sink_timelapse = new MediaSink("group_video/timelapse.flv", IOType::Timelapse);
 //        pipeline.addElement(sink_timelapse);
