@@ -26,27 +26,27 @@ namespace fpp {
             video_parameters->setWidth(1920);
             video_parameters->setHeight(1080);
             video_parameters->setAspectRatio({16,9});
-            video_parameters->setFrameRate(25); //TODO
+            video_parameters->setFrameRate(22); //TODO
             video_parameters->setBitrate(400'000);
             video_parameters->setCodec("libx264", CodecType::Encoder);
             video_parameters->setTimeBase({ 1, 1000 });
             video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
             video_parameters->setContextUid(uid());
             try_to(createStream(video_parameters));
-            /* Audio */
-            auto audio_parameters = new AudioParameters;
-            audio_parameters->setSampleRate(44'100);
-    //        audio_parameters->setSampleFormat(AV_SAMPLE_FMT_FLTP);
-            audio_parameters->setSampleFormat(AV_SAMPLE_FMT_FLTP);
-            audio_parameters->setBitrate(128'000);
-            audio_parameters->setChannelLayout(AV_CH_LAYOUT_STEREO);
-            audio_parameters->setChannels(2);
-            audio_parameters->setCodec("aac", CodecType::Encoder);
-    //        audio_parameters->setChannelLayout(AV_CH_LAYOUT_MONO);
-    //        audio_parameters->setChannels(1);
-    //        audio_parameters->setCodec("aac");
-            audio_parameters->setContextUid(uid());
-            try_to(createStream(audio_parameters));
+//            /* Audio */
+//            auto audio_parameters = new AudioParameters;
+//            audio_parameters->setSampleRate(44'100);
+//    //        audio_parameters->setSampleFormat(AV_SAMPLE_FMT_FLTP);
+//            audio_parameters->setSampleFormat(AV_SAMPLE_FMT_FLTP);
+//            audio_parameters->setBitrate(128'000);
+//            audio_parameters->setChannelLayout(AV_CH_LAYOUT_STEREO);
+//            audio_parameters->setChannels(2);
+//            audio_parameters->setCodec("aac", CodecType::Encoder);
+//    //        audio_parameters->setChannelLayout(AV_CH_LAYOUT_MONO);
+//    //        audio_parameters->setChannels(1);
+//    //        audio_parameters->setCodec("aac");
+//            audio_parameters->setContextUid(uid());
+//            try_to(createStream(audio_parameters));
             break;
         }
         case Timelapse: {

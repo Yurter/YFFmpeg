@@ -62,6 +62,18 @@ namespace fpp {
     Code Stream::stampPacket(Packet& packet) {
         return_if(packet.type() != type(), Code::INVALID_INPUT);
 
+//        if (inited_int(packet.dts())) {
+//            log_warning("Overwriting existing dts"
+//                        << " from " << packet.dts()
+//                        << " to " << _prev_dts);
+//        }
+
+//        if (inited_int(packet.pts())) {
+//            log_warning("Overwriting existing pts"
+//                        << " from " << packet.pts()
+//                        << " to " << _prev_pts);
+//        }
+
         packet.setDts(_prev_dts);
         packet.setPts(_prev_pts);
         packet.setDuration(_packet_duration);

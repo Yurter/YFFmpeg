@@ -60,7 +60,7 @@ int main() {
 
 //        auto sink_youtube = new Sink("group_video/youtube.flv", IOType::YouTube);
 //        pipeline.addElement(sink_youtube);
-        auto sink_youtube = new MediaSink("group_video/youtube.flv", IOType::Timelapse);
+        auto sink_youtube = new MediaSink("group_video/youtube.flv", IOType::YouTube);
         pipeline.addElement(sink_youtube);
 
         auto sink_timelapse = new MediaSink("group_video/timelapse.flv", IOType::Timelapse);

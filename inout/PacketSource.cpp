@@ -13,7 +13,12 @@ namespace fpp {
 
     Code PacketSource::readPacket() {
         Packet packet;
-        try_to(readInputData(packet));
+//        try_to(readInputData(packet));
+        Code ret = readInputData(packet);
+        if (utils::exit_code(ret)
+                && (ret != Code::END_OF_FILE)) {
+            return ret;
+        }
         try_to(sendOutputData(packet, this));
         return Code::OK;
     }

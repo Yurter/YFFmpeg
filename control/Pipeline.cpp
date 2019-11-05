@@ -81,6 +81,7 @@ namespace fpp {
 
     Code Pipeline::run() {
         bool all_processor_stopped = true;
+        log_warning("");
         for (auto&& processor : _processors) {
             auto thread_processor = static_cast<Thread*>(processor);
             return_if(utils::error_code(thread_processor->exitCode())
