@@ -8,6 +8,7 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
+//#include <opencv2/opencv.hpp>
 
 namespace fpp {
 
@@ -71,6 +72,8 @@ namespace fpp {
 
         static int          save_frame_as_jpeg(AVCodecContext* pCodecCtx, AVFrame* pFrame, int FrameNo);
         static void SaveAvFrame(AVFrame *avFrame);
+
+//        static cv::Mat      frame_to_mat(Frame)
 
     };
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "inout/FrameSink.hpp"
+#include "opencv2/opencv.hpp"
 
 namespace fpp {
 
@@ -7,7 +8,7 @@ namespace fpp {
 
     public:
 
-        OpenCVSink(const std::string mrl);
+        OpenCVSink(const std::string mrl, VideoParameters* video_params);
         virtual ~OpenCVSink() override;
 
         virtual Code        init() override;
@@ -15,23 +16,21 @@ namespace fpp {
         virtual Code        close() override;
         virtual std::string toString() const override;
 
-        OutputFormatContext& outputFormatContext();
-
     private:
 
         virtual Code        processInputData(Frame input_data) override;
         virtual Code        writeOutputData(Frame output_data) override;
         virtual Code        onStop() override;
 
+        cv::Mat             frameToMat(Frame frame);
+
     private:
 
-        OutputFormatContext _output_format_context;
+        std::string         _sink_name;
+        VideoParameters*    _video_params;
 
-
-        // TemplateProcessor interface
-    protected:
     };
 
-    using MediaSinkList = std::list<MediaSink*>;
+    using OpenCVSinkList = std::list<OpenCVSink*>;
 
 } // namespace fpp

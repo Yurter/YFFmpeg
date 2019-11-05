@@ -102,19 +102,14 @@ HEADERS += \
     refi/VideoFilter.hpp
 
 #FFmpeg
-#-- Home --
-INCLUDEPATH += G:\dev\FFmpeg\ffmpeg-4.1.1-win64-dev\include
-LIBS += -LG:\dev\FFmpeg\ffmpeg-4.1.1-win64-dev\lib
-
-#-- Office --
 INCLUDEPATH += D:\dev\00_ffmpeg\ffmpeg-4.1.3-win64-dev\include
 LIBS += -LD:\dev\00_ffmpeg\ffmpeg-4.1.3-win64-dev\lib
-
-LIBS += -lavcodec -lavformat -lavutil -lswscale -lavdevice -lavfilter -lpostproc -lswresample
+LIBS += -lavcodec -lavformat -lavutil -lswscale -lavdevice
+LIBS += -lavfilter -lpostproc -lswresample
 
 #OpenCV
 INCLUDEPATH += D:\dev\00_opencv\410\build\include
 LIBS += -LD:\dev\00_opencv\410\build\x64\vc15\lib
 LIBS += -LD:\dev\00_opencv\410\build\x64\vc15\bin
-LIBS += -lopencv_world410
+LIBS += -lopencv_world410 -lopencv_world410d
 
