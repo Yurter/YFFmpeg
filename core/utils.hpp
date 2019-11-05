@@ -68,7 +68,7 @@ namespace fpp {
 
         static Stream*      find_best_stream(const StreamVector& stream_list);
 
-        static bool         compareFloat(float a, float b);
+        static bool         compare_float(float a, float b);
 
         static int          save_frame_as_jpeg(AVCodecContext* pCodecCtx, AVFrame* pFrame, int FrameNo);
         static void SaveAvFrame(AVFrame *avFrame);
@@ -80,7 +80,7 @@ namespace fpp {
 } // namespace fpp
 
 /* Макрос получения экзмепляра объекта класса Logger */
-#define logger Logger::instance()
+#define logger fpp::Logger::instance()
 
 /* Макрос установки уровня лога - сообщения, имеющие урень выше установленного, игнорируются */
 #define set_log_level(x)        logger.setLogLevel(x)

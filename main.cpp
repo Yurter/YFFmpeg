@@ -55,16 +55,19 @@ int main() {
 //        auto sink_event = new MediaSink("group_video/event.flv");
 //        pipeline.addElement(sink_event);
 
-        auto sink_opencv = new OpenCVSink("OpenCV processing");
+        auto video_params = new VideoParameters;
+        video_params->setWidth(500);
+        video_params->setHeight(500);
+        video_params->setFrameRate(25);
+        auto video_stream = new VideoStream(video_params);
+        auto sink_opencv = new OpenCVSink("OpenCV processing", video_stream);
         pipeline.addElement(sink_opencv);
 
-//        auto sink_youtube = new Sink("group_video/youtube.flv", IOType::YouTube);
+//        auto sink_youtube = new MediaSink("group_video/youtube.flv", IOType::YouTube);
 //        pipeline.addElement(sink_youtube);
-        auto sink_youtube = new MediaSink("group_video/youtube.flv", IOType::YouTube);
-        pipeline.addElement(sink_youtube);
 
-        auto sink_timelapse = new MediaSink("group_video/timelapse.flv", IOType::Timelapse);
-        pipeline.addElement(sink_timelapse);
+//        auto sink_timelapse = new MediaSink("group_video/timelapse.flv", IOType::Timelapse);
+//        pipeline.addElement(sink_timelapse);
 
 //        auto sink_restream = new MediaSink("group_video/restream.flv");
 //        pipeline.addElement(sink_restream);

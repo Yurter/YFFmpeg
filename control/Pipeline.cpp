@@ -112,7 +112,7 @@ namespace fpp {
 
     Code Pipeline::checkFormatContexts() {
         return_if(mediaSources().empty(),   Code::NOT_INITED);  //TODO throw YException("No source specified");
-        return_if(mediaSinks().empty(),     Code::NOT_INITED);  //TODO throw YException("No destination specified");
+//        return_if(mediaSinks().empty(),     Code::NOT_INITED);  //TODO throw YException("No destination specified");
         return Code::OK;
     }
 
@@ -283,7 +283,13 @@ namespace fpp {
                 }
             }
 
-            sequence.push_back(static_cast<Processor*>(static_cast<FormatContext*>(out_stream->context())->_media_ptr));//TODO Крайне кривая заплатка
+            auto ptr = dynamic_cast<FormatContext*>(out_stream->context());
+            if (inited_ptr(ptr)) {
+                sequence.push_back(static_cast<Processor*>(ptr->_media_ptr));
+            } else {
+                 sequence.push_back(static_cast<Processor*>(out_stream->context()));
+            }
+//            sequence.push_back(static_cast<Processor*>(static_cast<FormatContext*>(out_stream->context())->_media_ptr));//TODO Крайне кривая заплатка
 //            sequence.push_back(static_cast<Processor*>(out_stream->context()));
 
             for (auto processor_it = sequence.begin(); processor_it != sequence.end(); processor_it++) {
@@ -422,6 +428,9 @@ namespace fpp {
                 output_streams.push_back(video_stream);
             }
         }
+        for (auto&& sink : openCVSinks()) {
+            output_streams.push_back(sink->videoStream());
+        }
         return output_streams;
     }
 
@@ -479,6 +488,15 @@ namespace fpp {
             if (inited_ptr(sink)) { sink_list.push_back(sink); }
         }
         return sink_list;
+    }
+
+    OpenCVSinkList Pipeline::openCVSinks() const {
+        OpenCVSinkList ocv_sink_list;
+        for (auto&& processor : _processors) {
+            auto sink = dynamic_cast<OpenCVSink*>(processor);
+            if (inited_ptr(sink)) { ocv_sink_list.push_back(sink); }
+        }
+        return ocv_sink_list;
     }
 
     DecoderList Pipeline::decoders() const {

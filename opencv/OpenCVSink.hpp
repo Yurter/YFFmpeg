@@ -1,6 +1,6 @@
 #pragma once
-#include "inout/FrameSink.hpp"
 #include "opencv2/opencv.hpp"
+#include "inout/FrameSink.hpp"
 
 namespace fpp {
 
@@ -8,13 +8,15 @@ namespace fpp {
 
     public:
 
-        OpenCVSink(const std::string mrl, VideoParameters* video_params);
+        OpenCVSink(const std::string mrl, VideoStream* video_stream);
         virtual ~OpenCVSink() override;
 
         virtual Code        init() override;
         virtual Code        open() override;
         virtual Code        close() override;
         virtual std::string toString() const override;
+
+        VideoStream*        videoStream();
 
     private:
 
@@ -27,6 +29,7 @@ namespace fpp {
     private:
 
         std::string         _sink_name;
+        VideoStream*        _video_stream;
         VideoParameters*    _video_params;
 
     };

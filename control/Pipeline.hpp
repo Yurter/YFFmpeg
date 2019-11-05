@@ -82,6 +82,7 @@ namespace fpp {
 
         MediaSourceList     mediaSources()  const;
         MediaSinkList       mediaSinks()    const;
+        OpenCVSinkList      openCVSinks()   const;
         DecoderList         decoders()      const;
         EncoderList         encoders()      const;
 //        FrameProcessor      refis()         const;

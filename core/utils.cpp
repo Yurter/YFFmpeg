@@ -68,6 +68,7 @@ namespace fpp {
         if (code == Code::AGAIN)            { return "Again";           }
         if (code == Code::NOT_INITED)       { return "Not inited";      }
         if (code == Code::END_OF_FILE)      { return "EOF";             }
+        if (code == Code::FFMPEG_ERROR)     { return "FFmpeg error";    }
         if (code == Code::INVALID_INPUT)    { return "Invalid input";   }
         return "Unknown error code: " + std::to_string(code);
     }
@@ -329,7 +330,7 @@ namespace fpp {
         auto in = dynamic_cast<VideoParameters*>(streams.first->parameters);
         auto out = dynamic_cast<VideoParameters*>(streams.second->parameters);
 
-        return_if(!compareFloat(in->frameRate(), out->frameRate()),  true);
+        return_if(!compare_float(in->frameRate(), out->frameRate()),  true);
 
         return false;
     }
@@ -353,7 +354,7 @@ namespace fpp {
         return *best_stream_it;
     }
 
-    bool utils::compareFloat(float a, float b) {
+    bool utils::compare_float(float a, float b) {
         return fabs(a - b) < FLOAT_EPSILON;
     }
 

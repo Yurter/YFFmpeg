@@ -2,11 +2,14 @@
 
 namespace fpp {
 
-    OpenCVSink::OpenCVSink(const std::string mrl, VideoParameters* video_params) :
+    OpenCVSink::OpenCVSink(const std::string mrl, VideoStream* video_stream) :
         _sink_name(mrl)
-      , _video_params(video_params)
+      , _video_stream(video_stream)
+      , _video_params(static_cast<VideoParameters*>(video_stream->parameters))
     {
         setName("OpenCVSink");
+        _video_params->setPixelFormat(AV_PIX_FMT_BGR24);
+        _video_stream->setContext(this);
     }
 
     OpenCVSink::~OpenCVSink() {
@@ -31,6 +34,10 @@ namespace fpp {
 
     std::string OpenCVSink::toString() const {
         return "OpenCVSink TODO";
+    }
+
+    VideoStream* OpenCVSink::videoStream() {
+        return _video_stream;
     }
 
     Code OpenCVSink::processInputData(Frame input_data) {
