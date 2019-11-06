@@ -31,8 +31,9 @@ namespace fpp {
         int64_t             streamIndex()   const;
         int64_t             streamUid()     const;
 
-        bool                empty()         const;
-        virtual std::string toString()      const override;
+//        bool                empty()     const;
+        virtual uint64_t    size()      const override;
+        virtual std::string toString()  const override;
 
     private:
 

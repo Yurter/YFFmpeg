@@ -23,12 +23,12 @@ namespace fpp {
     }
 
     Code Logger::run() {
-        Message message;
-        return_if_not(wait_and_pop(message), Code::EXIT);
+        LogMessage message;
+        return_if_not(_message_queue.wait_and_pop(message), Code::EXIT);
 
         HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
-        switch (message.first) {
+        switch (message.log_level) {
         case LogLevel::Quiet:
             break;
         case LogLevel::Info:
@@ -45,7 +45,7 @@ namespace fpp {
             break;
         }
 
-        std::cout << message.second << std::endl;
+        std::cout << message.log_text << std::endl;
         SetConsoleTextAttribute(hStdout, FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
         return Code::OK;
     }
@@ -53,8 +53,8 @@ namespace fpp {
     void Logger::flush() {
         /* Прекращение получения новых сообщений */
         setLogLevel(LogLevel::Quiet);
-        while (!empty()) {
-            run();
+        while (!_message_queue.empty()) {
+            try_throw(run());
         }
     }
 
@@ -149,17 +149,23 @@ namespace fpp {
     void Logger::print(const Object* caller, std::string code_position, LogLevel log_level, const std::string message) {
         if (ignore_message(log_level)) { return; }
         std::string formated_message = format_message(caller->name(), code_position, log_level, message);
-        if (!wait_and_push(Message(log_level, formated_message))) {
+        if (!_message_queue.push(LogMessage(log_level, formated_message))) {
             // do nothing
         }
+//        if (!wait_and_push(Message(log_level, formated_message))) {
+//            // do nothing
+//        }
     }
 
     void Logger::static_print(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
         if (ignore_message(log_level)) { return; }
         std::string formated_message = format_message(caller_name, code_position, log_level, message);
-        if (!wait_and_push(Message(log_level, formated_message))) {
+        if (!_message_queue.push(LogMessage(log_level, formated_message))) {
             // do nothing
         }
+//        if (!wait_and_push(Message(log_level, formated_message))) {
+//            // do nothing
+//        }
     }
 
 } // namespace fpp

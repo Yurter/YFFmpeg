@@ -76,15 +76,15 @@ namespace fpp {
         return 0;
     }
 
-    bool Frame::empty() const {
-        if (isVideo()) {
-            return _data->linesize[0] == 0;
-        }
-        if (isAudio()) {
-            return _data->nb_samples == 0;
-        }
-        return true;
-    }
+//    bool Frame::empty() const {
+////        if (isVideo()) {
+////            return _data->linesize[0] == 0;
+////        }
+////        if (isAudio()) {
+////            return _data->nb_samples == 0;
+////        }
+////        return true;
+//    }
 
     Code Frame::init() //TODO
     {

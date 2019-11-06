@@ -4,10 +4,26 @@
 
 namespace fpp {
 
-    using Message = std::pair<LogLevel,std::string>;
+//    using Message = std::pair<LogLevel,std::string>;
+    class LogMessage {
 
-    class Logger : public Thread
-            , public AsyncQueue<Message> {
+    public:
+
+        LogMessage() {}
+        LogMessage(LogLevel level, std::string text) :
+            log_level(level)
+            , log_text(text) {}
+
+        uint64_t    size() const { return 1; /*log_text.size();*/ }
+
+        LogLevel    log_level;
+        std::string log_text;
+
+    };
+
+    using MessageQueue = AsyncQueue<LogMessage>;
+
+    class Logger : public Thread {
 
     public:
 
@@ -38,6 +54,7 @@ namespace fpp {
     private:
 
         LogLevel            _log_level;
+        MessageQueue        _message_queue;
 
     };
 

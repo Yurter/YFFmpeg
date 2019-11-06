@@ -175,11 +175,14 @@ namespace fpp {
 
             int set_opt_ret;
             set_opt_ret = av_opt_set(codec->priv_data, "crf", "23", 0);
-            static_log_warning("crf ret", set_opt_ret);
+            static_log_warning("opt crf", set_opt_ret);
             set_opt_ret = av_opt_set(codec->priv_data, "preset", "ultrafast", 0);
-            static_log_warning("crf preset", set_opt_ret);
+            static_log_warning("opt preset", set_opt_ret);
             set_opt_ret = av_opt_set(codec->priv_data, "tune", "zerolatency", 0);
-            static_log_warning("crf tune", set_opt_ret);
+            static_log_warning("opt tune", set_opt_ret);
+
+            set_opt_ret = av_opt_set(codec->priv_data, "threads", "0", 0);
+            static_log_warning("opt threads", set_opt_ret);
 
     //        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
             break;
@@ -313,6 +316,7 @@ namespace fpp {
 
         return_if(in->width()  != out->width(),  true);
         return_if(in->height() != out->height(), true);
+        return_if(in->pixelFormat()  != out->pixelFormat(),  true);
 
         return false;
     }
@@ -352,7 +356,8 @@ namespace fpp {
         auto in = streams.first->parameters;
         auto out = streams.second->parameters;
 
-        return_if(in->codecId() != out->codecId(), true);
+//        return_if(in->codecId() != out->codecId(), true);
+        return_if(in->codecName() != out->codecName(), true);
 
         return false;
     }

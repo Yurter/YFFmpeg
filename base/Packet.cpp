@@ -116,8 +116,12 @@ namespace fpp {
         return _stream_uid;
     }
 
-    bool Packet::empty() const {
-        return _data.size == 0;
+//    bool Packet::empty() const {
+//        return size() == 0;
+//    }
+
+    uint64_t Packet::size() const {
+        return uint64_t(_data.size);
     }
 
     std::string Packet::toString() const {

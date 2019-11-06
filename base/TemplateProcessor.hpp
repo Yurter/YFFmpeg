@@ -26,7 +26,10 @@ namespace fpp {
         }
 
         virtual Code push(const Object* input_data) override final {
-            return_if_not(_input_queue.wait_and_push(*static_cast<const inType*>(input_data)), Code::EXIT);
+//            return_if_not(_input_queue.wait_and_push(*static_cast<const inType*>(input_data)), Code::EXIT);
+            if (!_input_queue.push(*static_cast<const inType*>(input_data))) {
+                log_warning("queue push failed");
+            }
             return Code::OK;
         }
 
@@ -59,7 +62,7 @@ namespace fpp {
         }
 
         Code storeOutputData(const outType& output_data) {
-            return_if_not(_post_queue.wait_and_push(output_data), Code::EXIT);
+            return_if_not(_post_queue.push(output_data), Code::EXIT);
             return Code::OK;
         }
 
