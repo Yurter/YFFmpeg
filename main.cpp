@@ -5,17 +5,31 @@ using namespace fpp;
 
 void start_debug_timeout(MediaSource* source, int delay) {
     std::thread([source,delay]() {
-        int step_sec = 2;
-        int delay_sec = delay;
-        for (auto i = 0; i < (delay_sec / step_sec); i++) {
-            utils::sleep_for_sec(step_sec);
-            int proc = int((float((i + 1) * step_sec) / delay_sec) * 100);
-            static_log_info("external_stop", "Progress " << proc << "%");
+        int step_ms = delay * 10;
+        for (auto i = 0; i < 100; i++) {
+            utils::sleep_for_ms(step_ms);
+            static_log_info("external_stop", "Progress " << i << "%");
         }
+        exit(0); // Temp
         Code ret = source->stop();
         static_log_info("external_stop", "Source stopped: " << ret << " - " << utils::code_to_string(ret));
     }).detach();
 }
+
+//void start_debug_timeout(MediaSource* source, int delay) {
+//    std::thread([source,delay]() {
+//        int step_sec = 2;
+//        int delay_sec = delay;
+//        for (auto i = 0; i < (delay_sec / step_sec); i++) {
+//            utils::sleep_for_sec(step_sec);
+//            int proc = int((float((i + 1) * step_sec) / delay_sec) * 100);
+//            static_log_info("external_stop", "Progress " << proc << "%");
+//        }
+//        exit(0); // Temp
+//        Code ret = source->stop();
+//        static_log_info("external_stop", "Source stopped: " << ret << " - " << utils::code_to_string(ret));
+//    }).detach();
+//}
 
 int main() {
 
@@ -25,7 +39,7 @@ int main() {
 //        set_log_level(LogLevel::Debug);
     //    set_log_level(LogLevel::Quiet);
 
-        set_ffmpeg_log_level(LogLevel::Quiet);
+//        set_ffmpeg_log_level(LogLevel::Quiet);
 //        set_ffmpeg_log_level(LogLevel::Debug);
 
         /* Запись rtsp с камеры в flv/YouTube */
@@ -72,7 +86,7 @@ int main() {
 //        auto sink_restream = new MediaSink("group_video/restream.flv");
 //        pipeline.addElement(sink_restream);
 
-//        start_debug_timeout(source, 65); /* Таймаут для RTSP */
+        start_debug_timeout(source, 65); /* Таймаут для RTSP */
 
         if (auto ret = pipeline.start(); ret != Code::OK) {
             static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));

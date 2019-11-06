@@ -81,13 +81,13 @@ namespace fpp {
 
     Code Pipeline::run() {
         bool all_processor_stopped = true;
-        log_warning("");
+//        log_warning("");
         for (auto&& processor : _processors) {
             auto thread_processor = static_cast<Thread*>(processor);
             return_if(utils::error_code(thread_processor->exitCode())
                       , thread_processor->exitCode());
             if (thread_processor->running()) {
-                log_warning(thread_processor->name());
+//                log_warning(thread_processor->name());
                 all_processor_stopped = false;
 //                break;
             }

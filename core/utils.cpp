@@ -172,6 +172,15 @@ namespace fpp {
             codec->height       = int(video_parameters->height());
 //            codec->time_base    = DEFAULT_TIME_BASE;
             codec->time_base    = parametres->timeBase();
+
+            int set_opt_ret;
+            set_opt_ret = av_opt_set(codec->priv_data, "crf", "23", 0);
+            static_log_warning("crf ret", set_opt_ret);
+            set_opt_ret = av_opt_set(codec->priv_data, "preset", "ultrafast", 0);
+            static_log_warning("crf preset", set_opt_ret);
+            set_opt_ret = av_opt_set(codec->priv_data, "tune", "zerolatency", 0);
+            static_log_warning("crf tune", set_opt_ret);
+
     //        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
             break;
         }

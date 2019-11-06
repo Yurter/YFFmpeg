@@ -18,6 +18,8 @@ namespace fpp {
         bool                alloc();
         void                free();
 
+        uint64_t            size() const;
+
         bool                empty() const;
         virtual Code        init() override;
         virtual std::string toString() const override;

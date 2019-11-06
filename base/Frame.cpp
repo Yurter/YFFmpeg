@@ -65,6 +65,17 @@ namespace fpp {
         av_frame_free(&_data);
     }
 
+    uint64_t Frame::size() const {
+        if (isVideo()) {
+            return uint64_t(av_image_get_buffer_size(AVPixelFormat(_data->format), _data->width, _data->height, 32));
+        } else if (isAudio()) {
+            auto channels = av_get_channel_layout_nb_channels(_data->channel_layout);
+            auto bufer_size = av_samples_get_buffer_size(_data->linesize, channels, _data->nb_samples, AVSampleFormat(_data->format), 32);
+            return uint64_t(bufer_size);
+        }
+        return 0;
+    }
+
     bool Frame::empty() const {
         if (isVideo()) {
             return _data->linesize[0] == 0;
@@ -85,15 +96,15 @@ namespace fpp {
         /* Audio frame: 316 byte, dts 460, pts 460, duration 33   */
         std::string str = utils::media_type_to_string(type()) + " frame: ";
         if (isVideo()) {
-            int size = av_image_get_buffer_size(AVPixelFormat(_data->format), _data->width, _data->height, 32);
-            str += std::to_string(size) + " bytes, "
+//            int size = av_image_get_buffer_size(AVPixelFormat(_data->format), _data->width, _data->height, 32);
+            str += std::to_string(size()) + " bytes, "
                     + "pts " + utils::pts_to_string(_data->pts) + ", "
                     + "key_frame " + utils::bool_to_string(_data->key_frame) + ", "
                     + "width " + std::to_string(_data->width) + ", "
                     + "height " + std::to_string(_data->height);
         }
         if (isAudio()) {
-            str += std::to_string(_data->linesize[0]) + " bytes, "//TODO размеры фреймов
+            str += std::to_string(size()) + " bytes, "//TODO размеры фреймов
                     + "pts " + utils::pts_to_string(_data->pts) + ", "
                     + "nb_samples " + std::to_string(_data->nb_samples) + ", "
                     + "channel_layout " + std::to_string(_data->channel_layout) + ", "
