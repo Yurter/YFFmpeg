@@ -20,6 +20,15 @@ namespace fpp {
             try_to(guessOutputFromat());
             break;
         }
+        case Event: { /* Евент должен писаться копипастой */
+            /* Video */
+            auto video_parameters = new VideoParameters;
+            video_parameters->setContextUid(uid());
+            try_to(createStream(video_parameters));
+            /* Audio */
+            // Временно без звука
+            break;
+        }
         case YouTube: {
             /* Video */
             auto video_parameters = new VideoParameters;
@@ -27,14 +36,14 @@ namespace fpp {
 //            video_parameters->setHeight(1080);
             video_parameters->setWidth(640);
             video_parameters->setHeight(480);
-            video_parameters->setAspectRatio({16,9});
-            video_parameters->setFrameRate(22); //TODO
+            video_parameters->setAspectRatio({ 16,9 });
+            video_parameters->setFrameRate({ 25, 1 }); //TODO
             video_parameters->setBitrate(400'000);
 //            video_parameters->setCodec("libx264", CodecType::Encoder);
             video_parameters->setCodec("h264_qsv", CodecType::Encoder);
             video_parameters->setTimeBase({ 1, 1000 });
-//            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
-            video_parameters->setPixelFormat(AV_PIX_FMT_NV12);
+            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
+//            video_parameters->setPixelFormat(AV_PIX_FMT_NV12);
             video_parameters->setContextUid(uid());
             try_to(createStream(video_parameters));
 //            /* Audio */
@@ -64,10 +73,10 @@ namespace fpp {
 //            video_parameters->setHeight(300);
             video_parameters->setAspectRatio({ 16, 9 });
 //            video_parameters->setAspectRatio({ 1, 1 });
-            video_parameters->setFrameRate(22); //TODO
+            video_parameters->setFrameRate({ 22, 1 }); //TODO
             video_parameters->setBitrate(400'000);
-//            video_parameters->setCodec("libx264", CodecType::Encoder);
-            video_parameters->setCodec("h264_qsv", CodecType::Encoder);
+            video_parameters->setCodec("libx264", CodecType::Encoder);
+//            video_parameters->setCodec("h264_qsv", CodecType::Encoder);
             video_parameters->setTimeBase({ 1, 1000 });
 //            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
             video_parameters->setPixelFormat(AV_PIX_FMT_NV12);
@@ -76,19 +85,19 @@ namespace fpp {
             try_to(createStream(video_parameters));
             break;
         }
-        case OpenCV: {
-            /* Video */
-            auto video_parameters = new VideoParameters;
-            video_parameters->setWidth(1920);
-            video_parameters->setHeight(1080);
-            video_parameters->setAspectRatio({ 16, 9 });
-            video_parameters->setFrameRate(22); //TODO
-            video_parameters->setTimeBase({ 1, 1000 });
-            video_parameters->setPixelFormat(AV_PIX_FMT_BGR24);
-            video_parameters->setContextUid(uid());
-            try_to(createStream(video_parameters));
-            break;
-        }
+//        case OpenCV: {
+//            /* Video */
+//            auto video_parameters = new VideoParameters;
+//            video_parameters->setWidth(1920);
+//            video_parameters->setHeight(1080);
+//            video_parameters->setAspectRatio({ 16, 9 });
+//            video_parameters->setFrameRate({ 22, 1 }); //TODO
+//            video_parameters->setTimeBase({ 1, 1000 });
+//            video_parameters->setPixelFormat(AV_PIX_FMT_BGR24);
+//            video_parameters->setContextUid(uid());
+//            try_to(createStream(video_parameters));
+//            break;
+//        }
         default:
             log_error("Invalid preset");
             break;

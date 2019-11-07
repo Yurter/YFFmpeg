@@ -22,8 +22,8 @@ namespace fpp {
 
         std::string         toString() const override;
 
-    //    void                softCopy(Parameters* other_parametrs)  override;
-        AudioParameters&   operator=(const AudioParameters& rhs);
+        void                completeFrom(const Parameters* other_parametrs) override;
+        AudioParameters&    operator=(const AudioParameters& rhs);
 
     private:
 

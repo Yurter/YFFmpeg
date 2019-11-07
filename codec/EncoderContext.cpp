@@ -16,6 +16,7 @@ namespace fpp {
         try_to(output_packet.init());
         output_packet.setType(_stream->type());
         int ret;
+//        utils::SaveAvFrame(input_frame.raw());
         if ((ret = avcodec_send_frame(_codec_context, input_frame.raw())) != 0) {
             log_error(input_frame);
             log_error("Pxl_fmt: " << input_frame.raw()->format << " cc: " << _codec_context->pix_fmt);

@@ -64,6 +64,7 @@ namespace fpp {
     }
 
     Code FormatContext::createStream(Parameters* param) {
+//        return_if(not_inited_codec_id(param->codecId()), Code::INVALID_INPUT); //Нужна ли проверка?..
         auto avstream = avformat_new_stream(_format_context, param->codec());
         return_if(not_inited_ptr(avstream), Code::ERR);
         Stream* new_stream = nullptr;

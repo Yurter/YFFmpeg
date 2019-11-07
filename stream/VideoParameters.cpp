@@ -7,7 +7,7 @@ namespace fpp {
         _width(DEFAULT_INT),
         _height(DEFAULT_INT),
         _aspect_ratio(DEFAULT_RATIONAL),
-        _frame_rate(DEFAULT_FLOAT),
+        _frame_rate(DEFAULT_RATIONAL),
         _pixel_format(DEFAULT_PIXEL_FORMAT)
     {
         setName("VideoParameters");
@@ -40,16 +40,12 @@ namespace fpp {
         _aspect_ratio = aspect_ratio;
     }
 
-    void VideoParameters::setFrameRate(float frame_rate) {
-        _frame_rate = frame_rate;
-    }
+//    void VideoParameters::setFrameRate(float frame_rate) {
+//        _frame_rate = frame_rate;
+//    }
 
     void VideoParameters::setFrameRate(AVRational frame_rate) {
-        if (frame_rate.den == 0) {
-            _frame_rate = -1.f;
-        } else {
-            _frame_rate = float(frame_rate.num) / float(frame_rate.den);
-        }
+        _frame_rate = frame_rate;
     }
 
     void VideoParameters::setPixelFormat(AVPixelFormat pixel_format) {
@@ -68,7 +64,7 @@ namespace fpp {
         return _aspect_ratio;
     }
 
-    float VideoParameters::frameRate() const {
+    AVRational VideoParameters::frameRate() const {
         return _frame_rate;
     }
 
@@ -79,6 +75,16 @@ namespace fpp {
     std::string VideoParameters::toString() const {
         std::string str = "TODO";
         return str;
+    }
+
+    void VideoParameters::completeFrom(const Parameters* other_parametrs) {
+        auto other_video_parameters = static_cast<const VideoParameters*>(other_parametrs);
+        if (not_inited_int(_width))             { _width = other_video_parameters->width();                 }
+        if (not_inited_int(_height))            { _height = other_video_parameters->height();               }
+        if (not_inited_q(_aspect_ratio))        { _aspect_ratio = other_video_parameters->aspectRatio();    }
+        if (not_inited_q(_frame_rate))          { _frame_rate = other_video_parameters->frameRate();        }
+        if (not_inited_pix_fmt(_pixel_format))  { _pixel_format = other_video_parameters->pixelFormat();    }
+        Parameters::completeFrom(other_parametrs);
     }
 
     //void VideoParameters::toCodecpar(AVCodecParameters* codecpar)

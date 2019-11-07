@@ -1,4 +1,7 @@
 #include "utils.hpp"
+//extern "C" {
+//#include <libavutil/rational.h>
+//}
 #include <thread>
 
 #define FLOAT_EPSILON 0.0001f
@@ -172,6 +175,7 @@ namespace fpp {
             codec->height       = int(video_parameters->height());
 //            codec->time_base    = DEFAULT_TIME_BASE;
             codec->time_base    = parametres->timeBase();
+            codec->framerate    = video_parameters->frameRate();
 
             int set_opt_ret;
             set_opt_ret = av_opt_set(codec->priv_data, "crf", "23", 0);
@@ -180,7 +184,6 @@ namespace fpp {
             static_log_warning("opt preset", set_opt_ret);
             set_opt_ret = av_opt_set(codec->priv_data, "tune", "zerolatency", 0);
             static_log_warning("opt tune", set_opt_ret);
-
             set_opt_ret = av_opt_set(codec->priv_data, "threads", "0", 0);
             static_log_warning("opt threads", set_opt_ret);
 
@@ -287,7 +290,7 @@ namespace fpp {
         video_params->setWidth(1920);
         video_params->setHeight(1080);
         video_params->setAspectRatio({ 16, 9 });
-        video_params->setFrameRate(30);
+        video_params->setFrameRate({ 30, 1 });
         video_params->setPixelFormat(AV_PIX_FMT_YUV420P);
         return video_params;
     }
@@ -343,7 +346,8 @@ namespace fpp {
         auto in = dynamic_cast<VideoParameters*>(streams.first->parameters);
         auto out = dynamic_cast<VideoParameters*>(streams.second->parameters);
 
-        return_if(!compare_float(in->frameRate(), out->frameRate()),  true);
+//        return_if(!compare_float(in->frameRate(), out->frameRate()),  true);
+        return_if(av_cmp_q(in->frameRate(), out->frameRate()) != 0, true);
 
         return false;
     }

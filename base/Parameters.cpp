@@ -106,7 +106,7 @@ namespace fpp {
         return str;
     }
 
-    void Parameters::softCopy(Parameters* other_parametrs) {
+    void Parameters::completeFrom(const Parameters* other_parametrs) {
         if (not_inited_codec_id(_codec_id)) { _codec_id = other_parametrs->codecId();           }
         if (not_inited_string(_codec_name)) { _codec_name = other_parametrs->codecName();       }
         if (not_inited_int(_bitrate))       { _bitrate = other_parametrs->bitrate();            }

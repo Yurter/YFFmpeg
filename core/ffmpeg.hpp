@@ -33,6 +33,7 @@ namespace fpp {
         /* Input */
         Virtual,
         /* Output */
+        Event,
         YouTube,
         Timelapse,
         OpenCV,

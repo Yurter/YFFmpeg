@@ -1,7 +1,7 @@
 #pragma once
 #include "core/utils.hpp"
 #include "core/Thread.hpp"
-#include "core/AsyncQueue.hpp"
+#include "core/AsyncDiscardQueue.hpp"
 #include "Processor.hpp"
 
 namespace fpp {
@@ -111,14 +111,14 @@ namespace fpp {
 
     private:
 
-        AsyncQueue<inType>  _input_queue;
+        AsyncDiscardQueue<inType>  _input_queue;
 //        IOFunction          _io_function;
 //        Thread              _io_thread;
 
         IOFunction          _pre_function;
         IOFunction          _post_function;
 
-        AsyncQueue<outType> _post_queue;
+        AsyncDiscardQueue<outType> _post_queue;
 
     };
 

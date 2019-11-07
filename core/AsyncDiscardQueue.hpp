@@ -6,21 +6,20 @@
 namespace fpp {
 
     template <class Type>
-    class AsyncQueue {
+    class AsyncDiscardQueue {
 
     public:
 
-        AsyncQueue(uint64_t queue_capacity = 50) :
+        AsyncDiscardQueue(uint64_t queue_capacity = 50 * 1024 * 1024 /* 50 Mb */) :
             _queue_capacity(queue_capacity)
+            , _queue_size(0)
             , _stop_wait(false) {}
-        virtual ~AsyncQueue() { clear(); }
+
+        virtual ~AsyncDiscardQueue() { clear(); }
 
         [[nodiscard]]
         bool push(const Type& data) {
             std::lock_guard<std::mutex> lock(_queue_mutex);
-            if (full()) {
-                return false;
-            }
             push_and_notify(data);
             return true;
         }
@@ -30,27 +29,6 @@ namespace fpp {
             std::lock_guard<std::mutex> lock(_queue_mutex);
             if (_queue.empty()) { return false; }
             pop_and_notify(data);
-            return true;
-        }
-
-        [[nodiscard]]
-        bool wait_and_push(const Type& data) {
-            std::unique_lock<std::mutex> lock(_queue_mutex);
-            if (push_available()) {
-                push_and_notify(data);
-                return true;
-            }
-
-            _condition_variable_popped.wait(lock, [&]() {
-                return push_available() || _stop_wait;
-            });
-
-            if (_stop_wait) {
-                _stop_wait = false;
-                return false;
-            }
-
-            push_and_notify(data);
             return true;
         }
 
@@ -80,7 +58,16 @@ namespace fpp {
             return _queue.empty();
         }
 
-        int64_t lenght() {
+        bool full() {
+            std::lock_guard<std::mutex> lock(_queue_mutex);
+            return _queue.size() == _queue_capacity;
+        }
+
+        int64_t size() {
+            return _queue_size;
+        }
+
+        uint64_t length() {
             std::lock_guard<std::mutex> lock(_queue_mutex);
             return _queue.size();
         }
@@ -104,22 +91,32 @@ namespace fpp {
     private:
 
         void push_and_notify(const Type& data) {
-            _queue.push(data);
+            while (notEnoughStorage(data.size())) {
+                Type surplus_data;
+                pop_and_decrease_size(surplus_data);
+            }
+            push_and_increase_size(data);
             _condition_variable_pushed.notify_one();
         }
 
         void pop_and_notify(Type& data) {
-            data = Type(_queue.front());
-            _queue.pop();
+            pop_and_decrease_size(data);
             _condition_variable_popped.notify_one();
         }
 
-        bool push_available() const {
-            return _queue.size() < _queue_capacity;
+        void push_and_increase_size(const Type& data) {
+            _queue.push(data);
+            _queue_size += data.size();
         }
 
-        bool full() {
-            return _queue.size() == _queue_capacity;
+        void pop_and_decrease_size(Type& data) {
+            data = Type(_queue.front());
+            _queue.pop();
+            _queue_size -= data.size();
+        }
+
+        bool notEnoughStorage(uint64_t size) {
+            return (_queue_size + size) > _queue_capacity;
         }
 
     private:
@@ -127,6 +124,7 @@ namespace fpp {
         std::queue<Type>        _queue;
         std::mutex              _queue_mutex;
         uint64_t                _queue_capacity;
+        std::atomic_int         _queue_size;
         std::atomic_bool        _stop_wait;
         std::condition_variable _condition_variable_pushed;
         std::condition_variable _condition_variable_popped;
