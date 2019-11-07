@@ -116,7 +116,7 @@ namespace fpp {
                 video_parameters->setCodec(codecpar->codec_id, CodecType::Decoder);
                 video_parameters->setWidth(codecpar->width);
                 video_parameters->setHeight(codecpar->height);
-                video_parameters->setAspectRatio({ -1, -1 }); //TODO
+                video_parameters->setAspectRatio(codecpar->sample_aspect_ratio);
                 video_parameters->setDuration(avstream->duration);
                 video_parameters->setFrameRate(avstream->avg_frame_rate); // ? -> r_frame_rate
                 video_parameters->setBitrate(codecpar->bit_rate);

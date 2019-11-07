@@ -466,6 +466,7 @@ namespace fpp {
         /* Трансляция наилучшего потока на все потоки выхода того же медиа-типа */
         for (auto&& out_stream : output_streams) {
             try_to(_map->addRoute(best_stream, out_stream));
+            out_stream->parameters->completeFrom(best_stream->parameters);
             best_stream->setUsed(true);
             out_stream->setUsed(true);
         }

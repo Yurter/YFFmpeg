@@ -13,6 +13,7 @@
 namespace fpp {
 
     static int64_t object_uid_handle = DEFAULT_INT; //TODO remove warning
+    #define USE_HWACCEL true
 
     //typedef std::list<Object*> ProcessorList;
     using ProcessorList = std::list<Object*>;
@@ -59,6 +60,8 @@ namespace fpp {
 
         static VideoParameters*    default_video_parameters(AVCodecID codec_id);
         static AudioParameters*    default_audio_parameters(AVCodecID codec_id);
+
+        static Code         find_encoder_for(const Parameters * const src_prm, Parameters * const dst_prm/*, bool use_hwaccel*/);
 
         static bool         rescaling_required(const StreamPair streams);
         static bool         resampling_required(const StreamPair streams);

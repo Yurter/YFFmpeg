@@ -34,10 +34,10 @@ namespace fpp {
             auto video_parameters = new VideoParameters;
 //            video_parameters->setWidth(1920);
 //            video_parameters->setHeight(1080);
-            video_parameters->setWidth(640);
-            video_parameters->setHeight(480);
+            video_parameters->setWidth(1280);
+            video_parameters->setHeight(720);
             video_parameters->setAspectRatio({ 16,9 });
-            video_parameters->setFrameRate({ 25, 1 }); //TODO
+            video_parameters->setFrameRate({ 30, 1 });
             video_parameters->setBitrate(400'000);
 //            video_parameters->setCodec("libx264", CodecType::Encoder);
             video_parameters->setCodec("h264_qsv", CodecType::Encoder);
@@ -65,21 +65,11 @@ namespace fpp {
         case Timelapse: {
             /* Video */
             auto video_parameters = new VideoParameters;
-//            video_parameters->setWidth(1920);
-//            video_parameters->setHeight(1080);
-            video_parameters->setWidth(640);
-            video_parameters->setHeight(480);
-//            video_parameters->setWidth(300);
-//            video_parameters->setHeight(300);
-            video_parameters->setAspectRatio({ 16, 9 });
-//            video_parameters->setAspectRatio({ 1, 1 });
-            video_parameters->setFrameRate({ 22, 1 }); //TODO
-            video_parameters->setBitrate(400'000);
-            video_parameters->setCodec("libx264", CodecType::Encoder);
+//            video_parameters->setCodec("libx264", CodecType::Encoder);
 //            video_parameters->setCodec("h264_qsv", CodecType::Encoder);
-            video_parameters->setTimeBase({ 1, 1000 });
+//            video_parameters->setTimeBase({ 1, 1000 });
 //            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
-            video_parameters->setPixelFormat(AV_PIX_FMT_NV12);
+//            video_parameters->setPixelFormat(AV_PIX_FMT_NV12);
 //            video_parameters->setPixelFormat(AV_PIX_FMT_BGR24);
             video_parameters->setContextUid(uid());
             try_to(createStream(video_parameters));
@@ -131,6 +121,13 @@ namespace fpp {
         if (_streams.empty()) {
             log_error("No streams to mux were specified: " << _media_resource_locator);
             return Code::NOT_INITED;
+        } else {
+            for (int64_t i = 0; i < _format_context->nb_streams; i++) {
+                AVStream* avstream = _format_context->streams[i];
+                if (not_inited_codec_id(avstream->codecpar->codec_id)) {
+                    utils::parameters_to_avcodecpar(stream(avstream->id)->parameters, avstream->codecpar);
+                }
+            }
         }
         if (!(_format_context->flags & AVFMT_NOFILE)) {
             if (avio_open(&_format_context->pb, _media_resource_locator.c_str(), AVIO_FLAG_WRITE) < 0) {

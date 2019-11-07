@@ -236,6 +236,7 @@ namespace fpp {
 
         switch (parametres->type()) {
         case MediaType::MEDIA_TYPE_VIDEO: {
+            codecpar->codec_type = AVMediaType::AVMEDIA_TYPE_VIDEO;
             auto video_parameters = dynamic_cast<VideoParameters*>(parametres);
             codecpar->width                  = int(video_parameters->width());
             codecpar->height                 = int(video_parameters->height());
@@ -244,6 +245,7 @@ namespace fpp {
             break;
         }
         case MediaType::MEDIA_TYPE_AUDIO: {
+            codecpar->codec_type = AVMediaType::AVMEDIA_TYPE_AUDIO;
             auto audio_parameters = dynamic_cast<AudioParameters*>(parametres);
             codecpar->channel_layout   = audio_parameters->channelLayout();
             codecpar->channels         = int(audio_parameters->channels());
@@ -305,6 +307,16 @@ namespace fpp {
         audio_params->setChannels(2);
         audio_params->setChannelLayout(uint64_t(av_get_default_channel_layout(int(audio_params->channels()))));
         return audio_params;
+    }
+
+    Code utils::find_encoder_for(const Parameters * const src_prm, Parameters * const dst_prm) {
+        switch (src_prm->codecId()) {
+        case AVCodecID::AV_CODEC_ID_H264:
+            dst_prm->setCodec("libx264", CodecType::Encoder);
+            return Code::OK;
+        default:
+            return Code::INVALID_INPUT;
+        }
     }
 
     bool utils::rescaling_required(const StreamPair streams) {
