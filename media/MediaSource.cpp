@@ -21,6 +21,7 @@ namespace fpp {
     Code MediaSource::open() {
         return_if(opened(), Code::INVALID_CALL_ORDER);
         try_to(_input_format_context.open());
+        setOpened(true);
         return Code::OK;
     }
 
