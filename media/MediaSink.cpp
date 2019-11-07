@@ -53,7 +53,7 @@ namespace fpp {
 
     Code MediaSink::writeOutputData(Packet output_data) {
 //        if (av_interleaved_write_frame(_format_context, &packet.raw()) < 0) {
-//        log_warning("pts = " << output_data.pts());
+        log_warning("pts = " << output_data.pts());
 //        std::cout << "pts = " << output_data.pts() << std::endl;
         if (av_write_frame(_output_format_context.mediaFormatContext(), &output_data.raw()) < 0) {
             log_error("Error muxing packet");

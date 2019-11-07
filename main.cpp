@@ -66,8 +66,8 @@ int main() {
         Pipeline pipeline;
         pipeline.addElement(source);
 
-        auto sink_event = new MediaSink("group_video/event.flv", IOType::Event);
-        pipeline.addElement(sink_event);
+//        auto sink_event = new MediaSink("group_video/event.flv", IOType::Event);
+//        pipeline.addElement(sink_event);
 
 //        auto video_params = new VideoParameters;
 //        video_params->setWidth(640);

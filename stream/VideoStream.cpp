@@ -27,7 +27,7 @@ namespace fpp {
 //        log_error(av_q2intfloat(av_div_q(av_inv_q(video_parameers->timeBase()), video_parameers->frameRate())));
 //        uint32_t packet_duration = av_q2intfloat(av_div_q(video_parameers->timeBase(), video_parameers->frameRate()));
 
-        return_if(not_inited_q(video_parameers->timeBase()), Code::INVALID_INPUT);
+        return_if(not_inited_q(video_parameers->timeBase()),  Code::INVALID_INPUT);
         return_if(not_inited_q(video_parameers->frameRate()), Code::INVALID_INPUT);
 
 //        auto debug_0 = video_parameers->timeBase();
