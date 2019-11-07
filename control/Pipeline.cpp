@@ -63,8 +63,8 @@ namespace fpp {
     Code Pipeline::init() {
         log_info("Initialization started...");
         try_to(checkFormatContexts());  /* Проверка на наличие входо-выходов                            */
-        try_to(initMedia());            /* Инициализация форматКонтекстов                               */
         try_to(openMediaSources());     /* Открытие входов и формирование входных потоков               */
+        try_to(initMedia());            /* Инициализация форматКонтекстов                               */
         try_to(initMap());              /* Автоматический проброс потоков                               */
         try_to(openMediaSinks());       /* Открытие выходов                                             */
         try_to(determineSequences());   /* Формирование поледовательностей обработки входных потоков    */
@@ -78,6 +78,24 @@ namespace fpp {
         log_info("Processing started...");
         return Code::OK;
     }
+//    Code Pipeline::init() {
+//        log_info("Initialization started...");
+//        try_to(checkFormatContexts());  /* Проверка на наличие входо-выходов                            */
+//        try_to(initMedia());            /* Инициализация форматКонтекстов                               */
+//        try_to(openMediaSources());     /* Открытие входов и формирование входных потоков               */
+//        try_to(initMap());              /* Автоматический проброс потоков                               */
+//        try_to(openMediaSinks());       /* Открытие выходов                                             */
+//        try_to(determineSequences());   /* Формирование поледовательностей обработки входных потоков    */
+//        try_to(initRefi());             /* Инициализация рефи                                           */
+//        try_to(initCodec());            /* Инициализация кодеков                                        */
+//        try_to(openCodec());            /* Открытие кодеков                                             */
+//        try_to(startProcesors());       /* Запуск всех процессоров                                      */
+//        dump();                         /* Дамп всей информации в лог                                   */
+//        setInited(true);
+//        log_warning(_map->toString());
+//        log_info("Processing started...");
+//        return Code::OK;
+//    }
 
     Code Pipeline::run() {
         bool all_processor_stopped = true;

@@ -122,11 +122,17 @@ namespace fpp {
             log_error("No streams to mux were specified: " << _media_resource_locator);
             return Code::NOT_INITED;
         } else {
-            for (int64_t i = 0; i < _format_context->nb_streams; i++) {
-                AVStream* avstream = _format_context->streams[i];
-                if (not_inited_codec_id(avstream->codecpar->codec_id)) {
-                    utils::parameters_to_avcodecpar(stream(avstream->id)->parameters, avstream->codecpar);
+//            for (int64_t i = 0; i < _format_context->nb_streams; i++) {
+//                AVStream* avstream = _format_context->streams[i];
+//                if (not_inited_codec_id(avstream->codecpar->codec_id)) {
+//                    utils::parameters_to_avcodecpar(stream(avstream->id)->parameters, avstream->codecpar);
+//                }
+//            }
+            for (auto&& avstream : streams()) {
+                if (not_inited_codec_id(avstream->raw()->codecpar->codec_id)) {
+                    utils::parameters_to_avcodecpar(avstream->parameters, avstream->raw()->codecpar);
                 }
+                try_to(avstream->init());
             }
         }
         if (!(_format_context->flags & AVFMT_NOFILE)) {
