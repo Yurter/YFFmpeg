@@ -19,6 +19,9 @@ namespace fpp {
                 && (ret != Code::END_OF_FILE)) {
             return ret;
         }
+        if (packet.empty()) {
+            log_error("Sending empty data");
+        }
         try_to(sendOutputData(packet, this));
         return Code::OK;
     }

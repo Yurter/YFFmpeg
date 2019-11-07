@@ -77,6 +77,9 @@ namespace fpp {
 
                     /* Инициализаця индекса потока и отправка пакета */
                     input_data.setStreamIndex(out_stream_index);
+                    if (input_data.empty()) {
+                        log_error("Sending empty data to " << next_proc->name());
+                    }
                     try_to(sendOutputData(input_data, next_proc));
                 }
             }

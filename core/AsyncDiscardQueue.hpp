@@ -2,6 +2,7 @@
 #include <queue>
 #include <mutex>
 #include <atomic>
+#include <iostream>
 
 namespace fpp {
 
@@ -94,6 +95,7 @@ namespace fpp {
             while (notEnoughStorage(data.size())) {
                 Type surplus_data;
                 pop_and_decrease_size(surplus_data);
+                std::cout << "Discarded: " << surplus_data << std::endl;
             }
             push_and_increase_size(data);
             _condition_variable_pushed.notify_one();

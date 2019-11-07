@@ -60,29 +60,11 @@ namespace fpp {
         log_info(toString());
     }
 
-    Code Pipeline::init() {
-        log_info("Initialization started...");
-        try_to(checkFormatContexts());  /* Проверка на наличие входо-выходов                            */
-        try_to(openMediaSources());     /* Открытие входов и формирование входных потоков               */
-        try_to(initMedia());            /* Инициализация форматКонтекстов                               */
-        try_to(initMap());              /* Автоматический проброс потоков                               */
-        try_to(openMediaSinks());       /* Открытие выходов                                             */
-        try_to(determineSequences());   /* Формирование поледовательностей обработки входных потоков    */
-        try_to(initRefi());             /* Инициализация рефи                                           */
-        try_to(initCodec());            /* Инициализация кодеков                                        */
-        try_to(openCodec());            /* Открытие кодеков                                             */
-        try_to(startProcesors());       /* Запуск всех процессоров                                      */
-        dump();                         /* Дамп всей информации в лог                                   */
-        setInited(true);
-        log_warning(_map->toString());
-        log_info("Processing started...");
-        return Code::OK;
-    }
 //    Code Pipeline::init() {
 //        log_info("Initialization started...");
 //        try_to(checkFormatContexts());  /* Проверка на наличие входо-выходов                            */
-//        try_to(initMedia());            /* Инициализация форматКонтекстов                               */
 //        try_to(openMediaSources());     /* Открытие входов и формирование входных потоков               */
+//        try_to(initMedia());            /* Инициализация форматКонтекстов                               */
 //        try_to(initMap());              /* Автоматический проброс потоков                               */
 //        try_to(openMediaSinks());       /* Открытие выходов                                             */
 //        try_to(determineSequences());   /* Формирование поледовательностей обработки входных потоков    */
@@ -96,6 +78,25 @@ namespace fpp {
 //        log_info("Processing started...");
 //        return Code::OK;
 //    }
+    /* Не удалять! */
+    Code Pipeline::init() {
+        log_info("Initialization started...");
+        try_to(checkFormatContexts());  /* Проверка на наличие входо-выходов                            */
+        try_to(initMedia());            /* Инициализация форматКонтекстов                               */
+        try_to(openMediaSources());     /* Открытие входов и формирование входных потоков               */
+        try_to(initMap());              /* Автоматический проброс потоков                               */
+        try_to(openMediaSinks());       /* Открытие выходов                                             */
+        try_to(determineSequences());   /* Формирование поледовательностей обработки входных потоков    */
+        try_to(initRefi());             /* Инициализация рефи                                           */
+        try_to(initCodec());            /* Инициализация кодеков                                        */
+        try_to(openCodec());            /* Открытие кодеков                                             */
+        try_to(startProcesors());       /* Запуск всех процессоров                                      */
+        dump();                         /* Дамп всей информации в лог                                   */
+        setInited(true);
+        log_warning(_map->toString());
+        log_info("Processing started...");
+        return Code::OK;
+    }
 
     Code Pipeline::run() {
         bool all_processor_stopped = true;
@@ -105,13 +106,12 @@ namespace fpp {
             return_if(utils::error_code(thread_processor->exitCode())
                       , thread_processor->exitCode());
             if (thread_processor->running()) {
-//                log_warning(thread_processor->name());
                 all_processor_stopped = false;
 //                break;
             }
         }
         return_if(all_processor_stopped, Code::END_OF_FILE);
-        utils::sleep_for(LONG_DELAY_MS);
+        utils::sleep_for(LONG_DELAY_MS/* * 10*/);
         return Code::OK;
     }
 //    Code Pipeline::run() {

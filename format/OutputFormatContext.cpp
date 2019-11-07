@@ -117,6 +117,7 @@ namespace fpp {
     }
 
     Code OutputFormatContext::openContext() {
+        return_if_not(inited(), Code::INVALID_CALL_ORDER);
         log_info("Destination: \"" << _media_resource_locator << "\" is opening...");
         if (_streams.empty()) {
             log_error("No streams to mux were specified: " << _media_resource_locator);

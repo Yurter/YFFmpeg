@@ -50,14 +50,14 @@ namespace fpp {
                 log_error("std::exception: " << e.what());
                 _exit_code = Code::EXCEPTION;
                 _exit_message = e.what();
-                return;
             }
             catch (...) {
                 log_error("unknown exception!");
                 _exit_code = Code::EXCEPTION;
                 _exit_message = "unknown";
-                return;
             }
+            onStop();
+//            try_throw(onStop());
         });
         _thread.detach(); //TODO убрать?
         return Code::OK;

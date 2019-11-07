@@ -45,8 +45,12 @@ namespace fpp {
     }
 
     Code InputFormatContext::openContext() {
+        return_if_not(inited(), Code::INVALID_CALL_ORDER);
         log_info("MediaSource: \"" << _media_resource_locator << "\" is opening...");
         return_if(_media_resource_locator.empty(), Code::INVALID_INPUT);
+        for (auto&& avstream : streams()) {
+            try_to(avstream->init());
+        }
         if (avformat_open_input(&_format_context, _media_resource_locator.c_str(), _input_format, nullptr) < 0) {
             log_error("Failed to open input context.");
             return Code::INVALID_INPUT;

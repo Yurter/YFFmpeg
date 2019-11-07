@@ -25,6 +25,10 @@ namespace fpp {
             return _input_queue.empty();
         }
 
+        int64_t bufferSize() {
+            return _input_queue.size();
+        }
+
         virtual Code push(const Object* input_data) override final {
 //            return_if_not(_input_queue.wait_and_push(*static_cast<const inType*>(input_data)), Code::EXIT);
             if (!_input_queue.push(*static_cast<const inType*>(input_data))) {
@@ -88,8 +92,19 @@ namespace fpp {
 
             if (input_data.empty()) {
                 log_error("Got emty data!");
+                if (this->is("MediaSink")) {
+                    int tt = 9;
+                    tt += 1;
+                }
             }
-            if (input_data.empty() && !this->is("YMap") && !this->is("MediaSource")) { //MediaSource тоже?
+            //TODO
+            if (input_data.empty()
+                    && this->is("MediaSink")) {
+                return Code::END_OF_FILE;
+            }
+            if (input_data.empty()
+                    && !this->is("YMap")
+                    && !this->is("MediaSource")) {
                 sendOutputData(outType());
                 return Code::END_OF_FILE;
             }
