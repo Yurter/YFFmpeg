@@ -24,6 +24,8 @@ namespace fpp {
             /* Video */
             auto video_parameters = new VideoParameters;
             video_parameters->setContextUid(uid());
+            video_parameters->setTimeBase({ 1, 1000 });
+            video_parameters->setFrameRate({ 22, 1 });
             try_to(createStream(video_parameters));
             /* Audio */
             // Временно без звука
@@ -67,6 +69,7 @@ namespace fpp {
             auto video_parameters = new VideoParameters;
 //            video_parameters->setCodec("libx264", CodecType::Encoder);
 //            video_parameters->setCodec("h264_qsv", CodecType::Encoder);
+            video_parameters->setFrameRate({ 999, 1 }); //TODO
 //            video_parameters->setTimeBase({ 1, 1000 });
 //            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
 //            video_parameters->setPixelFormat(AV_PIX_FMT_NV12);

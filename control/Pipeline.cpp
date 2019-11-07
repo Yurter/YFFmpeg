@@ -258,10 +258,21 @@ namespace fpp {
                                         || rescaling_required
                                         || resampling_required);
 
-                bool decoding_required = transcoding_required
-                        && (in_stream->parameters->codecId() != AV_CODEC_ID_NONE);
-                bool encoding_required = transcoding_required
-                        && (out_stream->parameters->codecId() != AV_CODEC_ID_NONE);
+//                bool decoding_required = transcoding_required
+//                        && (in_stream->parameters->codecId() != AV_CODEC_ID_NONE);
+//                bool encoding_required = transcoding_required
+//                        && (out_stream->parameters->codecId() != AV_CODEC_ID_NONE);
+
+                bool decoding_required = transcoding_required //&& (in_stream->parameters->codecId() != AV_CODEC_ID_NONE))
+                                        || rescaling_required
+                                        || resampling_required
+                                        || video_filter_required
+                                        || audio_filter_required;
+                bool encoding_required = transcoding_required //&& (out_stream->parameters->codecId() != AV_CODEC_ID_NONE);
+                                        || rescaling_required
+                                        || resampling_required
+                                        || video_filter_required
+                                        || audio_filter_required;
 
                 if (decoding_required) {
                     Decoder* decoder = new Decoder(in_stream);

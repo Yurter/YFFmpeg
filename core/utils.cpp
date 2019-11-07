@@ -372,8 +372,8 @@ namespace fpp {
         auto in = streams.first->parameters;
         auto out = streams.second->parameters;
 
-//        return_if(in->codecId() != out->codecId(), true);
-        return_if(in->codecName() != out->codecName(), true);
+        return_if(in->codecId() != out->codecId(), true);
+//        return_if(in->codecName() != out->codecName(), true);
 
         return false;
     }
