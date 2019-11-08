@@ -69,13 +69,13 @@ int main() {
         auto sink_event = new MediaSink("group_video/event.flv", IOType::Event);
         pipeline.addElement(sink_event);
 
-//        auto video_params = new VideoParameters;
+        auto video_params = new VideoParameters;
 //        video_params->setWidth(640);
 //        video_params->setHeight(480);
 //        video_params->setFrameRate({ 22, 1 });
-//        auto video_stream = new VideoStream(video_params);
-//        auto sink_opencv = new OpenCVSink("OpenCV processing", video_stream);
-//        pipeline.addElement(sink_opencv);
+        auto video_stream = new VideoStream(video_params);
+        auto sink_opencv = new OpenCVSink("OpenCV processing", video_stream);
+        pipeline.addElement(sink_opencv);
 
 //        auto sink_youtube = new MediaSink("group_video/youtube.flv", IOType::YouTube);
 //        pipeline.addElement(sink_youtube);

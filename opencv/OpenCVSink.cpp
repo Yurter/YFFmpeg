@@ -48,9 +48,9 @@ namespace fpp {
     Code OpenCVSink::writeOutputData(Frame output_data) {
         static int counter = 0;
 //        cv::imwrite("debug_images/" + _sink_name + std::to_string(counter++)  + ".png", frameToMat(output_data));
-        cv::imshow("_sink_name", frameToMat(output_data).clone());
+//        cv::imshow("_sink_name", frameToMat(output_data).clone());
 //        utils::sleep_for(45);
-        cv::waitKey(5);
+//        cv::waitKey(5);
         return Code::OK;
     }
 

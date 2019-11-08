@@ -45,10 +45,10 @@ namespace fpp {
     }
 
     void Pipeline::remElement(Object* element) {
-        auto thread_processor = dynamic_cast<Thread*>(element);
-        if (inited_ptr(thread_processor)) {
-            try_throw(thread_processor->stop());
-        }
+//        auto thread_processor = dynamic_cast<Thread*>(element); // нужно ли?
+//        if (inited_ptr(thread_processor)) {
+//            try_throw(thread_processor->stop());
+//        }
         _processors.remove(element);
     }
 
@@ -68,25 +68,6 @@ namespace fpp {
         log_info(toString());
     }
 
-//    Code Pipeline::init() {
-//        log_info("Initialization started...");
-//        try_to(checkFormatContexts());  /* Проверка на наличие входо-выходов                            */
-//        try_to(openMediaSources());     /* Открытие входов и формирование входных потоков               */
-//        try_to(initMedia());            /* Инициализация форматКонтекстов                               */
-//        try_to(initMap());              /* Автоматический проброс потоков                               */
-//        try_to(openMediaSinks());       /* Открытие выходов                                             */
-//        try_to(determineSequences());   /* Формирование поледовательностей обработки входных потоков    */
-//        try_to(initRefi());             /* Инициализация рефи                                           */
-//        try_to(initCodec());            /* Инициализация кодеков                                        */
-//        try_to(openCodec());            /* Открытие кодеков                                             */
-//        try_to(startProcesors());       /* Запуск всех процессоров                                      */
-//        dump();                         /* Дамп всей информации в лог                                   */
-//        setInited(true);
-//        log_warning(_map->toString());
-//        log_info("Processing started...");
-//        return Code::OK;
-//    }
-    /* Не удалять! */
     Code Pipeline::init() {
         log_info("Initialization started...");
         try_to(checkFormatContexts());  /* Проверка на наличие входо-выходов                            */
@@ -255,11 +236,11 @@ namespace fpp {
                 bool audio_filter_required  = utils::audio_filter_required(in_out_streams);
                 bool transcoding_required   = utils::transcoding_required(in_out_streams);
 
-                auto out_context = static_cast<OutputFormatContext*>(out_stream->context());
-
-                video_filter_required = video_filter_required
-                                        || out_context->preset(IOType::Timelapse);
-
+                auto out_context = dynamic_cast<OutputFormatContext*>(out_stream->context());
+                if (inited_ptr(out_context)) {
+                    video_filter_required = video_filter_required
+                                            || out_context->preset(IOType::Timelapse);
+                }
 
                 transcoding_required = (transcoding_required
                                         || rescaling_required
@@ -280,6 +261,11 @@ namespace fpp {
                                         || resampling_required
                                         || video_filter_required
                                         || audio_filter_required;
+                if (inited_ptr(dynamic_cast<OpenCVSink*>(out_stream->context()))) {
+                    encoding_required = false;
+                }
+//                encoding_required = encoding_required && inited_codec_id(out_stream->parameters->codecId());
+                //OpenCVSink
 
                 if (decoding_required) {
                     Decoder* decoder = new Decoder(in_stream);
