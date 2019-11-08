@@ -77,10 +77,6 @@ namespace fpp {
 
     private:
 
-//        virtual Code onStart() override final {
-//            try_to(startInOutThread());
-//        }
-
         virtual Code run() override final {
             if (_pre_function) { try_to(_pre_function()); }
             inType input_data;

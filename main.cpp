@@ -43,7 +43,7 @@ int main() {
 //        set_ffmpeg_log_level(LogLevel::Debug);
 
         /* Запись rtsp с камеры в flv/YouTube */
-//         std::string mrl_src = "camera_one_hour_realtime.flv";
+//        std::string mrl_src = "camera_one_hour_realtime.flv";
 //        std::string mrl_src = "camera_video_10.flv";
 //        std::string mrl_src = "camera_video.flv";
 //        std::string mrl_src = "big_buck_bunny.mp4";

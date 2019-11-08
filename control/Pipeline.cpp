@@ -44,6 +44,14 @@ namespace fpp {
         _processors.push_back(element);
     }
 
+    void Pipeline::remElement(Object* element) {
+        auto thread_processor = dynamic_cast<Thread*>(element);
+        if (inited_ptr(thread_processor)) {
+            try_throw(thread_processor->stop());
+        }
+        _processors.remove(element);
+    }
+
     //void Pipeline::setRoute(Stream* input_stream, Stream* output_stream)
     //{
     //    _map->addRoute(input_stream, output_stream);
@@ -100,29 +108,22 @@ namespace fpp {
 
     Code Pipeline::run() {
         bool all_processor_stopped = true;
-//        log_warning("");
         for (auto&& processor : _processors) {
             auto thread_processor = static_cast<Thread*>(processor);
+            /* Прекращение работы, если процессор завершил работу с ошибкой */
             return_if(utils::error_code(thread_processor->exitCode())
                       , thread_processor->exitCode());
             if (thread_processor->running()) {
                 all_processor_stopped = false;
-//                break;
+                break;
+            } else {
+                /* Выброс отработавшего процессора из пула */
             }
         }
         return_if(all_processor_stopped, Code::END_OF_FILE);
         utils::sleep_for(LONG_DELAY_MS/* * 10*/);
         return Code::OK;
     }
-//    Code Pipeline::run() {
-//        for (auto&& processor : _data_processors) {
-//            auto thread_processor = static_cast<Thread*>(processor);
-//            return_if_not(thread_processor->running()
-//                          , thread_processor->exitCode());
-//        }
-//        utils::sleep_for(LONG_DELAY_MS);
-//        return Code::OK;
-//    }
 
     bool Pipeline::option(Option option) const {
         return _options & option;

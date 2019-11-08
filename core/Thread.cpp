@@ -35,6 +35,7 @@ namespace fpp {
         _running = true;
         _thread = std::thread([this]() {
             try {
+                try_throw(onStart());
                 log_debug("Thread started");
                 while (_running && !utils::exit_code(_exit_code = _loop_function())) {}
                 if (utils::error_code(_exit_code)) {
@@ -56,10 +57,9 @@ namespace fpp {
                 _exit_code = Code::EXCEPTION;
                 _exit_message = "unknown";
             }
-            onStop();
-//            try_throw(onStop());
+            try_throw(stop());
         });
-        _thread.detach(); //TODO убрать?
+        _thread.detach(); //TODO убрать? без детача падения на выходе, выяснить в каком объекте и почему
         return Code::OK;
     }
 
@@ -69,9 +69,8 @@ namespace fpp {
         return Code::OK;
     }
 
-    //TODO join?
     Code Thread::quit() {
-        return_if_not(running(), Code::INVALID_CALL_ORDER);
+        return_if_not(running(), Code::OK);
         _running = false;
         try { /* TODO */
             if (_thread.joinable()) { _thread.join(); }
@@ -96,15 +95,15 @@ namespace fpp {
     }
 
     Code Thread::run() {
-        return Code::NOT_INITED;
+        return Code::NOT_IMPLEMENTED;
     }
 
     Code Thread::onStart() {
-        return Code::NOT_INITED;
+        return Code::OK;
     }
 
     Code Thread::onStop() {
-        return Code::NOT_INITED;
+        return Code::OK;
     }
 
 } // namespace fpp
