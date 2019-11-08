@@ -26,8 +26,7 @@ namespace fpp {
     }
 
     Packet::~Packet() {
-        // TODO ffmpeg ф-ии на отчистку
-        //        av_packet_unref(&_data);
+        av_packet_unref(&_data);
     }
 
     Packet& Packet::operator=(const Packet& other) {
