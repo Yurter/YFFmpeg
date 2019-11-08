@@ -119,6 +119,10 @@ namespace fpp {
         return _used;
     }
 
+    int64_t Stream::packetIndex() const {
+        return _packet_index;
+    }
+
     AVCodecParameters* Stream::codecParameters() {
         return _data->codecpar;
     }

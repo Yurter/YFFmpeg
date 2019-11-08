@@ -46,6 +46,9 @@ namespace fpp {
     Code MediaSink::processInputData(Packet input_data) {
         if (input_data.isVideo()) { //Debug if
             try_to(_output_format_context.stream(input_data.streamIndex())->stampPacket(input_data));
+            if (_output_format_context.mediaResourceLocator() == std::string("group_video/event.flv")) {
+                log_warning("packetIndex = " << _output_format_context.stream(input_data.streamIndex())->packetIndex());
+            }
         }
         try_to(storeOutputData(input_data));
         return Code::OK;
@@ -53,7 +56,10 @@ namespace fpp {
 
     Code MediaSink::writeOutputData(Packet output_data) {
 //        if (av_interleaved_write_frame(_format_context, &packet.raw()) < 0) {
-        log_warning("pts = " << output_data.pts());
+//        if (_output_format_context.mediaResourceLocator() == std::string("group_video/event.flv")) {
+////            static int
+//            log_warning("pts = " << output_data.pts());
+//        }
 //        std::cout << "pts = " << output_data.pts() << std::endl;
         if (av_write_frame(_output_format_context.mediaFormatContext(), &output_data.raw()) < 0) {
             log_error("Error muxing packet");

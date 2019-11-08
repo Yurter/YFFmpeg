@@ -59,21 +59,16 @@ namespace fpp {
     }
 
     Code YMap::processInputData(Packet input_data) {
-//        log_info("work");
         try {
-            auto out_index_list = _index_map.equal_range(input_data.streamUid());
-            return_if(out_index_list.first == _index_map.end(), Code::INVALID_INPUT);
+            /* Получение списка процессоров для полученного пакета */
+            auto out_index_list = _packet_map.equal_range(input_data.streamUid());
+            return_if(out_index_list.first == _packet_map.end(), Code::INVALID_INPUT);
 
-            for (auto it = out_index_list.first; it != out_index_list.second; it++) {
-                /* Определение локального индекса выходного потока */
-                int64_t out_stream_index = it->second;
+            for (auto proc_it = out_index_list.first; proc_it != out_index_list.second; proc_it++) {
+                Processor* next_proc = proc_it->second;
 
-                /* Определение следующего обработчика пакета */
-                auto next_proc_list = _packet_map.equal_range(input_data.streamUid());
-                return_if(next_proc_list.first == _packet_map.end(), Code::INVALID_INPUT);
-
-                for (auto it2 = next_proc_list.first; it2 != next_proc_list.second; it2++) {
-                    Processor* next_proc = it2->second;
+                try { /* Определение локального индекса выходного потока */
+                    int64_t out_stream_index = 0;// TODO: грубая временная заплатка. _index_map[input_data.streamUid()];
 
                     /* Инициализаця индекса потока и отправка пакета */
                     input_data.setStreamIndex(out_stream_index);
@@ -81,6 +76,10 @@ namespace fpp {
                         log_error("Sending empty data to " << next_proc->name());
                     }
                     try_to(sendOutputData(input_data, next_proc));
+
+                } catch (std::out_of_range) {
+                    log_error("Failed to get out_stream_index: " << input_data);
+                    return Code::INVALID_INPUT;
                 }
             }
         } catch (std::out_of_range) {
@@ -90,6 +89,42 @@ namespace fpp {
 
         return checkInputs();
     }
+//    Code YMap::processInputData(Packet input_data) {
+////        log_info("work");
+//        try {
+//            auto out_index_list = _index_map.equal_range(input_data.streamUid());
+//            return_if(out_index_list.first == _index_map.end(), Code::INVALID_INPUT);
+
+//            log_warning("");
+//            log_warning("1");
+//            for (auto it = out_index_list.first; it != out_index_list.second; it++) {
+//                /* Определение локального индекса выходного потока */
+//                int64_t out_stream_index = it->second;
+//                log_warning("2");
+
+//                /* Определение следующего обработчика пакета */
+//                auto next_proc_list = _packet_map.equal_range(input_data.streamUid());
+//                return_if(next_proc_list.first == _packet_map.end(), Code::INVALID_INPUT);
+
+//                for (auto it2 = next_proc_list.first; it2 != next_proc_list.second; it2++) {
+//                    log_warning("3");
+//                    Processor* next_proc = it2->second;
+
+//                    /* Инициализаця индекса потока и отправка пакета */
+//                    input_data.setStreamIndex(out_stream_index);
+//                    if (input_data.empty()) {
+//                        log_error("Sending empty data to " << next_proc->name());
+//                    }
+//                    try_to(sendOutputData(input_data, next_proc));
+//                }
+//            }
+//        } catch (std::out_of_range) {
+//            log_error("First try failed: " << input_data);
+//            return Code::INVALID_INPUT;
+//        }
+
+//        return checkInputs();
+//    }
 
 //    Code YMap::processInputData(Packet& input_data) {
 //        /* Определение локального индекса выходного потока */

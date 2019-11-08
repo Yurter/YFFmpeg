@@ -29,6 +29,7 @@ namespace fpp {
         int64_t             index()     const;
         int64_t             duration()  const;
         bool                used()      const;
+        int64_t             packetIndex() const;
 
         AVCodecParameters*  codecParameters();
 
