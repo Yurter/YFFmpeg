@@ -64,8 +64,8 @@ namespace fpp {
             int(_video_params->height())
             , int(_video_params->width())
             , CV_8UC3
-            , frame.raw()->data[0]
-            , size_t(frame.raw()->linesize[0])
+            , frame.raw().data[0]
+            , size_t(frame.raw().linesize[0])
         );
     }
 

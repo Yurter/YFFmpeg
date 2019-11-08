@@ -3,20 +3,20 @@
 
 namespace fpp {
 
-    class Frame : public Data<AVFrame*> {
+    class Frame : public Data<AVFrame> {
 
     public:
 
         Frame();
         Frame(const Frame& other);
         Frame(const Frame&& other);
-        Frame(AVFrame* frame);
+//        Frame(AVFrame* frame);
         virtual ~Frame() override;
 
         Frame& operator=(const Frame&& other);
 
-        bool                alloc();
-        void                free();
+//        bool                alloc();
+//        void                free();
 
 
 //        bool                empty() const;

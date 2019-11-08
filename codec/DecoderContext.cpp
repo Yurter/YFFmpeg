@@ -24,7 +24,7 @@ namespace fpp {
             }
             av_packet_unref(&input_packet.raw());
         }
-        int ret = avcodec_receive_frame(_codec_context, output_frame.raw());
+        int ret = avcodec_receive_frame(_codec_context, &output_frame.raw());
         switch (ret) {
         case 0:
             output_frame.setType(input_packet.type());

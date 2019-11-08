@@ -50,25 +50,25 @@ namespace fpp {
     }
 
     Code Resampler::processInputData(Frame input_data) {
-        if (swr_convert_frame(_resampler_context, nullptr, input_data.raw()) != 0) {
+        if (swr_convert_frame(_resampler_context, nullptr, &input_data.raw()) != 0) {
             log_error("swr_convert_frame failed"); //TODO формулировка
             return Code::ERR;
         }
         do {
-            AVFrame *output_frame = nullptr;
-            if (!initOutputFrame(&output_frame, _io_streams.second->codecParameters()->frame_size)) {
+            Frame output_data;
+            AVFrame* output_data_frame = &output_data.raw();
+            if (!initOutputFrame(&output_data_frame, _io_streams.second->codecParameters()->frame_size)) {
                 log_error("initOutputFrame failed"); //TODO формулировка
                 return Code::ERR;
             }
-            if (configChanged(input_data.raw(), output_frame)) {
+            if (configChanged(&input_data.raw(), &output_data.raw())) {
                 log_error("configChanged"); //TODO формулировка
                 return Code::ERR;
             }
-            if (swr_convert_frame(_resampler_context, output_frame, nullptr) != 0) {
+            if (swr_convert_frame(_resampler_context, &output_data.raw(), nullptr) != 0) {
                 log_error("swr_convert_frame failed"); //TODO формулировка
                 return Code::ERR;
             }
-            Frame output_data(output_frame);
             output_data.setType(MEDIA_TYPE_AUDIO);
 
             try_to(sendOutputData(output_data));

@@ -17,13 +17,13 @@ namespace fpp {
         output_packet.setType(_stream->type());
         int ret;
 //        utils::SaveAvFrame(input_frame.raw());
-        if ((ret = avcodec_send_frame(_codec_context, input_frame.raw())) != 0) {
+        if ((ret = avcodec_send_frame(_codec_context, &input_frame.raw())) != 0) {
             log_error(input_frame);
-            log_error("Pxl_fmt: " << input_frame.raw()->format << " cc: " << _codec_context->pix_fmt);
+            log_error("Pxl_fmt: " << input_frame.raw().format << " cc: " << _codec_context->pix_fmt);
             log_error("Could not send frame " << ret);
             return Code::ERR;
         }
-        input_frame.free(); //memfix
+//        input_frame.free(); //memfix
         if ((ret = avcodec_receive_packet(_codec_context, &output_packet.raw())) != 0) {
 //            log_warning("avcodec_receive_packet failed");
             return Code::AGAIN;

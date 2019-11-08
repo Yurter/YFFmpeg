@@ -115,24 +115,25 @@ namespace fpp {
     }
 
     Code Filter::processInputData(Frame input_data) {
-        if (av_buffersrc_add_frame_flags(_buffersrc_ctx, input_data.raw(), AV_BUFFERSRC_FLAG_KEEP_REF) < 0) {
+        if (av_buffersrc_add_frame_flags(_buffersrc_ctx, &input_data.raw(), AV_BUFFERSRC_FLAG_KEEP_REF) < 0) {
             log_error("Error while feeding the filtergraph: " << input_data);
             return Code::FFMPEG_ERROR;
         }
         /* pull filtered frames from the filtergraph */
         while (1) {
-            AVFrame* filt_frame = av_frame_alloc();
-            int ret = av_buffersink_get_frame(_buffersink_ctx, filt_frame);
+//            AVFrame* filt_frame = av_frame_alloc();
+            Frame output_data;
+            int ret = av_buffersink_get_frame(_buffersink_ctx, &output_data.raw());
             if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
                 return Code::AGAIN;
             if (ret < 0)
                 return Code::FFMPEG_ERROR;
-            Frame output_data(filt_frame);
+//            Frame output_data(filt_frame);
             output_data.setType(MEDIA_TYPE_VIDEO);
-            output_data.raw()->linesize[0] = input_data.raw()->linesize[0];
-            output_data.raw()->linesize[1] = input_data.raw()->linesize[1];
-            output_data.raw()->linesize[2] = input_data.raw()->linesize[2];
-            input_data.free();
+            output_data.raw().linesize[0] = input_data.raw().linesize[0];
+            output_data.raw().linesize[1] = input_data.raw().linesize[1];
+            output_data.raw().linesize[2] = input_data.raw().linesize[2];
+//            input_data.free();
 //            log_debug("Sending... " << output_data);
             try_to(sendOutputData(output_data));
         }
