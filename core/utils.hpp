@@ -87,7 +87,7 @@ namespace fpp {
 
 /* Макрос установки уровня лога - сообщения, имеющие урень выше установленного, игнорируются */
 #define set_log_level(x)        logger.setLogLevel(x)
-#define set_ffmpeg_log_level(x) logger.setFfmpegLogLevel(x)
+#define set_ffmpeg_log_level(x) logger.setFFmpegLogLevel(x)
 #define stop_log()              logger.quit()
 
 /* Макросы для отправки строковых сообщений в лог */

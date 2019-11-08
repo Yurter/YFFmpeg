@@ -43,6 +43,9 @@ namespace fpp {
         case LogLevel::Debug:
             SetConsoleTextAttribute(hStdout, FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_INTENSITY);
             break;
+        case LogLevel::Trace:
+            SetConsoleTextAttribute(hStdout, FOREGROUND_BLUE|FOREGROUND_INTENSITY|FOREGROUND_RED);
+            break;
         }
 
         std::cout << message.log_text << std::endl;
@@ -59,11 +62,8 @@ namespace fpp {
     }
 
     std::string Logger::format_message(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
-        std::string header;
+        std::string header = "[" + caller_name + "]";
 
-        if (log_level > LogLevel::Quiet) {
-            header += "[" + caller_name + "]";
-        }
         if (log_level >= LogLevel::Debug) {
             header += "\n";
             header += (std::stringstream() << TAB << std::setw(20) << std::left << "Thread id: " << current_thread_id()).str();
@@ -77,7 +77,6 @@ namespace fpp {
         }
 
         std::stringstream ss;
-
         ss << std::setw(22) << std::left << header << message;
 
         return ss.str();
@@ -97,7 +96,7 @@ namespace fpp {
         av_log_format_line(ptr, level, fmt, vl2, line, sizeof(line), &print_prefix);
         va_end(vl2);
 
-        static_print_auto("static", convertLogLevel(level), line);
+        static_print_auto("FFmpeg", convertLogLevel(level), line);
     }
 
     LogLevel Logger::convertLogLevel(int ffmpeg_level) {
@@ -126,11 +125,8 @@ namespace fpp {
         _log_level = log_level;
     }
 
-    void Logger::setFfmpegLogLevel(LogLevel log_level) {
+    void Logger::setFFmpegLogLevel(LogLevel log_level) {
         switch (log_level) {
-        case LogLevel::Quiet:
-            av_log_set_level(AV_LOG_QUIET);
-            break;
         case LogLevel::Info:
             av_log_set_level(AV_LOG_INFO);
             break;
@@ -142,6 +138,12 @@ namespace fpp {
             break;
         case LogLevel::Debug:
             av_log_set_level(AV_LOG_DEBUG);
+            break;
+        case LogLevel::Trace:
+            av_log_set_level(AV_LOG_TRACE);
+            break;
+        case LogLevel::Quiet:
+            av_log_set_level(AV_LOG_QUIET);
             break;
         }
     }

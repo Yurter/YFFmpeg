@@ -45,6 +45,10 @@ namespace fpp {
         return _preset;
     }
 
+    bool FormatContext::preset(IOType value) const {
+        return _preset == value;
+    }
+
     Code FormatContext::open() {
         return_if(opened(), Code::OK);
         if_not(inited()) { try_to(init()); } //TODO оставить изменить?

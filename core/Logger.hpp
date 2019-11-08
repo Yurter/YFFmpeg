@@ -29,7 +29,7 @@ namespace fpp {
 
         static Logger&      instance();
         void                setLogLevel(LogLevel log_level);
-        void                setFfmpegLogLevel(LogLevel log_level);
+        void                setFFmpegLogLevel(LogLevel log_level);
         void                print(const Object* caller, std::string code_position, LogLevel log_level, const std::string message);
         void                static_print(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message);
 

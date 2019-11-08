@@ -15,6 +15,7 @@ namespace fpp {
         virtual ~FormatContext() override;
 
         IOType              preset() const;
+        bool                preset(IOType value) const;
 
         Code                open();
         Code                close();

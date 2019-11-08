@@ -254,6 +254,12 @@ namespace fpp {
                 bool audio_filter_required  = utils::audio_filter_required(in_out_streams);
                 bool transcoding_required   = utils::transcoding_required(in_out_streams);
 
+                auto out_context = static_cast<OutputFormatContext*>(out_stream->context());
+
+                video_filter_required = video_filter_required
+                                        || out_context->preset(IOType::Timelapse);
+
+
                 transcoding_required = (transcoding_required
                                         || rescaling_required
                                         || resampling_required);

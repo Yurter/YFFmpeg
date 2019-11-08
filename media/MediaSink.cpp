@@ -47,7 +47,7 @@ namespace fpp {
         if (input_data.isVideo()) { //Debug if
             try_to(_output_format_context.stream(input_data.streamIndex())->stampPacket(input_data));
             if (_output_format_context.mediaResourceLocator() == std::string("group_video/event.flv")) {
-                log_warning("packetIndex = " << _output_format_context.stream(input_data.streamIndex())->packetIndex());
+//                log_warning("packetIndex = " << _output_format_context.stream(input_data.streamIndex())->packetIndex());
             }
         }
         try_to(storeOutputData(input_data));
