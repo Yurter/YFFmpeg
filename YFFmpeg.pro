@@ -12,6 +12,7 @@ SOURCES += \
     codec/DecoderContext.cpp \
     codec/Encoder.cpp \
     codec/EncoderContext.cpp \
+    core/Timer.cpp \
     format/InputFormatContext.cpp \
     format/OutputFormatContext.cpp \
     core/Exception.cpp \
@@ -59,6 +60,7 @@ HEADERS += \
     codec/EncoderContext.hpp \
     core/AsyncDiscardQueue.hpp \
     core/Chronometer.hpp \
+    core/Timer.hpp \
     format/InputFormatContext.hpp \
     format/OutputFormatContext.hpp \
     core/AsyncQueue.hpp \

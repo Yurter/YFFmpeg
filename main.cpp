@@ -8,7 +8,7 @@ void start_debug_timeout(MediaSource* source, int delay) {
         int step_ms = delay * 10;
         for (auto i = 0; i < 100; i++) {
             utils::sleep_for_ms(step_ms);
-            static_log_info("external_stop", "Progress " << i << "%");
+//            static_log_info("external_stop", "Progress " << i << "%");
         }
 //        exit(0); // Temp
         Code ret = source->stop();
@@ -48,8 +48,8 @@ int main() {
 //        std::string mrl_src = "camera_video.flv";
 //        std::string mrl_src = "big_buck_bunny.mp4";
 //        std::string mrl_src = "Walking.mp4"; /* Не работает декодер! */
-        std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12"; //640x480
-//        std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
+//        std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12"; //640x480
+        std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
 
 //        std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/vtpz-spss-u4eq-4k0e";
     //    std::string mrl_dst = "remuxed.flv";
@@ -66,22 +66,22 @@ int main() {
         Pipeline pipeline;
         pipeline.addElement(source);
 
-//        auto sink_event = new MediaSink("group_video/event.flv", IOType::Event);
-//        pipeline.addElement(sink_event);
+        auto sink_event = new MediaSink("group_video/event.flv", IOType::Event);
+        pipeline.addElement(sink_event);
 
-        auto video_params = new VideoParameters;
-//        video_params->setWidth(640);
-//        video_params->setHeight(480);
-//        video_params->setFrameRate({ 22, 1 });
-        auto video_stream = new VideoStream(video_params);
-        auto sink_opencv = new OpenCVSink("OpenCV processing", video_stream);
-        pipeline.addElement(sink_opencv);
+//        auto video_params = new VideoParameters;
+////        video_params->setWidth(640);
+////        video_params->setHeight(480);
+////        video_params->setFrameRate({ 22, 1 });
+//        auto video_stream = new VideoStream(video_params);
+//        auto sink_opencv = new OpenCVSink("OpenCV processing", video_stream);
+//        pipeline.addElement(sink_opencv);
 
 //        auto sink_youtube = new MediaSink("group_video/youtube.flv", IOType::YouTube);
 //        pipeline.addElement(sink_youtube);
 
-//        auto sink_timelapse = new MediaSink("group_video/timelapse.flv", IOType::Timelapse);
-//        pipeline.addElement(sink_timelapse);
+        auto sink_timelapse = new MediaSink("group_video/timelapse.flv", IOType::Timelapse);
+        pipeline.addElement(sink_timelapse);
 
 //        auto sink_restream = new MediaSink("group_video/restream.flv");
 //        pipeline.addElement(sink_restream);

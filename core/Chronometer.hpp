@@ -25,8 +25,8 @@ namespace fpp {
 
         using StartPoint = std::chrono::time_point<std::chrono::system_clock>;
 
-        StartPoint      _start_point;
+        StartPoint       _start_point;
 
-};
+    };
 
 } // namespace fpp
