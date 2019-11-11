@@ -46,6 +46,37 @@ namespace fpp {
 
         Object*             _media_ptr;
 
+    private:
+
+        class Interrupter {
+
+        public:
+
+            Interrupter(InterruptedProcess process, FormatContext* caller) :
+                interrupted_process(process)
+              , caller_object(caller) {}
+
+            InterruptedProcess  interrupted_process;
+            FormatContext*      caller_object;
+
+            void reset_timepoint() {
+                _start_point = std::chrono::system_clock::now();
+            }
+
+            int64_t elapsed_milliseconds() const {
+                auto end_point = std::chrono::system_clock::now();
+                return std::chrono::duration_cast<std::chrono::milliseconds>
+                        (end_point - _start_point).count();
+            }
+
+        private:
+
+            using StartPoint = std::chrono::time_point<std::chrono::system_clock>;
+
+            StartPoint      _start_point;
+
+        };
+
     protected:
 
         virtual Code        createContext() = 0;
@@ -57,8 +88,11 @@ namespace fpp {
     private:
 
         void                setOpened(bool opened);
-
         void                setUid(int64_t uid);                        ///< Функция установки uid контекста, не допускает повторного вызовова.
+
+        void                setInteruptCallback(InterruptedProcess process);
+        void                resetInteruptCallback();
+        static int          interrupt_callback(void* opaque);
 
     protected:
 
@@ -71,6 +105,7 @@ namespace fpp {
         int64_t             _reopening_timeout;
         int64_t             _artificial_delay;
         IOType              _preset;
+        Interrupter         _current_interrupter;
 
 
         // FFmpeg

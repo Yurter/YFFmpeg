@@ -12,6 +12,7 @@ namespace fpp {
         , _reopening_timeout(INVALID_INT)
         , _artificial_delay(DEFAULT_INT)
         , _preset(preset)
+        , _current_interrupter(InterruptedProcess::None, this)
         , _format_context(nullptr)
     {
         setName("FormatContext");
@@ -52,7 +53,9 @@ namespace fpp {
     Code FormatContext::open() {
         return_if(opened(), Code::OK);
         if_not(inited()) { try_to(init()); } //TODO оставить изменить?
+        setInteruptCallback(InterruptedProcess::Opening);
         try_to(openContext());
+        resetInteruptCallback();
         setOpened(true);
         return Code::OK;
     }
@@ -96,6 +99,48 @@ namespace fpp {
 
     void FormatContext::setUid(int64_t uid) {
         if (invalid_int(_uid)) { _uid = uid; }
+    }
+
+    void FormatContext::setInteruptCallback(InterruptedProcess process) {
+        _current_interrupter.interrupted_process = process;
+        _current_interrupter.reset_timepoint();
+        _format_context->interrupt_callback.callback =
+                &FormatContext::interrupt_callback;
+        _format_context->interrupt_callback.opaque =
+                &_current_interrupter;
+    }
+
+    void FormatContext::resetInteruptCallback() {
+        _current_interrupter.interrupted_process = InterruptedProcess::None;
+        _format_context->interrupt_callback.callback = nullptr; /* Бессмысленно :( */
+        _format_context->interrupt_callback.opaque = nullptr;   /* Бессмысленно :( */
+    }
+
+    int FormatContext::interrupt_callback(void* opaque) {
+        auto interrupter = reinterpret_cast<Interrupter*>(opaque);
+        switch (interrupter->interrupted_process) {
+        case InterruptedProcess::None:
+            return 0;
+        case InterruptedProcess::Opening: {
+            int opening_timeout_ms = 5000;
+            if (interrupter->elapsed_milliseconds() > opening_timeout_ms) {
+                static_log_error("interrupt_callback", "Opening timed out: " << opening_timeout_ms);
+                return 1;
+            }
+            return 0;
+        }
+        case InterruptedProcess::Closing:
+            static_log_error("interrupt_callback", "InterruptedProcess::Closing is not implemeted");
+            return -1;
+        case InterruptedProcess::Reading:
+            static_log_error("interrupt_callback", "InterruptedProcess::Reading is not implemeted");
+            return -1;
+        case InterruptedProcess::Writing:
+            static_log_error("interrupt_callback", "InterruptedProcess::Writing is not implemeted");
+            return -1;
+        }
+        static_log_warning("interrupt_callback", "opaque = " << opaque);
+        return 0;
     }
 
     int64_t FormatContext::uid() const {

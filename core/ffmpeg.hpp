@@ -95,6 +95,15 @@ namespace fpp {
         Quiet,
     };
 
+    /* ? */
+    enum InterruptedProcess {
+        None,
+        Opening,
+        Closing,
+        Reading,
+        Writing,
+    };
+
 } // namespace fpp
 
 #define UNUSED(x) (void)(x)
