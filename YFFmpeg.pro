@@ -58,6 +58,7 @@ HEADERS += \
     codec/Encoder.hpp \
     codec/EncoderContext.hpp \
     core/AsyncDiscardQueue.hpp \
+    core/Chronometer.hpp \
     format/InputFormatContext.hpp \
     format/OutputFormatContext.hpp \
     core/AsyncQueue.hpp \

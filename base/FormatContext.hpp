@@ -2,6 +2,7 @@
 #include "stream/VideoStream.hpp"
 #include "stream/AudioStream.hpp"
 #include "core/utils.hpp"
+#include "core/Chronometer.hpp"
 
 namespace fpp {
 
@@ -9,7 +10,7 @@ namespace fpp {
 
     public:
 
-        FormatContext(const std::string mrl, Object* media_ptr, IOType preset = IOType::Auto); ///< mrl - media resource locator.
+        FormatContext(const std::string mrl, Object* media_ptr, int64_t max_duration_sec = INVALID_INT, IOType preset = IOType::Auto); ///< mrl - media resource locator.
         FormatContext(const FormatContext& other)  = delete;
         FormatContext(const FormatContext&& other) = delete;
         virtual ~FormatContext() override;
@@ -58,23 +59,7 @@ namespace fpp {
 
             InterruptedProcess  interrupted_process;
             FormatContext*      caller_object;
-
-            void reset_timepoint() {
-                _start_point = std::chrono::system_clock::now();
-            }
-
-            int64_t elapsed_milliseconds() const {
-                auto end_point = std::chrono::system_clock::now();
-                return std::chrono::duration_cast<std::chrono::milliseconds>
-                        (end_point - _start_point).count();
-            }
-
-        private:
-
-            using StartPoint = std::chrono::time_point<std::chrono::system_clock>;
-
-            StartPoint      _start_point;
-
+            Chronometer         chronometer;
         };
 
     protected:
@@ -101,6 +86,7 @@ namespace fpp {
         std::string			_media_resource_locator;
         bool				_opened;
         StreamVector        _streams;
+        int64_t             _max_duration_sec;
         bool                _reopening_after_failure;
         int64_t             _reopening_timeout;
         int64_t             _artificial_delay;

@@ -3,11 +3,12 @@
 
 namespace fpp {
 
-    FormatContext::FormatContext(const std::string mrl, Object* media_ptr, IOType preset) :
+    FormatContext::FormatContext(const std::string mrl, Object* media_ptr, int64_t max_duration_sec, IOType preset) :
         _media_ptr(media_ptr)
         , _uid(utils::gen_context_uid())
         , _media_resource_locator(mrl)
         , _opened(false)
+        , _max_duration_sec(max_duration_sec)
         , _reopening_after_failure(false)
         , _reopening_timeout(INVALID_INT)
         , _artificial_delay(DEFAULT_INT)
@@ -103,7 +104,7 @@ namespace fpp {
 
     void FormatContext::setInteruptCallback(InterruptedProcess process) {
         _current_interrupter.interrupted_process = process;
-        _current_interrupter.reset_timepoint();
+        _current_interrupter.chronometer.reset_timepoint();
         _format_context->interrupt_callback.callback =
                 &FormatContext::interrupt_callback;
         _format_context->interrupt_callback.opaque =
@@ -123,7 +124,7 @@ namespace fpp {
             return 0;
         case InterruptedProcess::Opening: {
             int opening_timeout_ms = 5000;
-            if (interrupter->elapsed_milliseconds() > opening_timeout_ms) {
+            if (interrupter->chronometer.elapsed_milliseconds() > opening_timeout_ms) {
                 static_log_error("interrupt_callback", "Opening timed out: " << opening_timeout_ms);
                 return 1;
             }
