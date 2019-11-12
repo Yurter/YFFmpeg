@@ -4,7 +4,7 @@ namespace fpp {
 
     CustomPacketSource::CustomPacketSource(std::string source_name
                                            , StreamVector streams
-                                           , std::function<Packet()> read_func
+                                           , std::function<Code(Packet&)> read_func
                                            , std::function<Code(Packet&)> process_func) :
         _source_name(source_name)
       , _streams(streams)
@@ -52,7 +52,7 @@ namespace fpp {
     }
 
     Code CustomPacketSource::readInputData(Packet& input_data) {
-        input_data = _read_func();
+        try_to(_read_func(input_data));
         return Code::OK;
     }
 

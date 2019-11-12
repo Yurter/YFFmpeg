@@ -9,7 +9,7 @@ namespace fpp {
 
         CustomPacketSource(std::string source_name
                            , StreamVector streams
-                           , std::function<Packet()> read_func
+                           , std::function<Code(Packet&)> read_func
                            , std::function<Code(Packet&)> process_func);
         virtual ~CustomPacketSource() override;
 
@@ -19,6 +19,7 @@ namespace fpp {
         virtual std::string toString() const override;
 
         StreamVector        streams();
+        Stream*             stream(int64_t index);
 
     private:
 
@@ -30,7 +31,7 @@ namespace fpp {
 
         std::string                     _source_name;
         StreamVector                    _streams;
-        std::function<Packet()>         _read_func;
+        std::function<Code(Packet&)>    _read_func;
         std::function<Code(Packet&)>    _process_func;
 
     };
