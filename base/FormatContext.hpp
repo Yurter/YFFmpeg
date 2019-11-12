@@ -10,7 +10,7 @@ namespace fpp {
 
     public:
 
-        FormatContext(const std::string mrl, Object* media_ptr, int64_t max_duration_sec = INVALID_INT, IOType preset = IOType::Auto); ///< mrl - media resource locator.
+        FormatContext(const std::string mrl, Object* media_ptr/*, int64_t max_duration_sec = INVALID_INT*/, IOType preset = IOType::Auto); ///< mrl - media resource locator.
         FormatContext(const FormatContext& other)  = delete;
         FormatContext(const FormatContext&& other) = delete;
         virtual ~FormatContext() override;
@@ -86,7 +86,7 @@ namespace fpp {
         std::string			_media_resource_locator;
         bool				_opened;
         StreamVector        _streams;
-        int64_t             _max_duration_sec;
+//        int64_t             _max_duration_sec;
         bool                _reopening_after_failure;
         int64_t             _reopening_timeout;
         int64_t             _artificial_delay;
