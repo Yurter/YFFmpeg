@@ -3,18 +3,33 @@
 
 namespace fpp {
 
-    using LoopFunction = std::function<void(void)>;
-
+    template<typename FunctionType>
     class Timer {
-
 
     public:
 
-        Timer(std::fun);
+        Timer(FunctionType function) {
+            // TODO
+        }
+        ~Timer() {
+            // TODO
+        }
 
-        void start();
-        void restart();
-        void stop();
+        void                start(int64_t msec);
+        void                restart();
+        void                stop();
+
+
+        int64_t             interval() const;
+        bool                isActive() const;
+        bool                isSingleShot() const;
+        int64_t             remainingTime() const;
+        void                setInterval(int msec);
+        void                setSingleShot(bool singleShot);
+
+    private:
+
+        FunctionType        _function;
 
     };
 

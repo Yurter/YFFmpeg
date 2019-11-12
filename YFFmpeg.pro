@@ -12,7 +12,10 @@ SOURCES += \
     codec/DecoderContext.cpp \
     codec/Encoder.cpp \
     codec/EncoderContext.cpp \
-    core/Timer.cpp \
+    custom/CustomFrameSink.cpp \
+    custom/CustomFrameSource.cpp \
+    custom/CustomPacketSink.cpp \
+    custom/CustomPacketSource.cpp \
     format/InputFormatContext.cpp \
     format/OutputFormatContext.cpp \
     core/Exception.cpp \
@@ -61,6 +64,10 @@ HEADERS += \
     core/AsyncDiscardQueue.hpp \
     core/Chronometer.hpp \
     core/Timer.hpp \
+    custom/CustomFrameSink.hpp \
+    custom/CustomFrameSource.hpp \
+    custom/CustomPacketSink.hpp \
+    custom/CustomPacketSource.hpp \
     format/InputFormatContext.hpp \
     format/OutputFormatContext.hpp \
     core/AsyncQueue.hpp \

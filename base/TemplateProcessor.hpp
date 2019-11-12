@@ -18,7 +18,7 @@ namespace fpp {
         }
 
         virtual ~TemplateProcessor() {
-            //stopInOutThread();
+            //TODO
         }
 
         bool buferIsEmpty() {
@@ -30,7 +30,6 @@ namespace fpp {
         }
 
         virtual Code push(const Object* input_data) override final {
-//            return_if_not(_input_queue.wait_and_push(*static_cast<const inType*>(input_data)), Code::EXIT);
             if (!_input_queue.push(*static_cast<const inType*>(input_data))) {
                 log_warning("queue push failed");
             }
@@ -41,7 +40,7 @@ namespace fpp {
 
         virtual Code processInputData(inType input_data) = 0;
         virtual Code readInputData(inType& input_data) { UNUSED(input_data); return Code::NOT_IMPLEMENTED; }
-        virtual Code writeOutputData(outType output_data) { UNUSED(output_data);  return Code::NOT_IMPLEMENTED; }
+        virtual Code writeOutputData(outType output_data) { UNUSED(output_data); return Code::NOT_IMPLEMENTED; }
 
         Code setPreFunction(const IOFunction pre_function) {
             return_if_not(pre_function, Code::ERR);
@@ -52,11 +51,6 @@ namespace fpp {
             return_if_not(post_function, Code::ERR);
             _post_function = post_function;
         }
-
-//        Code setInOutFunction(const IOFunction io_function) {
-//            return_if(_io_function, Code::ERR);
-//            _io_function = io_function;
-//        }
 
         Code sendOutputData(const outType& output_data, Processor* next_proc = nullptr) {
             auto pointer = inited_ptr(next_proc) ? next_proc : _next_processor;
@@ -109,22 +103,9 @@ namespace fpp {
             return Code::OK;
         }
 
-//        Code startInOutThread() {
-//            _io_thread = Thread(_io_function);
-//            _io_thread.start();
-//            _io_thread.setName(name() + " IO thread");
-//        }
-
-//        Code stopInOutThread() {
-//            _io_thread.quit();
-//            _io_thread.join();
-//        }
-
     private:
 
         AsyncDiscardQueue<inType>  _input_queue;
-//        IOFunction          _io_function;
-//        Thread              _io_thread;
 
         IOFunction          _pre_function;
         IOFunction          _post_function;
