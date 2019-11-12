@@ -16,7 +16,7 @@ namespace fpp {
         Packet& operator=(const Packet& other);
         Packet& operator=(const Packet&& other);
 
-        void                copyFrom(const AVPacket& avpacket);
+//        void                copyFrom(const AVPacket& avpacket);
 //        void                cloneFrom(const AVPacket& avpacket);
 
         virtual Code        init() override;
