@@ -61,6 +61,33 @@ namespace fpp {
         return *this;
     }
 
+    void Packet::copyFrom(const AVPacket& avpacket) {
+        setPts(avpacket.pts);
+        setDts(avpacket.dts);
+        setDuration(avpacket.duration);
+        setPos(avpacket.pos);
+        setStreamIndex(avpacket.stream_index);
+        if (av_packet_ref(&_data, &avpacket) != 0) {
+            log_error("av_packet_ref failed! copyFrom().");
+        }
+        setInited(true);
+    }
+
+//    void Packet::cloneFrom(const AVPacket& avpacket) {
+//        setPts(avpacket.pts);
+//        setDts(avpacket.dts);
+//        setDuration(avpacket.duration);
+//        setPos(avpacket.pos);
+//        setStreamIndex(avpacket.stream_index);
+//        if (av_packet_ref(&_data, &avpacket) != 0) {
+//            log_error("av_packet_ref failed! copyFrom().");
+//        }
+//    AVPacket newPacket(oldPacket);
+//    newPacket->data = reinterpret_cast<uint8_t*>(new uint64_t[(oldPacket->size + FF_INPUT_BUFFER_PADDING_SIZE)/sizeof(uint64_t) + 1]);
+//    memcpy(newPacket->data, oldPacket->data, oldPacket->size);
+//        setInited(true);
+//    }
+
     Code Packet::init() {
         av_init_packet(&_data);
         setInited(true);

@@ -1,5 +1,6 @@
 #pragma once
 #include "opencv/OpenCVSink.hpp"
+#include "custom/CustomPacketSource.hpp"
 #include "media/MediaSource.hpp"
 #include "media/MediaSink.hpp"
 #include "codec/Decoder.hpp"
