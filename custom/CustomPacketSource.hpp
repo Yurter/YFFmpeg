@@ -7,15 +7,16 @@ namespace fpp {
 
     public:
 
-        CustomPacketSource(const std::string mrl, IOType preset = IOType::Auto);
+        CustomPacketSource(std::string source_name
+                           , StreamVector streams
+                           , std::function<Packet()> read_func
+                           , std::function<Code(Packet&)> process_func);
         virtual ~CustomPacketSource() override;
 
         virtual Code        init() override;
         virtual Code        open() override;
         virtual Code        close() override;
         virtual std::string toString() const override;
-
-//        VideoStream*        videoStream();
 
     private:
 
@@ -25,8 +26,11 @@ namespace fpp {
 
         Code                sendEofPacket();
 
-    };
+        std::string                     _source_name;
+        StreamVector                    _streams;
+        std::function<Packet()>         _read_func;
+        std::function<Code(Packet&)>    _process_func;
 
-//    using MediaSourceList = std::list<MediaSource*>;
+    };
 
 } // namespace fpp
