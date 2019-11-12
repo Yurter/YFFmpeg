@@ -42,6 +42,9 @@ namespace fpp {
 
     void Pipeline::addElement(Object* element) {
         _processors.push_back(element);
+        if (running()) {
+            // Code::NOT_IMPLEMENTED
+        }
     }
 
     void Pipeline::remElement(Object* element) {
@@ -352,6 +355,12 @@ namespace fpp {
         //см TODO ↗
     }
 
+//    Code Pipeline::determineSequence(MediaSink* media_sink) {
+//        try_to(connectIOStreams(MediaType::MEDIA_TYPE_VIDEO));
+//        //TODO
+//        return Code::OK;
+//    }
+
     std::string Pipeline::toString() const {
         std::string dump_str;
 
@@ -487,6 +496,7 @@ namespace fpp {
         }
         /* Трансляция наилучшего потока на все потоки выхода того же медиа-типа */
         for (auto&& out_stream : output_streams) {
+            if (out_stream->used()) { continue; }
             try_to(_map->addRoute(best_stream, out_stream));
             out_stream->parameters->completeFrom(best_stream->parameters);
             best_stream->setUsed(true);

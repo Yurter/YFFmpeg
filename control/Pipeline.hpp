@@ -73,6 +73,8 @@ namespace fpp {
         Code                determineSequences();
         void                freeProcesors();
 
+//        Code                determineSequence(MediaSink* media_sink); //TODO
+
         virtual std::string toString() const override;
 
         // TODO
