@@ -39,6 +39,18 @@ namespace fpp {
         return "TODO " + _source_name;
     }
 
+    StreamVector CustomPacketSource::streams() {
+        return _streams;
+    }
+
+    Stream* CustomPacketSource::stream(int64_t index) {
+        if (size_t(index) < _streams.size()) {
+            return _streams[size_t(index)];
+        } else {
+            return nullptr;
+        }
+    }
+
     Code CustomPacketSource::readInputData(Packet& input_data) {
         input_data = _read_func();
         return Code::OK;
