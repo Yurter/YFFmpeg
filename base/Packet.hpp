@@ -10,6 +10,7 @@ namespace fpp {
         Packet();
         Packet(const Packet& other);
         Packet(const Packet&& other);
+        Packet(const AVPacket& avpacket);
         virtual ~Packet() override;
 
         Packet& operator=(const Packet& other);
