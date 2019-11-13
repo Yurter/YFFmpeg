@@ -32,6 +32,6 @@ namespace fpp {
 
     };
 
-    using MediaSourceList = std::list<MediaSource*>;
+    using MediaSourceList = std::list<PacketSource*>;
 
 } // namespace fpp

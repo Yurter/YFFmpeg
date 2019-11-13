@@ -20,6 +20,7 @@ namespace fpp {
 
         StreamVector        streams();
         Stream*             stream(int64_t index);
+        Stream*             stream(MediaType type);
 
     private:
 
