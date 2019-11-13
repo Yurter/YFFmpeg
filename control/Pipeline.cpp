@@ -353,6 +353,9 @@ namespace fpp {
     void Pipeline::freeProcesors() //TODO объекты в смартпоинтеры
     {
         //см TODO ↗
+//        for (auto&& proc : _processors) {
+//            delete proc;
+//        }
     }
 
 //    Code Pipeline::determineSequence(MediaSink* media_sink) {

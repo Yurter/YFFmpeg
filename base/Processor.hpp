@@ -39,4 +39,6 @@ namespace fpp {
 
     };
 
+//    using ProcessorVector = std::vector<Processor*>;
+
 } // namespace fpp

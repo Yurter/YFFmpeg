@@ -15,6 +15,12 @@ namespace fpp {
             // TODO
         }
 
+        template<typename Function>
+            void setTimeout(Function function, int delay);
+
+            template<typename Function>
+            void setInterval(Function function, int interval);
+
         void                start(int64_t msec);
         void                restart();
         void                stop();

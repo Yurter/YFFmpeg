@@ -1,4 +1,7 @@
 TEMPLATE = app
+#TEMPLATE = lib
+#CONFIG += static
+
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
@@ -8,10 +11,12 @@ QMAKE_CXXFLAGS += /std:c++latest #Домашний креатор не може�
 
 SOURCES += \
     base/CodecContext.cpp \
+    base/Route.cpp \
     codec/Decoder.cpp \
     codec/DecoderContext.cpp \
     codec/Encoder.cpp \
     codec/EncoderContext.cpp \
+    control/Map.cpp \
     custom/CustomFrameSink.cpp \
     custom/CustomFrameSource.cpp \
     custom/CustomPacketSink.cpp \
@@ -57,10 +62,12 @@ SOURCES += \
 
 HEADERS += \
     base/CodecContext.hpp \
+    base/Route.hpp \
     codec/Decoder.hpp \
     codec/DecoderContext.hpp \
     codec/Encoder.hpp \
     codec/EncoderContext.hpp \
+    control/Map.hpp \
     core/AsyncDiscardQueue.hpp \
     core/Chronometer.hpp \
     core/Timer.hpp \
