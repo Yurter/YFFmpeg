@@ -355,7 +355,47 @@ namespace fpp {
         //см TODO ↗
 //        for (auto&& proc : _processors) {
 //            delete proc;
-//        }
+        //        }
+    }
+
+    Code Pipeline::createSequence(Route route) {
+        Stream* input_stream = findStream(route.inputStreamUid());
+        Stream* output_stream = findStream(route.outputStreamUid());
+        StreamPair in_out_streams { input_stream, output_stream };
+
+        bool rescaling_required     = utils::rescaling_required(in_out_streams);
+        bool resampling_required    = utils::resampling_required(in_out_streams);
+        bool video_filter_required  = utils::video_filter_required(in_out_streams);
+        bool audio_filter_required  = utils::audio_filter_required(in_out_streams);
+        bool transcoding_required   = utils::transcoding_required(in_out_streams);
+
+        auto out_context = dynamic_cast<OutputFormatContext*>(out_stream->context());
+        if (inited_ptr(out_context)) {
+            video_filter_required = video_filter_required
+                                    || out_context->preset(IOType::Timelapse);
+        }
+
+        transcoding_required = (transcoding_required
+                                || rescaling_required
+                                || resampling_required);
+
+        bool decoding_required = transcoding_required //&& (in_stream->parameters->codecId() != AV_CODEC_ID_NONE))
+                                || rescaling_required
+                                || resampling_required
+                                || video_filter_required
+                                || audio_filter_required;
+        bool encoding_required = transcoding_required //&& (out_stream->parameters->codecId() != AV_CODEC_ID_NONE);
+                                || rescaling_required
+                                || resampling_required
+                                || video_filter_required
+                                || audio_filter_required;
+        if (inited_ptr(dynamic_cast<OpenCVSink*>(out_stream->context()))) {
+            encoding_required = false;
+        }
+
+        //
+        _route_list.push_back(route);
+        return Code::OK;
     }
 
 //    Code Pipeline::determineSequence(MediaSink* media_sink) {

@@ -20,6 +20,9 @@ namespace fpp {
         void                setOpened(bool opened);
 
         Code                connectTo(Processor* other);
+        Code                disconnectFrom(Processor* other);
+
+        void                setCloseOnDisconnect(bool value);
 
         void                setSkipType(MediaType type);
         bool                skipType(MediaType type) const;
@@ -29,16 +32,18 @@ namespace fpp {
 
     protected:
 
-        Processor*          _next_processor;
+        using ProcessorList = std::list<Processor*>;
+        ProcessorList       _next_processor_list;
 
     private:
 
         bool                _opened;
+        bool                _close_on_disconnect;
         int64_t             _skip_types;
         int64_t             _discard_types;
 
     };
 
-//    using ProcessorVector = std::vector<Processor*>;
+    using ProcessorVector = std::vector<Processor*>;
 
 } // namespace fpp

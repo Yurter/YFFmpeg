@@ -52,10 +52,10 @@ namespace fpp {
             _post_function = post_function;
         }
 
-        Code sendOutputData(const outType& output_data, Processor* next_proc = nullptr) {
-            auto pointer = inited_ptr(next_proc) ? next_proc : _next_processor;
-            return_if(not_inited_ptr(pointer), Code::ERR);
-            try_to(pointer->push(&output_data));
+        Code sendOutputData(const outType& output_data) {
+            for (auto next_processor : _next_processor_list) {
+                try_to(next_processor->push(&output_data));
+            }
             return Code::OK;
         }
 
@@ -76,7 +76,6 @@ namespace fpp {
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
 
-//            return_if(discardType(input_data.type()), Code::AGAIN);
             return_if((input_data.empty() == false)
                       && discardType(input_data.type()), Code::AGAIN);
 

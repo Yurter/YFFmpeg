@@ -10,6 +10,7 @@
 #include "refi/VideoFilter.hpp"
 #include "refi/AudioFilter.hpp"
 #include "YMap.hpp"
+#include "base/Route.hpp"
 
 namespace fpp {
 
@@ -73,6 +74,9 @@ namespace fpp {
         Code                determineSequences();
         void                freeProcesors();
 
+        Code                createSequence(Route route);
+
+        Stream*             findStream(int64_t uid);
 //        Code                determineSequence(MediaSink* media_sink); //TODO
 
         virtual std::string toString() const override;
@@ -101,6 +105,8 @@ namespace fpp {
         YMap*               _map;
 
         MetaMap             _metamap;
+
+        RouteList           _route_list;
 
         // General
         volatile bool       _paused;
