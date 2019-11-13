@@ -108,4 +108,8 @@ namespace fpp {
 
     };
 
+    static Pipeline* createPipline(){
+        return new Pipeline;
+    }
+
 } // namespace fpp

@@ -62,6 +62,7 @@ int main() {
         auto source = new MediaSource(mrl_src); /* IP Camera */
 
 
+        static_log_info("main", "MSVC: " << /*_MSC_VER*/ _MSC_FULL_VER);
 
         Pipeline pipeline;
         pipeline.addElement(source);

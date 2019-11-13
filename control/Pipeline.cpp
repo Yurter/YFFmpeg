@@ -571,4 +571,9 @@ namespace fpp {
         return encoder_list;
     }
 
+//    Pipeline *createPipline()
+//    {
+//        return new Pipeline;
+//    }
+
 } // namespace fpp
