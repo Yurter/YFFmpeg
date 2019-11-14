@@ -89,7 +89,8 @@ namespace fpp {
                 stream->setUsed(false);
             }
         }
-        return Code::END_OF_FILE;
+//        return Code::END_OF_FILE;
+        return Code::OK;
     }
 
 } // namespace fpp
