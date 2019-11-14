@@ -32,6 +32,7 @@ namespace fpp {
         try_to(quit());
         try_to(_output_format_context.close());
         log_info("Destination: \"" << _output_format_context.mediaFormatContext() << "\" closed.");
+        setOpened(false);
         return Code::OK;
     }
 
