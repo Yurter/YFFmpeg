@@ -12,10 +12,11 @@ namespace fpp {
 
     Pipeline::~Pipeline() {
         freeProcesors();
+        stopPr();
         stop();
     }
 
-    bool Pipeline::stop() {
+    bool Pipeline::stopPr() {
         log_info("Stopping...");
         try_to(stopProcesors());
 //        try_to(closeMediaSources());
@@ -99,6 +100,7 @@ namespace fpp {
                       , thread_processor->exitCode());
             if (thread_processor->running()) {
                 all_processor_stopped = false;
+                log_info("still running: " << thread_processor->name());
 //                log_warning(thread_processor->name() << " run");
                 break;
             } else {
