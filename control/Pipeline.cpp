@@ -18,8 +18,8 @@ namespace fpp {
     bool Pipeline::stop() {
         log_info("Stopping...");
         try_to(stopProcesors());
-        try_to(closeMediaSources());
-        try_to(closeMediaSinks());
+//        try_to(closeMediaSources());
+//        try_to(closeMediaSinks());
         try_to(joinProcesors());
         try_to(stop_log());
         log_info("Processing finished.");
@@ -206,7 +206,8 @@ namespace fpp {
     Code Pipeline::stopProcesors() {
         for (auto&& processor : _processors) {
             auto thread_processor = static_cast<Thread*>(processor);
-            try_to(thread_processor->quit());
+//            try_to(thread_processor->quit());
+            try_to(thread_processor->stop());
         }
         return Code::OK;
     }
