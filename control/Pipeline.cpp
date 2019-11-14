@@ -99,9 +99,11 @@ namespace fpp {
                       , thread_processor->exitCode());
             if (thread_processor->running()) {
                 all_processor_stopped = false;
+//                log_warning(thread_processor->name() << " run");
                 break;
             } else {
                 /* Выброс отработавшего процессора из пула */
+                int debug_stop = 9;
             }
         }
         return_if(all_processor_stopped, Code::END_OF_FILE);

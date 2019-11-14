@@ -203,7 +203,8 @@ namespace fpp {
 #define trow_if(cond,error_message) //TODO
 
 /* ? */
-#define if_not(x) if(!(x))
+#define if_not(x)       if(!(x))
+#define while_not(x)    while(!(x))
 
 /* Значения для задержек в коде в мс */
 #define SHORT_DELAY_MS          10

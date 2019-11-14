@@ -11,9 +11,10 @@ namespace fpp {
     }
 
     Thread::Thread(LoopFunction loop_function) :
-        _running(false),
-        _exit_code(Code::OK),
-        _loop_function(loop_function)
+        _running(false)
+      , _stop_flag(false)
+      , _exit_code(Code::OK)
+      , _loop_function(loop_function)
     {
         setName("Thread");
     }
@@ -26,26 +27,31 @@ namespace fpp {
     }
 
     Thread::~Thread() {
-        try_throw(quit());
+//        try_throw(quit());
+        try_throw(stop());
+        join();
     }
 
     Code Thread::start() {
         return_if(running(), Code::INVALID_CALL_ORDER);
+        _stop_flag = false;
         if_not(inited()) { try_to(init()); }
-        _running = true;
         _thread = std::thread([this]() {
+            _running = true;
+            try_throw(onStart());
+            log_debug("Thread started");
             try {
-                try_throw(onStart());
-                log_debug("Thread started");
-                while (_running && !utils::exit_code(_exit_code = _loop_function())) {}
-                if (utils::error_code(_exit_code)) {
-                    log_error("Thread finished with code: " << _exit_code
-                              << " - " << utils::code_to_string(_exit_code));
-                } else {
-                    log_info("Thread correctly finished with code: " << _exit_code
-                              << " - " << utils::code_to_string(_exit_code));
+                if_not (_stop_flag) {
+                    do {
+                        _exit_code = _loop_function();
+                    } while_not (utils::exit_code(_exit_code));
+
+                    std::string log_message = utils::error_code(_exit_code)
+                            ? "Thread finished with code: "
+                            : "Thread correctly finished with code: ";
+                    log_info(log_message << _exit_code << " - " << utils::code_to_string(_exit_code));
+
                 }
-                _running = false;
             }
             catch (std::exception e) {
                 log_error("std::exception: " << e.what());
@@ -57,6 +63,7 @@ namespace fpp {
                 _exit_code = Code::EXCEPTION;
                 _exit_message = "unknown";
             }
+            _running = false;
             try_throw(stop());
         });
         _thread.detach(); //TODO убрать? без детача падения на выходе, выяснить в каком объекте и почему
@@ -64,6 +71,7 @@ namespace fpp {
     }
 
     Code Thread::stop() {
+        _stop_flag = true;
         try_to(quit());
         try_to(onStop());
         return Code::OK;
@@ -71,7 +79,6 @@ namespace fpp {
 
     Code Thread::quit() {
         return_if_not(running(), Code::OK);
-        _running = false;
         try { /* TODO */
             if (_thread.joinable()) { _thread.join(); }
         } catch (std::exception e) {
@@ -82,12 +89,16 @@ namespace fpp {
         return Code::OK;
     }
 
-    bool Thread::running() {
+    bool Thread::running() const {
         return _running;
     }
 
-    void Thread::join() {
-        while (running()) { utils::sleep_for(MEDIUM_DELAY_MS); }
+    void Thread::join() const {
+//        while (running()) { utils::sleep_for(MEDIUM_DELAY_MS); }
+        while (running()) {
+            log_warning("still running");
+            utils::sleep_for(MEDIUM_DELAY_MS);
+        }
     }
 
     Code Thread::exitCode() const {
