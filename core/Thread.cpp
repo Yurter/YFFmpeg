@@ -41,17 +41,16 @@ namespace fpp {
             try_throw(onStart());
             log_debug("Thread started");
             try {
-                if_not (_stop_flag) {
-                    do {
-                        _exit_code = _loop_function();
-                    } while_not (utils::exit_code(_exit_code));
+                do {
+                    if (_stop_flag) { break; }
+                    _exit_code = _loop_function();
+                    log_info("still running");
+                } while_not (utils::exit_code(_exit_code));
 
-                    std::string log_message = utils::error_code(_exit_code)
-                            ? "Thread finished with code: "
-                            : "Thread correctly finished with code: ";
-                    log_info(log_message << _exit_code << " - " << utils::code_to_string(_exit_code));
-
-                }
+                std::string log_message = utils::error_code(_exit_code)
+                        ? "Thread finished with code: "
+                        : "Thread correctly finished with code: ";
+                log_info(log_message << _exit_code << " - " << utils::code_to_string(_exit_code));
             }
             catch (std::exception e) {
                 log_error("std::exception: " << e.what());
