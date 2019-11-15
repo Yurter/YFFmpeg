@@ -8,6 +8,7 @@ namespace fpp {
     {
         setName("Pipeline");
         _processors.push_back(_map);
+        avdevice_register_all(); //TODO разместить удачнее и избежать повторного вызова
     }
 
     Pipeline::~Pipeline() {
@@ -522,7 +523,7 @@ namespace fpp {
         for (auto&& out_stream : output_streams) {
             if (out_stream->used()) { continue; }
             try_to(_map->addRoute(best_stream, out_stream));
-            out_stream->parameters->completeFrom(best_stream->parameters);
+            try_to(out_stream->parameters->completeFrom(best_stream->parameters));
             best_stream->setUsed(true);
             out_stream->setUsed(true);
         }
