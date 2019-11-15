@@ -14,7 +14,7 @@ namespace fpp {
         parameters(param),
         _context(nullptr),
         _uid(INVALID_INT),
-        _duration(DEFAULT_INT),
+//        _duration(DEFAULT_INT),
         _used(false),
         _prev_dts(DEFAULT_INT),
         _prev_pts(DEFAULT_INT),
@@ -51,7 +51,7 @@ namespace fpp {
     //              + "time_base " + utils::rational_to_string(timeBase()) + ", "
                     + "time_base " + utils::rational_to_string(parameters->timeBase()) + ", "
 //                    + "FPS " + std::to_string(static_cast<VideoParameters*>(parameters)->frameRate()) + ", "
-                    + "duration " + std::to_string(_duration);
+                    + "duration " + std::to_string(parameters->duration());
         } else {
             str += "not used";
         }
@@ -81,8 +81,12 @@ namespace fpp {
 
         _prev_dts += _packet_dts_delta;
         _prev_pts += _packet_pts_delta;
-        _duration += _packet_duration;
+//        _duration += _packet_duration;
+        parameters->increaseDuration(_packet_duration);
         _packet_index++;
+
+//        increaseDuration(_packet_duration);
+//        log_warning("Dur: " << _duration);
 
         return Code::OK;
     }
@@ -111,9 +115,9 @@ namespace fpp {
         return _data->index;
     }
 
-    int64_t Stream::duration() const {
-        return _duration;
-    }
+//    int64_t Stream::duration() const {
+//        return _duration;
+//    }
 
     bool Stream::used() const {
         return _used;
@@ -127,9 +131,9 @@ namespace fpp {
         return _data->codecpar;
     }
 
-    void Stream::increaseDuration(int64_t value){
-        _duration += value;
-    }
+//    void Stream::increaseDuration(int64_t value) {
+//        _duration += value;
+//    }
 
     bool Stream::operator>(const Stream& other) const {
         return parameters->bitrate() > other.parameters->bitrate();

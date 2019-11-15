@@ -28,6 +28,8 @@ namespace fpp {
         AVRational          timeBase()      const;
         int64_t             contextUid()    const;
 
+        void                increaseDuration(int64_t value);
+
         virtual std::string toString() const override;
 
     //    virtual void        toCodecpar(AVCodecParameters* codecpar);

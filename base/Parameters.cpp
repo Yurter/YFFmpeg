@@ -101,6 +101,10 @@ namespace fpp {
         return _context_uid;
     }
 
+    void Parameters::increaseDuration(int64_t value) {
+        _duration += value;
+    }
+
     std::string Parameters::toString() const {
         std::string str = "TODO";
         return str;
