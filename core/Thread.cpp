@@ -27,8 +27,8 @@ namespace fpp {
     }
 
     Thread::~Thread() {
-//        try_throw(quit());
-        try_throw(stop());
+        try_throw(quit());
+//        try_throw(stop()); //BUG вызов виртуальной ф-и onStop() из деструктора
         join();
     }
 
@@ -44,7 +44,9 @@ namespace fpp {
                 do {
                     if (_stop_flag) { break; }
                     _exit_code = _loop_function();
-//                    log_info("still running");
+//                    if (!this->is("Logger")) {
+//                        log_info("still running");
+//                    }
                 } while_not (utils::exit_code(_exit_code));
 
                 std::string log_message = utils::error_code(_exit_code)
@@ -62,8 +64,9 @@ namespace fpp {
                 _exit_code = Code::EXCEPTION;
                 _exit_message = "unknown";
             }
+//            try_throw(stop());
+//            try_throw(onStop()); //крашит вызов виртуального метода
             _running = false;
-            try_throw(stop());
         });
         _thread.detach(); //TODO убрать? без детача падения на выходе, выяснить в каком объекте и почему
         return Code::OK;
@@ -78,6 +81,7 @@ namespace fpp {
 
     Code Thread::quit() {
         return_if_not(running(), Code::OK);
+        _stop_flag = true; //TODO дублировать из стопа?
         try { /* TODO */
             if (_thread.joinable()) { _thread.join(); }
         } catch (std::exception e) {
