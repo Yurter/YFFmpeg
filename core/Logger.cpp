@@ -154,9 +154,6 @@ namespace fpp {
         if (!_message_queue.push(LogMessage(log_level, formated_message))) {
             // do nothing
         }
-//        if (!wait_and_push(Message(log_level, formated_message))) {
-//            // do nothing
-//        }
     }
 
     void Logger::static_print(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
@@ -165,9 +162,6 @@ namespace fpp {
         if (!_message_queue.push(LogMessage(log_level, formated_message))) {
             // do nothing
         }
-//        if (!wait_and_push(Message(log_level, formated_message))) {
-//            // do nothing
-//        }
     }
 
 } // namespace fpp
