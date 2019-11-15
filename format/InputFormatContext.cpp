@@ -47,6 +47,7 @@ namespace fpp {
     Code InputFormatContext::openContext() {
         return_if_not(inited(), Code::INVALID_CALL_ORDER);
         log_info("MediaSource: \"" << _media_resource_locator << "\" is opening...");
+        guessInputFromat(); //TODO
         return_if(_media_resource_locator.empty(), Code::INVALID_INPUT);
         for (auto&& avstream : streams()) {
             try_to(avstream->init());
