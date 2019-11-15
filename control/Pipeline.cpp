@@ -12,19 +12,19 @@ namespace fpp {
 
     Pipeline::~Pipeline() {
         freeProcesors();
-        stop();
+        try_throw(stop());
     }
 
-    bool Pipeline::stop() {
-        log_info("Stopping...");
-        try_to(stopProcesors());
-        try_to(closeMediaSources());
-        try_to(closeMediaSinks());
-        try_to(joinProcesors());
-        try_to(stop_log());
-        log_info("Processing finished.");
-        return true;
-    }
+//    bool Pipeline::stop() {
+//        log_info("Stopping...");
+//        try_to(stopProcesors());
+//        try_to(closeMediaSources());
+//        try_to(closeMediaSinks());
+//        try_to(joinProcesors());
+//        try_to(stop_log());
+//        log_info("Processing finished.");
+//        return true;
+//    }
 
     void Pipeline::pause() {
         _paused = true;
@@ -106,6 +106,21 @@ namespace fpp {
         }
         return_if(all_processor_stopped, Code::END_OF_FILE);
         utils::sleep_for(LONG_DELAY_MS/* * 10*/);
+        return Code::OK;
+    }
+
+    Code Pipeline::onStart() {
+        // TODO
+    }
+
+    Code Pipeline::onStop() {
+        log_info("Stopping...");
+        try_to(stopProcesors());
+        try_to(closeMediaSources());
+        try_to(closeMediaSinks());
+        try_to(joinProcesors());
+        try_to(stop_log());
+        log_info("Processing finished.");
         return Code::OK;
     }
 

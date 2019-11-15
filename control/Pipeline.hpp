@@ -30,7 +30,7 @@ namespace fpp {
         Pipeline(); //TODO hwaccel flag_enum|set_method
         virtual ~Pipeline() override;
 
-        bool                stop();                             ///< Функция прерывает работу класса.
+//        bool                stop();                             ///< Функция прерывает работу класса.
         void                pause();                            ///< Функция приостанавливает работу класса.
         void                unpause();                          ///< Функция возобновляет работу класса.
 
@@ -47,8 +47,10 @@ namespace fpp {
 
     private:
 
-        virtual Code        init()  override;
-        virtual Code        run()   override;
+        virtual Code        init()      override;
+        virtual Code        run()       override;
+        virtual Code        onStart()   override;
+        virtual Code        onStop()    override;
 
         bool                option(Option option) const;
 
