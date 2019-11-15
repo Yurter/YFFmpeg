@@ -22,7 +22,7 @@ namespace fpp {
 
         std::string         toString() const override;
 
-        void                completeFrom(const Parameters* other_parametrs) override;
+        Code                completeFrom(const Parameters* other_parametrs) override;
         AudioParameters&    operator=(const AudioParameters& rhs);
 
     private:

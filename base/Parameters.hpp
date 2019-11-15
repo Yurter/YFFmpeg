@@ -33,7 +33,7 @@ namespace fpp {
         virtual std::string toString() const override;
 
     //    virtual void        toCodecpar(AVCodecParameters* codecpar);
-        virtual void        completeFrom(const Parameters* other_parametrs);
+        virtual Code        completeFrom(const Parameters* other_parametrs);
         Parameters&         operator=(const Parameters& rhs);
 
     protected:

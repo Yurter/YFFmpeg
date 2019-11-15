@@ -1,4 +1,5 @@
 #include "AudioParameters.hpp"
+#include "core/utils.hpp"
 
 namespace fpp {
 
@@ -63,13 +64,14 @@ namespace fpp {
         return str;
     }
 
-    void AudioParameters::completeFrom(const Parameters* other_parametrs) {
+    Code AudioParameters::completeFrom(const Parameters* other_parametrs) {
         auto other_audio_parameters = static_cast<const AudioParameters*>(other_parametrs);
         if (not_inited_int(_sample_rate))           { _sample_rate      = other_audio_parameters->sampleRate();     }
         if (not_inited_smp_fmt(_sample_format))     { _sample_format    = other_audio_parameters->sampleFormat();   }
         if (not_inited_ch_layout(_channel_layout))  { _channel_layout   = other_audio_parameters->channelLayout();  }
         if (not_inited_int(_channels))              { _channels         = other_audio_parameters->channels();       }
-        Parameters::completeFrom(other_parametrs);
+        try_to(Parameters::completeFrom(other_parametrs));
+        return Code::OK;
     }
 
     //void AudioParameters::toCodecpar(AVCodecParameters* codecpar)
