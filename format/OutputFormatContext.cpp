@@ -69,11 +69,14 @@ namespace fpp {
             /* Video */
             auto video_parameters = new VideoParameters;
 //            video_parameters->setCodec("libx264", CodecType::Encoder);
-            video_parameters->setCodec("h264_qsv", CodecType::Encoder);
+            video_parameters->setCodec("h264_qsv", CodecType::Encoder); //Supported pixel formats: nv12 p010le qsv
 //            video_parameters->setFrameRate({ 23, 1 }); //TODO
 //            video_parameters->setTimeBase({ 1, 1000 });
 //            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
-//            video_parameters->setPixelFormat(AV_PIX_FMT_NV12);
+
+            video_parameters->setPixelFormat(AV_PIX_FMT_NV12);
+//            video_parameters->setPixelFormat(AV_PIX_FMT_QSV);
+
 //            video_parameters->setPixelFormat(AV_PIX_FMT_BGR24);
             video_parameters->setContextUid(uid());
             try_to(createStream(video_parameters));

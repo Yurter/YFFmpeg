@@ -180,15 +180,16 @@ namespace fpp {
             codec->time_base    = parametres->timeBase();
             codec->framerate    = video_parameters->frameRate();
 
-            int set_opt_ret;
-            set_opt_ret = av_opt_set(codec->priv_data, "crf", "23", 0);
-            static_log_warning("opt crf", set_opt_ret);
-            set_opt_ret = av_opt_set(codec->priv_data, "preset", "ultrafast", 0);
-            static_log_warning("opt preset", set_opt_ret);
-            set_opt_ret = av_opt_set(codec->priv_data, "tune", "zerolatency", 0);
-            static_log_warning("opt tune", set_opt_ret);
-            set_opt_ret = av_opt_set(codec->priv_data, "threads", "0", 0);
-            static_log_warning("opt threads", set_opt_ret);
+            //отключено на время отладки qsv
+//            int set_opt_ret;
+//            set_opt_ret = av_opt_set(codec->priv_data, "crf", "23", 0);
+//            static_log_warning("opt crf", set_opt_ret);
+//            set_opt_ret = av_opt_set(codec->priv_data, "preset", "ultrafast", 0);
+//            static_log_warning("opt preset", set_opt_ret);
+//            set_opt_ret = av_opt_set(codec->priv_data, "tune", "zerolatency", 0);
+//            static_log_warning("opt tune", set_opt_ret);
+//            set_opt_ret = av_opt_set(codec->priv_data, "threads", "0", 0);
+//            static_log_warning("opt threads", set_opt_ret);
 
     //        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
             break;
