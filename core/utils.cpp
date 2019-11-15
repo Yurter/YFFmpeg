@@ -317,8 +317,11 @@ namespace fpp {
         case AVCodecID::AV_CODEC_ID_H264:
             dst_prm->setCodec("libx264", CodecType::Encoder);
             return Code::OK;
-        default:
-            return Code::INVALID_INPUT;
+        default: //TODO возможны случаи с несимметричными названиями кодера и энкодера как у h264
+            dst_prm->setCodec(src_prm->codecName(), CodecType::Encoder);
+            return Code::OK;
+//        default:
+//            return Code::INVALID_INPUT;
         }
     }
 

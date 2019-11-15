@@ -23,6 +23,7 @@ namespace fpp {
         case Event: { /* Евент должен писаться копипастой */
             /* Video */
             auto video_parameters = new VideoParameters;
+            video_parameters->setCodec("libx264", CodecType::Encoder);
             video_parameters->setContextUid(uid());
 //            video_parameters->setTimeBase({ 1, 1000 });
 //            video_parameters->setFrameRate({ 22, 1 });
@@ -67,7 +68,7 @@ namespace fpp {
         case Timelapse: {
             /* Video */
             auto video_parameters = new VideoParameters;
-//            video_parameters->setCodec("libx264", CodecType::Encoder);
+            video_parameters->setCodec("libx264", CodecType::Encoder);
 //            video_parameters->setCodec("h264_qsv", CodecType::Encoder);
 //            video_parameters->setFrameRate({ 23, 1 }); //TODO
 //            video_parameters->setTimeBase({ 1, 1000 });
