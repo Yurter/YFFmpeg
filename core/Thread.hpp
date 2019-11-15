@@ -22,8 +22,8 @@ namespace fpp {
         Code                start();
         Code                stop();
         Code                quit();
-        bool                running();
-        void                join();
+        bool                running() const;
+        void                join() const;
 
         Code                exitCode()      const;
         std::string         exitMessage()   const;
@@ -38,6 +38,7 @@ namespace fpp {
 
         std::thread         _thread;
         std::atomic_bool    _running;
+        std::atomic_bool    _stop_flag;
         Code                _exit_code;
         std::string         _exit_message;
         LoopFunction        _loop_function;
