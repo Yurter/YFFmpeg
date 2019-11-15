@@ -13,6 +13,7 @@ namespace fpp {
     {
         setName("Logger");
 //        av_log_set_callback(log_callback); //TODO later
+//        set_ffmpeg_log_level(LogLevel::Error);
         try_throw(start());
     }
 

@@ -100,7 +100,7 @@ namespace fpp {
                       , thread_processor->exitCode());
             if (thread_processor->running()) {
                 all_processor_stopped = false;
-                log_info("still running: " << thread_processor->name());
+//                log_info("still running: " << thread_processor->name());
 //                log_warning(thread_processor->name() << " run");
                 break;
             } else {

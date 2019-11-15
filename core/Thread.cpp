@@ -44,7 +44,7 @@ namespace fpp {
                 do {
                     if (_stop_flag) { break; }
                     _exit_code = _loop_function();
-                    log_info("still running");
+//                    log_info("still running");
                 } while_not (utils::exit_code(_exit_code));
 
                 std::string log_message = utils::error_code(_exit_code)
