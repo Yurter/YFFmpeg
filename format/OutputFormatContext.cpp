@@ -163,6 +163,7 @@ namespace fpp {
             log_error("Failed to write the stream trailer to an output media file");
             return Code::ERR;
         }
+        avio_close(_format_context->pb);
         log_info("Destination: \"" << _media_resource_locator << "\" closed.");
         return Code::OK;
     }
