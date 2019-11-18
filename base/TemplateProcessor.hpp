@@ -94,7 +94,8 @@ namespace fpp {
             }
             if (input_data.empty()
                     && !this->is("YMap")
-                    && !this->is("MediaSource")) {
+                    && !this->is("MediaSource")
+                    && !this->is("CustomPacketSource")) {
                 sendOutputData(outType());
                 return Code::END_OF_FILE;
             }
