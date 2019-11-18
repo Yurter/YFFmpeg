@@ -23,7 +23,7 @@ namespace fpp {
 //        try_to(closeMediaSources());
 //        try_to(closeMediaSinks());
         try_to(joinProcesors());
-        try_to(stop_log());
+//        try_to(stop_log());
         log_info("Processing finished.");
         return true;
     }
@@ -210,6 +210,7 @@ namespace fpp {
         for (auto&& processor : _processors) {
             auto thread_processor = static_cast<Thread*>(processor);
 //            try_to(thread_processor->quit());
+            log_error("Thread: " << thread_processor->name());
             try_to(thread_processor->stop());
         }
         return Code::OK;
