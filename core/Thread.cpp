@@ -38,8 +38,8 @@ namespace fpp {
         if_not(inited()) { try_to(init()); }
         _thread = std::thread([this]() {
             _running = true;
-            try_throw(onStart());
             log_debug("Thread started");
+            try_throw(onStart());
             try {
                 do {
                     if (_stop_flag) { break; }
@@ -67,6 +67,7 @@ namespace fpp {
 //            try_throw(stop());
 //            try_throw(onStop()); //крашит вызов виртуального метода
             _running = false;
+            log_debug("Thread finished");
         });
         _thread.detach(); //TODO убрать? без детача падения на выходе, выяснить в каком объекте и почему
         return Code::OK;
