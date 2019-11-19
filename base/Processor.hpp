@@ -18,6 +18,7 @@ namespace fpp {
         bool                closed() const;
 
         ProcessorType       type() const;
+        bool                typeIs(ProcessorType value) const;
 
         void                setOpened(bool opened);
 
@@ -48,5 +49,6 @@ namespace fpp {
     };
 
     using ProcessorVector = std::vector<Processor*>;
+    using ProcessorList = std::list<Processor*>;
 
 } // namespace fpp

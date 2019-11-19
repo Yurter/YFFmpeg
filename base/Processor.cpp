@@ -35,6 +35,10 @@ namespace fpp {
         return _type;
     }
 
+    bool Processor::typeIs(ProcessorType value) const {
+        return _type == value;
+    }
+
     void Processor::setOpened(bool opened) {
         _opened = opened;
     }
