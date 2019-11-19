@@ -48,6 +48,7 @@ namespace fpp {
         }
         if (processor->typeIs(ProcessorType::Output)) {
             try_to(determineSequence(processor));
+            try_to(processor->open());
         }
 //        if (running()) {
 //            if (processor->typeIs(ProcessorType::Output)) {
