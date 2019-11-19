@@ -89,6 +89,8 @@ namespace fpp {
         Stream*             findBestInputStream(MediaType media_type);
         StreamList          getOutputStreams(MediaType media_type);
 
+        Route               findRoute(Processor* processor);
+
 //        Code                connectIOStreams(MediaType media_type);
 
         MediaSourceList     mediaSources()  const;

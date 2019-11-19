@@ -61,6 +61,7 @@ int main() {
     //    std::string mrl_dst = "camera_sound.aac";
 
         auto source = new MediaSource(mrl_src); /* IP Camera */
+        source->setCloseOnDisconnect(false);
 
 
         static_log_info("main", "MSVC: " << /*_MSC_VER*/ _MSC_FULL_VER);
@@ -96,11 +97,12 @@ int main() {
 
 
         for (int i = 0; i < 10; i++) {
-            auto sink_timelapse = new MediaSink("group_video/timelapse" + std::to_string(i) + ".flv", IOType::Timelapse);
-            pipeline.addElement(sink_timelapse);
-//            auto sink_event = new MediaSink("group_video/event" + std::to_string(i) + ".flv", IOType::Event);
-//            pipeline.addElement(sink_event);
+            auto sink_event = new MediaSink("group_video/event" + std::to_string(i) + ".flv", IOType::Event);
+            pipeline.addElement(sink_event);
             utils::sleep_for_sec(10);
+            pipeline.remElement(sink_event);
+            sink_event->close();
+//            delete sink_event;
         }
 
 

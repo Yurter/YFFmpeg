@@ -69,6 +69,8 @@ namespace fpp {
 //            try_throw(thread_processor->stop());
 //        }
         _processors.remove(processor);
+        findRoute(processor).destroy();
+        _route_list.remove_if([processor](const Route& route){ return route.contains(processor); });
     }
 
     //void Pipeline::setRoute(Stream* input_stream, Stream* output_stream)
@@ -655,6 +657,15 @@ namespace fpp {
             output_streams.push_back(sink->videoStream());
         }
         return output_streams;
+    }
+
+    Route Pipeline::findRoute(Processor* processor) {
+        for (auto&& route : _route_list) {
+            if (route.contains(processor)) {
+                return route;
+            }
+        }
+        return Route();
     }
 
 //    Code Pipeline::connectIOStreams(MediaType media_type) {

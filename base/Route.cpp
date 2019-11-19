@@ -8,9 +8,14 @@ namespace fpp {
     }
 
     Route::~Route() {
-        for (auto processor : _sequence) {
-            //TODO последовательное отключение
-        }
+//        log_warning("deleting...");
+//        for (auto processor = _sequence.begin(); processor != _sequence.end(); processor++) {
+//            auto next_processor = std::next(processor);
+//            if (next_processor == _sequence.end()) {
+//                return;
+//            }
+//            try_throw((*processor)->disconnectFrom(*next_processor));
+//        }
     }
 
     Code Route::init() {
@@ -68,11 +73,29 @@ namespace fpp {
         return _output_stream_uid;
     }
 
+    bool Route::contains(const Processor * const processor) const {
+        for (auto&& elem : _sequence) {
+            return_if(elem == processor, true);
+        }
+        return false;
+    }
+
     Code Route::startAll() {
         for (auto&& elem : _sequence) {
             log_error("OPENING: " << elem->name());
             try_to(elem->open());
             try_to(elem->start());
+        }
+        return Code::OK;
+    }
+
+    Code Route::destroy() {
+        for (auto processor = _sequence.begin(); processor != _sequence.end(); processor++) {
+            auto next_processor = std::next(processor);
+            if (next_processor == _sequence.end()) {
+                return Code::OK;
+            }
+            try_throw((*processor)->disconnectFrom(*next_processor));
         }
         return Code::OK;
     }

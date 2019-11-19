@@ -20,7 +20,10 @@ namespace fpp {
         int64_t             inputStreamUid() const;
         int64_t             outputStreamUid() const;
 
+        bool                contains(const Processor * const processor) const;
+
         Code                startAll();
+        Code                destroy();
 
     private:
 
