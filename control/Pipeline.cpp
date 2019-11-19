@@ -482,8 +482,17 @@ namespace fpp {
     Stream* Pipeline::findStream(int64_t uid) {
         int64_t context_uid = utils::get_context_uid(uid);
         for (auto&& source : mediaSources()) {
-            if (source->inputFormatContext().uid() == context_uid) {
-                for (auto&& stream : source->inputFormatContext().streams()) {
+            if (source->is("MediaSource")) {
+                if (static_cast<MediaSource*>(source)->inputFormatContext().uid() == context_uid) {
+                    for (auto&& stream : static_cast<MediaSource*>(source)->inputFormatContext().streams()) {
+                        if (stream->uid() == uid) {
+                            return stream;
+                        }
+                    }
+                }
+            }
+            if (source->is("CustomPacketSource")) {
+                for (auto&& stream : static_cast<CustomPacketSource*>(source)->streams()) {
                     if (stream->uid() == uid) {
                         return stream;
                     }
