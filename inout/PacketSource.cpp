@@ -2,7 +2,9 @@
 
 namespace fpp {
 
-    PacketSource::PacketSource() {
+    PacketSource::PacketSource() :
+        PacketProcessor(ProcessorType::Input)
+    {
         setName("PacketSource");
         try_throw(setPreFunction(std::bind(&PacketSource::readPacket, this)));
     }
@@ -22,7 +24,8 @@ namespace fpp {
         if (packet.empty()) {
             log_error("Sending empty data");
         }
-        try_to(sendOutputData(packet, this));
+//        try_to(sendOutputData(packet, this));
+        try_to(storeInputData(packet));
         return Code::OK;
     }
 

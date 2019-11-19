@@ -2,7 +2,9 @@
 
 namespace fpp {
 
-    PacketProducer::PacketProducer() {
+    PacketProducer::PacketProducer() :
+        TemplateProcessor<Frame,Packet>(ProcessorType::Process)
+    {
         setName("PacketProducer");
     }
 

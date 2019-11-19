@@ -13,7 +13,9 @@ namespace fpp {
 
         using IOFunction = std::function<Code()>;
 
-        TemplateProcessor() {
+        TemplateProcessor(ProcessorType type) :
+            Processor(type)
+        {
             setName("TemplateProcessor");
         }
 
@@ -56,6 +58,11 @@ namespace fpp {
             for (auto next_processor : _next_processor_list) {
                 try_to(next_processor->push(&output_data));
             }
+            return Code::OK;
+        }
+
+        Code storeInputData(const inType& input_data) {
+            return_if_not(_input_queue.push(input_data), Code::EXIT);
             return Code::OK;
         }
 

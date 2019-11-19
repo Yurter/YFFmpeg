@@ -8,7 +8,7 @@ namespace fpp {
 
     public:
 
-        PacketProcessor();
+        PacketProcessor(ProcessorType type);
 
     };
 
