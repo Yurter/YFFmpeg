@@ -42,13 +42,20 @@ namespace fpp {
 
     Code Pipeline::addElement(Processor* processor) {
         _processors.push_back(processor);
-        if (running()) {
-            if (processor->typeIs(ProcessorType::Output)) {
-                try_to(determineSequence(processor));
-            } else {
-                log_warning("Сannot be correctly added while running: " << processor->name());
-            }
+        try_to(processor->init());
+        if (processor->typeIs(ProcessorType::Input)) {
+            try_to(processor->open());
         }
+        if (processor->typeIs(ProcessorType::Output)) {
+            try_to(determineSequence(processor));
+        }
+//        if (running()) {
+//            if (processor->typeIs(ProcessorType::Output)) {
+//                try_to(determineSequence(processor));
+//            } else {
+//                log_warning("Сannot be correctly added while running: " << processor->name());
+//            }
+//        }
         return Code::OK;
     }
 
@@ -79,14 +86,14 @@ namespace fpp {
     Code Pipeline::init() {
         log_info("Initialization started...");
         try_to(checkFormatContexts());  /* Проверка на наличие входо-выходов                            */
-        try_to(initMedia());            /* Инициализация форматКонтекстов                               */
-        try_to(openMediaSources());     /* Открытие входов и формирование входных потоков               */
+//        try_to(initMedia());            /* Инициализация форматКонтекстов                               */
+//        try_to(openMediaSources());     /* Открытие входов и формирование входных потоков               */
 //        try_to(initMap());              /* Автоматический проброс потоков                               */
-        try_to(openMediaSinks());       /* Открытие выходов                                             */
+//        try_to(openMediaSinks());       /* Открытие выходов                                             */
 //        try_to(determineSequences());   /* Формирование поледовательностей обработки входных потоков    */
-        try_to(initRefi());             /* Инициализация рефи                                           */
-        try_to(initCodec());            /* Инициализация кодеков                                        */
-        try_to(openCodec());            /* Открытие кодеков                                             */
+//        try_to(initRefi());             /* Инициализация рефи                                           */
+//        try_to(initCodec());            /* Инициализация кодеков                                        */
+//        try_to(openCodec());            /* Открытие кодеков                                             */
         try_to(startProcesors());       /* Запуск всех процессоров                                      */
         dump();                         /* Дамп всей информации в лог                                   */
         setInited(true);
@@ -96,20 +103,20 @@ namespace fpp {
     }
 
     Code Pipeline::run() {
-        bool all_processor_stopped = true;
-        for (auto&& processor : _processors) {
-            auto thread_processor = static_cast<Thread*>(processor);
-            /* Прекращение работы, если процессор завершил работу с ошибкой */
-            return_if(utils::error_code(thread_processor->exitCode())
-                      , thread_processor->exitCode());
-            if (thread_processor->running()) {
-                all_processor_stopped = false;
-                break;
-            } else {
-                /* Выброс отработавшего процессора из пула */
-            }
-        }
-        return_if(all_processor_stopped, Code::END_OF_FILE);
+//        bool all_processor_stopped = true;
+//        for (auto&& processor : _processors) {
+//            auto thread_processor = static_cast<Thread*>(processor);
+//            /* Прекращение работы, если процессор завершил работу с ошибкой */
+//            return_if(utils::error_code(thread_processor->exitCode())
+//                      , thread_processor->exitCode());
+//            if (thread_processor->running()) {
+//                all_processor_stopped = false;
+//                break;
+//            } else {
+//                /* Выброс отработавшего процессора из пула */
+//            }
+//        }
+//        return_if(all_processor_stopped, Code::END_OF_FILE);
         utils::sleep_for(LONG_DELAY_MS/* * 10*/);
         return Code::OK;
     }
@@ -384,6 +391,12 @@ namespace fpp {
         Stream* output_stream = findStream(route.outputStreamUid());
         StreamPair in_out_streams { input_stream, output_stream };
 
+        output_stream->parameters->completeFrom(input_stream->parameters);
+        input_stream->setUsed(true);
+        output_stream->setUsed(true);
+
+        try_to(route.append(static_cast<Processor*>(static_cast<FormatContext*>(input_stream->context())->_media_ptr)));
+
         bool rescaling_required     = utils::rescaling_required   (in_out_streams);
         bool resampling_required    = utils::resampling_required  (in_out_streams);
         bool video_filter_required  = utils::video_filter_required(in_out_streams);
@@ -451,6 +464,10 @@ namespace fpp {
             try_to(addElement(encoder));
         }
 
+        try_to(route.append(static_cast<Processor*>(static_cast<FormatContext*>(output_stream->context())->_media_ptr)));
+
+        log_info("route: " << route);
+
         return Code::OK;
     }
 
@@ -481,7 +498,12 @@ namespace fpp {
         StreamVector output_streams;
         if (output_processor->is("MediaSink")) {
             MediaSink* media_sink = static_cast<MediaSink*>(output_processor);
+//            try_to(media_sink->init());
             output_streams = media_sink->outputFormatContext().streams();
+            if (output_streams.empty()) {
+                log_error("output_streams is empty: " << media_sink->outputFormatContext().mediaResourceLocator());
+                return Code::NOT_INITED;
+            }
             for (auto out_stream : output_streams) {
                 Stream* in_stream = findBestInputStream(out_stream->type());
                 if (not_inited_ptr(in_stream)) {

@@ -80,8 +80,8 @@ int main() {
 //        auto sink_youtube = new MediaSink("group_video/youtube.flv", IOType::YouTube);
 //        pipeline.addElement(sink_youtube);
 
-        auto sink_timelapse = new MediaSink("group_video/timelapse.flv", IOType::Timelapse);
-        pipeline.addElement(sink_timelapse);
+//        auto sink_timelapse = new MediaSink("group_video/timelapse.flv", IOType::Timelapse);
+//        pipeline.addElement(sink_timelapse);
 
 //        auto sink_restream = new MediaSink("group_video/restream.flv");
 //        pipeline.addElement(sink_restream);

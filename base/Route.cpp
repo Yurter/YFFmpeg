@@ -17,7 +17,17 @@ namespace fpp {
     }
 
     std::string Route::toString() const {
-        return "TODO";
+        if (_sequence.empty()) {
+            return "empty";
+        }
+        std::string str;
+        std::string delimeter = " -> ";
+        for (auto&& elem : _sequence) {
+            str += elem->name();
+            str += delimeter;
+        }
+        str.erase(str.size() - delimeter.size(), delimeter.size());
+        return str;
     }
 
     Code Route::setMetaRoute(int64_t input_stream_uid, int64_t output_stream_uid) {
