@@ -40,11 +40,20 @@ namespace fpp {
         _options = options;
     }
 
-    void Pipeline::addElement(Object* element) {
+    Code Pipeline::addElement(Object* element) {
         _processors.push_back(element);
         if (running()) {
-            // Code::NOT_IMPLEMENTED
+            Processor* processor = dynamic_cast<Processor*>(element);
+            if (not_inited_ptr(processor)) {
+                return Code::INVALID_INPUT;
+            }
+            if (processor->typeIs(ProcessorType::Output)) {
+                try_to(determineSequence(element));
+            } else {
+                log_warning("Сannot be correctly added while running: " << element->name());
+            }
         }
+        return Code::OK;
     }
 
     void Pipeline::remElement(Object* element) {
@@ -411,6 +420,42 @@ namespace fpp {
         //
         _route_list.push_back(route);
         return Code::OK;
+    }
+
+    Stream* Pipeline::findStream(int64_t uid) {
+        int64_t context_uid = utils::get_context_uid(uid);
+        for (auto&& sink : mediaSinks()) {
+            if (sink->outputFormatContext().uid() == context_uid) {
+                for (auto&& stream : sink->outputFormatContext().streams()) {
+                    if (stream->uid() == uid) {
+                        return stream;
+                    }
+                }
+            }
+        }
+        return nullptr;
+    }
+
+    Code Pipeline::determineSequence(Object* output_processor) {
+        StreamVector output_streams;
+        if (output_processor->is("MediaSink")) {
+            MediaSink* media_sink = static_cast<MediaSink*>(output_processor);
+            output_streams = media_sink->outputFormatContext().streams();
+            for (auto out_stream : output_streams) {
+                Stream* in_stream = findBestInputStream(out_stream->type());
+                if (not_inited_ptr(in_stream)) {
+                    log_error("Failed to find input stream type " << out_stream->type());
+                    return Code::INVALID_INPUT;
+                }
+                Route route;
+                try_to(route.setMetaRoute(in_stream->uid(), out_stream->uid()));
+                try_to(createSequence(route));
+                _route_list.push_back(route);
+            }
+        }
+        if (output_processor->is("CustomOutput")) {
+            //
+        }
     }
 
 //    Code Pipeline::determineSequence(MediaSink* media_sink) {

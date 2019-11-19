@@ -16,7 +16,7 @@ namespace fpp {
     #define USE_HWACCEL true
 
     //typedef std::list<Object*> ProcessorList;
-    using ProcessorList = std::list<Object*>;
+//    using ProcessorList = std::list<Object*>;
 
     class utils {
 

@@ -14,7 +14,7 @@
 
 namespace fpp {
 
-    using ProcessorList = std::list<Object*>;
+//    using ProcessorList = std::list<Object*>;
 
     using MetaStream = std::pair<uint64_t,uint64_t>;
     using MetaRoute = std::pair<MetaStream,MetaStream>;
@@ -35,7 +35,8 @@ namespace fpp {
         void                unpause();                          ///< Функция возобновляет работу класса.
 
         void                setOptions(int64_t options);        ///< Функция устанавливает переданные ей опции Option.
-        void                addElement(Object* element);        ///< Функция добавляет процессор медиа-данных в кучу.
+
+        Code                addElement(Object* element);        ///< Функция добавляет процессор медиа-данных в кучу.
         void                remElement(Object* element);     ///< Функция ...
 
         // До старта потоков нет возможности указать потоки явно
@@ -79,7 +80,7 @@ namespace fpp {
         Code                createSequence(Route route);
 
         Stream*             findStream(int64_t uid);
-//        Code                determineSequence(MediaSink* media_sink); //TODO
+        Code                determineSequence(Object* output_processor);
 
         virtual std::string toString() const override;
 
