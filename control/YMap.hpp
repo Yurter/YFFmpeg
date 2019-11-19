@@ -1,49 +1,49 @@
-#pragma once
-#include "base/Packet.hpp"
-#include "base/TemplateProcessor.hpp"
-#include "media/MediaSource.hpp"
-#include "media/MediaSink.hpp"
-#include <map>
+//#pragma once
+//#include "base/Packet.hpp"
+//#include "base/TemplateProcessor.hpp"
+//#include "media/MediaSource.hpp"
+//#include "media/MediaSink.hpp"
+//#include <map>
 
-namespace fpp {
+//namespace fpp {
 
-//    using PacketProcessor = AsyncQueue<Packet>;
+////    using PacketProcessor = AsyncQueue<Packet>;
 
-    /* Таблица соответствий входного и выходного потоков */
-    using StreamMap = std::multimap<Stream*,Stream*>;
-    /* Таблица соответствий uid входного потока и локального индекса выходного потока */
-    using IndexMap = std::multimap<int64_t,int64_t>;
-    /* Таблица соответствий uid входного потока и указателя на первый в последовательности обработчик пакета */
-    using PacketMap = std::multimap<int64_t,Processor*>;
+//    /* Таблица соответствий входного и выходного потоков */
+//    using StreamMap = std::multimap<Stream*,Stream*>;
+//    /* Таблица соответствий uid входного потока и локального индекса выходного потока */
+//    using IndexMap = std::multimap<int64_t,int64_t>;
+//    /* Таблица соответствий uid входного потока и указателя на первый в последовательности обработчик пакета */
+//    using PacketMap = std::multimap<int64_t,Processor*>;
 
-    class YMap : public TemplateProcessor<Packet,Packet> {
+//    class YMap : public TemplateProcessor<Packet,Packet> {
 
-    public:
+//    public:
 
-        YMap();
-        virtual ~YMap() override = default;
+//        YMap();
+//        virtual ~YMap() override = default;
 
-        virtual std::string toString() const override;
+//        virtual std::string toString() const override;
 
-        StreamMap*          streamMap();
+//        StreamMap*          streamMap();
 
-    //    Code               setRoute(Context* input_context, int64_t input_stream_index
-    //                                 , Context* output_context, int64_t output_stream_index);
-        Code                addRoute(Stream* in_stream, Stream* out_stream);              ///< Связвание входного и выходного потоков.
-        Code                setRoute(Stream* src_stream, Processor* next_processor); ///< Связывание источника данных с первым обработчиком в последоваельности.
+//    //    Code               setRoute(Context* input_context, int64_t input_stream_index
+//    //                                 , Context* output_context, int64_t output_stream_index);
+//        Code                addRoute(Stream* in_stream, Stream* out_stream);              ///< Связвание входного и выходного потоков.
+//        Code                setRoute(Stream* src_stream, Processor* next_processor); ///< Связывание источника данных с первым обработчиком в последоваельности.
 
-    private:
+//    private:
 
-        virtual Code        processInputData(Packet input_data) override;
+//        virtual Code        processInputData(Packet input_data) override;
 
-        Code                checkInputs();
+//        Code                checkInputs();
 
-    private:
+//    private:
 
-        StreamMap           _stream_map;
-        PacketMap           _packet_map;
-        IndexMap            _index_map;
+//        StreamMap           _stream_map;
+//        PacketMap           _packet_map;
+//        IndexMap            _index_map;
 
-    };
+//    };
 
-} // namespace fpp
+//} // namespace fpp

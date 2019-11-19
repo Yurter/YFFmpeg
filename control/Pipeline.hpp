@@ -59,7 +59,7 @@ namespace fpp {
 
 //        Code                initProcessors();
 
-        Code                initMap();
+//        Code                initMap();
         Code                initRefi();
         Code                initCodec();
         Code                initMedia();
@@ -74,7 +74,7 @@ namespace fpp {
         Code                startProcesors();
         Code                stopProcesors();
         Code                joinProcesors();
-        Code                determineSequences();
+//        Code                determineSequences();
         void                freeProcesors();
 
         Code                createSequence(Route route);
@@ -89,7 +89,7 @@ namespace fpp {
         Stream*             findBestInputStream(MediaType media_type);
         StreamList          getOutputStreams(MediaType media_type);
 
-        Code                connectIOStreams(MediaType media_type);
+//        Code                connectIOStreams(MediaType media_type);
 
         MediaSourceList     mediaSources()  const;
         MediaSinkList       mediaSinks()    const;
@@ -105,7 +105,7 @@ namespace fpp {
                                          // DataFlow? Pipe? Pipeline?
         std::list<ProcessorSequence>      _processor_sequences; //TODO перенести внутрь YMap ?
 
-        YMap*               _map;
+//        YMap*               _map;
 
         MetaMap             _metamap;
 
