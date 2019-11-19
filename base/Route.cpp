@@ -1,4 +1,5 @@
 #include "Route.hpp"
+#include "core/utils.hpp"
 
 namespace fpp {
 
@@ -13,6 +14,20 @@ namespace fpp {
     }
 
     Code Route::init() {
+        if (_sequence.size() < 2) {
+            return Code::INVALID_INPUT;
+        }
+        if (inited()) {
+            return Code::INVALID_CALL_ORDER;
+        }
+        for (auto processor = _sequence.begin(); processor != _sequence.end(); processor++) {
+            auto next_processor = std::next(processor);
+            if (next_processor == _sequence.end()) {
+                return Code::OK;
+            }
+            try_to((*processor)->connectTo(*next_processor));
+        }
+        setInited(true);
         return Code::OK;
     }
 

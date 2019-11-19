@@ -93,7 +93,11 @@ int main() {
         }
 //        pipeline.join();
 
-        utils::sleep_for_sec(30);
+        utils::sleep_for_sec(15);
+        auto sink_event2 = new MediaSink("group_video/event2.flv", IOType::Event);
+        pipeline.addElement(sink_event2);
+
+        utils::sleep_for_sec(15);
         static_print_info("main", "Program finished.");
 
     }

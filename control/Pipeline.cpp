@@ -49,6 +49,7 @@ namespace fpp {
         if (processor->typeIs(ProcessorType::Output)) {
             try_to(determineSequence(processor));
             try_to(processor->open());
+            processor->start();
         }
 //        if (running()) {
 //            if (processor->typeIs(ProcessorType::Output)) {
@@ -466,6 +467,8 @@ namespace fpp {
         }
 
         try_to(route.append(static_cast<Processor*>(static_cast<FormatContext*>(output_stream->context())->_media_ptr)));
+
+        try_to(route.init());
 
         log_info("route: " << route);
 

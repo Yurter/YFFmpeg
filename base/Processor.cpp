@@ -46,7 +46,7 @@ namespace fpp {
     Code fpp::Processor::connectTo(fpp::Processor* other) {
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
         _next_processor_list.push_back(other);
-        log_info("Connected to " << other);
+        log_info("Connected to " << other->name());
         return Code::OK;
     }
 
