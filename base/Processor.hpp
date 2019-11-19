@@ -7,7 +7,7 @@ namespace fpp {
 
     public:
 
-        Processor();
+        Processor(ProcessorType type);
         virtual ~Processor() override;
 
         virtual Code        open();
@@ -16,6 +16,8 @@ namespace fpp {
 
         bool                opened() const;
         bool                closed() const;
+
+        ProcessorType       type() const;
 
         void                setOpened(bool opened);
 
@@ -39,6 +41,7 @@ namespace fpp {
 
         bool                _opened;
         bool                _close_on_disconnect;
+        ProcessorType       _type;
         int64_t             _skip_types;
         int64_t             _discard_types;
 

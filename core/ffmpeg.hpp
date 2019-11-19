@@ -68,6 +68,12 @@ namespace fpp {
         Encoder,
     };
 
+    enum class ProcessorType {
+        Input,
+        Process,
+        Output
+    };
+
     /* Медиа тип потока/пакета/фрейма */
     enum MediaType {
         MEDIA_TYPE_UNKNOWN  = 0x0001,

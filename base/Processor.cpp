@@ -3,9 +3,10 @@
 
 namespace fpp {
 
-    Processor::Processor() :
+    Processor::Processor(ProcessorType type) :
         _opened(false)
       , _close_on_disconnect(true)
+      , _type(type)
     {
         setName("Processor");
     }
@@ -28,6 +29,10 @@ namespace fpp {
 
     bool Processor::closed() const {
         return !_opened;
+    }
+
+    ProcessorType Processor::type() const {
+        return _type;
     }
 
     void Processor::setOpened(bool opened) {
