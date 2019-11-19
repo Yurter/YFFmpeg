@@ -10,11 +10,13 @@ namespace fpp {
         Filter(const Parameters* input_data_params, std::string filters_descr);
         virtual ~Filter() override;
 
-        virtual Code init() override;
+        virtual Code        init() override;
+        virtual Code        open() override;
+        virtual Code        close() override;
 
     private:
 
-        virtual Code processInputData(Frame input_data) override;
+        virtual Code        processInputData(Frame input_data) override;
 
     private:
 

@@ -54,6 +54,11 @@ namespace fpp {
         return Code::OK;
     }
 
+    Code Logger::init() {
+        setInited(true);
+        return Code::OK;
+    }
+
     void Logger::flush() {
         /* Прекращение получения новых сообщений */
         setLogLevel(LogLevel::Quiet);

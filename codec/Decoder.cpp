@@ -15,11 +15,13 @@ namespace fpp {
 
     Code Decoder::open() {
         try_to(_decoder_context.open());
+        setOpened(true);
         return Code::OK;
     }
 
     Code Decoder::close() {
         try_to(_decoder_context.close());
+        setOpened(false);
         return Code::OK;
     }
 

@@ -114,6 +114,16 @@ namespace fpp {
         return Code::OK;
     }
 
+    Code Filter::open() {
+        setOpened(true);
+        return Code::OK;
+    }
+
+    Code Filter::close() {
+        setOpened(false);
+        return Code::OK;
+    }
+
     Code Filter::processInputData(Frame input_data) {
         if (av_buffersrc_add_frame_flags(_buffersrc_ctx, &input_data.raw(), AV_BUFFERSRC_FLAG_KEEP_REF) < 0) {
             log_error("Error while feeding the filtergraph: " << input_data);

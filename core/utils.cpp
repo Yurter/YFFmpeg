@@ -52,6 +52,7 @@ namespace fpp {
         if (code == Code::END_OF_FILE)     { return true; }
         if (code == Code::FFMPEG_ERROR)    { return true; }
         if (code == Code::INVALID_INPUT)   { return true; }
+        if (code == Code::NOT_IMPLEMENTED) { return true; }
         return false;
     }
 
@@ -61,6 +62,7 @@ namespace fpp {
         if (code == Code::NOT_INITED)      { return true; }
         if (code == Code::FFMPEG_ERROR)    { return true; }
         if (code == Code::INVALID_INPUT)   { return true; }
+        if (code == Code::NOT_IMPLEMENTED) { return true; }
         return false;
     }
 

@@ -45,6 +45,7 @@ namespace fpp {
     private:
 
         virtual Code        run() override;
+        virtual Code        init() override;
         void                flush();
         std::string         format_message(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message);
         bool                ignore_message(LogLevel message_log_level);
