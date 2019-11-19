@@ -424,6 +424,15 @@ namespace fpp {
 
     Stream* Pipeline::findStream(int64_t uid) {
         int64_t context_uid = utils::get_context_uid(uid);
+        for (auto&& source : mediaSources()) {
+            if (source->inputFormatContext().uid() == context_uid) {
+                for (auto&& stream : source->inputFormatContext().streams()) {
+                    if (stream->uid() == uid) {
+                        return stream;
+                    }
+                }
+            }
+        }
         for (auto&& sink : mediaSinks()) {
             if (sink->outputFormatContext().uid() == context_uid) {
                 for (auto&& stream : sink->outputFormatContext().streams()) {
