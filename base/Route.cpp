@@ -12,6 +12,14 @@ namespace fpp {
         }
     }
 
+    Code Route::init() {
+        return Code::OK;
+    }
+
+    std::string Route::toString() const {
+        return "TODO";
+    }
+
     Code Route::setMetaRoute(int64_t input_stream_uid, int64_t output_stream_uid) {
         return_if(input_stream_uid == output_stream_uid, Code::INVALID_INPUT);
         return_if(not_inited_int(input_stream_uid),  Code::INVALID_INPUT);
