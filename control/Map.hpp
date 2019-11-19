@@ -9,7 +9,7 @@ namespace fpp {
         Map();
         ~Map();
 
-        Code setMetaRoute(int64_t input_stream_uid, int64_t output_stream_uid);
+//        Code setMetaRoute(int64_t input_stream_uid, int64_t output_stream_uid);
 
     private:
 

@@ -36,8 +36,8 @@ namespace fpp {
 
         void                setOptions(int64_t options);        ///< Функция устанавливает переданные ей опции Option.
 
-        Code                addElement(Object* element);        ///< Функция добавляет процессор медиа-данных в кучу.
-        void                remElement(Object* element);     ///< Функция ...
+        Code                addElement(Processor* processor);        ///< Функция добавляет процессор медиа-данных в кучу.
+        void                remElement(Processor* processor);     ///< Функция ...
 
         // До старта потоков нет возможности указать потоки явно
     //    void                setRoute(Stream* input_stream, Stream* output_stream);            ///< Функция устанавливает соответствие между входным и выходным потоками.

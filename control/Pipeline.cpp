@@ -40,28 +40,24 @@ namespace fpp {
         _options = options;
     }
 
-    Code Pipeline::addElement(Object* element) {
-        _processors.push_back(element);
+    Code Pipeline::addElement(Processor* processor) {
+        _processors.push_back(processor);
         if (running()) {
-            Processor* processor = dynamic_cast<Processor*>(element);
-            if (not_inited_ptr(processor)) {
-                return Code::INVALID_INPUT;
-            }
             if (processor->typeIs(ProcessorType::Output)) {
-                try_to(determineSequence(element));
+                try_to(determineSequence(processor));
             } else {
-                log_warning("Сannot be correctly added while running: " << element->name());
+                log_warning("Сannot be correctly added while running: " << processor->name());
             }
         }
         return Code::OK;
     }
 
-    void Pipeline::remElement(Object* element) {
+    void Pipeline::remElement(Processor* processor) {
 //        auto thread_processor = dynamic_cast<Thread*>(element); // нужно ли?
 //        if (inited_ptr(thread_processor)) {
 //            try_throw(thread_processor->stop());
 //        }
-        _processors.remove(element);
+        _processors.remove(processor);
     }
 
     //void Pipeline::setRoute(Stream* input_stream, Stream* output_stream)
@@ -387,13 +383,13 @@ namespace fpp {
         Stream* output_stream = findStream(route.outputStreamUid());
         StreamPair in_out_streams { input_stream, output_stream };
 
-        bool rescaling_required     = utils::rescaling_required(in_out_streams);
-        bool resampling_required    = utils::resampling_required(in_out_streams);
+        bool rescaling_required     = utils::rescaling_required   (in_out_streams);
+        bool resampling_required    = utils::resampling_required  (in_out_streams);
         bool video_filter_required  = utils::video_filter_required(in_out_streams);
         bool audio_filter_required  = utils::audio_filter_required(in_out_streams);
-        bool transcoding_required   = utils::transcoding_required(in_out_streams);
+        bool transcoding_required   = utils::transcoding_required (in_out_streams);
 
-        auto out_context = dynamic_cast<OutputFormatContext*>(out_stream->context());
+        auto out_context = dynamic_cast<OutputFormatContext*>(output_stream->context());
         if (inited_ptr(out_context)) {
             video_filter_required = video_filter_required
                                     || out_context->preset(IOType::Timelapse);
@@ -403,22 +399,57 @@ namespace fpp {
                                 || rescaling_required
                                 || resampling_required);
 
-        bool decoding_required = transcoding_required //&& (in_stream->parameters->codecId() != AV_CODEC_ID_NONE))
+        bool decoding_required = transcoding_required
                                 || rescaling_required
                                 || resampling_required
                                 || video_filter_required
                                 || audio_filter_required;
-        bool encoding_required = transcoding_required //&& (out_stream->parameters->codecId() != AV_CODEC_ID_NONE);
+        bool encoding_required = transcoding_required
                                 || rescaling_required
                                 || resampling_required
                                 || video_filter_required
                                 || audio_filter_required;
-        if (inited_ptr(dynamic_cast<OpenCVSink*>(out_stream->context()))) {
+        if (inited_ptr(dynamic_cast<OpenCVSink*>(output_stream->context()))) {
             encoding_required = false;
         }
 
-        //
-        _route_list.push_back(route);
+        if (decoding_required) {
+            Decoder* decoder = new Decoder(input_stream);
+            try_to(route.append(decoder));
+            try_to(addElement(decoder));
+        }
+
+        if (rescaling_required) {
+            Rescaler* rescaler = new Rescaler(in_out_streams);
+            try_to(route.append(rescaler));
+            try_to(addElement(rescaler));
+        }
+
+        if (video_filter_required) {
+//                    std::string filters_descr = "select='not(mod(n,10))',setpts=N/FRAME_RATE/TB";
+//                    std::string filters_descr = "setpts=N/(10*TB)";
+            std::string filters_descr = "select='not(mod(n,10))'";
+            VideoFilter* video_filter = new VideoFilter(output_stream->parameters, filters_descr);
+            try_to(route.append(video_filter));
+            try_to(addElement(video_filter));
+        }
+
+        if (audio_filter_required) {
+            return Code::NOT_IMPLEMENTED;
+        }
+
+        if (resampling_required) {
+            Resampler* resampler = new Resampler(in_out_streams);
+            try_to(route.append(resampler));
+            try_to(addElement(resampler));
+        }
+
+        if (encoding_required) {
+            Encoder* encoder = new Encoder(output_stream);
+            try_to(route.append(encoder));
+            try_to(addElement(encoder));
+        }
+
         return Code::OK;
     }
 
