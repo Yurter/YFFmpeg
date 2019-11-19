@@ -49,8 +49,8 @@ int main() {
 //        std::string mrl_src = "big_buck_bunny.mp4";
 //        std::string mrl_src = "Walking.mp4"; /* Не работает декодер! */
 //        std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12"; //640x480
-//        std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
-        std::string mrl_src = "video=HP Wide Vision FHD Camera";
+        std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
+//        std::string mrl_src = "video=HP Wide Vision FHD Camera";
 
 //        std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/vtpz-spss-u4eq-4k0e";
     //    std::string mrl_dst = "remuxed.flv";
@@ -94,9 +94,19 @@ int main() {
             static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
         }
 
-        start_debug_timeout(source, 60 /** 60*/ /* час */); /* Таймаут для RTSP */
 
-        pipeline.join();
+        for (int i = 0; i < 10; i++) {
+            auto sink_timelapse = new MediaSink("group_video/timelapse" + std::to_string(i) + ".flv", IOType::Timelapse);
+            pipeline.addElement(sink_timelapse);
+//            auto sink_event = new MediaSink("group_video/event" + std::to_string(i) + ".flv", IOType::Event);
+//            pipeline.addElement(sink_event);
+            utils::sleep_for_sec(10);
+        }
+
+
+//        start_debug_timeout(source, 60 /** 60*/ /* час */); /* Таймаут для RTSP */
+
+//        pipeline.join();
 
         static_print_info("main", "Program finished.");
 

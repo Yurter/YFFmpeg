@@ -68,5 +68,12 @@ namespace fpp {
         return _output_stream_uid;
     }
 
+    Code Route::startAll() {
+        for (auto&& elem : _sequence) {
+            try_to(elem->start());
+        }
+        return Code::OK;
+    }
+
 
 } // namespace fpp

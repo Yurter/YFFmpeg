@@ -11,8 +11,9 @@ namespace fpp {
     }
 
     Pipeline::~Pipeline() {
-        freeProcesors();
-        stopPr();
+//        try_to(stopProcesors());
+//        freeProcesors();
+//        stopPr();
         stop();
     }
 
@@ -21,7 +22,7 @@ namespace fpp {
         try_to(stopProcesors());
 //        try_to(closeMediaSources());
 //        try_to(closeMediaSinks());
-        try_to(joinProcesors());
+//        try_to(joinProcesors());
 //        try_to(stop_log());
         log_info("Processing finished.");
         return true;
@@ -106,20 +107,20 @@ namespace fpp {
     }
 
     Code Pipeline::run() {
-//        bool all_processor_stopped = true;
-//        for (auto&& processor : _processors) {
-//            auto thread_processor = static_cast<Thread*>(processor);
-//            /* Прекращение работы, если процессор завершил работу с ошибкой */
-//            return_if(utils::error_code(thread_processor->exitCode())
-//                      , thread_processor->exitCode());
-//            if (thread_processor->running()) {
-//                all_processor_stopped = false;
-//                break;
-//            } else {
-//                /* Выброс отработавшего процессора из пула */
-//            }
-//        }
-//        return_if(all_processor_stopped, Code::END_OF_FILE);
+        bool all_processor_stopped = true;
+        for (auto&& processor : _processors) {
+            auto thread_processor = static_cast<Thread*>(processor);
+            /* Прекращение работы, если процессор завершил работу с ошибкой */
+            return_if(utils::error_code(thread_processor->exitCode())
+                      , thread_processor->exitCode());
+            if (thread_processor->running()) {
+                all_processor_stopped = false;
+                break;
+            } else {
+                /* Выброс отработавшего процессора из пула */
+            }
+        }
+        return_if(all_processor_stopped, Code::END_OF_FILE);
         utils::sleep_for(LONG_DELAY_MS/* * 10*/);
         return Code::OK;
     }
@@ -132,10 +133,10 @@ namespace fpp {
     Code Pipeline::onStop() {
         log_info("Stopping...");
         try_to(stopProcesors());
-        try_to(closeMediaSources());
-        try_to(closeMediaSinks());
-        try_to(joinProcesors());
-        try_to(stop_log());
+//        try_to(closeMediaSources());
+//        try_to(closeMediaSinks());
+//        try_to(joinProcesors());
+//        try_to(stop_log());
         log_info("Processing finished.");
         return Code::OK;
     }
@@ -448,7 +449,7 @@ namespace fpp {
         if (video_filter_required) {
 //                    std::string filters_descr = "select='not(mod(n,10))',setpts=N/FRAME_RATE/TB";
 //                    std::string filters_descr = "setpts=N/(10*TB)";
-            std::string filters_descr = "select='not(mod(n,10))'";
+            std::string filters_descr = "select='not(mod(n,60))'";
             VideoFilter* video_filter = new VideoFilter(output_stream->parameters, filters_descr);
             try_to(route.append(video_filter));
             try_to(addElement(video_filter));
@@ -473,6 +474,7 @@ namespace fpp {
         try_to(route.append(static_cast<Processor*>(static_cast<FormatContext*>(output_stream->context())->_media_ptr)));
 
         try_to(route.init());
+        try_to(route.startAll());
 
         log_info("route: " << route);
 

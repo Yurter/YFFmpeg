@@ -33,7 +33,8 @@ namespace fpp {
     }
 
     Code Thread::start() {
-        return_if(running(), Code::INVALID_CALL_ORDER);
+//        return_if(running(), Code::INVALID_CALL_ORDER);
+        return_if(running(), Code::OK);
         _stop_flag = false;
         if_not(inited()) { try_to(init()); }
         _thread = std::thread([this]() {
@@ -44,9 +45,9 @@ namespace fpp {
                 do {
                     if (_stop_flag) { break; }
                     _exit_code = _loop_function();
-//                    if (!this->is("Logger")) {
+                    if (!this->is("Logger")) {
 //                        log_info("still running");
-//                    }
+                    }
                 } while_not (utils::exit_code(_exit_code));
 
                 std::string log_message = utils::error_code(_exit_code)

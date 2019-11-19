@@ -20,6 +20,8 @@ namespace fpp {
         int64_t             inputStreamUid() const;
         int64_t             outputStreamUid() const;
 
+        Code                startAll();
+
     private:
 
         using ProcessorSequence = ProcessorVector;
