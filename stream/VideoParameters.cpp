@@ -1,4 +1,5 @@
 #include "VideoParameters.hpp"
+#include "core/utils.hpp"
 
 namespace fpp {
 
@@ -77,14 +78,15 @@ namespace fpp {
         return str;
     }
 
-    void VideoParameters::completeFrom(const Parameters* other_parametrs) {
+    Code VideoParameters::completeFrom(const Parameters* other_parametrs) {
         auto other_video_parameters = static_cast<const VideoParameters*>(other_parametrs);
         if (not_inited_int(_width))             { _width = other_video_parameters->width();                 }
         if (not_inited_int(_height))            { _height = other_video_parameters->height();               }
         if (not_inited_q(_aspect_ratio))        { _aspect_ratio = other_video_parameters->aspectRatio();    }
         if (not_inited_q(_frame_rate))          { _frame_rate = other_video_parameters->frameRate();        }
         if (not_inited_pix_fmt(_pixel_format))  { _pixel_format = other_video_parameters->pixelFormat();    }
-        Parameters::completeFrom(other_parametrs);
+        try_to(Parameters::completeFrom(other_parametrs));
+        return Code::OK;
     }
 
     //void VideoParameters::toCodecpar(AVCodecParameters* codecpar)

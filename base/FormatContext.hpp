@@ -84,7 +84,7 @@ namespace fpp {
         // General
         int64_t             _uid;
         std::string			_media_resource_locator;
-        bool				_opened;
+        std::atomic_bool	_opened;
         StreamVector        _streams;
 //        int64_t             _max_duration_sec;
         bool                _reopening_after_failure;

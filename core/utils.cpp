@@ -136,6 +136,9 @@ namespace fpp {
         if (media_resurs_locator.find("aevalsrc") != std::string::npos) {
             return std::string("lavfi");
         }
+        if (media_resurs_locator.find("video=") != std::string::npos) {
+            return std::string("dshow");
+        }
         return std::string(); //TODO use fmpeg funtion to get format list, нет нельзя: нужно возвращать пустую строку для логики в месте вызова
     }
 
@@ -314,8 +317,11 @@ namespace fpp {
         case AVCodecID::AV_CODEC_ID_H264:
             dst_prm->setCodec("libx264", CodecType::Encoder);
             return Code::OK;
-        default:
-            return Code::INVALID_INPUT;
+        default: //TODO возможны случаи с несимметричными названиями кодера и энкодера как у h264
+            dst_prm->setCodec(src_prm->codecName(), CodecType::Encoder);
+            return Code::OK;
+//        default:
+//            return Code::INVALID_INPUT;
         }
     }
 

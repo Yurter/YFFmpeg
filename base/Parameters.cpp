@@ -101,23 +101,28 @@ namespace fpp {
         return _context_uid;
     }
 
+    void Parameters::increaseDuration(int64_t value) {
+        _duration += value;
+    }
+
     std::string Parameters::toString() const {
         std::string str = "TODO";
         return str;
     }
 
-    void Parameters::completeFrom(const Parameters* other_parametrs) {
+    Code Parameters::completeFrom(const Parameters* other_parametrs) {
 //        if (not_inited_codec_id(_codec_id)) { _codec_id = other_parametrs->codecId();           }
 //        if (not_inited_string(_codec_name)) { _codec_name = other_parametrs->codecName();       }
 
         if (not_inited_codec_id(_codec_id)) {
-            utils::find_encoder_for(other_parametrs, this);
+            try_to(utils::find_encoder_for(other_parametrs, this));
         }
 
         if (not_inited_int(_bitrate))       { _bitrate = other_parametrs->bitrate();            }
 //        if (not_inited_int(_duration))      { _duration = other_parametrs->duration();          }
 //        if (invalid_int(_stream_index))     { _stream_index = other_parametrs->streamIndex();   }
         if (not_inited_q(_time_base))       { _time_base = other_parametrs->timeBase();         }
+        return Code::OK;
     }
 
     Parameters& Parameters::operator=(const Parameters& rhs) {

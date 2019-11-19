@@ -3,6 +3,7 @@
 #include <mutex>
 #include <atomic>
 #include <iostream>
+#include <condition_variable>
 
 namespace fpp {
 
@@ -20,14 +21,14 @@ namespace fpp {
 
         [[nodiscard]]
         bool push(const Type& data) {
-            std::lock_guard<std::mutex> lock(_queue_mutex);
+            std::lock_guard<std::recursive_mutex> lock(_queue_mutex);
             push_and_notify(data);
             return true;
         }
 
         [[nodiscard]]
         bool pop(Type& data) {
-            std::lock_guard<std::mutex> lock(_queue_mutex);
+            std::lock_guard<std::recursive_mutex> lock(_queue_mutex);
             if (_queue.empty()) { return false; }
             pop_and_notify(data);
             return true;
@@ -35,7 +36,7 @@ namespace fpp {
 
         [[nodiscard]]
         bool wait_and_pop(Type& data) {
-            std::unique_lock<std::mutex> lock(_queue_mutex);
+            std::unique_lock<std::recursive_mutex> lock(_queue_mutex);
             if (!_queue.empty()) {
                 pop_and_notify(data);
                 return true;
@@ -55,12 +56,12 @@ namespace fpp {
         }
 
         bool empty() {
-            std::lock_guard<std::mutex> lock(_queue_mutex);
+            std::lock_guard<std::recursive_mutex> lock(_queue_mutex);
             return _queue.empty();
         }
 
         bool full() {
-            std::lock_guard<std::mutex> lock(_queue_mutex);
+            std::lock_guard<std::recursive_mutex> lock(_queue_mutex);
             return _queue.size() == _queue_capacity;
         }
 
@@ -69,12 +70,12 @@ namespace fpp {
         }
 
         uint64_t length() {
-            std::lock_guard<std::mutex> lock(_queue_mutex);
+            std::lock_guard<std::recursive_mutex> lock(_queue_mutex);
             return _queue.size();
         }
 
         void clear() {
-            std::lock_guard<std::mutex> lock(_queue_mutex);
+            std::lock_guard<std::recursive_mutex> lock(_queue_mutex);
             std::queue<Type> empty;
             std::swap(_queue, empty);
         }
@@ -95,7 +96,7 @@ namespace fpp {
             while (notEnoughStorage(data.size())) {
                 Type surplus_data;
                 pop_and_decrease_size(surplus_data);
-                std::cout << "Discarded: " << surplus_data << std::endl;
+//                std::cout << "Discarded: " << surplus_data << std::endl;
             }
             push_and_increase_size(data);
             _condition_variable_pushed.notify_one();
@@ -124,12 +125,12 @@ namespace fpp {
     private:
 
         std::queue<Type>        _queue;
-        std::mutex              _queue_mutex;
+        std::recursive_mutex    _queue_mutex;
         uint64_t                _queue_capacity;
         std::atomic_int         _queue_size;
         std::atomic_bool        _stop_wait;
-        std::condition_variable _condition_variable_pushed;
-        std::condition_variable _condition_variable_popped;
+        std::condition_variable_any _condition_variable_pushed;
+        std::condition_variable_any _condition_variable_popped;
 
     };
 

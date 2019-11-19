@@ -51,6 +51,15 @@ namespace fpp {
         }
     }
 
+    Stream* CustomPacketSource::stream(MediaType type) {
+        for (auto str : _streams) {
+            if (str->typeIs(type)) {
+                return str;
+            }
+        }
+        return nullptr;
+    }
+
     Code CustomPacketSource::readInputData(Packet& input_data) {
         try_to(_read_func(input_data));
         return Code::OK;
@@ -80,7 +89,8 @@ namespace fpp {
                 stream->setUsed(false);
             }
         }
-        return Code::END_OF_FILE;
+//        return Code::END_OF_FILE;
+        return Code::OK;
     }
 
 } // namespace fpp

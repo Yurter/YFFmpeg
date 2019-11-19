@@ -24,7 +24,7 @@ namespace fpp {
 
         virtual std::string toString() const override;
 
-        void                completeFrom(const Parameters* other_parametrs) override;
+        Code                completeFrom(const Parameters* other_parametrs) override;
         VideoParameters&    operator=(const VideoParameters& rhs);
 
     private:

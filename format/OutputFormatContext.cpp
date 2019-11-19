@@ -23,6 +23,7 @@ namespace fpp {
         case Event: { /* Евент должен писаться копипастой */
             /* Video */
             auto video_parameters = new VideoParameters;
+            video_parameters->setCodec("libx264", CodecType::Encoder);
             video_parameters->setContextUid(uid());
 //            video_parameters->setTimeBase({ 1, 1000 });
 //            video_parameters->setFrameRate({ 22, 1 });
@@ -67,7 +68,7 @@ namespace fpp {
         case Timelapse: {
             /* Video */
             auto video_parameters = new VideoParameters;
-//            video_parameters->setCodec("libx264", CodecType::Encoder);
+            video_parameters->setCodec("libx264", CodecType::Encoder);
 //            video_parameters->setCodec("h264_qsv", CodecType::Encoder);
 //            video_parameters->setFrameRate({ 23, 1 }); //TODO
 //            video_parameters->setTimeBase({ 1, 1000 });
@@ -162,6 +163,7 @@ namespace fpp {
             log_error("Failed to write the stream trailer to an output media file");
             return Code::ERR;
         }
+        avio_close(_format_context->pb);
         log_info("Destination: \"" << _media_resource_locator << "\" closed.");
         return Code::OK;
     }

@@ -27,13 +27,13 @@ namespace fpp {
         Object*             context()   const;
         int64_t             uid()       const;
         int64_t             index()     const;
-        int64_t             duration()  const;
+//        int64_t             duration()  const;
         bool                used()      const;
         int64_t             packetIndex() const;
 
         AVCodecParameters*  codecParameters();
 
-        void                increaseDuration(int64_t value);
+//        void                increaseDuration(int64_t value);
 
         virtual bool        operator>(const Stream& other) const; //TODO func betterThen(Stream* other) ? нет, максимум дублировать, т.к. испольуется в std::max_element
 
@@ -50,7 +50,7 @@ namespace fpp {
         Object*             _context;
 
         int64_t             _uid;
-        int64_t             _duration;
+//        int64_t             _duration;
         bool                _used;
 
         int64_t             _prev_dts;

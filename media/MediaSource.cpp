@@ -67,7 +67,9 @@ namespace fpp {
 
     Code MediaSource::processInputData(Packet input_data) {
         if (input_data.empty()) {
-            return sendEofPacket();
+            try_to(sendEofPacket());
+            return Code::END_OF_FILE;
+//            return sendEofPacket();
         }
 //        auto packet_stream = _input_format_context.stream(input_data.raw().stream_index);
 //        return_if(not_inited_ptr(packet_stream), Code::AGAIN);
@@ -93,7 +95,8 @@ namespace fpp {
                 stream->setUsed(false);
             }
         }
-        return Code::END_OF_FILE;
+//        return Code::END_OF_FILE;
+        return Code::OK;
     }
 
 } // namespace fpp

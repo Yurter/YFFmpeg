@@ -12,19 +12,20 @@ namespace fpp {
 
     Pipeline::~Pipeline() {
         freeProcesors();
-        try_throw(stop());
+        stopPr();
+        stop();
     }
 
-//    bool Pipeline::stop() {
-//        log_info("Stopping...");
-//        try_to(stopProcesors());
+    bool Pipeline::stopPr() {
+        log_info("Stopping...");
+        try_to(stopProcesors());
 //        try_to(closeMediaSources());
 //        try_to(closeMediaSinks());
-//        try_to(joinProcesors());
+        try_to(joinProcesors());
 //        try_to(stop_log());
-//        log_info("Processing finished.");
-//        return true;
-//    }
+        log_info("Processing finished.");
+        return true;
+    }
 
     void Pipeline::pause() {
         _paused = true;
@@ -144,6 +145,7 @@ namespace fpp {
     }
 
     Code Pipeline::checkFormatContexts() {
+        return Code::OK; //debug
         return_if(mediaSources().empty(),   Code::NOT_INITED);  //TODO throw YException("No source specified");
 //        return_if(mediaSinks().empty(),     Code::NOT_INITED);  //TODO throw YException("No destination specified");
         return Code::OK;
@@ -233,7 +235,9 @@ namespace fpp {
     Code Pipeline::stopProcesors() {
         for (auto&& processor : _processors) {
             auto thread_processor = static_cast<Thread*>(processor);
-            try_to(thread_processor->quit());
+//            try_to(thread_processor->quit());
+            log_error("Thread: " << thread_processor->name());
+            try_to(thread_processor->stop());
         }
         return Code::OK;
     }
@@ -542,17 +546,17 @@ namespace fpp {
          * |    Stream #0:0: Video: h264, 1920x1080, 400 kb/s
          * |    Stream #0:1: Audio: aac, 44100 Hz, stereo, 128 kb/s
         */
-        for (auto&& source : mediaSources()) {
-            dump_str += "\n";
-            dump_str += TAB;
-            dump_str += source->toString();
-            for (auto i = 0; i < source->inputFormatContext().numberStream(); i++) {
-                dump_str += ":\n";
-                dump_str += TAB;
-                dump_str += TAB;
-                dump_str += source->inputFormatContext().stream(i)->toString(); //TODO tut
-            }
-        }
+//        for (auto&& source : mediaSources()) {
+//            dump_str += "\n";
+//            dump_str += TAB;
+//            dump_str += source->toString();
+//            for (auto i = 0; i < source->inputFormatContext().numberStream(); i++) {
+//                dump_str += ":\n";
+//                dump_str += TAB;
+//                dump_str += TAB;
+//                dump_str += source->inputFormatContext().stream(i)->toString(); //TODO tut
+//            }
+//        }
 
         for (auto&& sink : mediaSinks()) {
             dump_str += "\n";
@@ -606,7 +610,14 @@ namespace fpp {
         case MediaType::MEDIA_TYPE_VIDEO: {
             StreamVector all_video_streams;
             for (auto&& source : mediaSources()) {
-                all_video_streams.push_back(source->inputFormatContext().bestStream(MediaType::MEDIA_TYPE_VIDEO));
+                auto medias_source = dynamic_cast<MediaSource*>(source);
+                if (inited_ptr(medias_source)) {
+                    all_video_streams.push_back(medias_source->inputFormatContext().bestStream(MediaType::MEDIA_TYPE_VIDEO));
+                }
+                auto custom_source = dynamic_cast<CustomPacketSource*>(source);
+                if (inited_ptr(custom_source)) {
+                    all_video_streams.push_back(custom_source->stream(MediaType::MEDIA_TYPE_VIDEO));
+                }
             }
             return static_cast<VideoStream*>(utils::find_best_stream(all_video_streams));
         }
@@ -680,6 +691,8 @@ namespace fpp {
         for (auto&& processor : _processors) {
             auto source = dynamic_cast<MediaSource*>(processor);
             if (inited_ptr(source)) { source_list.push_back(source); }
+            auto custom_source = dynamic_cast<CustomPacketSource*>(processor);
+            if (inited_ptr(custom_source)) { source_list.push_back(custom_source); }
         }
         return source_list;
     }
@@ -719,5 +732,10 @@ namespace fpp {
         }
         return encoder_list;
     }
+
+//    Pipeline *createPipline()
+//    {
+//        return new Pipeline;
+//    }
 
 } // namespace fpp
