@@ -32,6 +32,7 @@ namespace fpp {
         }
 
         virtual Code push(const Object* input_data) override final {
+            return_if(closed(), Code::AGAIN);
             if (!_input_queue.push(*static_cast<const inType*>(input_data))) {
                 log_warning("queue push failed");
             }
