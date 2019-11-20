@@ -69,6 +69,7 @@ HEADERS += \
     codec/Encoder.hpp \
     codec/EncoderContext.hpp \
     control/Map.hpp \
+    core/AsyncDiscardAmountQueue.hpp \
     core/AsyncDiscardQueue.hpp \
     core/Chronometer.hpp \
     core/Timer.hpp \

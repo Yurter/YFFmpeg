@@ -8,27 +8,26 @@
 namespace fpp {
 
     template <class Type>
-    class AsyncDiscardQueue { //TODO rename to AsyncDiscardSizeQueue
+    class AsyncDiscardAmountQueue {
 
     public:
 
-        AsyncDiscardQueue(uint64_t queue_capacity = 50 * 1024 * 1024 /* 50 Mb */) :
+        AsyncDiscardAmountQueue(uint64_t queue_capacity = 50) :
             _queue_capacity(queue_capacity)
-            , _queue_size(0)
             , _stop_wait(false) {}
 
-        virtual ~AsyncDiscardQueue() { clear(); }
+        virtual ~AsyncDiscardAmountQueue() { clear(); }
 
         [[nodiscard]]
         bool push(const Type& data) {
-            std::lock_guard<std::recursive_mutex> lock(_queue_mutex);
+            std::lock_guard lock(_queue_mutex);
             push_and_notify(data);
             return true;
         }
 
         [[nodiscard]]
         bool pop(Type& data) {
-            std::lock_guard<std::recursive_mutex> lock(_queue_mutex);
+            std::lock_guard lock(_queue_mutex);
             if (_queue.empty()) { return false; }
             pop_and_notify(data);
             return true;
@@ -36,7 +35,7 @@ namespace fpp {
 
         [[nodiscard]]
         bool wait_and_pop(Type& data) {
-            std::unique_lock<std::recursive_mutex> lock(_queue_mutex);
+            std::unique_lock lock(_queue_mutex);
             if (!_queue.empty()) {
                 pop_and_notify(data);
                 return true;
@@ -56,26 +55,22 @@ namespace fpp {
         }
 
         bool empty() {
-            std::lock_guard<std::recursive_mutex> lock(_queue_mutex);
+            std::lock_guard lock(_queue_mutex);
             return _queue.empty();
         }
 
         bool full() {
-            std::lock_guard<std::recursive_mutex> lock(_queue_mutex);
+            std::lock_guard lock(_queue_mutex);
             return _queue.size() == _queue_capacity;
         }
 
-        int64_t size() {
-            return _queue_size;
-        }
-
         uint64_t length() {
-            std::lock_guard<std::recursive_mutex> lock(_queue_mutex);
+            std::lock_guard lock(_queue_mutex);
             return _queue.size();
         }
 
         void clear() {
-            std::lock_guard<std::recursive_mutex> lock(_queue_mutex);
+            std::lock_guard lock(_queue_mutex);
             std::queue<Type> empty;
             std::swap(_queue, empty);
         }
@@ -93,43 +88,32 @@ namespace fpp {
     private:
 
         void push_and_notify(const Type& data) {
-            while (notEnoughStorage(data.size())) {
+            while (notEnoughStorage()) {
                 Type surplus_data;
                 pop_and_decrease_size(surplus_data);
             }
-            push_and_increase_size(data);
+            _queue.push(data);
             _condition_variable_pushed.notify_one();
         }
 
         void pop_and_notify(Type& data) {
-            pop_and_decrease_size(data);
+            data = Type(_queue.front());
+            _queue.pop();
             _condition_variable_popped.notify_one();
         }
 
-        void push_and_increase_size(const Type& data) {
-            _queue.push(data);
-            _queue_size += data.size();
-        }
-
-        void pop_and_decrease_size(Type& data) {
-            data = Type(_queue.front());
-            _queue.pop();
-            _queue_size -= data.size();
-        }
-
-        bool notEnoughStorage(uint64_t size) {
-            return (_queue_size + size) > _queue_capacity;
+        bool notEnoughStorage() {
+            return _queue.size() >= _queue_capacity;
         }
 
     private:
 
-        std::queue<Type>            _queue;
-        std::recursive_mutex        _queue_mutex; //TODO вернуть обычный мьютекс
-        uint64_t                    _queue_capacity;
-        std::atomic_int             _queue_size;
-        std::atomic_bool            _stop_wait;
-        std::condition_variable_any _condition_variable_pushed;
-        std::condition_variable_any _condition_variable_popped;
+        std::queue<Type>        _queue;
+        std::mutex              _queue_mutex;
+        uint64_t                _queue_capacity;
+        std::atomic_bool        _stop_wait;
+        std::condition_variable _condition_variable_pushed;
+        std::condition_variable _condition_variable_popped;
 
     };
 
