@@ -20,7 +20,8 @@ namespace fpp {
         }
 
         virtual ~TemplateProcessor() {
-            //TODO
+            _input_queue.stop_wait();
+            _post_queue.stop_wait();
         }
 
         bool buferIsEmpty() {
