@@ -30,6 +30,6 @@ namespace fpp {
 
     };
 
-    using MediaSinkList = std::list<MediaSink*>;
+    using MediaSinkList = std::list<PacketSink*>;
 
 } // namespace fpp

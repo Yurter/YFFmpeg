@@ -75,6 +75,7 @@ namespace fpp {
         if (code == Code::END_OF_FILE)      { return "EOF";             }
         if (code == Code::FFMPEG_ERROR)     { return "FFmpeg error";    }
         if (code == Code::INVALID_INPUT)    { return "Invalid input";   }
+        if (code == Code::NOT_IMPLEMENTED)  { return "Method not implemented"; }
         return "Unknown error code: " + std::to_string(code);
     }
 

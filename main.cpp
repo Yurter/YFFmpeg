@@ -95,6 +95,22 @@ int main() {
             static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
         }
 
+        auto params = new VideoParameters;
+        params->setStreamIndex(0);
+        auto custom_sink = new CustomPacketSink {
+                    "test"
+                    , { new VideoStream(params) }
+                    , [](Packet& packet) {
+                        std::cout << "write_func: " << packet << std::endl;
+                        return Code::OK;
+                    }
+                    , [](Packet& packet) {
+                        std::cout << "process_func: " << packet << std::endl;
+                        return Code::OK;
+                    }
+        };
+        pipeline.addElement(custom_sink);
+
 //        std::thread([&pipeline](){
 //            for (int i = 0; i < 60; i++) {
 //                auto sink_timelapse = new MediaSink("group_video/timelapse" + std::to_string(i) + ".flv", IOType::Timelapse);
@@ -106,16 +122,16 @@ int main() {
 //            }
 //        }).detach();
 
-        std::thread([&pipeline](){
-            for (int i = 0; i < 60; i++) {
-                auto sink_event = new MediaSink("group_video/event" + std::to_string(i) + ".flv", IOType::Event);
-                pipeline.addElement(sink_event);
-                utils::sleep_for_sec(10);
-                pipeline.remElement(sink_event);
-                delete sink_event;
-                int t = 0;
-            }
-        }).detach();
+//        std::thread([&pipeline](){
+//            for (int i = 0; i < 60; i++) {
+//                auto sink_event = new MediaSink("group_video/event" + std::to_string(i) + ".flv", IOType::Event);
+//                pipeline.addElement(sink_event);
+//                utils::sleep_for_sec(10);
+//                pipeline.remElement(sink_event);
+//                delete sink_event;
+//                int t = 0;
+//            }
+//        }).detach();
 
         utils::sleep_for_min(60);
 

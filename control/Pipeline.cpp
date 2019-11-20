@@ -504,8 +504,17 @@ namespace fpp {
             }
         }
         for (auto&& sink : mediaSinks()) {
-            if (sink->outputFormatContext().uid() == context_uid) {
-                for (auto&& stream : sink->outputFormatContext().streams()) {
+            if (sink->is("MediaSink")) {
+                if (static_cast<MediaSink*>(sink)->outputFormatContext().uid() == context_uid) {
+                    for (auto&& stream : static_cast<MediaSink*>(sink)->outputFormatContext().streams()) {
+                        if (stream->uid() == uid) {
+                            return stream;
+                        }
+                    }
+                }
+            }
+            if (sink->is("CustomPacketSink")) {
+                for (auto&& stream : static_cast<CustomPacketSink*>(sink)->streams()) {
                     if (stream->uid() == uid) {
                         return stream;
                     }
@@ -519,7 +528,6 @@ namespace fpp {
         StreamVector output_streams;
         if (output_processor->is("MediaSink")) {
             MediaSink* media_sink = static_cast<MediaSink*>(output_processor);
-//            try_to(media_sink->init());
             output_streams = media_sink->outputFormatContext().streams();
             if (output_streams.empty()) {
                 log_error("output_streams is empty: " << media_sink->outputFormatContext().mediaResourceLocator());
@@ -536,10 +544,29 @@ namespace fpp {
                 try_to(createSequence(route));
                 _route_list.push_back(route);
             }
+            return Code::OK;
         }
-        if (output_processor->is("CustomOutput")) {
-            //
+        if (output_processor->is("CustomPacketSink")) {
+            CustomPacketSink* custom_sink = static_cast<CustomPacketSink*>(output_processor);
+            output_streams = custom_sink->streams();
+            if (output_streams.empty()) {
+                log_error("output_streams is empty: " << custom_sink);
+                return Code::NOT_INITED;
+            }
+            for (auto out_stream : output_streams) {
+                Stream* in_stream = findBestInputStream(out_stream->type());
+                if (not_inited_ptr(in_stream)) {
+                    log_error("Failed to find input stream type " << out_stream->type());
+                    return Code::INVALID_INPUT;
+                }
+                Route route;
+                try_to(route.setMetaRoute(in_stream->uid(), out_stream->uid()));
+                try_to(createSequence(route));
+                _route_list.push_back(route);
+            }
+            return Code::OK;
         }
+        return Code::NOT_IMPLEMENTED;
     }
 
 //    Code Pipeline::determineSequence(MediaSink* media_sink) {
@@ -571,17 +598,17 @@ namespace fpp {
 //            }
 //        }
 
-        for (auto&& sink : mediaSinks()) {
-            dump_str += "\n";
-            dump_str += TAB;
-            dump_str += sink->toString();
-            for (auto i = 0; i < sink->outputFormatContext().numberStream(); i++) {
-                dump_str += ":\n";
-                dump_str += TAB;
-                dump_str += TAB;
-                dump_str += sink->outputFormatContext().toString(); //TODO tut
-            }
-        }
+//        for (auto&& sink : mediaSinks()) {
+//            dump_str += "\n";
+//            dump_str += TAB;
+//            dump_str += sink->toString();
+//            for (auto i = 0; i < sink->outputFormatContext().numberStream(); i++) {
+//                dump_str += ":\n";
+//                dump_str += TAB;
+//                dump_str += TAB;
+//                dump_str += sink->outputFormatContext().toString(); //TODO tut
+//            }
+//        }
 
         /* Вывод информации о последовательностях обработки потоков
          * |  #1 Source[0:1] -> Decoder pcm_mulaw -> Resampler -> Encoder aac -> Sink[1:1]
@@ -635,29 +662,30 @@ namespace fpp {
             return static_cast<VideoStream*>(utils::find_best_stream(all_video_streams));
         }
         case MediaType::MEDIA_TYPE_AUDIO: {
-            StreamVector all_audio_streams;
-            for (auto&& source : mediaSinks()) {
-                all_audio_streams.push_back(source->outputFormatContext().bestStream(MediaType::MEDIA_TYPE_AUDIO));
-            }
-            return static_cast<AudioStream*>(utils::find_best_stream(all_audio_streams));
+//            StreamVector all_audio_streams;
+//            for (auto&& source : mediaSinks()) {
+//                all_audio_streams.push_back(source->outputFormatContext().bestStream(MediaType::MEDIA_TYPE_AUDIO));
+//            }
+//            return static_cast<AudioStream*>(utils::find_best_stream(all_audio_streams));
+            return nullptr;
         }
         default:
             return nullptr;
         }
     }
 
-    StreamList Pipeline::getOutputStreams(MediaType media_type) {
-        StreamList output_streams;
-        for (auto&& sink : mediaSinks()) {
-            for (auto&& video_stream : sink->outputFormatContext().streams(media_type)) {
-                output_streams.push_back(video_stream);
-            }
-        }
-        for (auto&& sink : openCVSinks()) {
-            output_streams.push_back(sink->videoStream());
-        }
-        return output_streams;
-    }
+//    StreamList Pipeline::getOutputStreams(MediaType media_type) {
+//        StreamList output_streams;
+//        for (auto&& sink : mediaSinks()) {
+//            for (auto&& video_stream : sink->outputFormatContext().streams(media_type)) {
+//                output_streams.push_back(video_stream);
+//            }
+//        }
+//        for (auto&& sink : openCVSinks()) {
+//            output_streams.push_back(sink->videoStream());
+//        }
+//        return output_streams;
+//    }
 
     Route Pipeline::findRoute(Processor* processor) {
         for (auto&& route : _route_list) {
@@ -724,6 +752,8 @@ namespace fpp {
         for (auto&& processor : _processors) {
             auto sink = dynamic_cast<MediaSink*>(processor);
             if (inited_ptr(sink)) { sink_list.push_back(sink); }
+            auto custom_sink = dynamic_cast<CustomPacketSink*>(processor);
+            if (inited_ptr(custom_sink)) { sink_list.push_back(custom_sink); }
         }
         return sink_list;
     }
