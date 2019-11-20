@@ -404,7 +404,12 @@ namespace fpp {
         input_stream->setUsed(true);
         output_stream->setUsed(true);
 
-        try_to(route.append(static_cast<Processor*>(static_cast<FormatContext*>(input_stream->context())->_media_ptr)));
+        auto custom_ptr = dynamic_cast<CustomPacketSource*>(input_stream->context());
+        if (inited_ptr(custom_ptr)) {
+            try_to(route.append(custom_ptr));
+        } else {
+            try_to(route.append(static_cast<Processor*>(static_cast<FormatContext*>(input_stream->context())->_media_ptr)));
+        }
 
         bool rescaling_required     = utils::rescaling_required   (in_out_streams);
         bool resampling_required    = utils::resampling_required  (in_out_streams);
@@ -473,7 +478,13 @@ namespace fpp {
             try_to(addElement(encoder));
         }
 
-        try_to(route.append(static_cast<Processor*>(static_cast<FormatContext*>(output_stream->context())->_media_ptr)));
+//        try_to(route.append(static_cast<Processor*>(static_cast<FormatContext*>(output_stream->context())->_media_ptr)));
+        auto custom_ptr_out = dynamic_cast<CustomPacketSink*>(output_stream->context());
+        if (inited_ptr(custom_ptr_out)) {
+            try_to(route.append(custom_ptr_out));
+        } else {
+            try_to(route.append(static_cast<Processor*>(static_cast<FormatContext*>(output_stream->context())->_media_ptr)));
+        }
 
         try_to(route.init());
         try_to(route.startAll());

@@ -22,6 +22,7 @@ namespace fpp {
     Code CustomPacketSink::init() {
         for (auto&& stream : _streams) {
             stream->setUid(utils::gen_stream_uid(_context_uid, stream->parameters->streamIndex()));
+            stream->setContext(this);
         }
         setInited(true);
         return Code::OK;
