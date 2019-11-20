@@ -95,15 +95,29 @@ int main() {
             static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
         }
 
+//        std::thread([&pipeline](){
+//            for (int i = 0; i < 60; i++) {
+//                auto sink_timelapse = new MediaSink("group_video/timelapse" + std::to_string(i) + ".flv", IOType::Timelapse);
+//                pipeline.addElement(sink_timelapse);
+//                utils::sleep_for_sec(60);
+//                pipeline.remElement(sink_timelapse);
+////                sink_timelapse->close();
+//                delete sink_timelapse;
+//            }
+//        }).detach();
 
-        for (int i = 0; i < 10; i++) {
-            auto sink_event = new MediaSink("group_video/event" + std::to_string(i) + ".flv", IOType::Event);
-            pipeline.addElement(sink_event);
-            utils::sleep_for_sec(10);
-            pipeline.remElement(sink_event);
-            sink_event->close();
-//            delete sink_event;
-        }
+        std::thread([&pipeline](){
+            for (int i = 0; i < 60; i++) {
+                auto sink_event = new MediaSink("group_video/event" + std::to_string(i) + ".flv", IOType::Event);
+                pipeline.addElement(sink_event);
+                utils::sleep_for_sec(10);
+                pipeline.remElement(sink_event);
+                delete sink_event;
+                int t = 0;
+            }
+        }).detach();
+
+        utils::sleep_for_min(60);
 
 
 //        start_debug_timeout(source, 60 /** 60*/ /* час */); /* Таймаут для RTSP */
