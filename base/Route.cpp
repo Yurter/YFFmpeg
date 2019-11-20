@@ -7,6 +7,20 @@ namespace fpp {
         setName("Route");
     }
 
+//    Route::Route(const Route& other) {
+//        setName("Route");
+//        _input_stream_uid = other._input_stream_uid;
+//        _output_stream_uid = other._output_stream_uid;
+//        _sequence = other._sequence;
+//    }
+
+//    Route::Route(const Route&& other) {
+//        setName("Route");
+//        _input_stream_uid = other._input_stream_uid;
+//        _output_stream_uid = other._output_stream_uid;
+//        _sequence = std::move(other._sequence);
+//    }
+
     Route::~Route() {
 //        log_warning("deleting...");
 //        for (auto processor = _sequence.begin(); processor != _sequence.end(); processor++) {

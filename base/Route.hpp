@@ -9,7 +9,11 @@ namespace fpp {
     public:
 
         Route();
+//        Route(const Route& other);
+//        Route(const Route&& other);
         virtual ~Route() override;
+
+//        Route& operator=(const Route&) = delete;
 
         virtual Code        init() override;
         virtual std::string toString() const override;

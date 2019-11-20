@@ -395,7 +395,7 @@ namespace fpp {
         //        }
     }
 
-    Code Pipeline::createSequence(Route route) {
+    Code Pipeline::createSequence(Route& route) {
         Stream* input_stream = findStream(route.inputStreamUid());
         Stream* output_stream = findStream(route.outputStreamUid());
         StreamPair in_out_streams { input_stream, output_stream };

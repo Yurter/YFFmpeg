@@ -77,7 +77,7 @@ namespace fpp {
 //        Code                determineSequences();
         void                freeProcesors();
 
-        Code                createSequence(Route route);
+        Code                createSequence(Route& route);
 
         Stream*             findStream(int64_t uid);
         Code                determineSequence(Object* output_processor);
