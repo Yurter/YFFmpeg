@@ -46,6 +46,13 @@ namespace fpp {
 //    }
 
     void VideoParameters::setFrameRate(AVRational frame_rate) {
+        if ((frame_rate.num * frame_rate.den) == 0) {
+            log_error("setFrameRate failed: " << utils::rational_to_string(frame_rate));
+            AVRational default_framerate = { 25, 1 };
+            log_error("seted default value: " << utils::rational_to_string(default_framerate));
+            _frame_rate = default_framerate;
+            return;
+        }
         _frame_rate = frame_rate;
     }
 
