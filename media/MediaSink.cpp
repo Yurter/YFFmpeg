@@ -14,12 +14,14 @@ namespace fpp {
     }
 
     Code MediaSink::init() {
+        log_trace("Initialization.");
         try_to(_output_format_context.init());
         setInited(true);
         return Code::OK;
     }
 
     Code MediaSink::open() {
+        log_trace("Opening.");
         return_if(opened(), Code::OK);
         return_if_not(inited(), Code::NOT_INITED);
         try_to(_output_format_context.open());
@@ -28,6 +30,7 @@ namespace fpp {
     }
 
     Code MediaSink::close() {
+        log_trace("Closing.");
         return_if(closed(), Code::OK);
         try_to(quit());
         try_to(_output_format_context.close());
@@ -72,6 +75,7 @@ namespace fpp {
     }
 
     Code MediaSink::onStop() {
+        log_trace("onStop");
         try_to(_output_format_context.close()); // Check it
         return Code::OK;
     }

@@ -15,6 +15,7 @@ namespace fpp {
     }
 
     Code CodecContext::init() {
+        log_trace("Initialization.");
         auto codec = _stream->parameters->codec();
         return_if(not_inited_ptr(codec), Code::INVALID_INPUT);
         {
@@ -32,6 +33,7 @@ namespace fpp {
     }
 
     Code CodecContext::open() {
+        log_trace("Opening.");
         auto codec = _stream->parameters->codec();
         if (int ret = avcodec_open2(_codec_context, codec, nullptr); ret != 0) {
             std::string codec_type = av_codec_is_decoder(codec) ? "decoder" : "encoder";
@@ -49,6 +51,7 @@ namespace fpp {
     }
 
     Code CodecContext::close() {
+        log_trace("Closing.");
         if (inited_ptr(_codec_context)) {
             // использовать ? avcodec_free_context(_codec_context)
             avcodec_close(_codec_context);

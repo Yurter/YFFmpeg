@@ -46,14 +46,14 @@ namespace fpp {
     Code fpp::Processor::connectTo(fpp::Processor* other) {
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
         _next_processor_list.push_back(other);
-        log_info("Connected to " << other->name());
+        log_trace("Connected to " << other->name());
         return Code::OK;
     }
 
     Code Processor::disconnectFrom(Processor* other) {
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
         _next_processor_list.remove(other);
-        log_info("Disconnected from " << other);
+        log_trace("Disconnected from " << other->name());
         if (_next_processor_list.empty()) {
             if (_close_on_disconnect) {
                 log_info("TODO самоуничтожение объекта"); //TODO заменить return type на void?
