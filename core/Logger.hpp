@@ -1,6 +1,7 @@
 #pragma once
 #include "core/AsyncQueue.hpp"
 #include "core/Thread.hpp"
+#include <fstream>
 
 namespace fpp {
 
@@ -28,10 +29,12 @@ namespace fpp {
     public:
 
         static Logger&      instance();
+
         void                setLogLevel(LogLevel log_level);
         void                setFFmpegLogLevel(LogLevel log_level);
+
         void                print(const Object* caller, std::string code_position, LogLevel log_level, const std::string message);
-        void                static_print(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message);
+        void                staticPrint(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message);
 
     private:
 
@@ -47,15 +50,22 @@ namespace fpp {
         virtual Code        run() override;
         virtual Code        init() override;
         void                flush();
-        std::string         format_message(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message);
-        bool                ignore_message(LogLevel message_log_level);
+        void                openFile();
+        void                closeFile();
+        std::string         genFileName() const;
+        std::string         formatMessage(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message);
+        bool                ignoreMessage(LogLevel message_log_level);
         static void         log_callback(void* ptr, int level, const char* fmt, va_list vl);
-        static LogLevel     convertLogLevel(int ffmpeg_level);
+        static LogLevel     convert_log_level(int ffmpeg_level);
+        std::string         encodeLogLevel(LogLevel value);
 
     private:
 
         LogLevel            _log_level;
         MessageQueue        _message_queue;
+
+        std::string         _log_dir;
+        std::ofstream       _file;
 
     };
 
