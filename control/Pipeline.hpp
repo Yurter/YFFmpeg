@@ -84,6 +84,9 @@ namespace fpp {
 
         virtual std::string toString() const override;
 
+        void pushproc(Processor* processor);
+        void remproc(Processor* processor);
+
         // TODO
 
         Stream*             findBestInputStream(MediaType media_type);
@@ -105,7 +108,8 @@ namespace fpp {
         ProcessorList       _processors;
 
                                          // DataFlow? Pipe? Pipeline?
-        std::list<ProcessorSequence>      _processor_sequences; //TODO перенести внутрь YMap ?
+        std::list<ProcessorSequence>    _processor_sequences; //TODO перенести внутрь YMap ?
+        std::mutex                      _processor_sequences_mutex;
 
 //        YMap*               _map;
 

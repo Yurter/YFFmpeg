@@ -31,10 +31,13 @@ namespace fpp {
     }
 
     Code Stream::init() {
-        /* Иницаиализация полей параметров кодека дефолтными значениями */
-        try_to(utils::init_codecpar(codecParameters(), parameters->codec()));
-        /* Инициализация полей параметров кодека значениями из параметров потока */
-        utils::parameters_to_avcodecpar(parameters, codecParameters());
+        if (inited_ptr(raw())) {
+            /* Иницаиализация полей параметров кодека дефолтными значениями */
+            try_to(utils::init_codecpar(codecParameters(), parameters->codec()));
+            /* Инициализация полей параметров кодека значениями из параметров потока */
+            utils::parameters_to_avcodecpar(parameters, codecParameters());
+        }
+        setInited(true);
         return Code::OK;
     }
 

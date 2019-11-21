@@ -20,7 +20,7 @@ namespace fpp {
     }
 
     FormatContext::~FormatContext() {
-        try_throw(close());
+//        try_throw(close());
     }
 
     Code FormatContext::close() {

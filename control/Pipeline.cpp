@@ -43,7 +43,7 @@ namespace fpp {
     }
 
     Code Pipeline::addElement(Processor* processor) {
-        _processors.push_back(processor);
+        pushproc(processor);
         try_to(processor->init());
         if (processor->typeIs(ProcessorType::Input)) {
             try_to(processor->open());
@@ -68,7 +68,7 @@ namespace fpp {
 //        if (inited_ptr(thread_processor)) {
 //            try_throw(thread_processor->stop());
 //        }
-        _processors.remove(processor);
+        remproc(processor);
         findRoute(processor).destroy();
         _route_list.remove_if([processor](const Route& route){ return route.contains(processor); });
     }
@@ -456,7 +456,7 @@ namespace fpp {
         if (video_filter_required) {
 //                    std::string filters_descr = "select='not(mod(n,10))',setpts=N/FRAME_RATE/TB";
 //                    std::string filters_descr = "setpts=N/(10*TB)";
-            std::string filters_descr = "select='not(mod(n,60))'";
+            std::string filters_descr = "select='not(mod(n,2))'";
             VideoFilter* video_filter = new VideoFilter(output_stream->parameters, filters_descr);
             try_to(route.append(video_filter));
             try_to(addElement(video_filter));
@@ -654,6 +654,16 @@ namespace fpp {
         }
 
         return dump_str;
+    }
+
+    void Pipeline::pushproc(Processor* processor) {
+        std::lock_guard lock(_processor_sequences_mutex);
+        _processors.push_back(processor);
+    }
+
+    void Pipeline::remproc(Processor* processor) {
+        std::lock_guard lock(_processor_sequences_mutex);
+        _processors.remove(processor);
     }
 
     Stream* Pipeline::findBestInputStream(MediaType media_type) {

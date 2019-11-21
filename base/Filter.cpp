@@ -143,6 +143,20 @@ namespace fpp {
             output_data.raw().linesize[0] = input_data.raw().linesize[0];
             output_data.raw().linesize[1] = input_data.raw().linesize[1];
             output_data.raw().linesize[2] = input_data.raw().linesize[2];
+
+//            output_data.raw().linesize[0] = output_data.raw().width;
+//            output_data.raw().linesize[1] = output_data.raw().width;
+//            output_data.raw().linesize[2] = output_data.raw().height;
+
+//            std::begin(input_data.raw().linesize)
+//            for (int i = 0; i < AV_NUM_DATA_POINTERS; ++i) {
+////                log_info("output_data.raw().linesize[i] = " << output_data.raw().linesize[i]);
+////                log_info("input_data.raw().linesize[i] = " << input_data.raw().linesize[i]);
+//                output_data.raw().linesize[i] = input_data.raw().linesize[i];
+//            }
+//            av_frame_copy_props(&output_data.raw(), &input_data.raw());
+//            utils::SaveAvFrame(&output_data.raw());
+//            exit(0);
 //            input_data.free();
 //            log_debug("Sending... " << output_data);
             try_to(sendOutputData(output_data));

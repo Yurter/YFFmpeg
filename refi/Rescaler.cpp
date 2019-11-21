@@ -39,6 +39,16 @@ namespace fpp {
         return Code::OK;
     }
 
+    Code Rescaler::open() {
+        setOpened(true);
+        return Code::OK;
+    }
+
+    Code Rescaler::close() {
+        setOpened(true);
+        return Code::OK;
+    }
+
     Code Rescaler::processInputData(Frame input_data) {
 
 //        AVFrame* converted_frame = av_frame_alloc();

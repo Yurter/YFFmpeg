@@ -2,6 +2,7 @@
 #include "core/utils.hpp"
 #include "core/Thread.hpp"
 #include "core/AsyncDiscardQueue.hpp"
+#include "core/AsyncDiscardAmountQueue.hpp"
 #include "Processor.hpp"
 
 namespace fpp {

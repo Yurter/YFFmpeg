@@ -21,6 +21,10 @@ namespace fpp {
 
     Code CustomPacketSink::init() {
         for (auto&& stream : _streams) {
+//            auto avstream = avformat_new_stream(nullptr, stream->parameters->codec());
+//            return_if(not_inited_ptr(avstream), Code::ERR);
+//            stream->setRaw(avstream);
+
             stream->setUid(utils::gen_stream_uid(_context_uid, stream->parameters->streamIndex()));
             stream->setContext(this);
         }

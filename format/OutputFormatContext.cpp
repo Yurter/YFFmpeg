@@ -10,7 +10,7 @@ namespace fpp {
     }
 
     OutputFormatContext::~OutputFormatContext() {
-        // TODO
+        try_throw(close());
     }
 
     Code OutputFormatContext::init() {

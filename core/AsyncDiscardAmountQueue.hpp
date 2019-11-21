@@ -89,8 +89,7 @@ namespace fpp {
 
         void push_and_notify(const Type& data) {
             while (notEnoughStorage()) {
-                Type surplus_data;
-                pop_and_decrease_size(surplus_data);
+                _queue.pop();
             }
             _queue.push(data);
             _condition_variable_pushed.notify_one();
