@@ -10,15 +10,14 @@
 
 namespace fpp {
 
-    Logger::Logger() :
+    Logger::Logger(std::string log_dir) :
         _log_level(LogLevel::Info)
-      , _log_dir("fpp_log")
     {
         setName("Logger");
 //        av_log_set_callback(log_callback); //TODO later
 //        set_ffmpeg_log_level(LogLevel::Error);
         print(this, code_pos, LogLevel::Info, "Logger opened.");
-        openFile();
+        openFile(log_dir);
         try_throw(start());
     }
 
@@ -73,9 +72,9 @@ namespace fpp {
         }
     }
 
-    void Logger::openFile() {
-        std::filesystem::create_directory(_log_dir);
-        _file.open(_log_dir + "/" + genFileName());
+    void Logger::openFile(std::string log_dir) {
+        std::filesystem::create_directory(log_dir);
+        _file.open(log_dir + "/" + genFileName());
     }
 
     void Logger::closeFile() {
@@ -171,8 +170,8 @@ namespace fpp {
         return "?";
     }
 
-    Logger& Logger::instance() {
-        static Logger _logger;
+    Logger& Logger::instance(std::string log_dir) {
+        static Logger _logger(log_dir);
         return _logger;
     }
 

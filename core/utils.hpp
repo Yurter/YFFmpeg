@@ -85,10 +85,14 @@ namespace fpp {
 /* Макрос получения экзмепляра объекта класса Logger */
 #define logger fpp::Logger::instance()
 
+/* Макрос установки дирректории, в которой находятся файлы лога.
+ * Должен вызыватся первым по отношению к остальным макросам    */
+#define set_log_dir(x) fpp::Logger::instance(x)
+
 /* Макрос установки уровня лога - сообщения, имеющие урень выше установленного, игнорируются */
 #define set_log_level(x)        logger.setLogLevel(x)
 #define set_ffmpeg_log_level(x) logger.setFFmpegLogLevel(x)
-#define stop_log()              logger.quit()
+//#define stop_log()              logger.quit()
 
 /* Макросы для отправки строковых сообщений в лог */
 #define print_info(x)       logger.print(this, code_pos, LogLevel::Info,    x)

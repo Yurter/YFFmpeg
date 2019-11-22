@@ -28,7 +28,7 @@ namespace fpp {
 
     public:
 
-        static Logger&      instance();
+        static Logger&      instance(std::string log_dir = "fpp_log");
 
         void                setLogLevel(LogLevel log_level);
         void                setFFmpegLogLevel(LogLevel log_level);
@@ -38,7 +38,7 @@ namespace fpp {
 
     private:
 
-        Logger();
+        Logger(std::string log_dir);
         virtual ~Logger() override;
 
         Logger(Logger const&)               = delete;
@@ -50,7 +50,7 @@ namespace fpp {
         virtual Code        run() override;
         virtual Code        init() override;
         void                flush();
-        void                openFile();
+        void                openFile(std::string log_dir);
         void                closeFile();
         std::string         genFileName() const;
         std::string         formatMessage(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message);
@@ -64,7 +64,6 @@ namespace fpp {
         LogLevel            _log_level;
         MessageQueue        _message_queue;
 
-        std::string         _log_dir;
         std::ofstream       _file;
 
     };
