@@ -35,7 +35,7 @@ namespace fpp {
 
         virtual Code push(const Object* input_data) override final {
             if (closed()) {
-                log_error("CLOSED");
+                log_warning("Push to closed processor");
             }
             return_if(closed(), Code::AGAIN);
             if (!_input_queue.push(*static_cast<const inType*>(input_data))) {
