@@ -33,7 +33,7 @@ namespace fpp {
 
     Code Thread::start() {
         return_if(running(), Code::OK);
-        log_trace("Thread starting.");
+//        log_trace("Thread starting."); //блокирует конструктор логгера.
         _stop_flag = false;
         if_not(inited()) { try_to(init()); }
         _thread = std::thread([this]() {

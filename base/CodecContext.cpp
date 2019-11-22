@@ -6,6 +6,7 @@ namespace fpp {
         _stream(stream)
       , _codec_context(nullptr)
       , _type(type)
+      , _opened(false)
     {
         setName("CodecContext");
     }
@@ -16,6 +17,7 @@ namespace fpp {
 
     Code CodecContext::init() {
         log_trace("Initialization.");
+        return_if(inited(), Code::INVALID_CALL_ORDER);
         auto codec = _stream->parameters->codec();
         return_if(not_inited_ptr(codec), Code::INVALID_INPUT);
         {
@@ -34,6 +36,7 @@ namespace fpp {
 
     Code CodecContext::open() {
         log_trace("Opening.");
+        return_if(opened(), Code::INVALID_CALL_ORDER);
         auto codec = _stream->parameters->codec();
         if (int ret = avcodec_open2(_codec_context, codec, nullptr); ret != 0) {
             std::string codec_type = av_codec_is_decoder(codec) ? "decoder" : "encoder";
@@ -47,15 +50,18 @@ namespace fpp {
                             );
             }
         }
+        setOpened(true);
         return Code::OK;
     }
 
     Code CodecContext::close() {
         log_trace("Closing.");
+        return_if(closed(), Code::INVALID_CALL_ORDER);
         if (inited_ptr(_codec_context)) {
             // использовать ? avcodec_free_context(_codec_context)
             avcodec_close(_codec_context);
         }
+        setOpened(false);
         return Code::OK;
     }
 
@@ -67,6 +73,18 @@ namespace fpp {
 
     AVCodecContext* CodecContext::codecContext() {
         return _codec_context;
+    }
+
+    bool CodecContext::opened() const {
+        return _opened;
+    }
+
+    bool CodecContext::closed() const {
+        return !_opened;
+    }
+
+    void CodecContext::setOpened(bool value) {
+        _opened = value;
     }
 
 } // namespace fpp
