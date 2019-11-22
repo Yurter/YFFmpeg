@@ -15,6 +15,8 @@ namespace fpp {
     Code EncoderContext::encode(Frame input_frame, Packet& output_packet) {
         try_to(output_packet.init());
         output_packet.setType(_stream->type());
+        auto debug_value = this;
+        log_trace("Frame for encoding: " << input_frame);
         int ret;
 //        utils::SaveAvFrame(input_frame.raw());
         if ((ret = avcodec_send_frame(_codec_context, &input_frame.raw())) != 0) {

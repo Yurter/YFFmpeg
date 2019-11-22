@@ -103,7 +103,8 @@ namespace fpp {
                     + "pts " + utils::pts_to_string(_data.pts) + ", "
                     + "key_frame " + utils::bool_to_string(_data.key_frame) + ", "
                     + "width " + std::to_string(_data.width) + ", "
-                    + "height " + std::to_string(_data.height);
+                    + "height " + std::to_string(_data.height) + ", "
+                    + "px_fmt " + std::string(av_get_pix_fmt_name(AVPixelFormat(_data.format)));
             return str;
         }
         /* Audio frame: 316 byte, dts 460, pts 460, duration 33   */
