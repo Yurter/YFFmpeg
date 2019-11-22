@@ -60,21 +60,21 @@ int main() {
             auto sink_timelapse = new MediaSink("group_video/timelapseUSB.flv", IOType::Timelapse);
             pipeline->addElement(sink_timelapse);
 
-            auto params = new VideoParameters;
-            params->setStreamIndex(0);
-            auto custom_sink = new CustomPacketSink {
-                        "test"
-                        , { new VideoStream(params) }
-                        , [](Packet& packet) {
-                            UNUSED(packet);
-                            return Code::OK;
-                        }
-                        , [](Packet& packet) {
-                            UNUSED(packet);
-                            return Code::OK;
-                        }
-            };
-            pipeline->addElement(custom_sink);
+//            auto params = new VideoParameters;
+//            params->setStreamIndex(0);
+//            auto custom_sink = new CustomPacketSink {
+//                        "test"
+//                        , { new VideoStream(params) }
+//                        , [](Packet& packet) {
+//                            UNUSED(packet);
+//                            return Code::OK;
+//                        }
+//                        , [](Packet& packet) {
+//                            UNUSED(packet);
+//                            return Code::OK;
+//                        }
+//            };
+//            pipeline->addElement(custom_sink);
         }
         {
             Pipeline* pipeline = new Pipeline;

@@ -83,7 +83,7 @@ namespace fpp {
 } // namespace fpp
 
 /* Макрос получения экзмепляра объекта класса Logger */
-#define logger fpp::Logger::instance()
+#define logger fpp::Logger::instance("fpp_log")
 
 /* Макрос установки дирректории, в которой находятся файлы лога.
  * Должен вызыватся первым по отношению к остальным макросам    */

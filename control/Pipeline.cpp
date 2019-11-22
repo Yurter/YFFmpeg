@@ -494,6 +494,13 @@ namespace fpp {
         return Code::OK;
     }
 
+    Code Pipeline::simplifyRoutes() {
+        for (Route route : _route_list) {
+            //
+        }
+        return Code::NOT_IMPLEMENTED;
+    }
+
     Stream* Pipeline::findStream(int64_t uid) {
         int64_t context_uid = utils::get_context_uid(uid);
         for (auto&& source : mediaSources()) {
