@@ -14,6 +14,7 @@ namespace fpp {
 
     Code MediaSource::init() {
         log_trace("Initialization.");
+        return_if(inited(), Code::INVALID_CALL_ORDER);
         try_to(_input_format_context.init());
         setInited(true);
         return Code::OK;

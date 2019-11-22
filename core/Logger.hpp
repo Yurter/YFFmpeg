@@ -49,6 +49,7 @@ namespace fpp {
 
         virtual Code        run() override;
         virtual Code        init() override;
+        virtual Code        onStop() override;
         void                flush();
         void                openFile(std::string log_dir);
         void                closeFile();

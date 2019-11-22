@@ -22,9 +22,11 @@ namespace fpp {
     }
 
     Logger::~Logger() {
-        print(this, code_pos, LogLevel::Info, "Logger closed.");
-        av_log_set_callback(nullptr);
-        flush();
+        try_throw(stop());
+        join();
+//        print(this, code_pos, LogLevel::Info, "Logger closed.");
+//        av_log_set_callback(nullptr);
+//        flush();
     }
 
     Code Logger::run() {
@@ -61,6 +63,11 @@ namespace fpp {
 
     Code Logger::init() {
         setInited(true);
+        return Code::OK;
+    }
+
+    Code Logger::onStop() {
+        _message_queue.stop_wait();
         return Code::OK;
     }
 
