@@ -43,21 +43,59 @@ int main() {
 //        set_ffmpeg_log_level(LogLevel::Debug);
 
         avdevice_register_all();
+//        {
+//            Pipeline* pipeline = new Pipeline;
+//            if (auto ret = pipeline->start(); ret != Code::OK) {
+//                static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
+//            }
+
+//            auto source = new MediaSource("video=HP Wide Vision FHD Camera"); /* IP Camera */
+//            source->setCloseOnDisconnect(false);
+//            pipeline->addElement(source);
+
+
+//            auto sink_event = new MediaSink("group_video/eventUSB.flv", IOType::Event);
+//            pipeline->addElement(sink_event);
+
+//            auto sink_timelapse = new MediaSink("group_video/timelapseUSB.flv", IOType::Timelapse);
+//            pipeline->addElement(sink_timelapse);
+
+////            auto params = new VideoParameters;
+////            params->setStreamIndex(0);
+////            auto custom_sink = new CustomPacketSink {
+////                        "test"
+////                        , { new VideoStream(params) }
+////                        , [](Packet& packet) {
+////                            UNUSED(packet);
+////                            return Code::OK;
+////                        }
+////                        , [](Packet& packet) {
+////                            UNUSED(packet);
+////                            return Code::OK;
+////                        }
+////            };
+////            pipeline->addElement(custom_sink);
+//        }
+        //Webcam C170
+        //USB2.0 PC CAMERA
+        //rtsp://admin:admin@192.168.10.189:554/ch01.264
+        //rtsp://admin:Admin2019@192.168.10.12:554
+        //system("route add 192.168.1.188 mask 255.255.255.255 192.168.137.124");
         {
             Pipeline* pipeline = new Pipeline;
             if (auto ret = pipeline->start(); ret != Code::OK) {
                 static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
             }
 
-            auto source = new MediaSource("video=HP Wide Vision FHD Camera"); /* IP Camera */
+            auto source = new MediaSource("rtsp://admin:admin@192.168.10.3:554");
             source->setCloseOnDisconnect(false);
             pipeline->addElement(source);
 
 
-            auto sink_event = new MediaSink("group_video/eventUSB.flv", IOType::Event);
-            pipeline->addElement(sink_event);
+//            auto sink_event = new MediaSink("group_video/eventIP.flv", IOType::Event);
+//            pipeline->addElement(sink_event);
 
-            auto sink_timelapse = new MediaSink("group_video/timelapseUSB.flv", IOType::Timelapse);
+            auto sink_timelapse = new MediaSink("group_video/timelapseIP.flv", IOType::Timelapse);
             pipeline->addElement(sink_timelapse);
 
 //            auto params = new VideoParameters;
@@ -75,41 +113,10 @@ int main() {
 //                        }
 //            };
 //            pipeline->addElement(custom_sink);
+            utils::sleep_for_min(1);
+//            delete sink_event;
+            delete sink_timelapse;
         }
-        {
-            Pipeline* pipeline = new Pipeline;
-            if (auto ret = pipeline->start(); ret != Code::OK) {
-                static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
-            }
-
-            auto source = new MediaSource("rtsp://admin:admin@192.168.10.3"); /* IP Camera */
-            source->setCloseOnDisconnect(false);
-            pipeline->addElement(source);
-
-
-            auto sink_event = new MediaSink("group_video/eventIP.flv", IOType::Event);
-            pipeline->addElement(sink_event);
-
-            auto sink_timelapse = new MediaSink("group_video/timelapseIP.flv", IOType::Timelapse);
-            pipeline->addElement(sink_timelapse);
-
-            auto params = new VideoParameters;
-            params->setStreamIndex(0);
-            auto custom_sink = new CustomPacketSink {
-                        "test"
-                        , { new VideoStream(params) }
-                        , [](Packet& packet) {
-                            UNUSED(packet);
-                            return Code::OK;
-                        }
-                        , [](Packet& packet) {
-                            UNUSED(packet);
-                            return Code::OK;
-                        }
-            };
-            pipeline->addElement(custom_sink);
-        }
-        utils::sleep_for_min(60);
 
         /* Запись rtsp с камеры в flv/YouTube */
 //        std::string mrl_src = "camera_one_hour_realtime.flv";
@@ -119,8 +126,8 @@ int main() {
 //        std::string mrl_src = "Walking.mp4"; /* Не работает декодер! */
 //        std::string mrl_src = "rtsp://admin:Admin2019@192.168.10.12"; //640x480
 //        std::string mrl_src = "rtsp://admin:admin@192.168.10.3";
-        avdevice_register_all();
-        std::string mrl_src = "video=HP Wide Vision FHD Camera";
+//        avdevice_register_all();
+//        std::string mrl_src = "video=HP Wide Vision FHD Camera";
 
 //        std::string mrl_dst = "rtmp://a.rtmp.youtube.com/live2/vtpz-spss-u4eq-4k0e";
     //    std::string mrl_dst = "remuxed.flv";
@@ -130,14 +137,14 @@ int main() {
 //        std::string mrl_dst = "filtered_video.avi";
     //    std::string mrl_dst = "camera_sound.aac";
 
-        auto source = new MediaSource(mrl_src); /* IP Camera */
-        source->setCloseOnDisconnect(false);
+//        auto source = new MediaSource(mrl_src); /* IP Camera */
+//        source->setCloseOnDisconnect(false);
 
 
-        static_log_info("main", "MSVC: " << /*_MSC_VER*/ _MSC_FULL_VER);
+//        static_log_info("main", "MSVC: " << /*_MSC_VER*/ _MSC_FULL_VER);
 
-        Pipeline pipeline;
-        pipeline.addElement(source);
+//        Pipeline pipeline;
+//        pipeline.addElement(source);
 
 //        auto sink_event = new MediaSink("group_video/event.flv", IOType::Event);
 //        pipeline.addElement(sink_event);
@@ -159,13 +166,13 @@ int main() {
 
 //        start_debug_timeout(source, 60 /** 60*/ /* час */); /* Таймаут для RTSP */
 
-        if (auto ret = pipeline.start(); ret != Code::OK) {
-            static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
-        }
+//        if (auto ret = pipeline.start(); ret != Code::OK) {
+//            static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
+//        }
 
 
-        auto sink_timelapse = new MediaSink("group_video/timelapse.flv", IOType::Timelapse);
-        pipeline.addElement(sink_timelapse);
+//        auto sink_timelapse = new MediaSink("group_video/timelapse.flv", IOType::Timelapse);
+//        pipeline.addElement(sink_timelapse);
 
 //        auto params = new VideoParameters;
 //        params->setStreamIndex(0);
@@ -206,7 +213,7 @@ int main() {
 //            }
 //        }).detach();
 
-        utils::sleep_for_min(60);
+//        utils::sleep_for_min(60);
 
 
 //        start_debug_timeout(source, 60 /** 60*/ /* час */); /* Таймаут для RTSP */
