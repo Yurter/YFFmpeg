@@ -9,17 +9,20 @@ namespace fpp {
     }
 
     Code Decoder::init() {
+        log_trace("Initialization.");
         try_to(_decoder_context.init());
         return Code::OK;
     }
 
     Code Decoder::open() {
+        log_trace("Opening.");
         try_to(_decoder_context.open());
         setOpened(true);
         return Code::OK;
     }
 
     Code Decoder::close() {
+        log_trace("Closing.");
         try_to(_decoder_context.close());
         setOpened(false);
         return Code::OK;

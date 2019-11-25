@@ -96,9 +96,14 @@ namespace fpp {
 
     Code Route::startAll() {
         for (auto&& elem : _sequence) {
-            log_error("OPENING: " << elem->name());
+//            log_error("OPENING: " << elem->name());
+            try_to(elem->init());
             try_to(elem->open());
             try_to(elem->start());
+            //
+//            elem->init();
+//            elem->open();
+//            elem->start();
         }
         return Code::OK;
     }

@@ -14,6 +14,7 @@ namespace fpp {
     }
 
     Code OutputFormatContext::init() {
+        return_if(inited(), Code::INVALID_CALL_ORDER);
         try_to(createContext());
         switch (_preset) {
         case Auto: {
@@ -24,6 +25,7 @@ namespace fpp {
             /* Video */
             auto video_parameters = new VideoParameters;
             video_parameters->setCodec("libx264", CodecType::Encoder);
+            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
             video_parameters->setContextUid(uid());
 //            video_parameters->setTimeBase({ 1, 1000 });
 //            video_parameters->setFrameRate({ 22, 1 });
@@ -69,10 +71,10 @@ namespace fpp {
             /* Video */
             auto video_parameters = new VideoParameters;
             video_parameters->setCodec("libx264", CodecType::Encoder);
+            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
 //            video_parameters->setCodec("h264_qsv", CodecType::Encoder);
 //            video_parameters->setFrameRate({ 23, 1 }); //TODO
 //            video_parameters->setTimeBase({ 1, 1000 });
-//            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
 //            video_parameters->setPixelFormat(AV_PIX_FMT_NV12);
 //            video_parameters->setPixelFormat(AV_PIX_FMT_BGR24);
             video_parameters->setContextUid(uid());
@@ -121,7 +123,7 @@ namespace fpp {
     }
 
     Code OutputFormatContext::openContext() {
-        return_if_not(inited(), Code::INVALID_CALL_ORDER);
+        return_if_not(inited(), Code::NOT_INITED);
         log_info("Destination: \"" << _media_resource_locator << "\" is opening...");
         if (_streams.empty()) {
             log_error("No streams to mux were specified: " << _media_resource_locator);
@@ -158,7 +160,7 @@ namespace fpp {
     }
 
     Code OutputFormatContext::closeContext() {
-        return_if(closed(), Code::OK);
+        return_if(closed(), Code::INVALID_CALL_ORDER);
         if (av_write_trailer(_format_context) != 0) {
             log_error("Failed to write the stream trailer to an output media file");
             return Code::ERR;

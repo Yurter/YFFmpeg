@@ -1,8 +1,8 @@
-TEMPLATE = app
-#TEMPLATE = lib
-#CONFIG += static
-#TARGET = fpp
+#TEMPLATE = app
+TEMPLATE = lib
+CONFIG += static
 
+TARGET = fpp
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt

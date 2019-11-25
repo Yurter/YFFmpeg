@@ -35,7 +35,7 @@ namespace fpp {
 
         virtual Code push(const Object* input_data) override final {
             if (closed()) {
-                log_error("CLOSED");
+                log_warning("Push to closed processor");
             }
             return_if(closed(), Code::AGAIN);
             if (!_input_queue.push(*static_cast<const inType*>(input_data))) {
@@ -85,7 +85,10 @@ namespace fpp {
     private:
 
         virtual Code run() override final {
-            if (_pre_function) { try_to(_pre_function()); }
+            if (_pre_function) {
+                log_trace("Running _pre_function.");
+                try_to(_pre_function());
+            }
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
 
@@ -111,8 +114,13 @@ namespace fpp {
                 sendOutputData(outType());
                 return Code::END_OF_FILE;
             }
+
+            log_trace("Running processInputData.");
             try_to(processInputData(input_data));
-            if (_post_function) { try_to(_post_function()); }
+            if (_post_function) {
+                log_trace("Running _post_function.");
+                try_to(_post_function());
+            }
             return Code::OK;
         }
 

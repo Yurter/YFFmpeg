@@ -83,50 +83,48 @@ namespace fpp {
 } // namespace fpp
 
 /* Макрос получения экзмепляра объекта класса Logger */
-#define logger fpp::Logger::instance()
+#define logger fpp::Logger::instance("fpp_log")
+
+/* Макрос установки дирректории, в которой находятся файлы лога.
+ * Должен вызыватся первым по отношению к остальным макросам    */
+#define set_log_dir(x) fpp::Logger::instance(x)
 
 /* Макрос установки уровня лога - сообщения, имеющие урень выше установленного, игнорируются */
 #define set_log_level(x)        logger.setLogLevel(x)
 #define set_ffmpeg_log_level(x) logger.setFFmpegLogLevel(x)
-#define stop_log()              logger.quit()
+//#define stop_log()              logger.quit()
 
 /* Макросы для отправки строковых сообщений в лог */
 #define print_info(x)       logger.print(this, code_pos, LogLevel::Info,    x)
 #define print_warning(x)    logger.print(this, code_pos, LogLevel::Warning, x)
 #define print_error(x)      logger.print(this, code_pos, LogLevel::Error,   x)
 #define print_debug(x)      logger.print(this, code_pos, LogLevel::Debug,   x)
+#define print_trace(x)      logger.print(this, code_pos, LogLevel::Trace,   x)
 
 /* ? */
 #define NSFPP(x) do { using namespace fpp; x } while (false)
 
 /* Макросы для отправки потоковых сообщений в лог */
-//#define log_info(x)     do { std::stringstream log_ss; log_ss << x; print_info(log_ss.str());       } while (false)
-//#define log_warning(x)  do { std::stringstream log_ss; log_ss << x; print_warning(log_ss.str());    } while (false)
-//#define log_error(x)    do { std::stringstream log_ss; log_ss << x; print_error(log_ss.str());      } while (false)
-//#define log_debug(x)    do { std::stringstream log_ss; log_ss << x; print_debug(log_ss.str());      } while (false)
-//
 #define log_info(x)     NSFPP( std::stringstream log_ss; log_ss << x; print_info(log_ss.str());     )
 #define log_warning(x)  NSFPP( std::stringstream log_ss; log_ss << x; print_warning(log_ss.str());  )
 #define log_error(x)    NSFPP( std::stringstream log_ss; log_ss << x; print_error(log_ss.str());    )
 #define log_debug(x)    NSFPP( std::stringstream log_ss; log_ss << x; print_debug(log_ss.str());    )
+#define log_trace(x)    NSFPP( std::stringstream log_ss; log_ss << x; print_trace(log_ss.str());    )
 
 /* Макросы для отправки строковых сообщений в лог вне контекста fpp */
-#define static_print_info(caller_name,msg)      logger.static_print(caller_name, code_pos, LogLevel::Info,    msg)
-#define static_print_warning(caller_name,msg)   logger.static_print(caller_name, code_pos, LogLevel::Warning, msg)
-#define static_print_error(caller_name,msg)     logger.static_print(caller_name, code_pos, LogLevel::Error,   msg)
-#define static_print_debug(caller_name,msg)     logger.static_print(caller_name, code_pos, LogLevel::Debug,   msg)
-#define static_print_auto(caller_name,lvl,msg)  logger.static_print(caller_name, code_pos, static_cast<fpp::LogLevel>(lvl), msg)
+#define static_print_info(caller_name,msg)      logger.staticPrint(caller_name, code_pos, LogLevel::Info,                   msg)
+#define static_print_warning(caller_name,msg)   logger.staticPrint(caller_name, code_pos, LogLevel::Warning,                msg)
+#define static_print_error(caller_name,msg)     logger.staticPrint(caller_name, code_pos, LogLevel::Error,                  msg)
+#define static_print_debug(caller_name,msg)     logger.staticPrint(caller_name, code_pos, LogLevel::Debug,                  msg)
+#define static_print_trace(caller_name,msg)     logger.staticPrint(caller_name, code_pos, LogLevel::Trace,                  msg)
+#define static_print_auto(caller_name,lvl,msg)  logger.staticPrint(caller_name, code_pos, static_cast<fpp::LogLevel>(lvl),  msg)
 
 /* Макросы для отправки потоковых сообщений в лог вне контекста fpp */
-//#define static_log_info(caller_name,x)      do { std::stringstream log_ss; log_ss << x; static_print_info(caller_name,log_ss.str());    } while (false)
-//#define static_log_warning(caller_name,x)   do { std::stringstream log_ss; log_ss << x; static_print_warning(caller_name,log_ss.str()); } while (false)
-//#define static_log_error(caller_name,x)     do { std::stringstream log_ss; log_ss << x; static_print_error(caller_name,log_ss.str());   } while (false)
-//#define static_log_debug(caller_name,x)     do { std::stringstream log_ss; log_ss << x; static_print_debug(caller_name,log_ss.str());   } while (false)
-//
 #define static_log_info(caller_name,x)      NSFPP( std::stringstream log_ss; log_ss << x; static_print_info(caller_name,log_ss.str());    )
 #define static_log_warning(caller_name,x)   NSFPP( std::stringstream log_ss; log_ss << x; static_print_warning(caller_name,log_ss.str()); )
 #define static_log_error(caller_name,x)     NSFPP( std::stringstream log_ss; log_ss << x; static_print_error(caller_name,log_ss.str());   )
 #define static_log_debug(caller_name,x)     NSFPP( std::stringstream log_ss; log_ss << x; static_print_debug(caller_name,log_ss.str());   )
+#define static_log_trace(caller_name,x)     NSFPP( std::stringstream log_ss; log_ss << x; static_print_trace(caller_name,log_ss.str());   )
 
 /* ? */
 #define code_pos std::string(__FUNCTION__) + ", line: " + std::to_string(__LINE__)

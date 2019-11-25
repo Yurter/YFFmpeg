@@ -21,11 +21,18 @@ namespace fpp {
 
         AVCodecContext* codecContext();
 
+    private:
+
+        bool                opened() const;
+        bool                closed() const;
+        void                setOpened(bool value);
+
     protected:
 
         Stream*             _stream;
         AVCodecContext*     _codec_context;
         CodecType           _type;
+        bool                _opened;
 
     };
 

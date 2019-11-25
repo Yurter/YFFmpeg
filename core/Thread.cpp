@@ -28,26 +28,22 @@ namespace fpp {
 
     Thread::~Thread() {
         try_throw(quit());
-//        try_throw(stop()); //BUG вызов виртуальной ф-и onStop() из деструктора
         join();
     }
 
     Code Thread::start() {
-//        return_if(running(), Code::INVALID_CALL_ORDER);
         return_if(running(), Code::OK);
+//        log_trace("Thread starting."); //блокирует конструктор логгера.
         _stop_flag = false;
         if_not(inited()) { try_to(init()); }
         _thread = std::thread([this]() {
             _running = true;
-            log_debug("Thread started");
+            log_trace("Thread started");
             try_throw(onStart());
             try {
                 do {
                     if (_stop_flag) { break; }
                     _exit_code = _loop_function();
-                    if (!this->is("Logger")) {
-//                        log_info("still running");
-                    }
                 } while_not (utils::exit_code(_exit_code));
 
                 std::string log_message = utils::error_code(_exit_code)
@@ -65,16 +61,15 @@ namespace fpp {
                 _exit_code = Code::EXCEPTION;
                 _exit_message = "unknown";
             }
-//            try_throw(stop());
-//            try_throw(onStop()); //крашит вызов виртуального метода
             _running = false;
-            log_debug("Thread finished");
+            log_trace("Thread finished");
         });
         _thread.detach(); //TODO убрать? без детача падения на выходе, выяснить в каком объекте и почему
         return Code::OK;
     }
 
     Code Thread::stop() {
+        log_trace("Thread stoping.");
         _stop_flag = true;
         try_to(quit());
         try_to(onStop());
@@ -83,6 +78,7 @@ namespace fpp {
 
     Code Thread::quit() {
         return_if_not(running(), Code::OK);
+        log_trace("Thread quiting.");
         _stop_flag = true; //TODO дублировать из стопа?
         try { /* TODO */
             if (_thread.joinable()) { _thread.join(); }
@@ -99,6 +95,7 @@ namespace fpp {
     }
 
     void Thread::join() const {
+        log_trace("Thread joining.");
         while (running()) { utils::sleep_for(MEDIUM_DELAY_MS); }
 //        while (running()) {
 //            log_warning("still running");

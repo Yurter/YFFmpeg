@@ -5,22 +5,28 @@
 #include <sstream>
 #include <string>
 #include <Windows.h>
+#include <ctime>
+#include <filesystem>
 
 namespace fpp {
 
-    Logger::Logger() :
+    Logger::Logger(std::string log_dir) :
         _log_level(LogLevel::Info)
     {
         setName("Logger");
 //        av_log_set_callback(log_callback); //TODO later
 //        set_ffmpeg_log_level(LogLevel::Error);
+        print(this, code_pos, LogLevel::Info, "Logger opened.");
+        openFile(log_dir);
         try_throw(start());
     }
 
     Logger::~Logger() {
-        print_info("Closed.");
-        flush();
-        av_log_set_callback(nullptr);
+        try_throw(stop());
+        join();
+//        print(this, code_pos, LogLevel::Info, "Logger closed.");
+//        av_log_set_callback(nullptr);
+//        flush();
     }
 
     Code Logger::run() {
@@ -49,6 +55,7 @@ namespace fpp {
             break;
         }
 
+        _file << message.log_text << std::endl;
         std::cout << message.log_text << std::endl;
         SetConsoleTextAttribute(hStdout, FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
         return Code::OK;
@@ -56,6 +63,11 @@ namespace fpp {
 
     Code Logger::init() {
         setInited(true);
+        return Code::OK;
+    }
+
+    Code Logger::onStop() {
+        _message_queue.stop_wait();
         return Code::OK;
     }
 
@@ -67,28 +79,53 @@ namespace fpp {
         }
     }
 
-    std::string Logger::format_message(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
-        std::string header = "[" + caller_name + "]";
+    void Logger::openFile(std::string log_dir) {
+        std::filesystem::create_directory(log_dir);
+        _file.open(log_dir + "/" + genFileName());
+    }
+
+    void Logger::closeFile() {
+        _file.close();
+    }
+
+    std::string Logger::genFileName() const {
+        time_t rawtime;
+        struct tm* timeinfo;
+        char buffer[80];
+
+        time (&rawtime);
+        timeinfo = localtime(&rawtime);
+
+        strftime(buffer, 80, "%Y-%m-%d_%H-%M-%S.txt", timeinfo);
+        return std::string(buffer);
+    }
+
+    std::string Logger::formatMessage(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
+        std::string header;
+
+        header += "[" + encodeLogLevel(log_level) + "]";
+        auto t = std::time(nullptr);
+        header += "[" + (std::stringstream() << std::put_time(std::localtime(&t), "%H:%M:%S")).str() + "]";
+        header += "[" + caller_name + "]";
+
+        int message_offset = 27;
 
         if (log_level >= LogLevel::Debug) {
             header += "\n";
-            header += (std::stringstream() << TAB << std::setw(20) << std::left << "Thread id: " << current_thread_id()).str();
+            header += (std::stringstream() << TAB << std::setw(message_offset) << std::left << "Thread id: " << current_thread_id()).str();
             header += "\n";
-            header += (std::stringstream() << TAB << std::setw(20) << std::left << "Code position: " << code_position).str();
+            header += (std::stringstream() << TAB << std::setw(message_offset) << std::left << "Code position: " << code_position).str();
             header += "\n";
-        }
-
-        if (log_level >= LogLevel::Debug) {
-            header += (std::stringstream() << TAB << std::setw(20) << std::left << "Message: " /*<< message*/).str();
+            header += (std::stringstream() << TAB << std::setw(message_offset) << std::left << "Message: ").str();
         }
 
         std::stringstream ss;
-        ss << std::setw(22) << std::left << header << message;
+        ss << std::setw(message_offset + 2) << std::left << header << message;
 
         return ss.str();
     }
 
-    bool Logger::ignore_message(LogLevel message_log_level) {
+    bool Logger::ignoreMessage(LogLevel message_log_level) {
         return message_log_level > _log_level;
     }
 
@@ -102,10 +139,10 @@ namespace fpp {
         av_log_format_line(ptr, level, fmt, vl2, line, sizeof(line), &print_prefix);
         va_end(vl2);
 
-        static_print_auto("FFmpeg", convertLogLevel(level), line);
+        static_print_auto("FFmpeg", convert_log_level(level), line);
     }
 
-    LogLevel Logger::convertLogLevel(int ffmpeg_level) {
+    LogLevel Logger::convert_log_level(int ffmpeg_level) {
         switch (ffmpeg_level) {
         case AV_LOG_QUIET:
             return LogLevel::Quiet;
@@ -122,8 +159,26 @@ namespace fpp {
         }
     }
 
-    Logger& Logger::instance() {
-        static Logger _logger;
+    std::string Logger::encodeLogLevel(LogLevel value) {
+        switch (value) {
+        case LogLevel::Info:
+            return "I";
+        case LogLevel::Warning:
+            return "W";
+        case LogLevel::Error:
+            return "E";
+        case LogLevel::Debug:
+            return "D";
+        case LogLevel::Trace:
+            return "T";
+        case LogLevel::Quiet:
+            return "Q";
+        }
+        return "?";
+    }
+
+    Logger& Logger::instance(std::string log_dir) {
+        static Logger _logger(log_dir);
         return _logger;
     }
 
@@ -155,16 +210,16 @@ namespace fpp {
     }
 
     void Logger::print(const Object* caller, std::string code_position, LogLevel log_level, const std::string message) {
-        if (ignore_message(log_level)) { return; }
-        std::string formated_message = format_message(caller->name(), code_position, log_level, message);
+        if (ignoreMessage(log_level)) { return; }
+        std::string formated_message = formatMessage(caller->name(), code_position, log_level, message);
         if (!_message_queue.push(LogMessage(log_level, formated_message))) {
             // do nothing
         }
     }
 
-    void Logger::static_print(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
-        if (ignore_message(log_level)) { return; }
-        std::string formated_message = format_message(caller_name, code_position, log_level, message);
+    void Logger::staticPrint(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
+        if (ignoreMessage(log_level)) { return; }
+        std::string formated_message = formatMessage(caller_name, code_position, log_level, message);
         if (!_message_queue.push(LogMessage(log_level, formated_message))) {
             // do nothing
         }

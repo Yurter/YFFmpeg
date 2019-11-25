@@ -79,6 +79,8 @@ namespace fpp {
 
         Code                createSequence(Route& route);
 
+        Code                simplifyRoutes();
+
         Stream*             findStream(int64_t uid);
         Code                determineSequence(Object* output_processor);
 

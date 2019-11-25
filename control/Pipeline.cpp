@@ -50,8 +50,8 @@ namespace fpp {
         }
         if (processor->typeIs(ProcessorType::Output)) {
             try_to(determineSequence(processor));
-            try_to(processor->open());
-            processor->start();
+//            try_to(processor->open());
+//            processor->start();
         }
 //        if (running()) {
 //            if (processor->typeIs(ProcessorType::Output)) {
@@ -456,7 +456,8 @@ namespace fpp {
         if (video_filter_required) {
 //                    std::string filters_descr = "select='not(mod(n,10))',setpts=N/FRAME_RATE/TB";
 //                    std::string filters_descr = "setpts=N/(10*TB)";
-            std::string filters_descr = "select='not(mod(n,2))'";
+            std::string filters_descr = "select='not(mod(n,60))'";
+//            std::string filters_descr = "setpts=0.016*PTS";
             VideoFilter* video_filter = new VideoFilter(output_stream->parameters, filters_descr);
             try_to(route.append(video_filter));
             try_to(addElement(video_filter));
@@ -492,6 +493,13 @@ namespace fpp {
         log_info("route: " << route);
 
         return Code::OK;
+    }
+
+    Code Pipeline::simplifyRoutes() {
+        for (Route route : _route_list) {
+            //
+        }
+        return Code::NOT_IMPLEMENTED;
     }
 
     Stream* Pipeline::findStream(int64_t uid) {
