@@ -122,6 +122,9 @@ namespace fpp {
                 /* Выброс отработавшего процессора из пула */
             }
         }
+        if (all_processor_stopped) {
+            int debug_stop = 0;
+        }
         return_if(all_processor_stopped, Code::END_OF_FILE);
         utils::sleep_for(LONG_DELAY_MS/* * 10*/);
         return Code::OK;
@@ -252,140 +255,6 @@ namespace fpp {
         }
         return Code::OK;
     }
-
-//    Code Pipeline::determineSequences() {
-//        StreamMap* stream_map = _map->streamMap();
-//        return_if(stream_map->empty(), Code::NOT_INITED);
-//        for (auto&& stream_route : *stream_map) {
-//            Stream* in_stream = stream_route.first;
-//            Stream* out_stream = stream_route.second;
-//            StreamPair in_out_streams { in_stream, out_stream };
-//            ProcessorSequence sequence;
-
-//            sequence.push_back(static_cast<Processor*>(static_cast<FormatContext*>(in_stream->context())->_media_ptr));//TODO Крайне кривая заплатка
-//            sequence.push_back(_map);
-
-//            bool processing_required =
-//                    (in_stream->isVideo() && !option(Option::COPY_VIDEO))
-//                    || (in_stream->isAudio() && !option(Option::COPY_AUDIO)) ;
-
-//            if (processing_required) {
-//                bool rescaling_required     = utils::rescaling_required(in_out_streams);
-//                bool resampling_required    = utils::resampling_required(in_out_streams);
-//                bool video_filter_required  = utils::video_filter_required(in_out_streams);
-//                bool audio_filter_required  = utils::audio_filter_required(in_out_streams);
-//                bool transcoding_required   = utils::transcoding_required(in_out_streams);
-
-//                auto out_context = dynamic_cast<OutputFormatContext*>(out_stream->context());
-//                if (inited_ptr(out_context)) {
-//                    video_filter_required = video_filter_required
-//                                            || out_context->preset(IOType::Timelapse);
-//                }
-
-//                transcoding_required = (transcoding_required
-//                                        || rescaling_required
-//                                        || resampling_required);
-
-////                bool decoding_required = transcoding_required
-////                        && (in_stream->parameters->codecId() != AV_CODEC_ID_NONE);
-////                bool encoding_required = transcoding_required
-////                        && (out_stream->parameters->codecId() != AV_CODEC_ID_NONE);
-
-//                bool decoding_required = transcoding_required //&& (in_stream->parameters->codecId() != AV_CODEC_ID_NONE))
-//                                        || rescaling_required
-//                                        || resampling_required
-//                                        || video_filter_required
-//                                        || audio_filter_required;
-//                bool encoding_required = transcoding_required //&& (out_stream->parameters->codecId() != AV_CODEC_ID_NONE);
-//                                        || rescaling_required
-//                                        || resampling_required
-//                                        || video_filter_required
-//                                        || audio_filter_required;
-//                if (inited_ptr(dynamic_cast<OpenCVSink*>(out_stream->context()))) {
-//                    encoding_required = false;
-//                }
-////                encoding_required = encoding_required && inited_codec_id(out_stream->parameters->codecId());
-//                //OpenCVSink
-
-//                if (decoding_required) {
-//                    Decoder* decoder = new Decoder(in_stream);
-//                    sequence.push_back(decoder);
-//                    addElement(decoder);
-//                }
-
-//                if (rescaling_required) {
-//                    Rescaler* rescaler = new Rescaler(in_out_streams);
-//                    sequence.push_back(rescaler);
-//                    addElement(rescaler);
-//                }
-
-//                if (video_filter_required) {
-////                    std::string filters_descr = "select='not(mod(n,10))',setpts=N/FRAME_RATE/TB";
-////                    std::string filters_descr = "setpts=N/(10*TB)";
-//                    std::string filters_descr = "select='not(mod(n,10))'";
-//                    VideoFilter* video_filter = new VideoFilter(out_stream->parameters, filters_descr);
-//                    sequence.push_back(video_filter);
-//                    addElement(video_filter);
-//                }
-
-//                if (audio_filter_required) {
-//                    //
-//                }
-
-//                if (resampling_required) {
-//                    Resampler* resampler = new Resampler(in_out_streams);
-//                    sequence.push_back(resampler);
-//                    addElement(resampler);
-//                }
-
-//                if (encoding_required) {
-//                    Encoder* encoder = new Encoder(out_stream);
-//                    sequence.push_back(encoder);
-//                    addElement(encoder);
-//                }
-//            }
-
-//            auto ptr = dynamic_cast<FormatContext*>(out_stream->context());
-//            if (inited_ptr(ptr)) {
-//                sequence.push_back(static_cast<Processor*>(ptr->_media_ptr));
-//            } else {
-//                 sequence.push_back(static_cast<Processor*>(out_stream->context()));
-//            }
-////            sequence.push_back(static_cast<Processor*>(static_cast<FormatContext*>(out_stream->context())->_media_ptr));//TODO Крайне кривая заплатка
-////            sequence.push_back(static_cast<Processor*>(out_stream->context()));
-
-//            for (auto processor_it = sequence.begin(); processor_it != sequence.end(); processor_it++) {
-//                auto next_processor_it = std::next(processor_it);
-//                if (next_processor_it == sequence.end()) { break; }
-//                log_debug((*processor_it)->name() + " connected to " + (*next_processor_it)->name());
-//                if ((*processor_it)->is("MediaSource")) {
-//                    try_to(static_cast<MediaSource*>(*processor_it)->connectTo(*next_processor_it));
-//                } else if ((*processor_it)->is("Encoder")) {
-//                    try_to(static_cast<Encoder*>(*processor_it)->connectTo(*next_processor_it));
-//                } else if ((*processor_it)->is("Decoder")) {
-//                    try_to(static_cast<Decoder*>(*processor_it)->connectTo(*next_processor_it));
-//                } else if ((*processor_it)->is("Rescaler")) {
-//                    try_to(static_cast<Rescaler*>(*processor_it)->connectTo(*next_processor_it));
-//                } else if ((*processor_it)->is("Resampler")) {
-//                    try_to(static_cast<Resampler*>(*processor_it)->connectTo(*next_processor_it));
-//                } else if ((*processor_it)->is("VideoFilter")) {
-//                    try_to(static_cast<VideoFilter*>(*processor_it)->connectTo(*next_processor_it));
-//                } else {
-//                    log_warning("didn't connected: " + (*processor_it)->name());
-//                }
-//            }
-
-//            auto it = sequence.begin();
-//            std::advance(it, 2);
-//            auto first_packet_processor = *it;
-////            auto debug_0 = dynamic_cast<PacketProcessor*>(first_packet_processor);
-////            auto debug_1 = static_cast<PacketProcessor*>(first_packet_processor);
-//            try_to(_map->setRoute(in_stream, dynamic_cast<Processor*>(first_packet_processor)));
-//            _processor_sequences.push_back(sequence);
-//        }
-
-//        return Code::OK;
-//    }
 
     void Pipeline::freeProcesors() //TODO объекты в смартпоинтеры
     {

@@ -83,14 +83,14 @@ int main() {
         //system("route add 192.168.1.188 mask 255.255.255.255 192.168.137.124");
         {
             Pipeline* pipeline = new Pipeline;
-            if (auto ret = pipeline->start(); ret != Code::OK) {
-                static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
-            }
 
             auto source = new MediaSource("rtsp://admin:admin@192.168.10.3:554");
             source->setCloseOnDisconnect(false);
             pipeline->addElement(source);
 
+            if (auto ret = pipeline->start(); ret != Code::OK) {
+                static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
+            }
 
 //            auto sink_event = new MediaSink("group_video/eventIP.flv", IOType::Event);
 //            pipeline->addElement(sink_event);

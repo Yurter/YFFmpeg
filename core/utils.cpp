@@ -183,6 +183,20 @@ namespace fpp {
             codec->time_base    = parametres->timeBase();
             codec->framerate    = video_parameters->frameRate();
 
+//            int set_opt_ret;
+//            set_opt_ret = av_opt_set(codec->priv_data, "crf", "23", 0);
+//            static_log_warning("opt crf", set_opt_ret);
+//            set_opt_ret = av_opt_set(codec->priv_data, "preset", "ultrafast", 0);
+//            static_log_warning("opt preset", set_opt_ret);
+//            set_opt_ret = av_opt_set(codec->priv_data, "tune", "zerolatency", 0);
+//            static_log_warning("opt tune", set_opt_ret);
+//            set_opt_ret = av_opt_set(codec->priv_data, "threads", "0", 0);
+//            static_log_warning("opt threads", set_opt_ret);
+
+            if (auto ret = pipeline->start(); ret != Code::OK) {
+                static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
+            }
+
             int set_opt_ret;
             set_opt_ret = av_opt_set(codec->priv_data, "crf", "23", 0);
             static_log_warning("opt crf", set_opt_ret);
@@ -335,9 +349,9 @@ namespace fpp {
         auto in = dynamic_cast<VideoParameters*>(streams.first->parameters);
         auto out = dynamic_cast<VideoParameters*>(streams.second->parameters);
 
-        return_if(in->width()  != out->width(),  true);
-        return_if(in->height() != out->height(), true);
-        return_if(in->pixelFormat()  != out->pixelFormat(),  true);
+        return_if(in->width()       != out->width(),        true);
+        return_if(in->height()      != out->height(),       true);
+        return_if(in->pixelFormat() != out->pixelFormat(),  true);
 
         return false;
     }
