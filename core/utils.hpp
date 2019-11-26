@@ -41,6 +41,7 @@ namespace fpp {
         static std::string  code_to_string(Code code);
         static std::string  codec_type_to_string(CodecType type);
         static std::string  rational_to_string(AVRational rational);
+        static bool         compatible_with_pixel_format(AVCodec* codec, AVPixelFormat pixel_format);
         static bool         compatibleWithSampleFormat(AVCodecContext* codec_context, AVSampleFormat sample_format);
         static AVMediaType  ymedia_type_to_avmedia_type(MediaType media_type);
         static int64_t      gen_context_uid();

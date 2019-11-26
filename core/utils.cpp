@@ -96,6 +96,45 @@ namespace fpp {
         return str;
     }
 
+    bool utils::compatible_with_pixel_format(AVCodec* codec, AVPixelFormat pixel_format) {
+//        AVPixelFormat h264_pxl_fmts[] = {
+//            AV_PIX_FMT_YUV420P
+//            , AV_PIX_FMT_YUVJ420P
+//            , AV_PIX_FMT_YUV422P
+//            , AV_PIX_FMT_YUVJ422P
+//            , AV_PIX_FMT_YUV444P
+//            , AV_PIX_FMT_YUVJ444P
+//            , AV_PIX_FMT_NV12
+//            , AV_PIX_FMT_NV16
+//            , AV_PIX_FMT_NV21
+//            , AV_PIX_FMT_YUV420P10LE
+//            , AV_PIX_FMT_YUV422P10LE
+//            , AV_PIX_FMT_YUV444P10LE
+//            , AV_PIX_FMT_NV20LE
+//            , AV_PIX_FMT_GRAY8
+//            , AV_PIX_FMT_GRAY10LE
+//        };
+
+        auto pix_fmt = codec->pix_fmts;
+
+        if (not_inited_ptr(pix_fmt)) {
+            static_log_error("utils", codec->name << " doesn't contain any default pixel format");
+            return true;
+
+//            if (codec->id == AV_CODEC_ID_H264) {
+//                pix_fmt = h264_pxl_fmts;
+//            } else {
+//                static_log_error("utils", "Doesn't know what to do");
+//                return true;
+//            }
+        }
+        while (pix_fmt[0] != AV_PIX_FMT_NONE) {
+            if (pix_fmt[0] == pixel_format) { return true; }
+            pix_fmt++;
+        }
+        return false;
+    }
+
     bool utils::compatibleWithSampleFormat(AVCodecContext *codec_context, AVSampleFormat sample_format) {
         auto smp_fmt = codec_context->codec->sample_fmts;
         while (smp_fmt[0] != AV_SAMPLE_FMT_NONE) {
@@ -337,7 +376,7 @@ namespace fpp {
 
         return_if(in->width()  != out->width(),  true);
         return_if(in->height() != out->height(), true);
-//        return_if(in->pixelFormat()  != out->pixelFormat(),  true);
+        return_if(in->pixelFormat()  != out->pixelFormat(),  true);
 
         return false;
     }
