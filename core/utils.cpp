@@ -337,7 +337,7 @@ namespace fpp {
 
         return_if(in->width()  != out->width(),  true);
         return_if(in->height() != out->height(), true);
-        return_if(in->pixelFormat()  != out->pixelFormat(),  true);
+//        return_if(in->pixelFormat()  != out->pixelFormat(),  true);
 
         return false;
     }

@@ -37,7 +37,7 @@ namespace fpp {
             if (closed()) {
                 log_warning("Push to closed processor");
             }
-            return_if(closed(), Code::AGAIN);
+//            return_if(closed(), Code::AGAIN);
             if (!_input_queue.push(*static_cast<const inType*>(input_data))) {
                 log_warning("queue push failed");
             }
