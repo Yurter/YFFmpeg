@@ -60,6 +60,9 @@ namespace fpp {
             log_error("Cannot read source: \"" << _input_format_context.mediaResourceLocator() << "\". Error " << ret);
             return Code::ERR;
         }
+        if (input_data.streamIndex() != 0) {
+            return Code::AGAIN; //TODO fix it
+        }
         //TODO этот код должен быть внутри processInputData()
         auto packet_stream = _input_format_context.stream(input_data.raw().stream_index);
         return_if(not_inited_ptr(packet_stream), Code::AGAIN);

@@ -37,10 +37,10 @@ int main() {
 
     try {
 //        set_log_level(LogLevel::Debug);
-    //    set_log_level(LogLevel::Quiet);
+//        set_log_level(LogLevel::Quiet);
 
 //        set_ffmpeg_log_level(LogLevel::Quiet);
-//        set_ffmpeg_log_level(LogLevel::Debug);
+//        set_ffmpeg_log_level(LogLevel::Trace);
 
         avdevice_register_all();
 //        {
@@ -115,7 +115,7 @@ int main() {
 //            pipeline->addElement(custom_sink);
             utils::sleep_for_min(1);
 //            delete sink_event;
-            delete sink_timelapse;
+//            delete sink_timelapse;
         }
 
         /* Запись rtsp с камеры в flv/YouTube */
