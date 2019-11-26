@@ -54,6 +54,14 @@ namespace fpp {
     }
 
     void Parameters::setDuration(int64_t duration) {
+        if (duration < 0) {
+            log_error("Cannot set duration less then zero, ignored");
+            return;
+        }
+        if (duration > LONG_MAX) {
+            log_error("Cannot set duration more then LONG_MAX, ignored");
+            return;
+        }
         _duration = duration;
     }
 

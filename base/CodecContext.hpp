@@ -11,15 +11,15 @@ namespace fpp {
         CodecContext(Stream* stream, CodecType type);
         virtual ~CodecContext() override;
 
-        virtual Code initParams() = 0;
-        virtual Code init() override;
+        virtual Code        initParams() = 0;
+        virtual Code        init() override;
 
-        Code open();
-        Code close();
+        Code                open();
+        Code                close();
 
-        std::string toString() const override final;
+        std::string         toString() const override final;
 
-        AVCodecContext* codecContext();
+        AVCodecContext*     codecContext();
 
     private:
 

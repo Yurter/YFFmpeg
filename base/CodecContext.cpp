@@ -66,8 +66,36 @@ namespace fpp {
     }
 
     std::string CodecContext::toString() const {
-        std::string str = std::string(_codec_context->codec->name)
-                + " codec";
+        std::string str;
+        std::string delimeter = ", ";
+        str += "Codec name: "   + std::string(_codec_context->codec->name) + delimeter;
+        str += "codec id: "     + std::to_string(_codec_context->codec->id) + delimeter;
+        str += "codec type: "   + std::string(av_get_media_type_string(_codec_context->codec_type)) + delimeter;
+
+        //debug output
+        str += "object size: "  + std::to_string(sizeof (*static_cast<Parameters*>(_stream->parameters))) + delimeter;
+        str += "object raw: \n";
+        for (size_t i = 0; i < sizeof (*static_cast<Parameters*>(_stream->parameters)); ++i) {
+            if (i % 16 == 0) {
+                str += "\n";
+            }
+            std::stringstream stream;
+            auto number = unsigned(reinterpret_cast<const uint8_t*>(_stream->parameters)[i]);
+            stream << std::hex << number;
+            if (stream.str().length() == 1) {
+                str += "0" + stream.str();
+            } else {
+                str += stream.str();
+            }
+            str += " ";
+        }
+        str += "object enum: "  + std::to_string(sizeof (MediaData)) + delimeter;
+        str += "data: " + std::to_string(static_cast<MediaData*>(_stream->parameters)->type()) + delimeter;
+        str += "duration: " + std::to_string(_stream->parameters->duration()) + delimeter;
+        str += "___";
+        //~debug output
+
+        str.erase(str.size() - delimeter.size(), delimeter.size());
         return str;
     }
 
