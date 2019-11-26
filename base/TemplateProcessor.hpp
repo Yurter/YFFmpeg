@@ -95,6 +95,11 @@ namespace fpp {
             return_if((input_data.empty() == false)
                       && discardType(input_data.type()), Code::AGAIN);
 
+            if (input_data.typeIs(MediaType::MEDIA_TYPE_UNKNOWN)) { //TODO
+//                log_error("Got UNKNOWN data");
+                return Code::AGAIN;
+            }
+
             if (input_data.empty()) {
                 log_error("Got emty data!");
                 if (this->is("MediaSink")) {
