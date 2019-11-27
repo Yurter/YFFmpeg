@@ -97,36 +97,36 @@ namespace fpp {
     }
 
     bool utils::compatible_with_pixel_format(AVCodec* codec, AVPixelFormat pixel_format) {
-//        AVPixelFormat h264_pxl_fmts[] = {
-//            AV_PIX_FMT_YUV420P
-//            , AV_PIX_FMT_YUVJ420P
-//            , AV_PIX_FMT_YUV422P
-//            , AV_PIX_FMT_YUVJ422P
-//            , AV_PIX_FMT_YUV444P
-//            , AV_PIX_FMT_YUVJ444P
-//            , AV_PIX_FMT_NV12
-//            , AV_PIX_FMT_NV16
-//            , AV_PIX_FMT_NV21
-//            , AV_PIX_FMT_YUV420P10LE
-//            , AV_PIX_FMT_YUV422P10LE
-//            , AV_PIX_FMT_YUV444P10LE
-//            , AV_PIX_FMT_NV20LE
-//            , AV_PIX_FMT_GRAY8
-//            , AV_PIX_FMT_GRAY10LE
-//        };
+        AVPixelFormat h264_pxl_fmts[] = {
+            AV_PIX_FMT_YUV420P
+            , AV_PIX_FMT_YUVJ420P
+            , AV_PIX_FMT_YUV422P
+            , AV_PIX_FMT_YUVJ422P
+            , AV_PIX_FMT_YUV444P
+            , AV_PIX_FMT_YUVJ444P
+            , AV_PIX_FMT_NV12
+            , AV_PIX_FMT_NV16
+            , AV_PIX_FMT_NV21
+            , AV_PIX_FMT_YUV420P10LE
+            , AV_PIX_FMT_YUV422P10LE
+            , AV_PIX_FMT_YUV444P10LE
+            , AV_PIX_FMT_NV20LE
+            , AV_PIX_FMT_GRAY8
+            , AV_PIX_FMT_GRAY10LE
+        };
 
         auto pix_fmt = codec->pix_fmts;
 
         if (not_inited_ptr(pix_fmt)) {
             static_log_error("utils", codec->name << " doesn't contain any default pixel format");
-            return true;
 
-//            if (codec->id == AV_CODEC_ID_H264) {
-//                pix_fmt = h264_pxl_fmts;
-//            } else {
-//                static_log_error("utils", "Doesn't know what to do");
-//                return true;
-//            }
+            if (codec->id == AV_CODEC_ID_H264) {
+                static_log_error("utils", "Using hardcoded pix_fmts");
+                pix_fmt = h264_pxl_fmts;
+            } else {
+                static_log_error("utils", "Don't know what to do :(");
+                return true;
+            }
         }
         while (pix_fmt[0] != AV_PIX_FMT_NONE) {
             if (pix_fmt[0] == pixel_format) { return true; }

@@ -17,7 +17,6 @@ namespace fpp {
     Code Decoder::open() {
         log_trace("Opening.");
         try_to(_decoder_context.open());
-        log_error(_decoder_context);
         setOpened(true);
         return Code::OK;
     }

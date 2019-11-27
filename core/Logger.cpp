@@ -126,7 +126,7 @@ namespace fpp {
     }
 
     bool Logger::ignoreMessage(LogLevel message_log_level) {
-        return message_log_level >= _log_level;
+        return message_log_level > _log_level;
     }
 
     void Logger::log_callback(void* ptr, int level, const char* fmt, va_list vl) {

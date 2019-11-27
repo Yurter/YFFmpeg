@@ -36,7 +36,7 @@ int main() {
     static_log_info("main", "Program started...");
 
     try {
-//        set_log_level(LogLevel::Debug);
+        set_log_level(LogLevel::Debug);
 //        set_log_level(LogLevel::Quiet);
 
 //        set_ffmpeg_log_level(LogLevel::Quiet);
@@ -88,31 +88,33 @@ int main() {
             }
 
             auto source = new MediaSource("rtsp://admin:admin@192.168.10.3:554");
+//            auto source = new MediaSource("video=Webcam C170");
             source->setCloseOnDisconnect(false);
             pipeline->addElement(source);
 
 
-//            auto sink_event = new MediaSink("group_video/eventIP.flv", IOType::Event);
-//            pipeline->addElement(sink_event);
+            auto sink_event = new MediaSink("group_video/eventIP.flv", IOType::Event);
+            pipeline->addElement(sink_event);
 
             auto sink_timelapse = new MediaSink("group_video/timelapseIP.flv", IOType::Timelapse);
             pipeline->addElement(sink_timelapse);
 
-//            auto params = new VideoParameters;
-//            params->setStreamIndex(0);
-//            auto custom_sink = new CustomPacketSink {
-//                        "test"
-//                        , { new VideoStream(params) }
-//                        , [](Packet& packet) {
-//                            UNUSED(packet);
-//                            return Code::OK;
-//                        }
-//                        , [](Packet& packet) {
-//                            UNUSED(packet);
-//                            return Code::OK;
-//                        }
-//            };
-//            pipeline->addElement(custom_sink);
+            auto params = new VideoParameters;
+            params->setCodec("libx264", CodecType::Encoder);
+            params->setStreamIndex(0);
+            auto custom_sink = new CustomPacketSink {
+                        "test"
+                        , { new VideoStream(params) }
+                        , [](Packet& packet) {
+                            UNUSED(packet);
+                            return Code::OK;
+                        }
+                        , [](Packet& packet) {
+                            UNUSED(packet);
+                            return Code::OK;
+                        }
+            };
+            pipeline->addElement(custom_sink);
             utils::sleep_for_min(1);
 //            delete sink_event;
 //            delete sink_timelapse;

@@ -79,10 +79,11 @@ namespace fpp {
             , AV_PIX_FMT_GRAY10LE
         };
         if_not(utils::compatible_with_pixel_format(_codec, pixel_format)) {
-            log_warning("Cannot set pixel format: " << av_get_pix_fmt_name(pixel_format)
-                        << " - " << _codec->name << " doesn't compatible with it, "
-                        << "setting default: " << av_get_pix_fmt_name(_codec->pix_fmts[0]));
-            _pixel_format = _codec->pix_fmts[0];
+//            log_warning("Cannot set pixel format: " << av_get_pix_fmt_name(pixel_format)
+//                        << " - " << _codec->name << " doesn't compatible with it, "
+//                        << "setting default: " << av_get_pix_fmt_name(_codec->pix_fmts[0]));
+//            _pixel_format = _codec->pix_fmts[0];
+            _pixel_format = AV_PIX_FMT_YUV420P; //TODO
             return;
         }
         _pixel_format = pixel_format;
