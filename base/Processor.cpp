@@ -7,6 +7,8 @@ namespace fpp {
         _opened(false)
       , _close_on_disconnect(true)
       , _type(type)
+      , _skip_types(MediaType::MEDIA_TYPE_UNKNOWN)
+      , _discard_types(MediaType::MEDIA_TYPE_UNKNOWN)
     {
         setName("Processor");
     }
