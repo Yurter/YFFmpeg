@@ -221,16 +221,18 @@ namespace fpp {
             codec->time_base    = parametres->timeBase();
             codec->framerate    = video_parameters->frameRate();
 
-            int set_opt_ret;
-            set_opt_ret = av_opt_set(codec->priv_data, "crf", "23", 0);
-            static_log_warning("opt crf", set_opt_ret);
-            set_opt_ret = av_opt_set(codec->priv_data, "preset", "ultrafast", 0);
-            static_log_warning("opt preset", set_opt_ret);
-            set_opt_ret = av_opt_set(codec->priv_data, "tune", "zerolatency", 0);
-            static_log_warning("opt tune", set_opt_ret);
-            set_opt_ret = av_opt_set(codec->priv_data, "threads", "0", 0);
-            static_log_warning("opt threads", set_opt_ret);
-
+            if (auto ret = av_opt_set(codec->priv_data, "crf", "23", 0); ret != 0) {
+                static_log_warning("utils", "av_opt_set crf failed: " << ret /*<< " - " << av_err2str(ret)*/);
+            }
+            if (auto ret = av_opt_set(codec->priv_data, "preset", "ultrafast", 0); ret != 0) {
+                static_log_warning("utils", "av_opt_set preset failed: " << ret /*<< " - " << av_err2str(ret)*/);
+            }
+            if (auto ret = av_opt_set(codec->priv_data, "tune", "zerolatency", 0); ret != 0) {
+                static_log_warning("utils", "av_opt_set tune failed: " << ret /*<< " - " << av_err2str(ret)*/);
+            }
+            if (auto ret = av_opt_set(codec->priv_data, "threads", "0", 0); ret != 0) {
+                static_log_warning("utils", "av_opt_set threads failed: " << ret /*<< " - " << av_err2str(ret)*/);
+            }
 
     //        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
             break;
