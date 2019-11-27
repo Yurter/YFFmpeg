@@ -15,7 +15,7 @@ namespace fpp {
 
     Code MediaSink::init() {
         return_if(inited(), Code::INVALID_CALL_ORDER);
-        log_trace("Initialization.");
+        log_debug("Initialization.");
         try_to(_output_format_context.init());
         setInited(true);
         return Code::OK;
@@ -24,7 +24,7 @@ namespace fpp {
     Code MediaSink::open() {
         return_if(opened(), Code::OK);
         return_if_not(inited(), Code::NOT_INITED);
-        log_trace("Opening.");
+        log_debug("Opening.");
         try_to(_output_format_context.open());
         setOpened(true);
         return Code::OK;
@@ -32,7 +32,7 @@ namespace fpp {
 
     Code MediaSink::close() {
         return_if(closed(), Code::OK);
-        log_trace("Closing.");
+        log_debug("Closing.");
         try_to(quit());
         try_to(_output_format_context.close());
         log_info("Destination: \"" << _output_format_context.mediaResourceLocator() << "\" closed.");
@@ -79,7 +79,7 @@ namespace fpp {
 
     Code MediaSink::onStop() {
         return_if(closed(), Code::INVALID_CALL_ORDER);
-        log_trace("onStop");
+        log_debug("onStop");
         try_to(_output_format_context.close()); // Check it
         return Code::OK;
     }

@@ -218,7 +218,6 @@ namespace fpp {
             codec->pix_fmt      = video_parameters->pixelFormat();
             codec->width        = int(video_parameters->width());
             codec->height       = int(video_parameters->height());
-//            codec->time_base    = DEFAULT_TIME_BASE;
             codec->time_base    = parametres->timeBase();
             codec->framerate    = video_parameters->frameRate();
 
@@ -231,6 +230,7 @@ namespace fpp {
             static_log_warning("opt tune", set_opt_ret);
             set_opt_ret = av_opt_set(codec->priv_data, "threads", "0", 0);
             static_log_warning("opt threads", set_opt_ret);
+
 
     //        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
             break;

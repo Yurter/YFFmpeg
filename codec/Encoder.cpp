@@ -9,20 +9,20 @@ namespace fpp {
     }
 
     Code Encoder::init() {
-        log_trace("Initialization.");
+        log_debug("Initialization.");
         try_to(_encoder_context.init());
         return Code::OK;
     }
 
     Code Encoder::open() {
-        log_trace("Opening.");
+        log_debug("Opening.");
         try_to(_encoder_context.open());
         setOpened(true);
         return Code::OK;
     }
 
     Code Encoder::close() {
-        log_trace("Closing.");
+        log_debug("Closing.");
         try_to(_encoder_context.close());
         setOpened(false);
         return Code::OK;

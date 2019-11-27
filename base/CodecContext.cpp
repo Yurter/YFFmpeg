@@ -16,7 +16,7 @@ namespace fpp {
     }
 
     Code CodecContext::init() {
-        log_trace("Initialization.");
+        log_debug("Initialization.");
         return_if(inited(), Code::INVALID_CALL_ORDER);
         auto codec = _stream->parameters->codec();
         return_if(not_inited_ptr(codec), Code::INVALID_INPUT);
@@ -35,7 +35,7 @@ namespace fpp {
     }
 
     Code CodecContext::open() {
-        log_trace("Opening.");
+        log_debug("Opening.");
         return_if(opened(), Code::INVALID_CALL_ORDER);
         auto codec = _stream->parameters->codec();
         if (int ret = avcodec_open2(_codec_context, codec, nullptr); ret != 0) {
@@ -55,7 +55,7 @@ namespace fpp {
     }
 
     Code CodecContext::close() {
-        log_trace("Closing.");
+        log_debug("Closing.");
         return_if(closed(), Code::INVALID_CALL_ORDER);
         if (inited_ptr(_codec_context)) {
             // использовать ? avcodec_free_context(_codec_context)

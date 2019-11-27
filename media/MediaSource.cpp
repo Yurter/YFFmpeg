@@ -13,7 +13,7 @@ namespace fpp {
     }
 
     Code MediaSource::init() {
-        log_trace("Initialization.");
+        log_debug("Initialization.");
         return_if(inited(), Code::INVALID_CALL_ORDER);
         try_to(_input_format_context.init());
         setInited(true);
@@ -21,7 +21,7 @@ namespace fpp {
     }
 
     Code MediaSource::open() {
-        log_trace("Opening.");
+        log_debug("Opening.");
         return_if(opened(), Code::INVALID_CALL_ORDER);
         try_to(_input_format_context.open());
         setOpened(true);
@@ -29,7 +29,7 @@ namespace fpp {
     }
 
     Code MediaSource::close() {
-        log_trace("Closing.");
+        log_debug("Closing.");
         return_if(closed(), Code::OK);
         try_to(sendEofPacket());
         try_to(_input_format_context.close());
@@ -88,13 +88,13 @@ namespace fpp {
     }
 
     Code MediaSource::onStop() {
-        log_trace("onStop");
+        log_debug("onStop");
         try_to(close());
         return Code::OK;
     }
 
     Code MediaSource::sendEofPacket() {
-        log_trace("Sending EOF");
+        log_debug("Sending EOF");
         Packet eof_packet;
         for (auto&& stream : _input_format_context.streams()) {
             if (stream->used()) {
