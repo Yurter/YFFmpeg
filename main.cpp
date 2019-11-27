@@ -36,7 +36,8 @@ int main() {
     static_log_info("main", "Program started...");
 
     try {
-        set_log_level(LogLevel::Debug);
+//        set_log_level(LogLevel::Debug);
+//        set_log_level(LogLevel::Trace);
 //        set_log_level(LogLevel::Quiet);
 
 //        set_ffmpeg_log_level(LogLevel::Quiet);

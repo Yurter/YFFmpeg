@@ -37,7 +37,6 @@ namespace fpp {
             if (closed()) {
                 log_warning("Push to closed processor");
             }
-//            return_if(closed(), Code::AGAIN);
             if (!_input_queue.push(*static_cast<const inType*>(input_data))) {
                 log_warning("queue push failed");
             }
@@ -62,6 +61,7 @@ namespace fpp {
 
         Code sendOutputData(const outType& output_data) {
             for (auto next_processor : _next_processor_list) {
+                log_trace("Sending data to " << next_processor->name());
                 try_to(next_processor->push(&output_data));
             }
             return Code::OK;
