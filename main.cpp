@@ -132,12 +132,8 @@ int main() {
             pipeline->addElement(source);
 
 
-            auto video_params = new VideoParameters;
-            video_params->setCodec("libx264", CodecType::Encoder);
-            auto video_stream = new VideoStream(video_params);
-            auto sink_opencv = new OpenCVSink("OpenCV processing", video_stream);
-            sink_opencv->debugSetType(ProcessorType::Output);
-            pipeline->addElement(sink_opencv);
+            auto sink_event = new MediaSink("output.flv", IOType::Event);
+            pipeline->addElement(sink_event);
 
 
             utils::sleep_for_min(1);
