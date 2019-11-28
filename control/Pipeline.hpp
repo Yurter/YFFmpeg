@@ -50,17 +50,6 @@ namespace fpp {
 
         Code                checkFormatContexts();
 
-        Code                initRefi();
-        Code                initCodec();
-        Code                initMedia();
-
-        Code                openCodec();
-        Code                openMediaSources();
-        Code                openMediaSinks();
-
-        Code                closeMediaSources();
-        Code                closeMediaSinks();
-        Code                startProcesors();
         Code                stopProcesors();
         Code                joinProcesors();
         void                freeProcesors();
@@ -74,26 +63,15 @@ namespace fpp {
 
         virtual std::string toString() const override;
 
-        void pushproc(Processor* processor);
-        void remproc(Processor* processor);
-
-        // TODO
-
         Stream*             findBestInputStream(MediaType media_type);
         StreamList          getOutputStreams(MediaType media_type);
 
         Route               findRoute(Processor* processor);
 
-        MediaSourceList     mediaSources()  const;
-        MediaSinkList       mediaSinks()    const;
-        OpenCVSinkList      openCVSinks()   const;
-        DecoderList         decoders()      const;
-        EncoderList         encoders()      const;
-
     private:
 
-        ProcessorList       _processors;
-
+        ProcessorList       _data_sources;
+        ProcessorList       _data_sinks;
         std::mutex          _processor_mutex;
 
 

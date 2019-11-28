@@ -8,7 +8,7 @@ namespace fpp {
 
     public:
 
-        Processor(ProcessorType type);
+        Processor();
         virtual ~Processor() override;
 
         virtual Code        open();
@@ -21,9 +21,6 @@ namespace fpp {
         StreamVector        streams();
         Stream*             stream(int64_t index);
         Code                addStream(Stream* stream);
-
-        ProcessorType       type() const;
-        bool                typeIs(ProcessorType value) const;
 
         void                setOpened(bool opened);
 
@@ -47,7 +44,6 @@ namespace fpp {
 
         bool                _opened;
         bool                _close_on_disconnect;
-        ProcessorType       _type;
         int64_t             _skip_types;
         int64_t             _discard_types;
         StreamVector        _streams;

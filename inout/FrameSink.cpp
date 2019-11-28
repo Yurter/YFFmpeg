@@ -2,7 +2,8 @@
 
 namespace fpp {
 
-    FrameSink::FrameSink() {
+    FrameSink::FrameSink()
+    {
         setName("FrameSink");
         try_throw(setPostFunction(std::bind(&FrameSink::writeFrame, this)));
     }

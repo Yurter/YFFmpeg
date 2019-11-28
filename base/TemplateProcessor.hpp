@@ -14,9 +14,7 @@ namespace fpp {
 
         using IOFunction = std::function<Code()>;
 
-        TemplateProcessor(ProcessorType type) :
-            Processor(type)
-        {
+        TemplateProcessor() {
             setName("TemplateProcessor");
         }
 

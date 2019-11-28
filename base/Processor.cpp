@@ -3,10 +3,9 @@
 
 namespace fpp {
 
-    Processor::Processor(ProcessorType type) :
+    Processor::Processor() :
         _opened(false)
       , _close_on_disconnect(true)
-      , _type(type)
       , _skip_types(MediaType::MEDIA_TYPE_UNKNOWN)
       , _discard_types(MediaType::MEDIA_TYPE_UNKNOWN)
     {
@@ -50,14 +49,6 @@ namespace fpp {
         _streams.push_back(stream);
         log_info("Stream added: " << stream->toString());
         return Code::OK;
-    }
-
-    ProcessorType Processor::type() const {
-        return _type;
-    }
-
-    bool Processor::typeIs(ProcessorType value) const {
-        return _type == value;
     }
 
     void Processor::setOpened(bool opened) {

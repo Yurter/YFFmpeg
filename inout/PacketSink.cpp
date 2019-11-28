@@ -2,8 +2,7 @@
 
 namespace fpp {
 
-    PacketSink::PacketSink() :
-        PacketProcessor(ProcessorType::Output)
+    PacketSink::PacketSink()
     {
         setName("PacketSink");
         try_throw(setPostFunction(std::bind(&PacketSink::writePacket, this)));

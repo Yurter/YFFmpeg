@@ -68,11 +68,11 @@ namespace fpp {
         Encoder,
     };
 
-    enum class ProcessorType {
-        Input,
-        Process,
-        Output
-    };
+//    enum class ProcessorType { //TODO удалить
+//        Input,
+//        Process,
+//        Output
+//    };
 
     /* Медиа тип потока/пакета/фрейма */
     enum MediaType {

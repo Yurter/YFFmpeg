@@ -2,8 +2,7 @@
 
 namespace fpp {
 
-    PacketSource::PacketSource() :
-        PacketProcessor(ProcessorType::Input)
+    PacketSource::PacketSource()
     {
         setName("PacketSource");
         try_throw(setPreFunction(std::bind(&PacketSource::readPacket, this)));

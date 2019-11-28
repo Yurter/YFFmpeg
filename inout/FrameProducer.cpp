@@ -2,8 +2,7 @@
 
 namespace fpp {
 
-    FrameProducer::FrameProducer() :
-        TemplateProcessor<Packet,Frame>(ProcessorType::Process)
+    FrameProducer::FrameProducer()
     {
         setName("FrameProducer");
     }
