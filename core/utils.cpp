@@ -222,13 +222,13 @@ namespace fpp {
             codec->framerate    = video_parameters->frameRate();
 
             if (auto ret = av_opt_set(codec->priv_data, "crf", "23", 0); ret != 0) {
-                static_log_warning("utils", "av_opt_set crf failed: " << ret /*<< " - " << av_err2str(ret)*/);
+                static_log_warning("utils", "av_opt_set crf     failed: " << ret /*<< " - " << av_err2str(ret)*/);
             }
             if (auto ret = av_opt_set(codec->priv_data, "preset", "ultrafast", 0); ret != 0) {
-                static_log_warning("utils", "av_opt_set preset failed: " << ret /*<< " - " << av_err2str(ret)*/);
+                static_log_warning("utils", "av_opt_set preset  failed: " << ret /*<< " - " << av_err2str(ret)*/);
             }
             if (auto ret = av_opt_set(codec->priv_data, "tune", "zerolatency", 0); ret != 0) {
-                static_log_warning("utils", "av_opt_set tune failed: " << ret /*<< " - " << av_err2str(ret)*/);
+                static_log_warning("utils", "av_opt_set tune    failed: " << ret /*<< " - " << av_err2str(ret)*/);
             }
             if (auto ret = av_opt_set(codec->priv_data, "threads", "0", 0); ret != 0) {
                 static_log_warning("utils", "av_opt_set threads failed: " << ret /*<< " - " << av_err2str(ret)*/);
@@ -373,22 +373,40 @@ namespace fpp {
         return_if(streams.first->isAudio(),  false);
         return_if(streams.second->isAudio(), false);
 
-        auto in = dynamic_cast<VideoParameters*>(streams.first->parameters);
-        auto out = dynamic_cast<VideoParameters*>(streams.second->parameters);
+        auto in = static_cast<VideoParameters*>(streams.first->parameters);
+        auto out = static_cast<VideoParameters*>(streams.second->parameters);
 
-        return_if(in->width()  != out->width(),  true);
-        return_if(in->height() != out->height(), true);
-        return_if(in->pixelFormat()  != out->pixelFormat(),  true);
+        if (in->width() != out->width()) {
+            static_log_warning("utils", "Rescaling required: width mismatch "
+                               << in->width() << " != " << out->width());
+            return true;
+        }
+        if (in->height() != out->height()) {
+            static_log_warning("utils", "Rescaling required: height mismatch "
+                               << in->height() << " != " << out->height());
+            return true;
+        }
+        //TODO заставляет транскодить h264 из-за несовападения YUV420P и YUVJ420P
+//        if (in->pixelFormat() != out->pixelFormat()) {
+//            static_log_warning("utils", "Rescaling required: pixel format mismatch "
+//                               << av_get_pix_fmt_name(in->pixelFormat()) << " != "
+//                               << av_get_pix_fmt_name(out->pixelFormat()));
+//            return true;
+//        }
+
+//        return_if(in->width()  != out->width(),  true);
+//        return_if(in->height() != out->height(), true);
+//        return_if(in->pixelFormat() != out->pixelFormat(),  true);
 
         return false;
     }
 
     bool utils::resampling_required(const StreamPair streams) {
-        return_if(streams.first->isVideo(),  false); //TODO throw YException, надо ли?
+        return_if(streams.first->isVideo(),  false);
         return_if(streams.second->isVideo(), false);
 
-        auto in = dynamic_cast<AudioParameters*>(streams.first->parameters);
-        auto out = dynamic_cast<AudioParameters*>(streams.second->parameters);
+        auto in = static_cast<AudioParameters*>(streams.first->parameters);
+        auto out = static_cast<AudioParameters*>(streams.second->parameters);
 
         return_if(in->sampleRate()      != out->sampleRate(),       true);
         return_if(in->sampleFormat()    != out->sampleFormat(),     true);

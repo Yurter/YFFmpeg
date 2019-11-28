@@ -8,22 +8,17 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
-//#include <opencv2/opencv.hpp>
 
 namespace fpp {
 
     static int64_t object_uid_handle = DEFAULT_INT; //TODO remove warning
-    #define USE_HWACCEL true
-
-    //typedef std::list<Object*> ProcessorList;
-//    using ProcessorList = std::list<Object*>;
+    #define USE_HWACCEL true //TODO
 
     class utils {
 
     public:
 
         utils()         = delete;
-        ~utils()        = delete;
         utils(utils&)   = delete;
         utils(utils&&)  = delete;
 
