@@ -29,8 +29,6 @@ namespace fpp {
         Pipeline(); //TODO hwaccel flag_enum|set_method
         virtual ~Pipeline() override;
 
-        bool                stopPr();                             ///< Функция прерывает работу класса.
-
         Code                addElement(FrameSource*     frame_source);
         Code                addElement(FrameSink*       frame_sink);
         Code                addElement(PacketSource*    packet_source);
@@ -55,7 +53,6 @@ namespace fpp {
         Code                initRefi();
         Code                initCodec();
         Code                initMedia();
-
 
         Code                openCodec();
         Code                openMediaSources();

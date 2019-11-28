@@ -17,15 +17,20 @@ namespace fpp {
         stop();
     }
 
-    bool Pipeline::stopPr() {
-        log_info("Stopping...");
-        try_to(stopProcesors());
-//        try_to(closeMediaSources());
-//        try_to(closeMediaSinks());
-//        try_to(joinProcesors());
-//        try_to(stop_log());
-        log_info("Processing finished.");
-        return true;
+    Code Pipeline::addElement(FrameSource* frame_source) {
+        //
+    }
+
+    Code Pipeline::addElement(FrameSink* frame_sink) {
+        //
+    }
+
+    Code Pipeline::addElement(PacketSource* packet_source) {
+        //
+    }
+
+    Code Pipeline::addElement(PacketSink* packet_sink) {
+        //
     }
 
     void Pipeline::setOptions(int64_t options) {
@@ -55,25 +60,9 @@ namespace fpp {
     }
 
     void Pipeline::remElement(Processor* processor) {
-//        auto thread_processor = dynamic_cast<Thread*>(element); // нужно ли?
-//        if (inited_ptr(thread_processor)) {
-//            try_throw(thread_processor->stop());
-//        }
         remproc(processor);
         findRoute(processor).destroy();
         _route_list.remove_if([processor](const Route& route){ return route.contains(processor); });
-    }
-
-    //void Pipeline::setRoute(Stream* input_stream, Stream* output_stream)
-    //{
-    //    _map->addRoute(input_stream, output_stream);
-    //}
-
-    //TODO
-    void Pipeline::setRoute(MediaSource* input_context, int64_t input_stream_index
-                            , MediaSink* output_context, int64_t output_stream_index) {
-//        _metamap.push_back({{ input_context->inputFormatContext().uid(), input_stream_index }
-//                        , { output_context->outputFormatContext().uid(), output_stream_index }});
     }
 
     void Pipeline::dump() const {
@@ -422,12 +411,6 @@ namespace fpp {
         return Code::NOT_IMPLEMENTED;
     }
 
-//    Code Pipeline::determineSequence(MediaSink* media_sink) {
-//        try_to(connectIOStreams(MediaType::MEDIA_TYPE_VIDEO));
-//        //TODO
-//        return Code::OK;
-//    }
-
     std::string Pipeline::toString() const {
         std::string dump_str;
 
@@ -467,33 +450,33 @@ namespace fpp {
          * |  #1 Source[0:1] -> Decoder pcm_mulaw -> Resampler -> Encoder aac -> Sink[1:1]
          * |  #0 Source[0:0] -> Decoder flv -> Rescaler -> VideoFilter -> Encoder libx264 -> Sink[1:0]
         */
-        dump_str += "\nStream mapping:";
-        int64_t i = 0;
-        std::string delimeter = " -> ";
-//        auto stream_map = _map->streamMap();
-        for (auto&& sequence : _processor_sequences) {
-            dump_str += "\n";
-            dump_str += TAB;
-            dump_str += "#" + std::to_string(i++) + " ";
-            for (auto&& elem : sequence) {
-                if (elem->is("YMap")) { continue; }
-                dump_str += elem->name();
-                if (elem->is("Source") || elem->is("Sink")) { //TODO устаревший код
-                    auto context = dynamic_cast<FormatContext*>(elem);
-                    dump_str += "[" + std::to_string(context->uid())
-                            + ":"
-                            + std::to_string(i-1) + "]"; //TODO stream_index, брать из _stream_map->streamMap();
-                }
-                if (elem->is("Decoder")) {
-                    dump_str += " " + std::string(static_cast<Decoder*>(elem)->decoderContext()->codec->name);
-                }
-                if (elem->is("Encoder")) {
-                    dump_str += " " + std::string(static_cast<Encoder*>(elem)->encoderContext()->codec->name);
-                }
-                dump_str += delimeter;
-            }
-            dump_str.erase(dump_str.size() - delimeter.size(), delimeter.size());
-        }
+//        dump_str += "\nStream mapping:";
+//        int64_t i = 0;
+//        std::string delimeter = " -> ";
+////        auto stream_map = _map->streamMap();
+//        for (auto&& sequence : _processor_sequences) {
+//            dump_str += "\n";
+//            dump_str += TAB;
+//            dump_str += "#" + std::to_string(i++) + " ";
+//            for (auto&& elem : sequence) {
+//                if (elem->is("YMap")) { continue; }
+//                dump_str += elem->name();
+//                if (elem->is("Source") || elem->is("Sink")) { //TODO устаревший код
+//                    auto context = dynamic_cast<FormatContext*>(elem);
+//                    dump_str += "[" + std::to_string(context->uid())
+//                            + ":"
+//                            + std::to_string(i-1) + "]"; //TODO stream_index, брать из _stream_map->streamMap();
+//                }
+//                if (elem->is("Decoder")) {
+//                    dump_str += " " + std::string(static_cast<Decoder*>(elem)->decoderContext()->codec->name);
+//                }
+//                if (elem->is("Encoder")) {
+//                    dump_str += " " + std::string(static_cast<Encoder*>(elem)->encoderContext()->codec->name);
+//                }
+//                dump_str += delimeter;
+//            }
+//            dump_str.erase(dump_str.size() - delimeter.size(), delimeter.size());
+//        }
 
         return dump_str;
     }
