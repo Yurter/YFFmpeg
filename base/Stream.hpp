@@ -27,7 +27,6 @@ namespace fpp {
         Object*             context()   const;
         int64_t             uid()       const;
         int64_t             index()     const;
-//        int64_t             duration()  const;
         bool                used()      const;
         int64_t             packetIndex() const;
 

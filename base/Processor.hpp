@@ -1,5 +1,6 @@
 #pragma once
 #include "core/Thread.hpp"
+#include "Stream.hpp"
 
 namespace fpp {
 
@@ -16,6 +17,10 @@ namespace fpp {
 
         bool                opened() const;
         bool                closed() const;
+
+        StreamVector        streams();
+        Stream*             stream(int64_t index);
+        Code                addStream(Stream* stream);
 
         ProcessorType       type() const;
         bool                typeIs(ProcessorType value) const;
@@ -45,6 +50,7 @@ namespace fpp {
         ProcessorType       _type;
         int64_t             _skip_types;
         int64_t             _discard_types;
+        StreamVector        _streams;
 
     };
 

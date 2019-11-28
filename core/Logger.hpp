@@ -5,7 +5,6 @@
 
 namespace fpp {
 
-//    using Message = std::pair<LogLevel,std::string>;
     class LogMessage {
 
     public:

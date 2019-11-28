@@ -14,8 +14,8 @@ namespace fpp {
         _log_level(LogLevel::Info)
     {
         setName("Logger");
-//        av_log_set_callback(log_callback); //TODO later
-//        set_ffmpeg_log_level(LogLevel::Error);
+        av_log_set_callback(log_callback); //TODO later
+        setFFmpegLogLevel(LogLevel::Error);
         _message_queue.set_capacity(10'000);
         print(this, code_pos, LogLevel::Info, "Logger opened.");
         openFile(log_dir);
@@ -140,22 +140,28 @@ namespace fpp {
         av_log_format_line(ptr, level, fmt, vl2, line, sizeof(line), &print_prefix);
         va_end(vl2);
 
+//        std::cout << "level: " << level << std::endl;
         static_print_auto("FFmpeg", convert_log_level(level), line);
     }
 
-    LogLevel Logger::convert_log_level(int ffmpeg_level) {
-        switch (ffmpeg_level) {
-        case AV_LOG_QUIET:
-            return LogLevel::Quiet;
-        case AV_LOG_PANIC:
-        case AV_LOG_FATAL:
-        case AV_LOG_ERROR:
+    LogLevel Logger::convert_log_level(int ffmpeg_level) { //TODO
+//        switch (ffmpeg_level) {
+//        case AV_LOG_QUIET:
+//            return LogLevel::Quiet;
+//        case AV_LOG_PANIC:
+//        case AV_LOG_FATAL:
+//        case AV_LOG_ERROR:
+//            return LogLevel::Error;
+//        case AV_LOG_WARNING:
+//            return LogLevel::Warning;
+//        case AV_LOG_INFO:
+//            return LogLevel::Info;
+//        default:
+//            return LogLevel::Quiet;
+//        }
+        if (ffmpeg_level < AV_LOG_INFO) {
             return LogLevel::Error;
-        case AV_LOG_WARNING:
-            return LogLevel::Warning;
-        case AV_LOG_INFO:
-            return LogLevel::Info;
-        default:
+        } else {
             return LogLevel::Quiet;
         }
     }

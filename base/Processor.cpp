@@ -33,6 +33,25 @@ namespace fpp {
         return !_opened;
     }
 
+    StreamVector Processor::streams() {
+        return _streams;
+    }
+
+    Stream* Processor::stream(int64_t index) {
+        if (size_t(index) < _streams.size()) {
+            return _streams[size_t(index)];
+        } else {
+            return nullptr;
+        }
+    }
+
+    Code Processor::addStream(Stream* stream) {
+        return_if(not_inited_ptr(stream), Code::INVALID_INPUT);
+        _streams.push_back(stream);
+        log_info("Stream added: " << stream->toString());
+        return Code::OK;
+    }
+
     ProcessorType Processor::type() const {
         return _type;
     }

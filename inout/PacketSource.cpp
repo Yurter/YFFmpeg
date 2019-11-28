@@ -15,16 +15,11 @@ namespace fpp {
 
     Code PacketSource::readPacket() {
         Packet packet;
-//        try_to(readInputData(packet));
         Code ret = readInputData(packet);
         if (utils::exit_code(ret)
                 && (ret != Code::END_OF_FILE)) {
             return ret;
         }
-        if (packet.empty()) {
-            log_error("Sending empty data");
-        }
-//        try_to(sendOutputData(packet, this));
         try_to(storeInputData(packet));
         return Code::OK;
     }

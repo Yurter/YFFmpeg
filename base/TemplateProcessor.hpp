@@ -92,10 +92,6 @@ namespace fpp {
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
 
-//            if (this->is("Rescaler")) {
-//                log_warning("popped data");
-//            }
-
             if ((input_data.empty() == false) && discardType(input_data.type())) {
                 log_warning("discard rule #1: input_data.empty() " << utils::bool_to_string(input_data.empty())
                             << " discardType(input_data.type()) " << utils::bool_to_string(discardType(input_data.type()))
@@ -105,10 +101,10 @@ namespace fpp {
             return_if((input_data.empty() == false)
                       && discardType(input_data.type()), Code::AGAIN);
 
-            if (input_data.typeIs(MediaType::MEDIA_TYPE_UNKNOWN)) { //TODO
-                log_error("Got UNKNOWN data");
-                return Code::AGAIN;
-            }
+//            if (input_data.typeIs(MediaType::MEDIA_TYPE_UNKNOWN)) { //TODO
+//                log_error("Got UNKNOWN data");
+//                return Code::AGAIN;
+//            }
 
             if (input_data.empty()) {
                 log_error("Got emty data!");
@@ -123,7 +119,6 @@ namespace fpp {
                 return Code::END_OF_FILE;
             }
             if (input_data.empty()
-                    && !this->is("YMap")
                     && !this->is("MediaSource")
                     && !this->is("CustomPacketSource")) {
                 sendOutputData(outType());

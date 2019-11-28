@@ -52,7 +52,7 @@ namespace fpp {
     }
 
     Code MediaSource::readInputData(Packet& input_data) {
-        if (int ret = av_read_frame(_input_format_context.mediaFormatContext(), &input_data.raw()); ret != 0) { //TODO parse return value
+        if (int ret = av_read_frame(_input_format_context.mediaFormatContext(), &input_data.raw()); ret != 0) {
             if (ret == AVERROR_EOF) {
                 log_info("Source reading completed");
                 return Code::END_OF_FILE;

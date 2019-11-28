@@ -93,9 +93,9 @@ int main() {
 //            source->setCloseOnDisconnect(false);
 //            pipeline->addElement(source);
 
-            if (auto ret = pipeline->start(); ret != Code::OK) {
-                static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
-            }
+//            if (auto ret = pipeline->start(); ret != Code::OK) {
+//                static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
+//            }
 
 //            auto sink_event = new MediaSink("group_video/eventIP.flv", IOType::Event);
 //            pipeline->addElement(sink_event);
@@ -126,21 +126,22 @@ int main() {
 
         {
             Pipeline* pipeline = new Pipeline;
-            if (auto ret = pipeline->start(); ret != Code::OK) {
-                static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
-            }
-
             auto source = new MediaSource("input.flv");
-            source->setCloseOnDisconnect(false);
+//            source->setCloseOnDisconnect(false);
             pipeline->addElement(source);
-
 
             auto sink_event = new MediaSink("output.flv", IOType::Event);
             pipeline->addElement(sink_event);
 
+            if (auto ret = pipeline->start(); ret != Code::OK) {
+                static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
+            }
 
-            utils::sleep_for_min(1);
-//            delete sink_event;
+            pipeline->join();
+
+//            utils::sleep_for_min(1);
+            utils::sleep_for_ms(10);
+            delete sink_event;
 //            delete sink_timelapse;
         }
 
