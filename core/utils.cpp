@@ -96,6 +96,45 @@ namespace fpp {
         return str;
     }
 
+    bool utils::compatible_with_pixel_format(AVCodec* codec, AVPixelFormat pixel_format) {
+        AVPixelFormat h264_pxl_fmts[] = {
+            AV_PIX_FMT_YUV420P
+            , AV_PIX_FMT_YUVJ420P
+            , AV_PIX_FMT_YUV422P
+            , AV_PIX_FMT_YUVJ422P
+            , AV_PIX_FMT_YUV444P
+            , AV_PIX_FMT_YUVJ444P
+            , AV_PIX_FMT_NV12
+            , AV_PIX_FMT_NV16
+            , AV_PIX_FMT_NV21
+            , AV_PIX_FMT_YUV420P10LE
+            , AV_PIX_FMT_YUV422P10LE
+            , AV_PIX_FMT_YUV444P10LE
+            , AV_PIX_FMT_NV20LE
+            , AV_PIX_FMT_GRAY8
+            , AV_PIX_FMT_GRAY10LE
+        };
+
+        auto pix_fmt = codec->pix_fmts;
+
+        if (not_inited_ptr(pix_fmt)) {
+            static_log_error("utils", codec->name << " doesn't contain any default pixel format");
+
+            if (codec->id == AV_CODEC_ID_H264) {
+                static_log_error("utils", "Using hardcoded pix_fmts");
+                pix_fmt = h264_pxl_fmts;
+            } else {
+                static_log_error("utils", "Don't know what to do :(");
+                return true;
+            }
+        }
+        while (pix_fmt[0] != AV_PIX_FMT_NONE) {
+            if (pix_fmt[0] == pixel_format) { return true; }
+            pix_fmt++;
+        }
+        return false;
+    }
+
     bool utils::compatibleWithSampleFormat(AVCodecContext *codec_context, AVSampleFormat sample_format) {
         auto smp_fmt = codec_context->codec->sample_fmts;
         while (smp_fmt[0] != AV_SAMPLE_FMT_NONE) {
@@ -179,19 +218,21 @@ namespace fpp {
             codec->pix_fmt      = video_parameters->pixelFormat();
             codec->width        = int(video_parameters->width());
             codec->height       = int(video_parameters->height());
-//            codec->time_base    = DEFAULT_TIME_BASE;
             codec->time_base    = parametres->timeBase();
             codec->framerate    = video_parameters->frameRate();
 
-            int set_opt_ret;
-            set_opt_ret = av_opt_set(codec->priv_data, "crf", "23", 0);
-            static_log_warning("opt crf", set_opt_ret);
-            set_opt_ret = av_opt_set(codec->priv_data, "preset", "ultrafast", 0);
-            static_log_warning("opt preset", set_opt_ret);
-            set_opt_ret = av_opt_set(codec->priv_data, "tune", "zerolatency", 0);
-            static_log_warning("opt tune", set_opt_ret);
-            set_opt_ret = av_opt_set(codec->priv_data, "threads", "0", 0);
-            static_log_warning("opt threads", set_opt_ret);
+            if (auto ret = av_opt_set(codec->priv_data, "crf", "23", 0); ret != 0) {
+                static_log_warning("utils", "av_opt_set crf     failed: " << ret /*<< " - " << av_err2str(ret)*/);
+            }
+            if (auto ret = av_opt_set(codec->priv_data, "preset", "ultrafast", 0); ret != 0) {
+                static_log_warning("utils", "av_opt_set preset  failed: " << ret /*<< " - " << av_err2str(ret)*/);
+            }
+            if (auto ret = av_opt_set(codec->priv_data, "tune", "zerolatency", 0); ret != 0) {
+                static_log_warning("utils", "av_opt_set tune    failed: " << ret /*<< " - " << av_err2str(ret)*/);
+            }
+            if (auto ret = av_opt_set(codec->priv_data, "threads", "0", 0); ret != 0) {
+                static_log_warning("utils", "av_opt_set threads failed: " << ret /*<< " - " << av_err2str(ret)*/);
+            }
 
 //            if (auto ret = av_opt_set(codec->priv_data, "crf", "23", 0); ret != 0) {
 //                static_log_warning("utils", "av_opt_set crf failed: " << ret << " - " << av_err2str(ret));
@@ -345,22 +386,40 @@ namespace fpp {
         return_if(streams.first->isAudio(),  false);
         return_if(streams.second->isAudio(), false);
 
-        auto in = dynamic_cast<VideoParameters*>(streams.first->parameters);
-        auto out = dynamic_cast<VideoParameters*>(streams.second->parameters);
+        auto in = static_cast<VideoParameters*>(streams.first->parameters);
+        auto out = static_cast<VideoParameters*>(streams.second->parameters);
 
-        return_if(in->width()       != out->width(),        true);
-        return_if(in->height()      != out->height(),       true);
-        return_if(in->pixelFormat() != out->pixelFormat(),  true);
+        if (in->width() != out->width()) {
+            static_log_warning("utils", "Rescaling required: width mismatch "
+                               << in->width() << " != " << out->width());
+            return true;
+        }
+        if (in->height() != out->height()) {
+            static_log_warning("utils", "Rescaling required: height mismatch "
+                               << in->height() << " != " << out->height());
+            return true;
+        }
+        //TODO заставляет транскодить h264 из-за несовападения YUV420P и YUVJ420P
+        if (in->pixelFormat() != out->pixelFormat()) {
+            static_log_warning("utils", "Rescaling required: pixel format mismatch "
+                               << av_get_pix_fmt_name(in->pixelFormat()) << " != "
+                               << av_get_pix_fmt_name(out->pixelFormat()));
+            return true;
+        }
+
+//        return_if(in->width()  != out->width(),  true);
+//        return_if(in->height() != out->height(), true);
+//        return_if(in->pixelFormat() != out->pixelFormat(),  true);
 
         return false;
     }
 
     bool utils::resampling_required(const StreamPair streams) {
-        return_if(streams.first->isVideo(),  false); //TODO throw YException, надо ли?
+        return_if(streams.first->isVideo(),  false);
         return_if(streams.second->isVideo(), false);
 
-        auto in = dynamic_cast<AudioParameters*>(streams.first->parameters);
-        auto out = dynamic_cast<AudioParameters*>(streams.second->parameters);
+        auto in = static_cast<AudioParameters*>(streams.first->parameters);
+        auto out = static_cast<AudioParameters*>(streams.second->parameters);
 
         return_if(in->sampleRate()      != out->sampleRate(),       true);
         return_if(in->sampleFormat()    != out->sampleFormat(),     true);

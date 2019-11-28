@@ -38,7 +38,7 @@ namespace fpp {
         if_not(inited()) { try_to(init()); }
         _thread = std::thread([this]() {
             _running = true;
-            log_trace("Thread started");
+            log_debug("Thread started");
             try_throw(onStart());
             try {
                 do {
@@ -62,14 +62,14 @@ namespace fpp {
                 _exit_message = "unknown";
             }
             _running = false;
-            log_trace("Thread finished");
+            log_debug("Thread finished");
         });
         _thread.detach(); //TODO убрать? без детача падения на выходе, выяснить в каком объекте и почему
         return Code::OK;
     }
 
     Code Thread::stop() {
-        log_trace("Thread stoping.");
+        log_debug("Thread stoping.");
         _stop_flag = true;
         try_to(quit());
         try_to(onStop());
@@ -78,7 +78,7 @@ namespace fpp {
 
     Code Thread::quit() {
         return_if_not(running(), Code::OK);
-        log_trace("Thread quiting.");
+        log_debug("Thread quiting.");
         _stop_flag = true; //TODO дублировать из стопа?
         try { /* TODO */
             if (_thread.joinable()) { _thread.join(); }
@@ -95,7 +95,7 @@ namespace fpp {
     }
 
     void Thread::join() const {
-        log_trace("Thread joining.");
+        log_debug("Thread joining.");
         while (running()) { utils::sleep_for(MEDIUM_DELAY_MS); }
 //        while (running()) {
 //            log_warning("still running");

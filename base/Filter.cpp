@@ -111,6 +111,7 @@ namespace fpp {
         avfilter_inout_free(&outputs);
 
         //return ret;
+        setInited(true);
         return Code::OK;
     }
 

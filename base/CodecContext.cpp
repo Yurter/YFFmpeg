@@ -16,7 +16,7 @@ namespace fpp {
     }
 
     Code CodecContext::init() {
-        log_trace("Initialization.");
+        log_debug("Initialization.");
         return_if(inited(), Code::INVALID_CALL_ORDER);
         auto codec = _stream->parameters->codec();
         return_if(not_inited_ptr(codec), Code::INVALID_INPUT);
@@ -35,7 +35,7 @@ namespace fpp {
     }
 
     Code CodecContext::open() {
-        log_trace("Opening.");
+        log_debug("Opening.");
         return_if(opened(), Code::INVALID_CALL_ORDER);
         auto codec = _stream->parameters->codec();
         if (int ret = avcodec_open2(_codec_context, codec, nullptr); ret != 0) {
@@ -55,7 +55,7 @@ namespace fpp {
     }
 
     Code CodecContext::close() {
-        log_trace("Closing.");
+        log_debug("Closing.");
         return_if(closed(), Code::INVALID_CALL_ORDER);
         if (inited_ptr(_codec_context)) {
             // использовать ? avcodec_free_context(_codec_context)
@@ -66,8 +66,42 @@ namespace fpp {
     }
 
     std::string CodecContext::toString() const {
-        std::string str = std::string(_codec_context->codec->name)
-                + " codec";
+        std::string str;
+        std::string delimeter = ", ";
+        str += "Codec name: "   + std::string(_codec_context->codec->name) + delimeter;
+        str += "codec id: "     + std::to_string(_codec_context->codec->id) + delimeter;
+        str += "codec type: "   + std::string(av_get_media_type_string(_codec_context->codec_type)) + delimeter;
+        str += "width: "        + std::to_string(_codec_context->width) + delimeter;
+        str += "height: "       + std::to_string(_codec_context->height) + delimeter;
+        str += "coded_width: "  + std::to_string(_codec_context->coded_width) + delimeter;
+        str += "coded_height: " + std::to_string(_codec_context->coded_height) + delimeter;
+        str += "time_base: "    + utils::rational_to_string(_codec_context->time_base) + delimeter;
+        str += "pix_fmt: "      + std::string(av_get_pix_fmt_name(_codec_context->pix_fmt)) + delimeter;
+
+        //debug output
+//        str += "object size: "  + std::to_string(sizeof (*static_cast<Object*>(_stream->parameters))) + delimeter;
+//        str += "object raw: \n";
+//        for (size_t i = 0; i < sizeof (*static_cast<Object*>(_stream->parameters)); ++i) {
+//            if (i % 16 == 0) {
+//                str += "\n";
+//            }
+//            std::stringstream stream;
+//            auto number = unsigned(reinterpret_cast<const uint8_t*>(static_cast<Object*>(_stream->parameters))[i]);
+//            stream << std::hex << number;
+//            if (stream.str().length() == 1) {
+//                str += "0" + stream.str();
+//            } else {
+//                str += stream.str();
+//            }
+//            str += " ";
+//        }
+//        str += "\n object size: "  + std::to_string(sizeof (std::string)) + delimeter;
+//        str += "data: " + std::to_string(static_cast<MediaData*>(_stream->parameters)->type()) + delimeter;
+//        str += "duration: " + std::to_string(_stream->parameters->duration()) + delimeter;
+//        str += "___";
+        //~debug output
+
+        str.erase(str.size() - delimeter.size(), delimeter.size());
         return str;
     }
 

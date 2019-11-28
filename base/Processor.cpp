@@ -7,6 +7,8 @@ namespace fpp {
         _opened(false)
       , _close_on_disconnect(true)
       , _type(type)
+      , _skip_types(MediaType::MEDIA_TYPE_UNKNOWN)
+      , _discard_types(MediaType::MEDIA_TYPE_UNKNOWN)
     {
         setName("Processor");
     }
@@ -46,14 +48,14 @@ namespace fpp {
     Code fpp::Processor::connectTo(fpp::Processor* other) {
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
         _next_processor_list.push_back(other);
-        log_trace("Connected to " << other->name());
+        log_debug("Connected to " << other->name());
         return Code::OK;
     }
 
     Code Processor::disconnectFrom(Processor* other) {
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
         _next_processor_list.remove(other);
-        log_trace("Disconnected from " << other->name());
+        log_debug("Disconnected from " << other->name());
         if (_next_processor_list.empty()) {
             if (_close_on_disconnect) {
                 log_info("TODO самоуничтожение объекта"); //TODO заменить return type на void?

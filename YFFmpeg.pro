@@ -1,4 +1,5 @@
 TEMPLATE = app
+
 #TEMPLATE = lib
 #CONFIG += static
 

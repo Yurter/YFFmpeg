@@ -37,7 +37,6 @@ namespace fpp {
             if (closed()) {
                 log_warning("Push to closed processor");
             }
-            return_if(closed(), Code::AGAIN);
             if (!_input_queue.push(*static_cast<const inType*>(input_data))) {
                 log_warning("queue push failed");
             }
@@ -62,6 +61,7 @@ namespace fpp {
 
         Code sendOutputData(const outType& output_data) {
             for (auto next_processor : _next_processor_list) {
+                log_trace("Sending data to " << next_processor->name());
                 try_to(next_processor->push(&output_data));
             }
             return Code::OK;
@@ -92,8 +92,23 @@ namespace fpp {
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
 
+//            if (this->is("Rescaler")) {
+//                log_warning("popped data");
+//            }
+
+            if ((input_data.empty() == false) && discardType(input_data.type())) {
+                log_warning("discard rule #1: input_data.empty() " << utils::bool_to_string(input_data.empty())
+                            << " discardType(input_data.type()) " << utils::bool_to_string(discardType(input_data.type()))
+                            << " data: " << input_data);
+            }
+
             return_if((input_data.empty() == false)
                       && discardType(input_data.type()), Code::AGAIN);
+
+            if (input_data.typeIs(MediaType::MEDIA_TYPE_UNKNOWN)) { //TODO
+                log_error("Got UNKNOWN data");
+                return Code::AGAIN;
+            }
 
             if (input_data.empty()) {
                 log_error("Got emty data!");

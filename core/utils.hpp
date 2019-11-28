@@ -8,22 +8,17 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
-//#include <opencv2/opencv.hpp>
 
 namespace fpp {
 
     static int64_t object_uid_handle = DEFAULT_INT; //TODO remove warning
-    #define USE_HWACCEL true
-
-    //typedef std::list<Object*> ProcessorList;
-//    using ProcessorList = std::list<Object*>;
+    #define USE_HWACCEL true //TODO
 
     class utils {
 
     public:
 
         utils()         = delete;
-        ~utils()        = delete;
         utils(utils&)   = delete;
         utils(utils&&)  = delete;
 
@@ -41,6 +36,7 @@ namespace fpp {
         static std::string  code_to_string(Code code);
         static std::string  codec_type_to_string(CodecType type);
         static std::string  rational_to_string(AVRational rational);
+        static bool         compatible_with_pixel_format(AVCodec* codec, AVPixelFormat pixel_format);
         static bool         compatibleWithSampleFormat(AVCodecContext* codec_context, AVSampleFormat sample_format);
         static AVMediaType  ymedia_type_to_avmedia_type(MediaType media_type);
         static int64_t      gen_context_uid();

@@ -57,6 +57,35 @@ namespace fpp {
     }
 
     void VideoParameters::setPixelFormat(AVPixelFormat pixel_format) {
+        if (not_inited_ptr(_codec)) {
+            log_error("Cannot set pixel format before codec");
+            return;
+        }
+        AVPixelFormat h264_pxl_fmts[] = {
+            AV_PIX_FMT_YUV420P
+            , AV_PIX_FMT_YUVJ420P
+            , AV_PIX_FMT_YUV422P
+            , AV_PIX_FMT_YUVJ422P
+            , AV_PIX_FMT_YUV444P
+            , AV_PIX_FMT_YUVJ444P
+            , AV_PIX_FMT_NV12
+            , AV_PIX_FMT_NV16
+            , AV_PIX_FMT_NV21
+            , AV_PIX_FMT_YUV420P10LE
+            , AV_PIX_FMT_YUV422P10LE
+            , AV_PIX_FMT_YUV444P10LE
+            , AV_PIX_FMT_NV20LE
+            , AV_PIX_FMT_GRAY8
+            , AV_PIX_FMT_GRAY10LE
+        };
+        if_not(utils::compatible_with_pixel_format(_codec, pixel_format)) {
+//            log_warning("Cannot set pixel format: " << av_get_pix_fmt_name(pixel_format)
+//                        << " - " << _codec->name << " doesn't compatible with it, "
+//                        << "setting default: " << av_get_pix_fmt_name(_codec->pix_fmts[0]));
+//            _pixel_format = _codec->pix_fmts[0];
+            _pixel_format = AV_PIX_FMT_YUV420P; //TODO
+            return;
+        }
         _pixel_format = pixel_format;
     }
 
@@ -85,13 +114,14 @@ namespace fpp {
         return str;
     }
 
-    Code VideoParameters::completeFrom(const Parameters* other_parametrs) {
+    Code VideoParameters::completeFrom(const Parameters* other_parametrs) { //TODO заменить все присваивания на сеттеры
         auto other_video_parameters = static_cast<const VideoParameters*>(other_parametrs);
         if (not_inited_int(_width))             { _width = other_video_parameters->width();                 }
         if (not_inited_int(_height))            { _height = other_video_parameters->height();               }
         if (not_inited_q(_aspect_ratio))        { _aspect_ratio = other_video_parameters->aspectRatio();    }
         if (not_inited_q(_frame_rate))          { _frame_rate = other_video_parameters->frameRate();        }
-        if (not_inited_pix_fmt(_pixel_format))  { _pixel_format = other_video_parameters->pixelFormat();    }
+//        if (not_inited_pix_fmt(_pixel_format))  { _pixel_format = other_video_parameters->pixelFormat();    }
+        if (not_inited_pix_fmt(_pixel_format))  { setPixelFormat(other_video_parameters->pixelFormat());    }
         try_to(Parameters::completeFrom(other_parametrs));
         return Code::OK;
     }
