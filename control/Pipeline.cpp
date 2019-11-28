@@ -21,10 +21,10 @@ namespace fpp {
     }
 
     Code Pipeline::addElement(FrameSink* frame_sink) {
-        try_to(frame_sink->init());
-        try_to(determineSequence(frame_sink));
         std::lock_guard lock(_processor_mutex);
         _data_sinks.push_back(frame_sink);
+        try_to(frame_sink->init());
+        try_to(determineSequence(frame_sink));
         return Code::OK;
     }
 
@@ -38,9 +38,9 @@ namespace fpp {
 
     Code Pipeline::addElement(PacketSink* packet_sink) {
         try_to(packet_sink->init());
-        try_to(determineSequence(packet_sink));
         std::lock_guard lock(_processor_mutex);
         _data_sinks.push_back(packet_sink);
+        try_to(determineSequence(packet_sink));
         return Code::OK;
     }
 
