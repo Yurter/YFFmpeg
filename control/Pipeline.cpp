@@ -73,7 +73,19 @@ namespace fpp {
 
     Code Pipeline::run() {
         bool all_processor_stopped = true;
-        for (auto&& processor : _processors) {
+        for (auto&& processor : _data_sources) {
+            auto thread_processor = static_cast<Thread*>(processor);
+            /* Прекращение работы, если процессор завершил работу с ошибкой */
+            return_if(utils::error_code(thread_processor->exitCode())
+                      , thread_processor->exitCode());
+            if (thread_processor->running()) {
+                all_processor_stopped = false;
+                break;
+            } else {
+                /* Выброс отработавшего процессора из пула */
+            }
+        }
+        for (auto&& processor : _data_sinks) {
             auto thread_processor = static_cast<Thread*>(processor);
             /* Прекращение работы, если процессор завершил работу с ошибкой */
             return_if(utils::error_code(thread_processor->exitCode())
@@ -113,7 +125,7 @@ namespace fpp {
 
     Code Pipeline::checkFormatContexts() {
         return Code::OK; //debug
-        return_if(mediaSources().empty(),   Code::NOT_INITED);
+        return_if(_data_sources.empty(),   Code::NOT_INITED);
 //        return_if(mediaSinks().empty(),     Code::NOT_INITED);
         return Code::OK;
     }
@@ -185,18 +197,10 @@ namespace fpp {
 //    }
 
     Code Pipeline::stopProcesors() {
-        for (auto&& processor : _processors) {
+        for (auto&& processor : _data_sinks) {
             auto thread_processor = static_cast<Thread*>(processor);
             log_error("Thread: " << thread_processor->name());
             try_to(thread_processor->stop());
-        }
-        return Code::OK;
-    }
-
-    Code Pipeline::joinProcesors() {
-        for (auto&& processor : _processors) {
-            auto thread_processor = static_cast<Thread*>(processor);
-            thread_processor->join();
         }
         return Code::OK;
     }
@@ -318,7 +322,7 @@ namespace fpp {
 
     Stream* Pipeline::findStream(int64_t uid) {
         int64_t context_uid = utils::get_context_uid(uid);
-        for (auto&& source : mediaSources()) {
+        for (auto&& source : _data_sources) {
             if (source->is("MediaSource")) {
                 if (static_cast<MediaSource*>(source)->inputFormatContext().uid() == context_uid) {
                     for (auto&& stream : static_cast<MediaSource*>(source)->inputFormatContext().streams()) {
@@ -336,7 +340,7 @@ namespace fpp {
                 }
             }
         }
-        for (auto&& sink : mediaSinks()) {
+        for (auto&& sink : _data_sinks) {
             if (sink->is("MediaSink")) {
                 if (static_cast<MediaSink*>(sink)->outputFormatContext().uid() == context_uid) {
                     for (auto&& stream : static_cast<MediaSink*>(sink)->outputFormatContext().streams()) {
@@ -476,7 +480,7 @@ namespace fpp {
         switch (media_type) {
         case MediaType::MEDIA_TYPE_VIDEO: {
             StreamVector all_video_streams;
-            for (auto&& source : mediaSources()) {
+            for (auto&& source : _data_sources) {
                 auto medias_source = dynamic_cast<MediaSource*>(source);
                 if (inited_ptr(medias_source)) {
                     all_video_streams.push_back(medias_source->inputFormatContext().bestStream(MediaType::MEDIA_TYPE_VIDEO));
