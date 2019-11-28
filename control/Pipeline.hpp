@@ -16,13 +16,10 @@
 
 namespace fpp {
 
-//    using ProcessorList = std::list<Object*>;
-
     using MetaStream = std::pair<uint64_t,uint64_t>;
     using MetaRoute = std::pair<MetaStream,MetaStream>;
     using MetaMap = std::list<MetaRoute>;
 
-//    using ProcessorSequence = std::list<Object*>;
     using ProcessorSequence = std::list<Processor*>;
 
     class Pipeline : public Thread {
@@ -100,8 +97,7 @@ namespace fpp {
 
         ProcessorList       _processors;
 
-        std::list<ProcessorSequence>    _processor_sequences;
-        std::mutex                      _processor_sequences_mutex;
+        std::mutex          _processor_mutex;
 
 
         MetaMap             _metamap;

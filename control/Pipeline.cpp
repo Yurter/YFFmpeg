@@ -499,12 +499,12 @@ namespace fpp {
     }
 
     void Pipeline::pushproc(Processor* processor) {
-        std::lock_guard lock(_processor_sequences_mutex);
+        std::lock_guard lock(_processor_mutex);
         _processors.push_back(processor);
     }
 
     void Pipeline::remproc(Processor* processor) {
-        std::lock_guard lock(_processor_sequences_mutex);
+        std::lock_guard lock(_processor_mutex);
         _processors.remove(processor);
     }
 
