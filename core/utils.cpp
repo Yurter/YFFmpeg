@@ -156,7 +156,7 @@ namespace fpp {
         throw Exception("");
     }
 
-    int64_t utils::gen_context_uid() {
+    uint64_t utils::gen_uid() {
         return object_uid_handle++;
     }
 

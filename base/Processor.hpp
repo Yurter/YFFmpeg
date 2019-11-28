@@ -42,6 +42,7 @@ namespace fpp {
 
     private:
 
+        uint64_t            _uid;
         bool                _opened;
         bool                _close_on_disconnect;
         int64_t             _skip_types;

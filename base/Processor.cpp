@@ -4,12 +4,14 @@
 namespace fpp {
 
     Processor::Processor() :
-        _opened(false)
+        _uid(utils::gen_uid())
+      , _opened(false)
       , _close_on_disconnect(true)
       , _skip_types(MediaType::MEDIA_TYPE_UNKNOWN)
       , _discard_types(MediaType::MEDIA_TYPE_UNKNOWN)
     {
         setName("Processor");
+        _uid++;
     }
 
     Processor::~Processor() {

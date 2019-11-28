@@ -24,7 +24,6 @@ namespace fpp {
         AVFilterInOut *outputs = avfilter_inout_alloc();
         AVFilterInOut *inputs  = avfilter_inout_alloc();
         AVRational time_base = out_params->timeBase();
-//        enum AVPixelFormat pix_fmts[] = { AV_PIX_FMT_GRAY8, AV_PIX_FMT_NONE };
         enum AVPixelFormat pix_fmts[] = { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE };
 
         _filter_graph = avfilter_graph_alloc();
@@ -39,8 +38,6 @@ namespace fpp {
                 int(out_params->width()), int(out_params->height()), out_params->pixelFormat(),
                 time_base.num, time_base.den,
                 out_params->aspectRatio().num, out_params->aspectRatio().den);
-
-//        log_debug("args: " << args);
 
         ret = avfilter_graph_create_filter(&_buffersrc_ctx, buffersrc, "in",
                                            args, nullptr, _filter_graph);
@@ -106,7 +103,6 @@ namespace fpp {
         if ((ret = avfilter_graph_config(_filter_graph, nullptr)) < 0)
             return Code::FFMPEG_ERROR;
 
-    end:
         avfilter_inout_free(&inputs);
         avfilter_inout_free(&outputs);
 

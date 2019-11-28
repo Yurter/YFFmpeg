@@ -114,34 +114,16 @@ namespace fpp {
         return str;
     }
 
-    Code VideoParameters::completeFrom(const Parameters* other_parametrs) { //TODO заменить все присваивания на сеттеры
+    Code VideoParameters::completeFrom(const Parameters* other_parametrs) {
         auto other_video_parameters = static_cast<const VideoParameters*>(other_parametrs);
-        if (not_inited_int(_width))             { _width = other_video_parameters->width();                 }
-        if (not_inited_int(_height))            { _height = other_video_parameters->height();               }
-        if (not_inited_q(_aspect_ratio))        { _aspect_ratio = other_video_parameters->aspectRatio();    }
-        if (not_inited_q(_frame_rate))          { _frame_rate = other_video_parameters->frameRate();        }
-//        if (not_inited_pix_fmt(_pixel_format))  { _pixel_format = other_video_parameters->pixelFormat();    }
+        if (not_inited_int(_width))             { setWidth(other_video_parameters->width());                }
+        if (not_inited_int(_height))            { setHeight(other_video_parameters->height());              }
+        if (not_inited_q(_aspect_ratio))        {  setAspectRatio(other_video_parameters->aspectRatio());   }
+        if (not_inited_q(_frame_rate))          { setFrameRate(other_video_parameters->frameRate());        }
         if (not_inited_pix_fmt(_pixel_format))  { setPixelFormat(other_video_parameters->pixelFormat());    }
         try_to(Parameters::completeFrom(other_parametrs));
         return Code::OK;
     }
-
-    //void VideoParameters::toCodecpar(AVCodecParameters* codecpar)
-    //{
-    //    codecpar->width = int(_width);
-    //    codecpar->height = int(_height);
-    //    Parameters::toCodecpar(codecpar);
-    //}
-
-    //void VideoParameters::softCopy(VideoParameters &other_parametrs)
-    //{
-    //    if (not_inited_int(_width))             { _width = other_parametrs.width();                 }
-    //    if (not_inited_int(_height))            { _height = other_parametrs.height();               }
-    //    if (not_inited_q(_aspect_ratio))        { _aspect_ratio = other_parametrs.aspectRatio();    }
-    //    if (not_inited_float(_frame_rate))      { _frame_rate = other_parametrs.frameRate();        }
-    //    if (not_inited_pix_fmt(_pixel_format))  { _pixel_format = other_parametrs.pixelFormat();    }
-    //    Parameters::softCopy(other_parametrs);
-    //}
 
     VideoParameters& VideoParameters::operator=(const VideoParameters &rhs) {
         _width          = rhs.width();

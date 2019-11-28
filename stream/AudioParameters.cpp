@@ -64,7 +64,7 @@ namespace fpp {
         return str;
     }
 
-    Code AudioParameters::completeFrom(const Parameters* other_parametrs) {
+    Code AudioParameters::completeFrom(const Parameters* other_parametrs) { //TODO заменить все присваивания на сеттеры
         auto other_audio_parameters = static_cast<const AudioParameters*>(other_parametrs);
         if (not_inited_int(_sample_rate))           { _sample_rate      = other_audio_parameters->sampleRate();     }
         if (not_inited_smp_fmt(_sample_format))     { _sample_format    = other_audio_parameters->sampleFormat();   }
@@ -73,22 +73,6 @@ namespace fpp {
         try_to(Parameters::completeFrom(other_parametrs));
         return Code::OK;
     }
-
-    //void AudioParameters::toCodecpar(AVCodecParameters* codecpar)
-    //{
-    //    codecpar->sample_rate       = int(_sample_rate);
-    //    codecpar->channel_layout    = _channel_layout;
-    //    Parameters::toCodecpar(codecpar);
-    //}
-
-    //void AudioParameters::softCopy(AudioParameters& other_parametrs)
-    //{
-    //    if (not_inited_int(_sample_rate))           { _sample_rate      = other_parametrs.sampleRate();     }
-    //    if (not_inited_smp_fmt(_sample_format))     { _sample_format    = other_parametrs.sampleFormat();   }
-    //    if (not_inited_ch_layout(_channel_layout)) { _channel_layout  = other_parametrs.channelLayout(); }
-    //    if (not_inited_int(_channels))              { _channels         = other_parametrs.channels();       }
-    //    Parameters::softCopy(other_parametrs);
-    //}
 
     AudioParameters &AudioParameters::operator=(const AudioParameters& rhs) {
         _sample_rate    = rhs.sampleRate();
