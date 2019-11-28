@@ -4,7 +4,7 @@
 
 namespace fpp {
 
-    class OpenCVSink : public FrameSink {
+    class OpenCVSink : public FrameSink { //TODO удалить класс, есть CustomFrameSink, созранить пресет потока
 
     public:
 

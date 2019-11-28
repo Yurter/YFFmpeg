@@ -28,18 +28,9 @@ namespace fpp {
         return true;
     }
 
-    void Pipeline::pause() {
-        _paused = true;
-        log_info("Paused");
-    }
-
-    void Pipeline::unpause() {
-        log_info("Unpaused");
-        _paused = false;
-    }
-
     void Pipeline::setOptions(int64_t options) {
-        _options = options;
+        UNUSED(options);
+//        _options = options;
     }
 
     Code Pipeline::addElement(Processor* processor) {
@@ -92,14 +83,6 @@ namespace fpp {
     Code Pipeline::init() {
         log_info("Initialization started...");
         try_to(checkFormatContexts());  /* Проверка на наличие входо-выходов                            */
-//        try_to(initMedia());            /* Инициализация форматКонтекстов                               */
-//        try_to(openMediaSources());     /* Открытие входов и формирование входных потоков               */
-//        try_to(initMap());              /* Автоматический проброс потоков                               */
-//        try_to(openMediaSinks());       /* Открытие выходов                                             */
-//        try_to(determineSequences());   /* Формирование поледовательностей обработки входных потоков    */
-//        try_to(initRefi());             /* Инициализация рефи                                           */
-//        try_to(initCodec());            /* Инициализация кодеков                                        */
-//        try_to(openCodec());            /* Открытие кодеков                                             */
         try_to(startProcesors());       /* Запуск всех процессоров                                      */
         dump();                         /* Дамп всей информации в лог                                   */
         setInited(true);
@@ -138,16 +121,14 @@ namespace fpp {
     Code Pipeline::onStop() {
         log_info("Stopping...");
         try_to(stopProcesors());
-//        try_to(closeMediaSources());
-//        try_to(closeMediaSinks());
-//        try_to(joinProcesors());
-//        try_to(stop_log());
         log_info("Processing finished.");
         return Code::OK;
     }
 
     bool Pipeline::option(Option option) const {
-        return _options & option;
+        UNUSED(option);
+        return false;
+//        return _options & option;
     }
 
     Code Pipeline::checkFormatContexts() {
@@ -156,21 +137,6 @@ namespace fpp {
 //        return_if(mediaSinks().empty(),     Code::NOT_INITED);  //TODO throw YException("No destination specified");
         return Code::OK;
     }
-
-//    Code Pipeline::initMap() {
-//        auto stream_map = _map->streamMap();
-//        if (stream_map->empty()) {
-//            /* Пользователь не установил таблицу маршрутов явно,
-//             * определяются маршруты по умолчанию */
-//            /* Проброс наилучшего видео-потока */
-//            try_to(connectIOStreams(MediaType::MEDIA_TYPE_VIDEO));
-//            /* Проброс наилучшего аудио-потока */
-//            try_to(connectIOStreams(MediaType::MEDIA_TYPE_AUDIO));
-//        }
-//        try_to(_map->init());
-//        log_debug(_map->toString());
-//        return Code::OK;
-//    }
 
     Code Pipeline::initRefi() {
         for (auto&& processor : _processors) {
@@ -241,7 +207,6 @@ namespace fpp {
     Code Pipeline::stopProcesors() {
         for (auto&& processor : _processors) {
             auto thread_processor = static_cast<Thread*>(processor);
-//            try_to(thread_processor->quit());
             log_error("Thread: " << thread_processor->name());
             try_to(thread_processor->stop());
         }
@@ -572,19 +537,6 @@ namespace fpp {
         }
     }
 
-//    StreamList Pipeline::getOutputStreams(MediaType media_type) {
-//        StreamList output_streams;
-//        for (auto&& sink : mediaSinks()) {
-//            for (auto&& video_stream : sink->outputFormatContext().streams(media_type)) {
-//                output_streams.push_back(video_stream);
-//            }
-//        }
-//        for (auto&& sink : openCVSinks()) {
-//            output_streams.push_back(sink->videoStream());
-//        }
-//        return output_streams;
-//    }
-
     Route Pipeline::findRoute(Processor* processor) {
         for (auto&& route : _route_list) {
             if (route.contains(processor)) {
@@ -593,46 +545,6 @@ namespace fpp {
         }
         return Route();
     }
-
-//    Code Pipeline::connectIOStreams(MediaType media_type) {
-//        Stream* best_stream = findBestInputStream(media_type);
-//        if (not_inited_ptr(best_stream)) {
-//            log_warning(utils::media_type_to_string(media_type)
-//                        << " stream is not present in the sources");
-
-//            return Code::OK; //TODO ?? что возращать? //        return Code::INVALID_INPUT; ?
-//        }
-//        StreamList output_streams = getOutputStreams(media_type);
-//        if (output_streams.empty()) {
-//            log_warning("Sinks does not have any "
-//                        << utils::media_type_to_string(media_type)
-//                        << " stream");
-//            log_info("Creating " << utils::media_type_to_string(media_type) << " stream in every sink...");
-//            for (auto&& sink : mediaSinks()) {
-//                if ((sink->outputFormatContext().preset() == IOType::Auto)
-//                        && (sink->discardType(media_type) == false)) {
-//                    try_to(sink->outputFormatContext().createStream(best_stream->parameters));
-//                    log_info("Created "
-//                             << utils::media_type_to_string(media_type)
-//                             << " stream in "
-//                             << sink->outputFormatContext().mediaResourceLocator());
-//                }
-//            }
-//            output_streams = getOutputStreams(media_type);
-//        }
-//        if (output_streams.empty()) {
-//            log_warning("Ignoring: " << *best_stream);
-//        }
-//        /* Трансляция наилучшего потока на все потоки выхода того же медиа-типа */
-//        for (auto&& out_stream : output_streams) {
-//            if (out_stream->used()) { continue; }
-//            try_to(_map->addRoute(best_stream, out_stream));
-//            out_stream->parameters->completeFrom(best_stream->parameters);
-//            best_stream->setUsed(true);
-//            out_stream->setUsed(true);
-//        }
-//        return Code::OK;
-//    }
 
     MediaSourceList Pipeline::mediaSources() const {
         MediaSourceList source_list;
@@ -682,10 +594,5 @@ namespace fpp {
         }
         return encoder_list;
     }
-
-//    Pipeline *createPipline()
-//    {
-//        return new Pipeline;
-//    }
 
 } // namespace fpp

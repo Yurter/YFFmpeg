@@ -2,8 +2,7 @@
 
 namespace fpp {
 
-    FrameSource::FrameSource() :
-        TemplateProcessor<Frame,Frame>(ProcessorType::Input)
+    FrameSource::FrameSource()
     {
         setName("FrameSource");
     }

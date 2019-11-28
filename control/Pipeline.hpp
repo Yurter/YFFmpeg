@@ -2,6 +2,8 @@
 #include "opencv/OpenCVSink.hpp"
 #include "custom/CustomPacketSource.hpp"
 #include "custom/CustomPacketSink.hpp"
+#include "custom/CustomFrameSource.hpp"
+#include "custom/CustomFrameSink.hpp"
 #include "media/MediaSource.hpp"
 #include "media/MediaSink.hpp"
 #include "codec/Decoder.hpp"
@@ -31,19 +33,15 @@ namespace fpp {
         virtual ~Pipeline() override;
 
         bool                stopPr();                             ///< Функция прерывает работу класса.
-        void                pause();                            ///< Функция приостанавливает работу класса.
-        void                unpause();                          ///< Функция возобновляет работу класса.
+
+        Code                addElement(FrameSource*     frame_source);
+        Code                addElement(FrameSink*       frame_sink);
+        Code                addElement(PacketSource*    packet_source);
+        Code                addElement(PacketSink*      packet_sink);
+
+        void                remElement(Processor* processor);
 
         void                setOptions(int64_t options);        ///< Функция устанавливает переданные ей опции Option.
-
-        Code                addElement(Processor* processor);        ///< Функция добавляет процессор медиа-данных в кучу.
-        void                remElement(Processor* processor);     ///< Функция ...
-
-        // До старта потоков нет возможности указать потоки явно
-    //    void                setRoute(Stream* input_stream, Stream* output_stream);            ///< Функция устанавливает соответствие между входным и выходным потоками.
-        void                setRoute(MediaSource* input_context, int64_t input_stream_index
-                                     , MediaSink* output_context, int64_t output_stream_index);
-
         void                dump() const;                       ///< TODO description
 
     private:
@@ -57,9 +55,6 @@ namespace fpp {
 
         Code                checkFormatContexts();
 
-//        Code                initProcessors();
-
-//        Code                initMap();
         Code                initRefi();
         Code                initCodec();
         Code                initMedia();
@@ -74,7 +69,6 @@ namespace fpp {
         Code                startProcesors();
         Code                stopProcesors();
         Code                joinProcesors();
-//        Code                determineSequences();
         void                freeProcesors();
 
         Code                createSequence(Route& route);
@@ -96,37 +90,25 @@ namespace fpp {
 
         Route               findRoute(Processor* processor);
 
-//        Code                connectIOStreams(MediaType media_type);
-
         MediaSourceList     mediaSources()  const;
         MediaSinkList       mediaSinks()    const;
         OpenCVSinkList      openCVSinks()   const;
         DecoderList         decoders()      const;
         EncoderList         encoders()      const;
-//        FrameProcessor      refis()         const;
 
     private:
 
         ProcessorList       _processors;
 
-                                         // DataFlow? Pipe? Pipeline?
-        std::list<ProcessorSequence>    _processor_sequences; //TODO перенести внутрь YMap ?
+        std::list<ProcessorSequence>    _processor_sequences;
         std::mutex                      _processor_sequences_mutex;
 
-//        YMap*               _map;
 
         MetaMap             _metamap;
 
         RouteList           _route_list;
 
-        // General
-        volatile bool       _paused;
-        int64_t             _options;
-
+//        int64_t             _options;
     };
-
-    static Pipeline* createPipline(){
-        return new Pipeline;
-    }
 
 } // namespace fpp

@@ -1,10 +1,9 @@
 #pragma once
-#include "base/TemplateProcessor.hpp"
-#include "base/Frame.hpp"
+#include "FrameProcessor.hpp"
 
 namespace fpp {
 
-    class FrameSource : public TemplateProcessor<Frame,Frame> {
+    class FrameSource : public FrameProcessor {
 
     public:
 
