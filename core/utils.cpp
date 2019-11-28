@@ -387,12 +387,12 @@ namespace fpp {
             return true;
         }
         //TODO заставляет транскодить h264 из-за несовападения YUV420P и YUVJ420P
-//        if (in->pixelFormat() != out->pixelFormat()) {
-//            static_log_warning("utils", "Rescaling required: pixel format mismatch "
-//                               << av_get_pix_fmt_name(in->pixelFormat()) << " != "
-//                               << av_get_pix_fmt_name(out->pixelFormat()));
-//            return true;
-//        }
+        if (in->pixelFormat() != out->pixelFormat()) {
+            static_log_warning("utils", "Rescaling required: pixel format mismatch "
+                               << av_get_pix_fmt_name(in->pixelFormat()) << " != "
+                               << av_get_pix_fmt_name(out->pixelFormat()));
+            return true;
+        }
 
 //        return_if(in->width()  != out->width(),  true);
 //        return_if(in->height() != out->height(), true);
