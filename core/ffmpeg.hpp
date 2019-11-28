@@ -198,6 +198,18 @@ namespace fpp {
                                         }\
                                     } while(false)
 
+/* ? */ //проблемма со статическими функциями
+//#define return_msg_if(cond,msg,ret_value)   do {\
+//                                                if (cond) {\
+//                                                    if (utils::error_code(ret_value)) {\
+//                                                        log_error(msg);\
+//                                                    } else {\
+//                                                        log_warning(msg);\
+//                                                    }\
+//                                                    return ret_value;\
+//                                                }\
+//                                            } while(false)
+
 /* ? */
 #define return_if_not(cond,ret_value)   do {\
                                             if (!(cond)) {\
