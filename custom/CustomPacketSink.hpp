@@ -18,8 +18,6 @@ namespace fpp {
         virtual Code        close() override;
         virtual std::string toString() const override;
 
-        StreamVector        streams();
-
     private:
 
         virtual Code        processInputData(Packet input_data) override;
@@ -27,9 +25,7 @@ namespace fpp {
 
     private:
 
-        uint64_t                        _context_uid;
         std::string                     _sink_name;
-        StreamVector                    _streams;
         std::function<Code(Packet&)>    _write_func;
         std::function<Code(Packet&)>    _process_func;
 

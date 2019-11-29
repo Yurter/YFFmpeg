@@ -6,9 +6,7 @@ namespace fpp {
                                        , StreamVector streams
                                        , std::function<Code(Packet&)> write_func
                                        , std::function<Code(Packet&)> process_func) :
-        _context_uid(utils::gen_uid())
-      , _sink_name(sink_name)
-      , _streams(streams)
+      _sink_name(sink_name)
       , _write_func(write_func)
       , _process_func(process_func)
     {
@@ -20,12 +18,12 @@ namespace fpp {
     }
 
     Code CustomPacketSink::init() {
-        for (auto&& stream : _streams) {
+        for (auto&& stream : streams()) {
 //            auto avstream = avformat_new_stream(nullptr, stream->parameters->codec());
 //            return_if(not_inited_ptr(avstream), Code::ERR);
 //            stream->setRaw(avstream);
 
-            stream->setUid(utils::gen_stream_uid(_context_uid, stream->parameters->streamIndex()));
+            stream->setUid(utils::gen_stream_uid(uid(), stream->parameters->streamIndex()));
             stream->setContext(this);
         }
         setInited(true);
@@ -44,10 +42,6 @@ namespace fpp {
 
     std::string CustomPacketSink::toString() const {
         return "TODO";
-    }
-
-    StreamVector CustomPacketSink::streams() {
-        return _streams;
     }
 
     Code CustomPacketSink::processInputData(Packet input_data) {

@@ -9,8 +9,8 @@ namespace fpp {
 
         CustomFrameSink(std::string sink_name
                            , StreamVector streams
-                           , std::function<Code(Packet&)> write_func
-                           , std::function<Code(Packet&)> process_func);
+                           , std::function<Code(Frame&)> write_func
+                           , std::function<Code(Frame&)> process_func);
         virtual ~CustomFrameSink() override;
 
         virtual Code        init() override;
@@ -27,11 +27,10 @@ namespace fpp {
 
     private:
 
-        int64_t                         _context_uid; //TODO перенести в Processor
-        std::string                     _sink_name;
-        StreamVector                    _streams;
-        std::function<Code(Packet&)>    _write_func;
-        std::function<Code(Packet&)>    _process_func;
+        std::string         _sink_name; //TODO перенести в Processor meta_data
+        StreamVector        _streams;
+        WriteFunction       _write_func;
+        ProcessFunction     _process_func;
 
     };
 

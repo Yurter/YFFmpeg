@@ -9,33 +9,31 @@ namespace fpp {
     public:
 
         Processor();
+        Processor(Processor& other) = delete;
+        Processor(Processor&& other) = delete;
         virtual ~Processor() override;
 
         virtual Code        open();
         virtual Code        close();
         virtual Code        push(const Object* input_data) = 0;
 
-        bool                opened() const;
-        bool                closed() const;
-
-        uint64_t            uid() const;
-
+        int64_t             uid() const;
         StreamVector        streams();
         Stream*             stream(int64_t index);
         Code                addStream(Stream* stream);
 
         void                setOpened(bool opened);
+        void                setCloseOnDisconnect(bool value);
+        void                setDiscardType(MediaType type);
+        void                setMetaData(const std::string& value);
 
         Code                connectTo(Processor* other);
         Code                disconnectFrom(Processor* other);
 
-        void                setCloseOnDisconnect(bool value);
-
-        void                setSkipType(MediaType type);
-        bool                skipType(MediaType type) const;
-
-        void                setDiscardType(MediaType type);
+        bool                opened() const;
+        bool                closed() const;
         bool                discardType(MediaType type) const;
+        std::string         metaData() const;
 
     protected:
 
@@ -44,12 +42,12 @@ namespace fpp {
 
     private:
 
-        uint64_t            _uid;
+        const int64_t       _uid;
         bool                _opened;
         bool                _close_on_disconnect;
-        int64_t             _skip_types;
         int64_t             _discard_types;
         StreamVector        _streams;
+        std::string         _meta_data;
 
     };
 

@@ -18,10 +18,6 @@ namespace fpp {
         virtual Code        close() override;
         virtual std::string toString() const override;
 
-        StreamVector        streams();
-        Stream*             stream(int64_t index);
-        Stream*             stream(MediaType type);
-
     private:
 
         virtual Code        readInputData(Packet& input_data) override;
@@ -31,7 +27,6 @@ namespace fpp {
         Code                sendEofPacket();
 
         std::string                     _source_name;
-        StreamVector                    _streams;
         std::function<Code(Packet&)>    _read_func;
         std::function<Code(Packet&)>    _process_func;
 

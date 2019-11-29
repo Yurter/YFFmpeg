@@ -6,7 +6,6 @@ namespace fpp {
         Filter(input_data_params, filters_descr)
     {
         setName("AudioFilter");
-        setSkipType(MediaType::MEDIA_TYPE_VIDEO);
     }
 
     Code AudioFilter::processInputData(Frame input_data) {

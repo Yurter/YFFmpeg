@@ -7,7 +7,6 @@ namespace fpp {
       , _rescaler_context(nullptr)
     {
         setName("Rescaler");
-        setSkipType(MediaType::MEDIA_TYPE_AUDIO);
     }
 
     Rescaler::~Rescaler() {

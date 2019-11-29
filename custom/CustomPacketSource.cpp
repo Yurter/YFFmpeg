@@ -7,7 +7,6 @@ namespace fpp {
                                            , std::function<Code(Packet&)> read_func
                                            , std::function<Code(Packet&)> process_func) :
         _source_name(source_name)
-      , _streams(streams)
       , _read_func(read_func)
       , _process_func(process_func)
     {
@@ -39,27 +38,6 @@ namespace fpp {
         return "TODO " + _source_name;
     }
 
-    StreamVector CustomPacketSource::streams() {
-        return _streams;
-    }
-
-    Stream* CustomPacketSource::stream(int64_t index) {
-        if (size_t(index) < _streams.size()) {
-            return _streams[size_t(index)];
-        } else {
-            return nullptr;
-        }
-    }
-
-    Stream* CustomPacketSource::stream(MediaType type) {
-        for (auto str : _streams) {
-            if (str->typeIs(type)) {
-                return str;
-            }
-        }
-        return nullptr;
-    }
-
     Code CustomPacketSource::readInputData(Packet& input_data) {
         try_to(_read_func(input_data));
         return Code::OK;
@@ -81,7 +59,7 @@ namespace fpp {
 
     Code CustomPacketSource::sendEofPacket() {
         Packet eof_packet;
-        for (auto&& stream : _streams) {
+        for (auto&& stream : streams()) {
             if (stream->used()) {
                 eof_packet.setType(stream->type());
                 eof_packet.setStreamUid(stream->uid());
@@ -89,7 +67,6 @@ namespace fpp {
                 stream->setUsed(false);
             }
         }
-//        return Code::END_OF_FILE;
         return Code::OK;
     }
 

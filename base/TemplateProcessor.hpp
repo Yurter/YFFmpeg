@@ -13,6 +13,8 @@ namespace fpp {
     public:
 
         using IOFunction = std::function<Code()>;
+        using WriteFunction = std::function<Code(outType&)>;
+        using ProcessFunction = std::function<Code(outType&)>;
 
         TemplateProcessor() {
             setName("TemplateProcessor");

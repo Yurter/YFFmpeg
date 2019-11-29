@@ -7,11 +7,9 @@ namespace fpp {
         _uid(utils::gen_uid())
       , _opened(false)
       , _close_on_disconnect(true)
-      , _skip_types(MediaType::MEDIA_TYPE_UNKNOWN)
       , _discard_types(MediaType::MEDIA_TYPE_UNKNOWN)
     {
         setName("Processor");
-        _uid++;
     }
 
     Processor::~Processor() {
@@ -26,15 +24,8 @@ namespace fpp {
         return Code::NOT_IMPLEMENTED;
     }
 
-    bool Processor::opened() const {
-        return _opened;
-    }
 
-    bool Processor::closed() const {
-        return !_opened;
-    }
-
-    uint64_t Processor::uid() const {
+    int64_t Processor::uid() const {
         return _uid;
     }
 
@@ -61,6 +52,19 @@ namespace fpp {
         _opened = opened;
     }
 
+    void Processor::setCloseOnDisconnect(bool value) {
+        _close_on_disconnect = value;
+    }
+
+
+    void Processor::setDiscardType(MediaType type) {
+        _discard_types |= type;
+    }
+
+    void Processor::setMetaData(const std::string& value) {
+        _meta_data = value;
+    }
+
     Code fpp::Processor::connectTo(fpp::Processor* other) {
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
         _next_processor_list.push_back(other);
@@ -82,24 +86,20 @@ namespace fpp {
         return Code::OK;
     }
 
-    void Processor::setCloseOnDisconnect(bool value) {
-        _close_on_disconnect = value;
+    bool Processor::opened() const {
+        return _opened;
     }
 
-    void Processor::setSkipType(MediaType type) {
-        _skip_types |= type;
-    }
-
-    bool Processor::skipType(MediaType type) const {
-        return _skip_types & type;
-    }
-
-    void Processor::setDiscardType(MediaType type) {
-        _discard_types |= type;
+    bool Processor::closed() const {
+        return !_opened;
     }
 
     bool Processor::discardType(MediaType type) const {
         return _discard_types & type;
+    }
+
+    std::string Processor::metaData() const {
+        return _meta_data;
     }
 
 } // namespace fpp

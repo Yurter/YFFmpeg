@@ -7,7 +7,6 @@ namespace fpp {
       , _resampler_context(nullptr)
     {
         setName("Resampler");
-        setSkipType(MediaType::MEDIA_TYPE_VIDEO);
     }
 
     Resampler::~Resampler() {
