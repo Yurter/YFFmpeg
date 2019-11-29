@@ -45,24 +45,24 @@ namespace fpp {
     }
 
     bool utils::exit_code(Code code) {
-        if (code == Code::ERR)             { return true; }
-        if (code == Code::EXIT)            { return true; }
-        if (code == Code::EXCEPTION)       { return true; }
-        if (code == Code::NOT_INITED)      { return true; }
-        if (code == Code::END_OF_FILE)     { return true; }
-        if (code == Code::FFMPEG_ERROR)    { return true; }
-        if (code == Code::INVALID_INPUT)   { return true; }
-        if (code == Code::NOT_IMPLEMENTED) { return true; }
+        if (code == Code::ERR)              { return true; }
+        if (code == Code::EXIT)             { return true; }
+        if (code == Code::EXCEPTION)        { return true; }
+        if (code == Code::NOT_INITED)       { return true; }
+        if (code == Code::END_OF_FILE)      { return true; }
+        if (code == Code::FFMPEG_ERROR)     { return true; }
+        if (code == Code::INVALID_INPUT)    { return true; }
+        if (code == Code::NOT_IMPLEMENTED)  { return true; }
         return false;
     }
 
     bool utils::error_code(Code code) {
-        if (code == Code::ERR)             { return true; }
-        if (code == Code::EXCEPTION)       { return true; }
-        if (code == Code::NOT_INITED)      { return true; }
-        if (code == Code::FFMPEG_ERROR)    { return true; }
-        if (code == Code::INVALID_INPUT)   { return true; }
-        if (code == Code::NOT_IMPLEMENTED) { return true; }
+        if (code == Code::ERR)              { return true; }
+        if (code == Code::EXCEPTION)        { return true; }
+        if (code == Code::NOT_INITED)       { return true; }
+        if (code == Code::FFMPEG_ERROR)     { return true; }
+        if (code == Code::INVALID_INPUT)    { return true; }
+        if (code == Code::NOT_IMPLEMENTED)  { return true; }
         return false;
     }
 
