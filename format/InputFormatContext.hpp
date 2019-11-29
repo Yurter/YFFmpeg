@@ -13,6 +13,8 @@ namespace fpp {
         virtual Code        init()           override;
         virtual std::string toString() const override;
 
+        Code                seek(int64_t stream_index, int64_t timestamp);
+
     private:
 
         virtual Code        createContext() override;

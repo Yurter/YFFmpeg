@@ -35,6 +35,12 @@ namespace fpp {
         return "TODO";
     }
 
+    Code InputFormatContext::seek(int64_t stream_index, int64_t timestamp) {
+        auto ret = av_seek_frame(_format_context, int(stream_index), timestamp, 0);
+        return_if(ret != 0, Code::FFMPEG_ERROR);
+        return Code::OK;
+    }
+
     Code fpp::InputFormatContext::createContext() {
         _format_context = avformat_alloc_context();
         if (not_inited_ptr(_format_context)) {
