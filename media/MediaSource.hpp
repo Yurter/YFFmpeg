@@ -37,8 +37,8 @@ namespace fpp {
 
         bool    _doNotSendEOF; //TODO
 
-        int64_t _start_point; //TODO
-        int64_t _end_point; //TODO
+        int64_t             _start_point;
+        int64_t             _end_point;
 
     };
 

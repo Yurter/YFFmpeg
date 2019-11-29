@@ -4,10 +4,10 @@ namespace fpp {
 
     MediaSource::MediaSource(const std::string mrl, IOType preset) :
         _input_format_context(mrl, this, preset)
+      , _start_point(FROM_START)
+      , _end_point(TO_END)
     {
         _doNotSendEOF = false;
-        _start_point = -1;
-        _end_point = -1;
         setName("MediaSource");
     }
 
@@ -32,7 +32,9 @@ namespace fpp {
             try_to(avstream->init());
         }
         if (_start_point != FROM_START) {
-            try_to(_input_format_context.seek(0, _start_point));
+            for (auto& stream : streams()) {
+                try_to(_input_format_context.seek(stream->index(), _start_point));
+            }
         }
         setOpened(true);
         return Code::OK;
