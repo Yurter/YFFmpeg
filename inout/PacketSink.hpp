@@ -8,7 +8,7 @@ namespace fpp {
     public:
 
         PacketSink();
-        virtual ~PacketSink() override;
+        virtual ~PacketSink() override = default;
 
     private:
 

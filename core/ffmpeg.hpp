@@ -200,24 +200,34 @@ namespace fpp {
                                         }\
                                     } while(false)
 
-/* ? */ //проблемма со статическими функциями
-//#define return_msg_if(cond,msg,ret_value)   do {\
-//                                                if (cond) {\
-//                                                    if (utils::error_code(ret_value)) {\
-//                                                        log_error(msg);\
-//                                                    } else {\
-//                                                        log_warning(msg);\
-//                                                    }\
-//                                                    return ret_value;\
-//                                                }\
-//                                            } while(false)
-
 /* ? */
 #define return_if_not(cond,ret_value)   do {\
                                             if (!(cond)) {\
                                                 return ret_value;\
                                             }\
                                         } while (false)
+
+/* ? */
+#define return_info_if(cond,msg,ret_value)  do {\
+                                                if (cond) {\
+                                                    log_info(msg);\
+                                                    return ret_value;\
+                                                }\
+                                            } while(false)
+
+#define return_warning_if(cond,msg,ret_value)  do {\
+                                                if (cond) {\
+                                                    log_warning(msg);\
+                                                    return ret_value;\
+                                                }\
+                                            } while(false)
+
+#define return_error_if(cond,msg,ret_value)  do {\
+                                                if (cond) {\
+                                                    log_error(msg);\
+                                                    return ret_value;\
+                                                }\
+                                            } while(false)
 
 /* ? */
 #define trow_if(cond,error_message) //TODO

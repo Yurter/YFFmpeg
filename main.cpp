@@ -49,6 +49,7 @@ int main() {
 //        , { "enent_0.flv", FROM_START, TO_END }
 //        , { "enent_1.flv", FROM_START, TO_END }
 //    });
+//    set_log_level(LogLevel::Debug);
     Concatenator concatenator("concat_manual/sausage.flv", {
         { "concat_manual/timelapse.flv", FROM_START, 450 }
         , { "concat_manual/event_0.flv", 9000, 9000 + 6000 }

@@ -12,9 +12,11 @@ namespace fpp {
 
     public:
 
-        using IOFunction = std::function<Code()>;
+        using IOFunction = std::function<Code(void)>;
         using WriteFunction = std::function<Code(outType&)>;
         using ProcessFunction = std::function<Code(outType&)>;
+        using InputQueue = AsyncDiscardQueue<inType>;
+        using OutputQueue = AsyncDiscardQueue<outType>;
 
         TemplateProcessor() {
             setName("TemplateProcessor");
@@ -22,7 +24,7 @@ namespace fpp {
 
         virtual ~TemplateProcessor() {
             _input_queue.stop_wait();
-            _post_queue.stop_wait();
+            _output_queue.stop_wait();
         }
 
         bool buferIsEmpty() {
@@ -52,11 +54,28 @@ namespace fpp {
         Code setPreFunction(const IOFunction pre_function) {
             return_if_not(pre_function, Code::ERR);
             _pre_function = pre_function;
+            return Code::OK;
         }
 
         Code setPostFunction(const IOFunction post_function) {
             return_if_not(post_function, Code::ERR);
             _post_function = post_function;
+            return Code::OK;
+        }
+
+        Code storeInputData(const inType& input_data) {
+            return_if_not(_input_queue.push(input_data), Code::EXIT);
+            return Code::OK;
+        }
+
+        Code storeOutputData(const outType& output_data) {
+            return_if_not(_output_queue.push(output_data), Code::EXIT);
+            return Code::OK;
+        }
+
+        Code restoreOutputData(outType& output_data) {
+            return_if_not(_output_queue.wait_and_pop(output_data), Code::EXIT);
+            return Code::OK;
         }
 
         Code sendOutputData(const outType& output_data) {
@@ -67,81 +86,63 @@ namespace fpp {
             return Code::OK;
         }
 
-        Code storeInputData(const inType& input_data) {
-            return_if_not(_input_queue.push(input_data), Code::EXIT);
-            return Code::OK;
-        }
-
-        Code storeOutputData(const outType& output_data) {
-            return_if_not(_post_queue.push(output_data), Code::EXIT);
-            return Code::OK;
-        }
-
-        Code restoreOutputData(outType& output_data) {
-            return_if_not(_post_queue.wait_and_pop(output_data), Code::EXIT);
-            return Code::OK;
-        }
-
     private:
 
         virtual Code run() override final {
+            log_trace("Running run.");
+
             if (_pre_function) {
                 log_trace("Running _pre_function.");
                 try_to(_pre_function());
             }
+
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
 
-            if ((input_data.empty() == false) && discardType(input_data.type())) {
-                log_warning("discard rule #1: input_data.empty() " << utils::bool_to_string(input_data.empty())
-                            << " discardType(input_data.type()) " << utils::bool_to_string(discardType(input_data.type()))
-                            << " data: " << input_data);
-            }
+            /* Не удалять проверки! */
+//            return_if(discardType(input_data.type()), Code::AGAIN);
+//            log_warning(utils::bool_to_string(input_data.empty()));
+//            return_error_if(input_data.typeIs(MediaType::MEDIA_TYPE_UNKNOWN)
+//                            , "Got " << utils::media_type_to_string(MediaType::MEDIA_TYPE_UNKNOWN) << " data."
+//                            , Code::INVALID_INPUT);
 
-            return_if((input_data.empty() == false)
-                      && discardType(input_data.type()), Code::AGAIN);
-
-//            if (input_data.typeIs(MediaType::MEDIA_TYPE_UNKNOWN)) { //TODO
-//                log_error("Got UNKNOWN data");
-//                return Code::AGAIN;
-//            }
-
-            if (input_data.empty()) {
-                log_error("Got emty data!");
-                if (this->is("MediaSink")) {
-                    int tt = 9;
-                    tt += 1;
-                }
-            }
+//////////////////////////////////////////////////////////////////
             //TODO
+//            if (input_data.empty()
+//                    && this->is("MediaSink")) {
+//                return Code::END_OF_FILE;
+//            }
             if (input_data.empty()
-                    && this->is("MediaSink")) {
-                return Code::END_OF_FILE;
-            }
-            if (input_data.empty()
-                    && !this->is("MediaSource")
+                    && !this->is("MediaSource") // вся разница в этом условии
                     && !this->is("CustomPacketSource")) {
                 sendOutputData(outType());
                 return Code::END_OF_FILE;
             }
+            /* TODO не работает это условие :( */
+//            if (input_data.empty()) {
+//                try_to(sendOutputData(outType()));
+//                return Code::END_OF_FILE;
+//            }
+//////////////////////////////////////////////////////////////////
 
             log_trace("Running processInputData.");
             try_to(processInputData(input_data));
+
             if (_post_function) {
                 log_trace("Running _post_function.");
                 try_to(_post_function());
             }
+
             return Code::OK;
         }
 
     private:
 
-        AsyncDiscardQueue<inType>  _input_queue;
-
         IOFunction          _pre_function;
         IOFunction          _post_function;
 
-        AsyncDiscardQueue<outType> _post_queue;
+        InputQueue          _input_queue;
+        OutputQueue         _output_queue;
 
     };
 
