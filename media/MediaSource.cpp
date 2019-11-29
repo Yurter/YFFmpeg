@@ -92,7 +92,8 @@ namespace fpp {
         return_if_not(packet_stream->used(), Code::AGAIN);
         input_data.setType(packet_stream->type());
         input_data.setStreamUid(packet_stream->uid());
-        stream(0)->parameters->increaseDuration(input_data.duration()); //TODO
+//        stream(0)->parameters->increaseDuration(input_data.duration()); //TODO
+        stream(0)->parameters->increaseDuration(stream(0)->packet_duration()); //TODO
         return Code::OK;
     }
 

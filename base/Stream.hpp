@@ -32,6 +32,8 @@ namespace fpp {
 
         AVCodecParameters*  codecParameters();
 
+        int64_t packet_duration() const { return _packet_duration; } //TODO
+
 //        void                increaseDuration(int64_t value);
 
         virtual bool        operator>(const Stream& other) const; //TODO func betterThen(Stream* other) ? нет, максимум дублировать, т.к. испольуется в std::max_element
