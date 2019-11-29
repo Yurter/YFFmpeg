@@ -5,6 +5,7 @@ namespace fpp {
     MediaSource::MediaSource(const std::string mrl, IOType preset) :
         _input_format_context(mrl, this, preset)
     {
+        _doNotSendEOF = false;
         setName("MediaSource");
     }
 
@@ -95,6 +96,7 @@ namespace fpp {
     }
 
     Code MediaSource::sendEofPacket() {
+        return_if(_doNotSendEOF, Code::OK);
         log_debug("Sending EOF");
         Packet eof_packet;
         for (auto&& stream : _input_format_context.streams()) {

@@ -23,10 +23,33 @@ namespace fpp {
     Code Concatenator::run() {
         MediaSink output_file(_output_file_name, IOType::Event);
         try_to(output_file.init());
+
+        { /* crutch */
+            MediaSource input_file(std::get<0>(*_concat_list.begin()));
+            try_to(input_file.init());
+            try_to(input_file.open());
+
+            try_to(output_file.stream(0)->parameters->completeFrom(input_file.stream(0)->parameters));
+            output_file.stream(0)->setUsed(true);
+        }
+
         try_to(output_file.open());
+        try_to(output_file.start());
+
         for (auto& [input_file_name, start_point, end_point] : _concat_list) {
             MediaSource input_file(input_file_name);
+            input_file.doNotSendEOF(); /* crutch */
+            try_to(input_file.init());
+            try_to(input_file.open());
+            input_file.stream(0)->setUsed(true); /* crutch */
+
+            try_to(input_file.connectTo(&output_file));
+            try_to(input_file.start());
+            input_file.join();
+            try_to(input_file.disconnectFrom(&output_file));
         }
+
+        return Code::END_OF_FILE;
     }
 
 } // namespace fpp

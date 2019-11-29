@@ -16,6 +16,8 @@ namespace fpp {
         virtual Code        close() override;
         virtual std::string toString() const override;
 
+        void        doNotSendEOF() { _doNotSendEOF = true; } //TODO костыль для конкатенации
+
         InputFormatContext& inputFormatContext();
 
     private:
@@ -29,6 +31,8 @@ namespace fpp {
     private:
 
         InputFormatContext  _input_format_context;
+
+        bool    _doNotSendEOF;
 
     };
 
