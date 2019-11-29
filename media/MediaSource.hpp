@@ -16,6 +16,9 @@ namespace fpp {
         virtual Code        close() override;
         virtual std::string toString() const override;
 
+        void    setStartPoint(int64_t value);   //TODO
+        void    setEndPoint(int64_t value); //TODO
+
         void        doNotSendEOF() { _doNotSendEOF = true; } //TODO костыль для конкатенации
 
         InputFormatContext& inputFormatContext();
@@ -32,7 +35,10 @@ namespace fpp {
 
         InputFormatContext  _input_format_context;
 
-        bool    _doNotSendEOF;
+        bool    _doNotSendEOF; //TODO
+
+        int64_t _start_point; //TODO
+        int64_t _end_point; //TODO
 
     };
 

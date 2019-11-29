@@ -21,7 +21,7 @@ namespace fpp {
     }
 
     Code Concatenator::run() {
-        MediaSink output_file(_output_file_name, IOType::Event);
+        MediaSink output_file(_output_file_name, IOType::Event); /* crutch: preset */
         try_to(output_file.init());
 
         { /* crutch */
@@ -38,6 +38,8 @@ namespace fpp {
 
         for (auto& [input_file_name, start_point, end_point] : _concat_list) {
             MediaSource input_file(input_file_name);
+            input_file.setStartPoint(start_point);
+            input_file.setEndPoint(end_point);
             input_file.doNotSendEOF(); /* crutch */
             try_to(input_file.init());
             try_to(input_file.open());

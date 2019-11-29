@@ -35,9 +35,13 @@ int main() {
 
     static_log_info("main", "Program started...");
 
+//    Concatenator concatenator("sausage.flv", {
+//        { "input_0.flv", FROM_START, TO_END }
+//        , { "input_1.flv", FROM_START, TO_END }
+//    });
     Concatenator concatenator("sausage.flv", {
-        { "input_0.flv", FROM_START, TO_END }
-        , { "input_1.flv", FROM_START, TO_END }
+        { "input_0.flv", 5000, 8000 }
+        , { "input_1.flv", 6000, 9000 }
     });
 
     if (auto ret = concatenator.start(); ret != Code::OK) {

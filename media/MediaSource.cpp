@@ -6,6 +6,8 @@ namespace fpp {
         _input_format_context(mrl, this, preset)
     {
         _doNotSendEOF = false;
+        _start_point = -1;
+        _end_point = -1;
         setName("MediaSource");
     }
 
@@ -26,6 +28,12 @@ namespace fpp {
         return_if(opened(), Code::INVALID_CALL_ORDER);
         try_to(_input_format_context.open());
         try_to(setStreams(_input_format_context.streams()));
+        for (auto&& avstream : streams()) { //TODO
+            try_to(avstream->init());
+        }
+        if (_start_point != -1) {
+            return_if_not(av_seek_frame(_input_format_context.mediaFormatContext(), 0, _start_point, 0) == 0, Code::FFMPEG_ERROR);
+        }
         setOpened(true);
         return Code::OK;
     }
@@ -49,11 +57,24 @@ namespace fpp {
         return str;
     }
 
+    void MediaSource::setStartPoint(int64_t value) {
+        _start_point = value;
+    }
+
+    void MediaSource::setEndPoint(int64_t value) {
+        _end_point = value;
+    }
+
     InputFormatContext& MediaSource::inputFormatContext() {
         return _input_format_context;
     }
 
     Code MediaSource::readInputData(Packet& input_data) {
+        if (_end_point != -1) { //TODO
+            if (stream(0)->parameters->duration() > (_end_point - _start_point)) {
+                return Code::END_OF_FILE;
+            }
+        }
         if (int ret = av_read_frame(_input_format_context.mediaFormatContext(), &input_data.raw()); ret != 0) {
             if (ret == AVERROR_EOF) {
                 log_info("Source reading completed");
@@ -71,6 +92,7 @@ namespace fpp {
         return_if_not(packet_stream->used(), Code::AGAIN);
         input_data.setType(packet_stream->type());
         input_data.setStreamUid(packet_stream->uid());
+        stream(0)->parameters->increaseDuration(input_data.duration()); //TODO
         return Code::OK;
     }
 
