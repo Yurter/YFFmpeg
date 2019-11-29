@@ -67,15 +67,15 @@ namespace fpp {
     }
 
     std::string utils::code_to_string(Code code) {
-        if (code == Code::OK)               { return "OK";              }
-        if (code == Code::ERR)              { return "Error";           }
-        if (code == Code::EXIT)             { return "Exit";            }
-        if (code == Code::AGAIN)            { return "Again";           }
-        if (code == Code::NOT_INITED)       { return "Not inited";      }
-        if (code == Code::END_OF_FILE)      { return "EOF";             }
-        if (code == Code::FFMPEG_ERROR)     { return "FFmpeg error";    }
-        if (code == Code::INVALID_INPUT)    { return "Invalid input";   }
-        if (code == Code::NOT_IMPLEMENTED)  { return "Method not implemented"; }
+        if (code == Code::OK)               { return "OK";                      }
+        if (code == Code::ERR)              { return "Error";                   }
+        if (code == Code::EXIT)             { return "Exit";                    }
+        if (code == Code::AGAIN)            { return "Again";                   }
+        if (code == Code::NOT_INITED)       { return "Not inited";              }
+        if (code == Code::END_OF_FILE)      { return "EOF";                     }
+        if (code == Code::FFMPEG_ERROR)     { return "FFmpeg error";            }
+        if (code == Code::INVALID_INPUT)    { return "Invalid input";           }
+        if (code == Code::NOT_IMPLEMENTED)  { return "Method not implemented";  }
         return "Unknown error code: " + std::to_string(code);
     }
 
