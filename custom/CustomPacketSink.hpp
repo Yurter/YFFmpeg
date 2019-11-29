@@ -27,7 +27,7 @@ namespace fpp {
 
     private:
 
-        int64_t                         _context_uid;
+        uint64_t                        _context_uid;
         std::string                     _sink_name;
         StreamVector                    _streams;
         std::function<Code(Packet&)>    _write_func;

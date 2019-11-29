@@ -33,10 +33,10 @@ namespace fpp {
 
         virtual Code push(const Object* input_data) override final {
             if (closed()) {
-                log_warning("Push to closed processor");
+                log_warning("Got " << input_data->name() << " but closed." );
             }
             if (!_input_queue.push(*static_cast<const inType*>(input_data))) {
-                log_warning("queue push failed");
+                log_warning("Failed to store " << input_data->name() << ".");
             }
             return Code::OK;
         }

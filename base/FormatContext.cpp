@@ -5,7 +5,7 @@ namespace fpp {
 
     FormatContext::FormatContext(const std::string mrl, Object* media_ptr, /*int64_t max_duration_sec,*/ IOType preset) :
         _media_ptr(media_ptr)
-        , _uid(utils::gen_context_uid())
+        , _uid(utils::gen_uid())
         , _media_resource_locator(mrl)
         , _opened(false)
 //        , _max_duration_sec(max_duration_sec)

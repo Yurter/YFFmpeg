@@ -101,8 +101,12 @@ namespace fpp {
         return std::string(buffer);
     }
 
-    std::string Logger::formatMessage(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
+    std::string Logger::formatMessage(std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
         std::string header;
+
+        size_t name_length = 10;
+        if (caller_name.length() > name_length)
+        caller_name.resize(name_length, ' ');
 
         header += "[" + encodeLogLevel(log_level) + "]";
         auto t = std::time(nullptr);
@@ -140,7 +144,13 @@ namespace fpp {
         av_log_format_line(ptr, level, fmt, vl2, line, sizeof(line), &print_prefix);
         va_end(vl2);
 
-//        std::cout << "level: " << level << std::endl;
+        for (auto& symbol : line) {
+            if (symbol == '\n') {
+                symbol = ' ';
+                break;
+            }
+        }
+
         static_print_auto("FFmpeg", convert_log_level(level), line);
     }
 
@@ -167,19 +177,33 @@ namespace fpp {
     }
 
     std::string Logger::encodeLogLevel(LogLevel value) {
+//        switch (value) {
+//        case LogLevel::Info:
+//            return "I";
+//        case LogLevel::Warning:
+//            return "W";
+//        case LogLevel::Error:
+//            return "E";
+//        case LogLevel::Debug:
+//            return "D";
+//        case LogLevel::Trace:
+//            return "T";
+//        case LogLevel::Quiet:
+//            return "Q";
+//        }
         switch (value) {
         case LogLevel::Info:
-            return "I";
+            return "info";
         case LogLevel::Warning:
-            return "W";
+            return "warn";
         case LogLevel::Error:
-            return "E";
+            return "err ";
         case LogLevel::Debug:
-            return "D";
+            return "deb ";
         case LogLevel::Trace:
-            return "T";
+            return "trac";
         case LogLevel::Quiet:
-            return "Q";
+            return "   ";
         }
         return "?";
     }

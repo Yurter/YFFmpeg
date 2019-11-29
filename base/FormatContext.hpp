@@ -82,7 +82,7 @@ namespace fpp {
     protected:
 
         // General
-        int64_t             _uid;
+        uint64_t            _uid;
         std::string			_media_resource_locator;
         std::atomic_bool	_opened;
         StreamVector        _streams;

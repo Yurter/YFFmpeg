@@ -34,6 +34,10 @@ namespace fpp {
         return !_opened;
     }
 
+    uint64_t Processor::uid() const {
+        return _uid;
+    }
+
     StreamVector Processor::streams() {
         return _streams;
     }

@@ -6,7 +6,7 @@ namespace fpp {
                                        , StreamVector streams
                                        , std::function<Code(Packet&)> write_func
                                        , std::function<Code(Packet&)> process_func) :
-        _context_uid(utils::gen_context_uid())
+        _context_uid(utils::gen_uid())
       , _sink_name(sink_name)
       , _streams(streams)
       , _write_func(write_func)

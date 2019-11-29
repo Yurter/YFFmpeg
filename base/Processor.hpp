@@ -18,6 +18,8 @@ namespace fpp {
         bool                opened() const;
         bool                closed() const;
 
+        uint64_t            uid() const;
+
         StreamVector        streams();
         Stream*             stream(int64_t index);
         Code                addStream(Stream* stream);
