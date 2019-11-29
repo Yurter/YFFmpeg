@@ -3,9 +3,6 @@
 #include "media/MediaSink.hpp"
 #include <tuple>
 
-#define FROM_START  -1
-#define TO_END      -1
-
 namespace fpp {
 
     using ConcatList = std::list<std::tuple<std::string,int64_t,int64_t>>;

@@ -31,8 +31,8 @@ namespace fpp {
         for (auto&& avstream : streams()) { //TODO
             try_to(avstream->init());
         }
-        if (_start_point != -1) {
-            return_if_not(av_seek_frame(_input_format_context.mediaFormatContext(), 0, _start_point, 0) == 0, Code::FFMPEG_ERROR);
+        if (_start_point != FROM_START) {
+            try_to(_input_format_context.seek(0, _start_point));
         }
         setOpened(true);
         return Code::OK;
