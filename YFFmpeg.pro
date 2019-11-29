@@ -18,7 +18,6 @@ SOURCES += \
     codec/DecoderContext.cpp \
     codec/Encoder.cpp \
     codec/EncoderContext.cpp \
-    control/Map.cpp \
     custom/CustomFrameSink.cpp \
     custom/CustomFrameSource.cpp \
     custom/CustomPacketSink.cpp \
@@ -49,7 +48,6 @@ SOURCES += \
     control/Pipeline.cpp \
     stream/VideoParameters.cpp \
     stream/VideoStream.cpp \
-    control/YMap.cpp \
     inout/FrameSource.cpp \
     refi/AudioFilter.cpp \
     refi/Resampler.cpp \
@@ -69,7 +67,6 @@ HEADERS += \
     codec/DecoderContext.hpp \
     codec/Encoder.hpp \
     codec/EncoderContext.hpp \
-    control/Map.hpp \
     core/AsyncDiscardAmountQueue.hpp \
     core/AsyncDiscardQueue.hpp \
     core/Chronometer.hpp \
@@ -109,7 +106,6 @@ HEADERS += \
     control/Pipeline.hpp \
     stream/VideoParameters.hpp \
     stream/VideoStream.hpp \
-    control/YMap.hpp \
     fpp.hpp \
     inout/FrameSink.hpp \
     inout/FrameSource.hpp \
