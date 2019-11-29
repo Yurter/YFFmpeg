@@ -78,12 +78,11 @@ namespace fpp {
             }
         }
         if (int ret = av_read_frame(_input_format_context.mediaFormatContext(), &input_data.raw()); ret != 0) {
-            if (ret == AVERROR_EOF) {
-                log_info("Source reading completed");
-                return Code::END_OF_FILE;
-            }
+            return_info_if(ret == AVERROR_EOF
+                           , "Source reading completed"
+                           , Code::END_OF_FILE);
             log_error("Cannot read source: \"" << _input_format_context.mediaResourceLocator() << "\". Error " << ret);
-            return Code::ERR;
+            return Code::FFMPEG_ERROR;
         }
         if (input_data.streamIndex() != 0) {
             return Code::AGAIN; //TODO fix it
