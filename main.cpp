@@ -35,6 +35,20 @@ int main() {
 
     static_log_info("main", "Program started...");
 
+    Concatenator concatenator("sausage.flv", {
+        { "input_0.flv", FROM_START, TO_END }
+        , { "input_1.flv", FROM_START, TO_END }
+    });
+
+    if (auto ret = concatenator.start(); ret != Code::OK) {
+        static_log_error("main", "Concatenator start failed: " << ret << " - " << utils::code_to_string(ret));
+    }
+
+    concatenator.join();
+
+    return 0;
+
+
     try {
 //        set_log_level(LogLevel::Debug);
 //        set_log_level(LogLevel::Trace);
@@ -124,26 +138,26 @@ int main() {
 ////            delete sink_timelapse;
 //        }
 
-        {
-            Pipeline* pipeline = new Pipeline;
-            auto source = new MediaSource("input.flv");
-//            source->setCloseOnDisconnect(false);
-            pipeline->addElement(source);
+//        {
+//            Pipeline* pipeline = new Pipeline;
+//            auto source = new MediaSource("input.flv");
+////            source->setCloseOnDisconnect(false);
+//            pipeline->addElement(source);
 
-            auto sink_event = new MediaSink("output.flv", IOType::Event);
-            pipeline->addElement(sink_event);
+//            auto sink_event = new MediaSink("output.flv", IOType::Event);
+//            pipeline->addElement(sink_event);
 
-            if (auto ret = pipeline->start(); ret != Code::OK) {
-                static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
-            }
+//            if (auto ret = pipeline->start(); ret != Code::OK) {
+//                static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
+//            }
 
-            pipeline->join();
+//            pipeline->join();
 
-//            utils::sleep_for_min(1);
-            utils::sleep_for_ms(10);
-            delete sink_event;
-//            delete sink_timelapse;
-        }
+////            utils::sleep_for_min(1);
+//            utils::sleep_for_ms(10);
+//            delete sink_event;
+////            delete sink_timelapse;
+//        }
 
         /* Запись rtsp с камеры в flv/YouTube */
 //        std::string mrl_src = "camera_one_hour_realtime.flv";

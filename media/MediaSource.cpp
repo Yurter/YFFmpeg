@@ -24,6 +24,7 @@ namespace fpp {
         log_debug("Opening.");
         return_if(opened(), Code::INVALID_CALL_ORDER);
         try_to(_input_format_context.open());
+        try_to(setStreams(_input_format_context.streams()));
         setOpened(true);
         return Code::OK;
     }

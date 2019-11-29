@@ -18,6 +18,7 @@ namespace fpp {
         return_if(inited(), Code::INVALID_CALL_ORDER);
         log_debug("Initialization.");
         try_to(_output_format_context.init());
+        try_to(setStreams(_output_format_context.streams()));
         setInited(true);
         return Code::OK;
     }

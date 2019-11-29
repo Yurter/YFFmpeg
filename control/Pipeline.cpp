@@ -295,49 +295,69 @@ namespace fpp {
         return nullptr;
     }
 
-    Code Pipeline::determineSequence(Object* output_processor) {
-        StreamVector output_streams;
-        if (output_processor->is("MediaSink")) {
-            MediaSink* media_sink = static_cast<MediaSink*>(output_processor);
-            output_streams = media_sink->outputFormatContext().streams();
-            if (output_streams.empty()) {
-                log_error("output_streams is empty: " << media_sink->outputFormatContext().mediaResourceLocator());
-                return Code::NOT_INITED;
-            }
-            for (auto out_stream : output_streams) {
-                Stream* in_stream = findBestInputStream(out_stream->type());
-                if (not_inited_ptr(in_stream)) {
-                    log_error("Failed to find input stream type " << out_stream->type());
-                    return Code::INVALID_INPUT;
-                }
-                Route route;
-                try_to(route.setMetaRoute(in_stream->uid(), out_stream->uid()));
-                try_to(createSequence(route));
-                _route_list.push_back(route);
-            }
-            return Code::OK;
+//    Code Pipeline::determineSequence(Processor* output_processor) {
+//        StreamVector output_streams;
+//        if (output_processor->is("MediaSink")) {
+//            MediaSink* media_sink = static_cast<MediaSink*>(output_processor);
+//            output_streams = media_sink->outputFormatContext().streams();
+//            if (output_streams.empty()) {
+//                log_error("output_streams is empty: " << media_sink->outputFormatContext().mediaResourceLocator());
+//                return Code::NOT_INITED;
+//            }
+//            for (auto out_stream : output_streams) {
+//                Stream* in_stream = findBestInputStream(out_stream->type());
+//                if (not_inited_ptr(in_stream)) {
+//                    log_error("Failed to find input stream type " << out_stream->type());
+//                    return Code::INVALID_INPUT;
+//                }
+//                Route route;
+//                try_to(route.setMetaRoute(in_stream->uid(), out_stream->uid()));
+//                try_to(createSequence(route));
+//                _route_list.push_back(route);
+//            }
+//            return Code::OK;
+//        }
+//        if (output_processor->is("CustomPacketSink")) {
+//            CustomPacketSink* custom_sink = static_cast<CustomPacketSink*>(output_processor);
+//            output_streams = custom_sink->streams();
+//            if (output_streams.empty()) {
+//                log_error("output_streams is empty: " << custom_sink);
+//                return Code::NOT_INITED;
+//            }
+//            for (auto out_stream : output_streams) {
+//                Stream* in_stream = findBestInputStream(out_stream->type());
+//                if (not_inited_ptr(in_stream)) {
+//                    log_error("Failed to find input stream type " << out_stream->type());
+//                    return Code::INVALID_INPUT;
+//                }
+//                Route route;
+//                try_to(route.setMetaRoute(in_stream->uid(), out_stream->uid()));
+//                try_to(createSequence(route));
+//                _route_list.push_back(route);
+//            }
+//            return Code::OK;
+//        }
+//        return Code::NOT_IMPLEMENTED;
+//    }
+
+    Code Pipeline::determineSequence(Processor* output_processor) {
+        StreamVector output_streams = output_processor->streams();
+        if (output_streams.empty()) {
+            log_error(output_processor->name() << " doesn't has any stream.");
+            return Code::NOT_INITED;
         }
-        if (output_processor->is("CustomPacketSink")) {
-            CustomPacketSink* custom_sink = static_cast<CustomPacketSink*>(output_processor);
-            output_streams = custom_sink->streams();
-            if (output_streams.empty()) {
-                log_error("output_streams is empty: " << custom_sink);
-                return Code::NOT_INITED;
+        for (auto out_stream : output_streams) {
+            Stream* in_stream = findBestInputStream(out_stream->type());
+            if (not_inited_ptr(in_stream)) {
+                log_error("Failed to find input stream type " << out_stream->type());
+                return Code::INVALID_INPUT;
             }
-            for (auto out_stream : output_streams) {
-                Stream* in_stream = findBestInputStream(out_stream->type());
-                if (not_inited_ptr(in_stream)) {
-                    log_error("Failed to find input stream type " << out_stream->type());
-                    return Code::INVALID_INPUT;
-                }
-                Route route;
-                try_to(route.setMetaRoute(in_stream->uid(), out_stream->uid()));
-                try_to(createSequence(route));
-                _route_list.push_back(route);
-            }
-            return Code::OK;
+            Route route;
+            try_to(route.setMetaRoute(in_stream->uid(), out_stream->uid()));
+            try_to(createSequence(route));
+            _route_list.push_back(route);
         }
-        return Code::NOT_IMPLEMENTED;
+        return Code::OK;
     }
 
     std::string Pipeline::toString() const {

@@ -33,7 +33,7 @@ namespace fpp {
         /* Input */
         Virtual,
         /* Output */
-        Event,
+        Event, //TODO костыльный тип ради создания потоков у синков, убрать
         YouTube,
         Timelapse,
         OpenCV,

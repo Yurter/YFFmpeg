@@ -48,6 +48,13 @@ namespace fpp {
         return Code::OK;
     }
 
+    Code Processor::setStreams(StreamVector streams) {
+        return_if(streams.empty(), Code::INVALID_INPUT);
+        return_if_not(_streams.empty(), Code::INVALID_CALL_ORDER);
+        _streams = streams;
+        return Code::OK;
+    }
+
     void Processor::setOpened(bool opened) {
         _opened = opened;
     }

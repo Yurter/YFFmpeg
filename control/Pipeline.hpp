@@ -59,7 +59,7 @@ namespace fpp {
         Code                simplifyRoutes();
 
         Stream*             findStream(int64_t uid);
-        Code                determineSequence(Object* output_processor);
+        Code                determineSequence(Processor* output_processor);
 
         virtual std::string toString() const override;
 

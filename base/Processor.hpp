@@ -21,6 +21,7 @@ namespace fpp {
         StreamVector        streams();
         Stream*             stream(int64_t index);
         Code                addStream(Stream* stream);
+        Code                setStreams(StreamVector streams);
 
         void                setOpened(bool opened);
         void                setCloseOnDisconnect(bool value);

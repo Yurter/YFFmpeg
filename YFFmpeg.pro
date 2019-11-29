@@ -18,6 +18,7 @@ SOURCES += \
     codec/DecoderContext.cpp \
     codec/Encoder.cpp \
     codec/EncoderContext.cpp \
+    control/Concatenator.cpp \
     custom/CustomFrameSink.cpp \
     custom/CustomFrameSource.cpp \
     custom/CustomPacketSink.cpp \
@@ -67,6 +68,7 @@ HEADERS += \
     codec/DecoderContext.hpp \
     codec/Encoder.hpp \
     codec/EncoderContext.hpp \
+    control/Concatenator.hpp \
     core/AsyncDiscardAmountQueue.hpp \
     core/AsyncDiscardQueue.hpp \
     core/Chronometer.hpp \
