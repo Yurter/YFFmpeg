@@ -1,9 +1,14 @@
-TEMPLATE = app
+#TEMPLATE = app
 
-#TEMPLATE = lib
-#CONFIG += static
+TEMPLATE = lib
+CONFIG += static
 
+#ifdef QT_DEBUG
 TARGET = fpp
+#else
+TARGET = fpp_r
+#endif
+
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
