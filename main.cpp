@@ -66,6 +66,9 @@ int main() {
 
 //    return 0;
 
+//    CustomPacketSource test("", {}, [](Packet&){return Code::OK;}, [](Packet&){return Code::OK;});
+//    test.stream()
+
 
     try {
 //        set_log_level(LogLevel::Debug);

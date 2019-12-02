@@ -19,7 +19,7 @@ namespace fpp {
 
         int64_t             uid() const;
         StreamVector        streams();
-        Stream*             stream(int64_t index);
+        Stream*             stream(int64_t index) const;
         Code                addStream(Stream* stream);
         Code                setStreams(StreamVector streams);
 
@@ -30,6 +30,8 @@ namespace fpp {
 
         Code                connectTo(Processor* other);
         Code                disconnectFrom(Processor* other);
+
+        virtual bool        equalTo(const Processor * const other);
 
         bool                opened() const;
         bool                closed() const;

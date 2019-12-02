@@ -33,7 +33,7 @@ namespace fpp {
         return _streams;
     }
 
-    Stream* Processor::stream(int64_t index) {
+    Stream* Processor::stream(int64_t index) const {
         if (size_t(index) < _streams.size()) {
             return _streams[size_t(index)];
         } else {
@@ -91,6 +91,11 @@ namespace fpp {
             }
         }
         return Code::OK;
+    }
+
+    bool Processor::equalTo(const Processor * const other) {
+        UNUSED(other);
+        return Code::NOT_IMPLEMENTED;
     }
 
     bool Processor::opened() const {

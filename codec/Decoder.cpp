@@ -38,6 +38,15 @@ namespace fpp {
         return ret;
     }
 
+    bool Decoder::equalTo(const Processor * const other) {
+        auto other_decoder = dynamic_cast<const Decoder * const>(other);
+        return_if(not_inited_ptr(other_decoder), false);
+
+        return_if(this->stream(0)->uid() == other->stream(0)->uid(), true);
+        //
+        return true;
+    }
+
     AVCodecContext* Decoder::decoderContext() {
         return _decoder_context.codecContext();
     }

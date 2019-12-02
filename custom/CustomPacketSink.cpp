@@ -6,11 +6,12 @@ namespace fpp {
                                        , StreamVector streams
                                        , std::function<Code(Packet&)> write_func
                                        , std::function<Code(Packet&)> process_func) :
-      _sink_name(sink_name)
+        _sink_name(sink_name)
       , _write_func(write_func)
       , _process_func(process_func)
     {
         setName("CustomPacketSink");
+        try_throw(setStreams(streams));
     }
 
     CustomPacketSink::~CustomPacketSink() {

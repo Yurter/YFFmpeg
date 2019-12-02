@@ -349,7 +349,8 @@ namespace fpp {
         for (auto out_stream : output_streams) {
             Stream* in_stream = findBestInputStream(out_stream->type());
             if (not_inited_ptr(in_stream)) {
-                log_error("Failed to find input stream type " << out_stream->type());
+                log_error("Failed to find input stream type "
+                          << utils::media_type_to_string(out_stream->type()));
                 return Code::INVALID_INPUT;
             }
             Route route;
@@ -360,7 +361,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    std::string Pipeline::toString() const {
+    std::string Pipeline::toString() const { //TODO восстановить метод
         std::string dump_str;
 
         /* Вывод информации о контекстах
@@ -435,14 +436,15 @@ namespace fpp {
         case MediaType::MEDIA_TYPE_VIDEO: {
             StreamVector all_video_streams;
             for (auto&& source : _data_sources) {
-                auto medias_source = dynamic_cast<MediaSource*>(source);
-                if (inited_ptr(medias_source)) {
-                    all_video_streams.push_back(medias_source->inputFormatContext().bestStream(MediaType::MEDIA_TYPE_VIDEO));
-                }
-                auto custom_source = dynamic_cast<CustomPacketSource*>(source);
-                if (inited_ptr(custom_source)) {
-                    all_video_streams.push_back(custom_source->stream(MediaType::MEDIA_TYPE_VIDEO));
-                }
+                all_video_streams.push_back(source->stream(0)); //TODO !!! поиск по индексу, а не по типу
+//                auto medias_source = dynamic_cast<MediaSource*>(source);
+//                if (inited_ptr(medias_source)) {
+//                    all_video_streams.push_back(medias_source->inputFormatContext().bestStream(MediaType::MEDIA_TYPE_VIDEO));
+//                }
+//                auto custom_source = dynamic_cast<CustomPacketSource*>(source);
+//                if (inited_ptr(custom_source)) {
+//                    all_video_streams.push_back(custom_source->stream(MediaType::MEDIA_TYPE_VIDEO));
+//                }
             }
             return static_cast<VideoStream*>(utils::find_best_stream(all_video_streams));
         }

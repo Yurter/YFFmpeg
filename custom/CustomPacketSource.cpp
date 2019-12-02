@@ -11,6 +11,7 @@ namespace fpp {
       , _process_func(process_func)
     {
         setName("CustomPacketSource");
+        try_throw(setStreams(streams));
     }
 
     CustomPacketSource::~CustomPacketSource() {

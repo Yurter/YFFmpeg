@@ -14,7 +14,7 @@ namespace fpp {
         _log_level(LogLevel::Info)
     {
         setName("Logger");
-        av_log_set_callback(log_callback); //TODO later
+//        av_log_set_callback(log_callback); //TODO later
         setFFmpegLogLevel(LogLevel::Error);
         _message_queue.set_capacity(10'000);
         print(this, code_pos, LogLevel::Info, "Logger opened.");
