@@ -50,21 +50,21 @@ int main() {
 //        , { "enent_1.flv", FROM_START, TO_END }
 //    });
 //    set_log_level(LogLevel::Debug);
-    Concatenator concatenator("concat_manual/sausage.flv", {
-        { "concat_manual/timelapse.flv", FROM_START, 450 }
-        , { "concat_manual/event_0.flv", 9000, 9000 + 6000 }
-        , { "concat_manual/timelapse.flv", 800 + 15000 / 60, 10000 }
-        , { "concat_manual/event_1.flv", 10000, 10000 + 6000 }
-        , { "concat_manual/timelapse.flv", 9500 + 700 + 41000 / 60, TO_END }
-    });
+//    Concatenator concatenator("concat_manual/sausage.flv", {
+//        { "concat_manual/timelapse.flv", FROM_START, 450 }
+//        , { "concat_manual/event_0.flv", 9000, 9000 + 6000 }
+//        , { "concat_manual/timelapse.flv", 800 + 15000 / 60, 10000 }
+//        , { "concat_manual/event_1.flv", 10000, 10000 + 6000 }
+//        , { "concat_manual/timelapse.flv", 9500 + 700 + 41000 / 60, TO_END }
+//    });
 
-    if (auto ret = concatenator.start(); ret != Code::OK) {
-        static_log_error("main", "Concatenator start failed: " << ret << " - " << utils::code_to_string(ret));
-    }
+//    if (auto ret = concatenator.start(); ret != Code::OK) {
+//        static_log_error("main", "Concatenator start failed: " << ret << " - " << utils::code_to_string(ret));
+//    }
 
-    concatenator.join();
+//    concatenator.join();
 
-    return 0;
+//    return 0;
 
 
     try {
