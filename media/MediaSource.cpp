@@ -82,8 +82,10 @@ namespace fpp {
 
     Code MediaSource::readInputData(Packet& input_data) {
         if (_end_point != -1) { //TODO
-            if (stream(0)->parameters->duration() > (_end_point - _start_point)) {
-                return Code::END_OF_FILE;
+            if (inited_ptr(stream(0))) {
+                if (stream(0)->parameters->duration() > (_end_point - _start_point)) {
+                    return Code::END_OF_FILE;
+                }
             }
         }
         if (int ret = av_read_frame(_input_format_context.mediaFormatContext(), &input_data.raw()); ret != 0) {
