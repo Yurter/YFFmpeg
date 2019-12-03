@@ -258,10 +258,9 @@ namespace fpp {
                 log_warning("");
                 log_warning("Comparing ");
                 log_warning(i << "] " << route_one);
-//                log_warning("VS");
                 log_warning(j << "] " << route_two);
 
-                auto sequence_one = route_one.processorSequence();
+                auto sequence_one = route_one.processorSequence(); //TODO заменить на сслыки или указатели
                 auto sequence_two = route_two.processorSequence();
 
                 size_t min_size = std::min(sequence_one.size(), sequence_two.size());
@@ -269,6 +268,7 @@ namespace fpp {
                 for (size_t k = 0; k < min_size; ++k) {
                     if_not(sequence_one[k]->equalTo(sequence_two[k])) {
                         log_warning("FORK POINT is " << sequence_one[k]->name());
+                        //TODO склеить последовательности от 0 до k-1
                         break;
                     }
                 }
@@ -317,51 +317,6 @@ namespace fpp {
         }
         return nullptr;
     }
-
-//    Code Pipeline::determineSequence(Processor* output_processor) {
-//        StreamVector output_streams;
-//        if (output_processor->is("MediaSink")) {
-//            MediaSink* media_sink = static_cast<MediaSink*>(output_processor);
-//            output_streams = media_sink->outputFormatContext().streams();
-//            if (output_streams.empty()) {
-//                log_error("output_streams is empty: " << media_sink->outputFormatContext().mediaResourceLocator());
-//                return Code::NOT_INITED;
-//            }
-//            for (auto out_stream : output_streams) {
-//                Stream* in_stream = findBestInputStream(out_stream->type());
-//                if (not_inited_ptr(in_stream)) {
-//                    log_error("Failed to find input stream type " << out_stream->type());
-//                    return Code::INVALID_INPUT;
-//                }
-//                Route route;
-//                try_to(route.setMetaRoute(in_stream->uid(), out_stream->uid()));
-//                try_to(createSequence(route));
-//                _route_list.push_back(route);
-//            }
-//            return Code::OK;
-//        }
-//        if (output_processor->is("CustomPacketSink")) {
-//            CustomPacketSink* custom_sink = static_cast<CustomPacketSink*>(output_processor);
-//            output_streams = custom_sink->streams();
-//            if (output_streams.empty()) {
-//                log_error("output_streams is empty: " << custom_sink);
-//                return Code::NOT_INITED;
-//            }
-//            for (auto out_stream : output_streams) {
-//                Stream* in_stream = findBestInputStream(out_stream->type());
-//                if (not_inited_ptr(in_stream)) {
-//                    log_error("Failed to find input stream type " << out_stream->type());
-//                    return Code::INVALID_INPUT;
-//                }
-//                Route route;
-//                try_to(route.setMetaRoute(in_stream->uid(), out_stream->uid()));
-//                try_to(createSequence(route));
-//                _route_list.push_back(route);
-//            }
-//            return Code::OK;
-//        }
-//        return Code::NOT_IMPLEMENTED;
-//    }
 
     Code Pipeline::determineSequence(Processor* output_processor) {
         StreamVector output_streams = output_processor->streams();

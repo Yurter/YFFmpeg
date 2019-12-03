@@ -12,7 +12,7 @@ namespace fpp {
         //TODO
     }
 
-    Code PacketSource::readPacket() {
+    Code PacketSource::readPacket() { //TODO refactoring
         Packet packet;
         Code ret = readInputData(packet);
         if (utils::exit_code(ret)

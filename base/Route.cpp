@@ -123,5 +123,11 @@ namespace fpp {
         return _sequence;
     }
 
+    Code Route::changePartTo(ProcessorVector other) {
+        for (auto& proc : other) {
+            return_if(not_inited_ptr(0), Code::INVALID_INPUT);
+        }
+    }
+
 
 } // namespace fpp

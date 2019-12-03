@@ -23,7 +23,7 @@ namespace fpp {
         Code                setMetaRoute(int64_t input_stream_uid, int64_t output_stream_uid);
         Code                append(Processor* processor);
 
-        int64_t             inputStreamUid() const;
+        int64_t             inputStreamUid()  const;
         int64_t             outputStreamUid() const;
 
         bool                contains(const Processor * const processor) const;
@@ -33,8 +33,9 @@ namespace fpp {
 
         ProcessorSequence   processorSequence();
 
-    private:
+        Code                changePartTo(ProcessorVector other);
 
+    private:
 
         int64_t             _input_stream_uid;
         int64_t             _output_stream_uid;
