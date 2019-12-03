@@ -37,7 +37,6 @@ namespace fpp {
 
     Code InputFormatContext::seek(int64_t stream_index, int64_t timestamp) {
         auto ret = av_seek_frame(_format_context, int(stream_index), timestamp, 0);
-        return_if(ret != 0, Code::FFMPEG_ERROR);
         return_error_if(ret != 0
                         , "Failed to seek timestamp " << timestamp << " in stream " << stream_index
                         , Code::FFMPEG_ERROR);

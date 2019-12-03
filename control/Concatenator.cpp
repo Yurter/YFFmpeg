@@ -51,6 +51,9 @@ namespace fpp {
             try_to(input_file.disconnectFrom(&output_file));
         }
 
+        try_to(output_file.close());
+        output_file.join();
+
         return Code::END_OF_FILE;
     }
 
