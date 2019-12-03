@@ -14,7 +14,7 @@ namespace fpp {
         virtual Code        open() override;
         virtual Code        close() override;
         virtual Code        processInputData(Packet input_data) override;
-        virtual bool        equalTo(const Processor * const other) override;
+        virtual bool        equalTo(const Processor * const other) const override;
 
         AVCodecContext*     decoderContext();
 

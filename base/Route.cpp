@@ -119,5 +119,9 @@ namespace fpp {
         return Code::OK;
     }
 
+    ProcessorSequence Route::processorSequence() {
+        return _sequence;
+    }
+
 
 } // namespace fpp

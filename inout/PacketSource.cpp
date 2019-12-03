@@ -19,6 +19,7 @@ namespace fpp {
                 && (ret != Code::END_OF_FILE)) {
             return ret;
         }
+        return_if(ret == Code::AGAIN, ret);
         try_to(storeInputData(packet));
         return Code::OK;
     }

@@ -55,7 +55,9 @@ namespace fpp {
         _data_sources.remove_if([processor](auto proc) { return proc == processor; });
 
         findRoute(processor).destroy();
-        _route_list.remove_if([processor](const Route& route){ return route.contains(processor); });
+//        _route_list.remove_if([processor](const Route& route){ return route.contains(processor); });
+        auto cond = [processor](const Route& route){ return route.contains(processor); };
+        _route_list.erase(std::remove_if(_route_list.begin(), _route_list.end(), cond), _route_list.end());
     }
 
     void Pipeline::dump() const {
@@ -248,8 +250,29 @@ namespace fpp {
     }
 
     Code Pipeline::simplifyRoutes() {
-        for (Route route : _route_list) {
-            //
+        for (size_t i = 0; i < (_route_list.size() - 1); ++i) {
+            for (size_t j = i + 1; j < _route_list.size(); ++j) {
+                Route& route_one = _route_list[i];
+                Route& route_two = _route_list[j];
+
+                log_warning("");
+                log_warning("Comparing ");
+                log_warning(i << "] " << route_one);
+//                log_warning("VS");
+                log_warning(j << "] " << route_two);
+
+                auto sequence_one = route_one.processorSequence();
+                auto sequence_two = route_two.processorSequence();
+
+                size_t min_size = std::min(sequence_one.size(), sequence_two.size());
+
+                for (size_t k = 0; k < min_size; ++k) {
+                    if_not(sequence_one[k]->equalTo(sequence_two[k])) {
+                        log_warning("FORK POINT is " << sequence_one[k]->name());
+                        break;
+                    }
+                }
+            }
         }
         return Code::NOT_IMPLEMENTED;
     }
@@ -258,8 +281,8 @@ namespace fpp {
         int64_t context_uid = utils::get_context_uid(uid);
         for (auto&& source : _data_sources) {
             if (source->is("MediaSource")) {
-                if (static_cast<MediaSource*>(source)->inputFormatContext().uid() == context_uid) {
-                    for (auto&& stream : static_cast<MediaSource*>(source)->inputFormatContext().streams()) {
+                if (static_cast<MediaSource*>(source)->inputFormatContext()->uid() == context_uid) {
+                    for (auto&& stream : static_cast<MediaSource*>(source)->inputFormatContext()->streams()) {
                         if (stream->uid() == uid) {
                             return stream;
                         }

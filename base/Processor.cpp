@@ -93,9 +93,10 @@ namespace fpp {
         return Code::OK;
     }
 
-    bool Processor::equalTo(const Processor * const other) {
+    bool Processor::equalTo(const Processor * const other) const {
         UNUSED(other);
-        return Code::NOT_IMPLEMENTED;
+        log_warning("Method was not implemented.");
+        return false;
     }
 
     bool Processor::opened() const {

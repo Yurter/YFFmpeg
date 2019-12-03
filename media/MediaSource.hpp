@@ -16,12 +16,14 @@ namespace fpp {
         virtual Code        close() override;
         virtual std::string toString() const override;
 
+        virtual bool        equalTo(const Processor * const other) const override;
+
         void    setStartPoint(int64_t value);   //TODO
         void    setEndPoint(int64_t value); //TODO
 
         void        doNotSendEOF() { _doNotSendEOF = true; } //TODO костыль для конкатенации
 
-        InputFormatContext& inputFormatContext();
+        const InputFormatContext * inputFormatContext() const;
 
     private:
 

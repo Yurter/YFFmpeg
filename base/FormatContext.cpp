@@ -256,7 +256,7 @@ namespace fpp {
         return false;
     }
 
-    StreamVector FormatContext::streams() {
+    StreamVector FormatContext::streams() const {
         return _streams;
     }
 

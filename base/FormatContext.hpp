@@ -42,7 +42,7 @@ namespace fpp {
         bool                supportsVideo();                            ///< Функция ...
         bool                supportsAudio();                            ///< Функция ...
 
-        StreamVector        streams();                                  ///< Функция возвращает все потоки текущего контекста.
+        StreamVector        streams() const;                                  ///< Функция возвращает все потоки текущего контекста.
         StreamVector        streams(MediaType media_type);              ///< Функция потоки заданного медиа-типа.
 
         Object*             _media_ptr;

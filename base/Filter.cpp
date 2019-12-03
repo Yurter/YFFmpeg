@@ -7,6 +7,7 @@ namespace fpp {
       , _filters_descr(filters_descr)
     {
         setName("Filter");
+//        setStreams() //TODO
     }
 
     Filter::~Filter() {
@@ -119,6 +120,23 @@ namespace fpp {
     Code Filter::close() {
         setOpened(false);
         return Code::OK;
+    }
+
+    bool Filter::equalTo(const Processor * const other) const {
+        return_error_if_not(inited(), "Can't compare untill not inited.", false);
+        return_error_if_not(other->inited(), "Can't compare untill not inited.", false);
+
+        auto other_filter = dynamic_cast<const Filter * const>(other);
+        return_if(not_inited_ptr(other_filter), false);
+
+        return_if((this->stream(0)->uid() == other->stream(0)->uid())
+                  && (this->description() == other_filter->description()), true);
+
+        return false;
+    }
+
+    std::string Filter::description() const {
+        return _filters_descr;
     }
 
     Code Filter::processInputData(Frame input_data) {

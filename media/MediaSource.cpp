@@ -59,6 +59,15 @@ namespace fpp {
         return str;
     }
 
+    bool MediaSource::equalTo(const Processor * const other) const {
+        auto other_media_source = dynamic_cast<const MediaSource * const>(other);
+        return_if(not_inited_ptr(other_media_source), false);
+
+        return_if(this->inputFormatContext()->mediaResourceLocator()
+                  == other_media_source->inputFormatContext()->mediaResourceLocator(), true);
+        return false;
+    }
+
     void MediaSource::setStartPoint(int64_t value) {
         _start_point = value;
     }
@@ -67,8 +76,8 @@ namespace fpp {
         _end_point = value;
     }
 
-    InputFormatContext& MediaSource::inputFormatContext() {
-        return _input_format_context;
+    const InputFormatContext * MediaSource::inputFormatContext() const {
+        return &_input_format_context;
     }
 
     Code MediaSource::readInputData(Packet& input_data) {

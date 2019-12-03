@@ -13,6 +13,9 @@ namespace fpp {
         virtual Code        init() override;
         virtual Code        open() override;
         virtual Code        close() override;
+        virtual bool        equalTo(const Processor * const other) const override final;
+
+        std::string         description() const;
 
     private:
 

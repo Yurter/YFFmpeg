@@ -75,7 +75,7 @@ int main() {
 //        set_log_level(LogLevel::Trace);
 //        set_log_level(LogLevel::Quiet);
 
-//        set_ffmpeg_log_level(LogLevel::Quiet);
+        set_ffmpeg_log_level(LogLevel::Quiet);
 //        set_ffmpeg_log_level(LogLevel::Trace);
 
         avdevice_register_all();
@@ -117,26 +117,29 @@ int main() {
         //rtsp://admin:admin@192.168.10.189:554/ch01.264
         //rtsp://admin:Admin2019@192.168.10.12:554
         //system("route add 192.168.1.188 mask 255.255.255.255 192.168.137.124");
-//        {
-//            Pipeline* pipeline = new Pipeline;
-//            if (auto ret = pipeline->start(); ret != Code::OK) {
-//                static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
-//            }
+        {
+            Pipeline* pipeline = new Pipeline;
+            if (auto ret = pipeline->start(); ret != Code::OK) {
+                static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
+            }
 
-//            auto source = new MediaSource("rtsp://admin:admin@192.168.10.3:554");
-////            auto source = new MediaSource("video=Webcam C170");
-//            source->setCloseOnDisconnect(false);
-//            pipeline->addElement(source);
+            auto source = new MediaSource("rtsp://admin:admin@192.168.10.3:554");
+//            auto source = new MediaSource("video=Webcam C170");
+            source->setCloseOnDisconnect(false);
+            pipeline->addElement(source);
 
-//            if (auto ret = pipeline->start(); ret != Code::OK) {
-//                static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
-//            }
+            if (auto ret = pipeline->start(); ret != Code::OK) {
+                static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
+            }
 
 //            auto sink_event = new MediaSink("group_video/eventIP.flv", IOType::Event);
 //            pipeline->addElement(sink_event);
 
-//            auto sink_timelapse = new MediaSink("group_video/timelapseIP.flv", IOType::Timelapse);
-//            pipeline->addElement(sink_timelapse);
+            auto sink_timelapse = new MediaSink("group_video/timelapseIP.flv", IOType::Timelapse);
+            pipeline->addElement(sink_timelapse);
+
+//            auto sink_timelapse_2 = new MediaSink("group_video/timelapseIP2.flv", IOType::Timelapse);
+//            pipeline->addElement(sink_timelapse_2);
 
 //            auto params = new VideoParameters;
 //            params->setCodec("libx264", CodecType::Encoder);
@@ -154,10 +157,12 @@ int main() {
 //                        }
 //            };
 //            pipeline->addElement(custom_sink);
-//            utils::sleep_for_min(1);
-////            delete sink_event;
-////            delete sink_timelapse;
-//        }
+
+//            pipeline->simplifyRoutes();
+            utils::sleep_for_min(1);
+//            delete sink_event;
+//            delete sink_timelapse;
+        }
 
 //        {
 //            Pipeline* pipeline = new Pipeline;

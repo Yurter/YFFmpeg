@@ -4,6 +4,8 @@
 
 namespace fpp {
 
+    using ProcessorSequence = ProcessorVector;
+
     class Route : public Object {
 
     public:
@@ -29,9 +31,10 @@ namespace fpp {
         Code                startAll();
         Code                destroy();
 
+        ProcessorSequence   processorSequence();
+
     private:
 
-        using ProcessorSequence = ProcessorVector;
 
         int64_t             _input_stream_uid;
         int64_t             _output_stream_uid;
@@ -40,5 +43,6 @@ namespace fpp {
     };
 
     using RouteList = std::list<Route>;
+    using RouteVector = std::vector<Route>;
 
 } // namespace fpp

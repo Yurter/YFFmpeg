@@ -76,4 +76,15 @@ namespace fpp {
         return sendOutputData(output_data);
     }
 
+    bool Rescaler::equalTo(const Processor * const other) const {
+        return_error_if_not(inited(), "Can't compare untill not inited.", false);
+        return_error_if_not(other->inited(), "Can't compare untill not inited.", false);
+
+        auto other_rescaler = dynamic_cast<const Rescaler * const>(other);
+        return_if(not_inited_ptr(other_rescaler), false);
+
+        return_if(this->stream(0)->uid() == other->stream(0)->uid(), true);
+        return false;
+    }
+
 } // namespace fpp

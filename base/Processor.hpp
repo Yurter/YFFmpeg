@@ -31,7 +31,7 @@ namespace fpp {
         Code                connectTo(Processor* other);
         Code                disconnectFrom(Processor* other);
 
-        virtual bool        equalTo(const Processor * const other);
+        virtual bool        equalTo(const Processor * const other) const;
 
         bool                opened() const;
         bool                closed() const;

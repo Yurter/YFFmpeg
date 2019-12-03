@@ -126,7 +126,7 @@ namespace fpp {
         std::queue<Type>            _queue;
         std::recursive_mutex        _queue_mutex; //TODO вернуть обычный мьютекс
         uint64_t                    _queue_capacity;
-        std::atomic_int             _queue_size;
+        std::atomic_ullong          _queue_size;
         std::atomic_bool            _stop_wait;
         std::condition_variable_any _condition_variable_pushed;
         std::condition_variable_any _condition_variable_popped;

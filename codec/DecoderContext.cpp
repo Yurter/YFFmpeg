@@ -17,10 +17,11 @@ namespace fpp {
             if (int ret = avcodec_send_packet(_codec_context, &input_packet.raw()); ret != 0) {
                 char errstr[1024];
                 av_strerror(ret, errstr, 1024);
-                log_error("Could not send packet: " << errstr << " " << input_packet);
-                log_error("Codeec_context's width: " << _codec_context->width
-                          << ", height: " << _codec_context->height);
-                return Code::ERR;
+                log_error("Could not send packet to decoder: " << errstr << ". Data: " << input_packet);
+//                log_error("Error: " << errstr << ". Data: " << input_packet);
+//                log_error("Codeec_context's width: " << _codec_context->width
+//                          << ", height: " << _codec_context->height);
+                return Code::FFMPEG_ERROR;
             }
             av_packet_unref(&input_packet.raw());
         }

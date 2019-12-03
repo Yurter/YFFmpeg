@@ -20,7 +20,7 @@ namespace fpp {
     using MetaRoute = std::pair<MetaStream,MetaStream>;
     using MetaMap = std::list<MetaRoute>;
 
-    using ProcessorSequence = std::list<Processor*>;
+//    using ProcessorSequence = std::list<Processor*>;
 
     class Pipeline : public Thread {
 
@@ -39,6 +39,8 @@ namespace fpp {
         void                setOptions(int64_t options);        ///< Функция устанавливает переданные ей опции Option.
         void                dump() const;                       ///< TODO description
 
+        Code                simplifyRoutes();
+
     private:
 
         virtual Code        init()      override;
@@ -56,7 +58,6 @@ namespace fpp {
 
         Code                createSequence(Route& route);
 
-        Code                simplifyRoutes();
 
         Stream*             findStream(int64_t uid);
         Code                determineSequence(Processor* output_processor);
@@ -77,7 +78,7 @@ namespace fpp {
 
         MetaMap             _metamap;
 
-        RouteList           _route_list;
+        RouteVector         _route_list;
 
 //        int64_t             _options;
     };

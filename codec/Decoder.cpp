@@ -6,11 +6,13 @@ namespace fpp {
         _decoder_context(stream)
     {
         setName("Decoder");
+        try_throw(setStreams({ stream }));
     }
 
     Code Decoder::init() {
         log_debug("Initialization.");
         try_to(_decoder_context.init());
+        setInited(true);
         return Code::OK;
     }
 
@@ -38,13 +40,15 @@ namespace fpp {
         return ret;
     }
 
-    bool Decoder::equalTo(const Processor * const other) {
+    bool Decoder::equalTo(const Processor * const other) const {
+        return_error_if_not(inited(), "Can't compare untill not inited.", false);
+        return_error_if_not(other->inited(), "Can't compare untill not inited.", false);
+
         auto other_decoder = dynamic_cast<const Decoder * const>(other);
         return_if(not_inited_ptr(other_decoder), false);
 
         return_if(this->stream(0)->uid() == other->stream(0)->uid(), true);
-        //
-        return true;
+        return false;
     }
 
     AVCodecContext* Decoder::decoderContext() {

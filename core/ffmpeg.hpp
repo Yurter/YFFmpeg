@@ -229,6 +229,13 @@ namespace fpp {
                                                 }\
                                             } while(false)
 
+#define return_error_if_not(cond,msg,ret_value) do {\
+                                                    if_not(cond) {\
+                                                        log_error(msg);\
+                                                        return ret_value;\
+                                                    }\
+                                                } while(false)
+
 /* ? */
 #define trow_if(cond,error_message) //TODO
 
