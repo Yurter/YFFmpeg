@@ -85,7 +85,7 @@ namespace fpp {
         log_debug("Disconnected from " << other->name());
         if (_next_processor_list.empty()) {
             if (_close_on_disconnect) {
-                log_info("TODO самоуничтожение объекта"); //TODO заменить return type на void?
+                log_info("TODO self destroy"); //TODO заменить return type на void?
             } else {
                 log_warning("Connection list is empty");
             }
