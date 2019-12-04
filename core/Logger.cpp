@@ -25,9 +25,10 @@ namespace fpp {
     Logger::~Logger() {
         try_throw(stop());
         join();
-//        print(this, code_pos, LogLevel::Info, "Logger closed.");
-//        av_log_set_callback(nullptr);
-//        flush();
+        print(this, code_pos, LogLevel::Info, "Logger closed.");
+        av_log_set_callback(nullptr);
+        flush();
+        closeFile();
     }
 
     Code Logger::run() {
