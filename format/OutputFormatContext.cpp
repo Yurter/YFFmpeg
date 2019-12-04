@@ -124,7 +124,7 @@ namespace fpp {
 
     Code OutputFormatContext::openContext() {
         return_if_not(inited(), Code::NOT_INITED);
-        log_info("Destination: \"" << _media_resource_locator << "\" is opening...");
+        /*log_info("Destination: \"" << _media_resource_locator << "\" is opening...");*/ //перенесено в медиасинк
         if (_streams.empty()) {
             log_error("No streams to mux were specified: " << _media_resource_locator);
             return Code::NOT_INITED;
@@ -154,7 +154,7 @@ namespace fpp {
         }
         {
             av_dump_format(_format_context, 0, _media_resource_locator.c_str(), 1);
-            log_info("Destination: \"" << _media_resource_locator << "\" opened.");
+            /*log_info("Destination: \"" << _media_resource_locator << "\" opened.");*/ //перенесено в медиасинк
             return Code::OK;
         }
     }

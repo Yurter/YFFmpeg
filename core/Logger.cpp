@@ -104,7 +104,7 @@ namespace fpp {
     std::string Logger::formatMessage(std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
         std::string header;
 
-        size_t name_length = 10;
+        size_t name_length = 11;
         if (caller_name.length() > name_length)
         caller_name.resize(name_length, ' ');
 
@@ -113,7 +113,7 @@ namespace fpp {
         header += "[" + (std::stringstream() << std::put_time(std::localtime(&t), "%H:%M:%S")).str() + "]";
         header += "[" + caller_name + "]";
 
-        int message_offset = 27;
+        int message_offset = 28;
 
         if (log_level >= LogLevel::Debug) {
             header += "\n";

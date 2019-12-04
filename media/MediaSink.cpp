@@ -27,7 +27,9 @@ namespace fpp {
         return_if(opened(), Code::OK);
         return_if_not(inited(), Code::NOT_INITED);
         log_debug("Opening.");
+        log_info(_output_format_context.mediaResourceLocator() << "\" is opening...");
         try_to(_output_format_context.open());
+        log_info(_output_format_context.mediaResourceLocator() << "\" opened.");
         setOpened(true);
         return Code::OK;
     }
@@ -48,10 +50,10 @@ namespace fpp {
         log_debug("Closing.");
         try_to(stop());
         stopWait(); //TODO костыль?
-//        try_to(_output_format_context.close());
         log_info("Destination: \"" << _output_format_context.mediaResourceLocator() << "\" closed.");
-//        log_info("To " << _output_format_context.mediaResourceLocator() << " writed "
-//                 << _output_format_context.stream(0)->packetIndex() << " packets.");
+        if (_output_format_context.stream(0)->packetIndex() == 0) {
+            log_warning(_output_format_context.mediaResourceLocator() << " closed empty!");
+        }
         setOpened(false);
         return Code::OK;
     }

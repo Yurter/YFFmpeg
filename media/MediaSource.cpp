@@ -26,14 +26,18 @@ namespace fpp {
     Code MediaSource::open() {
         log_debug("Opening.");
         return_if(opened(), Code::INVALID_CALL_ORDER);
+        log_info(_input_format_context.mediaResourceLocator() << "\" is opening...");
         try_to(_input_format_context.open());
-        try_to(setStreams(_input_format_context.streams()));
-        for (auto&& avstream : streams()) { //TODO
-            try_to(avstream->init());
-        }
-        if (_start_point != FROM_START) {
-            for (auto& stream : streams()) {
-                try_to(_input_format_context.seek(stream->index(), _start_point));
+        log_info(_input_format_context.mediaResourceLocator() << "\" opened.");
+        { //TODO refactoring
+            try_to(setStreams(_input_format_context.streams()));
+            for (auto&& avstream : streams()) { //TODO
+                try_to(avstream->init());
+            }
+            if (_start_point != FROM_START) {
+                for (auto& stream : streams()) {
+                    try_to(_input_format_context.seek(stream->index(), _start_point));
+                }
             }
         }
         setOpened(true);
@@ -90,7 +94,7 @@ namespace fpp {
         }
         if (int ret = av_read_frame(_input_format_context.mediaFormatContext(), &input_data.raw()); ret != 0) {
             return_info_if(ret == AVERROR_EOF
-                           , "Source reading completed"
+                           , "Source reading completed."
                            , Code::END_OF_FILE);
             log_error("Cannot read source: \"" << _input_format_context.mediaResourceLocator() << "\". Error " << ret);
             return Code::FFMPEG_ERROR;
