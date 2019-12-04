@@ -25,18 +25,25 @@ namespace fpp {
         try_to(output_file.init());
 
         { /* crutch */
+            log_info("Initing stream");
             MediaSource input_file(std::get<0>(*_concat_list.begin()));
             try_to(input_file.init());
             try_to(input_file.open());
 
             try_to(output_file.stream(0)->parameters->completeFrom(input_file.stream(0)->parameters));
             output_file.stream(0)->setUsed(true);
+            try_to(input_file.close());
+            input_file.join();
+            log_info("Stream inited");
         }
 
         try_to(output_file.open());
         try_to(output_file.start());
 
         for (auto& [input_file_name, start_point, end_point] : _concat_list) {
+//            log_info("input_file_name: " << input_file_name);
+//            log_info("start_point: " << start_point);
+//            log_info("end_point: " << end_point);
             MediaSource input_file(input_file_name);
             input_file.setStartPoint(start_point);
             input_file.setEndPoint(end_point);
@@ -49,6 +56,8 @@ namespace fpp {
             try_to(input_file.start());
             input_file.join();
             try_to(input_file.disconnectFrom(&output_file));
+//            log_info("iter finished");
+//            utils::sleep_for_ms(150);
         }
 
         try_to(output_file.close());

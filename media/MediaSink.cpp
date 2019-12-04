@@ -47,9 +47,12 @@ namespace fpp {
 //    }
     Code MediaSink::close() {
         return_if(closed(), Code::OK);
+        log_warning("close");
         log_debug("Closing.");
         try_to(stop());
-        stopWait(); //TODO костыль?
+        if (buferIsEmpty()) {
+            stopWait(); //TODO костыль?
+        }
         log_info("Destination: \"" << _output_format_context.mediaResourceLocator() << "\" closed.");
         if (_output_format_context.stream(0)->packetIndex() == 0) {
             log_warning(_output_format_context.mediaResourceLocator() << " closed empty!");
@@ -86,6 +89,9 @@ namespace fpp {
 //        std::cout << "pts = " << output_data.pts() << std::endl;
         bool test = opened();
         if (av_write_frame(_output_format_context.mediaFormatContext(), &output_data.raw()) < 0) {
+            log_error("opened: " << utils::bool_to_string(opened()));
+            log_error("running: " << utils::bool_to_string(running()));
+            log_error("packet: " << output_data);
             log_error("Error muxing packet");
             return Code::ERR;
         }
@@ -94,6 +100,7 @@ namespace fpp {
     }
 
     Code MediaSink::onStop() {
+        log_warning("onStop");
         return_if(closed(), Code::INVALID_CALL_ORDER);
         log_debug("onStop");
         try_to(_output_format_context.close()); // Check it

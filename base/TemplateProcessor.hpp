@@ -86,6 +86,8 @@ namespace fpp {
         }
 
         void stopWait() {
+            _input_queue.clear();
+            _output_queue.clear();
             _input_queue.stop_wait();
             _output_queue.stop_wait();
         }
