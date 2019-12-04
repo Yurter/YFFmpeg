@@ -36,8 +36,9 @@ namespace fpp {
 //        log_trace("Thread starting."); //блокирует конструктор логгера.
         _stop_flag = false;
         if_not(inited()) { try_to(init()); }
+        _running = true; // TODO вынес из тела потока, т.к. может не успеть установиться в true из потока
         _thread = std::thread([this]() {
-            _running = true;
+//            _running = true;
             log_debug("Thread started");
             try_throw(onStart());
             try {
