@@ -44,13 +44,24 @@ namespace fpp {
         return Code::OK;
     }
 
+//    Code MediaSource::close() {
+//        log_debug("Closing.");
+//        return_if(closed(), Code::OK);
+//        try_to(sendEofPacket());
+//        try_to(_input_format_context.close());
+//        setOpened(false);
+//        log_info("Source: \"" << _input_format_context.mediaResourceLocator() << "\" closed.");
+//        return Code::OK;
+//    }
     Code MediaSource::close() {
-        log_debug("Closing.");
         return_if(closed(), Code::OK);
-        try_to(sendEofPacket());
-        try_to(_input_format_context.close());
-        setOpened(false);
+        log_debug("Closing.");
+        try_to(sendEofPacket()); //TODO костыль?
+        try_to(stop());
+        stopWait(); //TODO костыль?
+//        try_to(_input_format_context.close());
         log_info("Source: \"" << _input_format_context.mediaResourceLocator() << "\" closed.");
+        setOpened(false);
         return Code::OK;
     }
 
@@ -92,6 +103,11 @@ namespace fpp {
                 }
             }
         }
+        bool debug_value_0 = _input_format_context.closed();
+        bool debug_value_1 = _input_format_context.opened();
+        auto debug_value_2 = _input_format_context.mediaResourceLocator();
+        auto debug_value_3 = _input_format_context.mediaFormatContext();
+        return_if(_input_format_context.closed(), Code::ERR); //TODO сорс читает после закрытия.. или до..
         if (int ret = av_read_frame(_input_format_context.mediaFormatContext(), &input_data.raw()); ret != 0) {
             return_info_if(ret == AVERROR_EOF
                            , "Source reading completed."
@@ -129,8 +145,10 @@ namespace fpp {
     }
 
     Code MediaSource::onStop() {
+        return_if(closed(), Code::INVALID_CALL_ORDER);
         log_debug("onStop");
-        try_to(close());
+//        try_to(close());
+        try_to(_input_format_context.close());
         return Code::OK;
     }
 
