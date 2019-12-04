@@ -32,14 +32,26 @@ namespace fpp {
         return Code::OK;
     }
 
+//    Code MediaSink::close() {
+//        return_if(closed(), Code::OK);
+//        log_debug("Closing.");
+//        try_to(quit());
+//        try_to(_output_format_context.close());
+//        log_info("Destination: \"" << _output_format_context.mediaResourceLocator() << "\" closed.");
+//        log_info("To " << _output_format_context.mediaResourceLocator() << " writed "
+//                 << _output_format_context.stream(0)->packetIndex() << " packets.");
+//        setOpened(false);
+//        return Code::OK;
+//    }
     Code MediaSink::close() {
         return_if(closed(), Code::OK);
         log_debug("Closing.");
-        try_to(quit());
-        try_to(_output_format_context.close());
+        try_to(stop());
+        stopWait(); //TODO костыль?
+//        try_to(_output_format_context.close());
         log_info("Destination: \"" << _output_format_context.mediaResourceLocator() << "\" closed.");
-        log_info("To " << _output_format_context.mediaResourceLocator() << " writed "
-                 << _output_format_context.stream(0)->packetIndex() << " packets.");
+//        log_info("To " << _output_format_context.mediaResourceLocator() << " writed "
+//                 << _output_format_context.stream(0)->packetIndex() << " packets.");
         setOpened(false);
         return Code::OK;
     }

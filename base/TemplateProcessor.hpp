@@ -23,8 +23,7 @@ namespace fpp {
         }
 
         virtual ~TemplateProcessor() {
-            _input_queue.stop_wait();
-            _output_queue.stop_wait();
+            stopWait();
         }
 
         bool buferIsEmpty() {
@@ -84,6 +83,11 @@ namespace fpp {
                 try_to(next_processor->push(&output_data));
             }
             return Code::OK;
+        }
+
+        void stopWait() {
+            _input_queue.stop_wait();
+            _output_queue.stop_wait();
         }
 
     private:
