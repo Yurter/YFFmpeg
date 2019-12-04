@@ -1,13 +1,21 @@
-TEMPLATE = app
+#TEMPLATE = app
 
-#TEMPLATE = lib
-#CONFIG += static
+TEMPLATE = lib
+CONFIG += static
 
 TARGET = fpp
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 CONFIG += c++17
+
+CONFIG(release, debug|release) {
+    TARGET = fpp_r
+}
+
+CONFIG(debug, debug|release) {
+    TARGET = fpp
+}
 
 QMAKE_CXXFLAGS += /std:c++latest #Домашний креатор не может использовать c++17 атрибут nodiscard без этого флага
 
