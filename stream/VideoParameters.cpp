@@ -110,7 +110,11 @@ namespace fpp {
     }
 
     std::string VideoParameters::toString() const {
-        std::string str = "TODO";
+        std::string str = Parameters::toString() + "; ";
+        str += std::to_string(width()) + "x" + std::to_string(height()) + ", ";
+        str += utils::rational_to_string(aspectRatio()) + ", ";
+        str += utils::rational_to_string(frameRate()) + " fps" + ", ";
+        str += av_get_pix_fmt_name(pixelFormat());
         return str;
     }
 
@@ -118,21 +122,11 @@ namespace fpp {
         auto other_video_parameters = static_cast<const VideoParameters*>(other_parametrs);
         if (not_inited_int(_width))             { setWidth(other_video_parameters->width());                }
         if (not_inited_int(_height))            { setHeight(other_video_parameters->height());              }
-        if (not_inited_q(_aspect_ratio))        {  setAspectRatio(other_video_parameters->aspectRatio());   }
+        if (not_inited_q(_aspect_ratio))        { setAspectRatio(other_video_parameters->aspectRatio());    }
         if (not_inited_q(_frame_rate))          { setFrameRate(other_video_parameters->frameRate());        }
         if (not_inited_pix_fmt(_pixel_format))  { setPixelFormat(other_video_parameters->pixelFormat());    }
         try_to(Parameters::completeFrom(other_parametrs));
         return Code::OK;
-    }
-
-    VideoParameters& VideoParameters::operator=(const VideoParameters &rhs) {
-        _width          = rhs.width();
-        _height         = rhs.height();
-        _aspect_ratio   = rhs.aspectRatio();
-        _frame_rate     = rhs.frameRate();
-        _pixel_format   = rhs.pixelFormat();
-        Parameters::operator=(rhs);
-        return *this;
     }
 
 } // namespace fpp

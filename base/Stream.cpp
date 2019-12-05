@@ -41,41 +41,19 @@ namespace fpp {
         return Code::OK;
     }
 
-    std::string Stream::toString() const { //TODO дампить параметры
+    std::string Stream::toString() const {
         return_if_not(inited(), "not inited!");
+
         std::string str = "[" + std::to_string(parameters->contextUid())
                 + ":" + std::to_string(parameters->streamIndex()) + "] "
-                + utils::media_type_to_string(type()) + " stream: "
-                + parameters->codecName() + ", ";
+                + utils::media_type_to_string(type()) + " stream: ";
 
-        if (used()) {
-            str += "dts_delta " + std::to_string(_packet_dts_delta) + ", "
-                    + "pts_delta " + std::to_string(_packet_pts_delta) + ", "
-    //              + "time_base " + utils::rational_to_string(timeBase()) + ", "
-                    + "time_base " + utils::rational_to_string(parameters->timeBase()) + ", "
-//                    + "FPS " + std::to_string(static_cast<VideoParameters*>(parameters)->frameRate()) + ", "
-                    + "duration " + std::to_string(parameters->duration());
-        } else {
-            str += "not used";
-        }
-
+        str += used() ? parameters->toString() : "not used";
         return str;
     }
 
     Code Stream::stampPacket(Packet& packet) {
         return_if(packet.type() != type(), Code::INVALID_INPUT);
-
-//        if (inited_int(packet.dts())) {
-//            log_warning("Overwriting existing dts"
-//                        << " from " << packet.dts()
-//                        << " to " << _prev_dts);
-//        }
-
-//        if (inited_int(packet.pts())) {
-//            log_warning("Overwriting existing pts"
-//                        << " from " << packet.pts()
-//                        << " to " << _prev_pts);
-//        }
 
         packet.setDts(_prev_dts);
         packet.setPts(_prev_pts);
@@ -84,12 +62,9 @@ namespace fpp {
 
         _prev_dts += _packet_dts_delta;
         _prev_pts += _packet_pts_delta;
-//        _duration += _packet_duration;
-        parameters->increaseDuration(_packet_duration);
         _packet_index++;
 
-//        increaseDuration(_packet_duration);
-//        log_warning("Dur: " << _duration);
+        parameters->increaseDuration(_packet_duration);
 
         return Code::OK;
     }
@@ -118,10 +93,6 @@ namespace fpp {
         return _data->index;
     }
 
-//    int64_t Stream::duration() const {
-//        return _duration;
-//    }
-
     bool Stream::used() const {
         return _used;
     }
@@ -134,15 +105,11 @@ namespace fpp {
         return _data->codecpar;
     }
 
-//    void Stream::increaseDuration(int64_t value) {
-//        _duration += value;
-//    }
-
     bool Stream::operator>(const Stream& other) const {
         return parameters->bitrate() > other.parameters->bitrate();
     }
 
-    void Stream::parseParametres() //TODO ? што это?
+    void Stream::parseParametres() //TODO перенести код из FormatContext::parseFormatContext()
     {
         _data->time_base = parameters->timeBase();
     }

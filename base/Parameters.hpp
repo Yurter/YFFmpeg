@@ -22,6 +22,7 @@ namespace fpp {
         AVCodecID           codecId()       const;
         std::string         codecName()     const;
         AVCodec*            codec()         const;
+        CodecType           codecType()     const;
         int64_t             bitrate()       const;
         int64_t             duration()      const;
         int64_t             streamIndex()   const;
@@ -33,13 +34,17 @@ namespace fpp {
         virtual std::string toString() const override;
 
         virtual Code        completeFrom(const Parameters* other_parametrs);
-        Parameters&         operator=(const Parameters& rhs); //TODO нужен ли этот оператор?
+
+    private:
+
+        void                setCodecType(CodecType value);
 
     protected:
 
         AVCodec*            _codec;
         AVCodecID           _codec_id;
         std::string			_codec_name;
+        CodecType           _codec_type;
         int64_t             _bitrate;
         int64_t             _duration;
         int64_t             _stream_index;

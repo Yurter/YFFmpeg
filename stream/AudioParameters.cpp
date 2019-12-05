@@ -55,12 +55,12 @@ namespace fpp {
         return _channels;
     }
 
-    std::string AudioParameters::toString() const //TODO
-    {
-        std::string str = "Sample rate: " + std::to_string(sampleRate()) + ", "
-                + "sample format: " + av_get_sample_fmt_name(sampleFormat()) + "[" + std::to_string(sampleFormat()) + "], "
-                + "channel layout: " + std::to_string(channelLayout()) + ", "
-                + "channels: " + std::to_string(channels());
+    std::string AudioParameters::toString() const {
+        std::string str = Parameters::toString() + "; ";
+        str += "smplr: " + std::to_string(sampleRate()) + ", ";
+        str += std::string(av_get_sample_fmt_name(sampleFormat())) + ", ";
+        str += "chlt: " + std::to_string(channelLayout()) + ", ";
+        str += "ch: " + std::to_string(channels());
         return str;
     }
 
@@ -72,15 +72,6 @@ namespace fpp {
         if (not_inited_int(_channels))              { _channels         = other_audio_parameters->channels();       }
         try_to(Parameters::completeFrom(other_parametrs));
         return Code::OK;
-    }
-
-    AudioParameters &AudioParameters::operator=(const AudioParameters& rhs) {
-        _sample_rate    = rhs.sampleRate();
-        _sample_format  = rhs.sampleFormat();
-        _channel_layout = rhs.channelLayout();
-        _channels       = rhs.channels();
-        Parameters::operator=(rhs);
-        return *this;
     }
 
 } // namespace fpp

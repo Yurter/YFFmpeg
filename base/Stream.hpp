@@ -20,21 +20,19 @@ namespace fpp {
         virtual std::string toString() const override final;
         virtual Code        stampPacket(Packet& packet) final;
 
-        void                setContext(Object* context); //TOOD заменить на Context* ?
+        void                setContext(Object* context); //TODO заменить на Context* ? //TODO убарть
         void                setUid(int64_t uid);
         void                setUsed(bool used);
 
-        Object*             context()   const;
-        int64_t             uid()       const;
-        int64_t             index()     const;
-        bool                used()      const;
-        int64_t             packetIndex() const;
+        Object*             context()       const;
+        int64_t             uid()           const;
+        int64_t             index()         const;
+        bool                used()          const;
+        int64_t             packetIndex()   const;
 
         AVCodecParameters*  codecParameters();
 
         int64_t packet_duration() const { return _packet_duration; } //TODO
-
-//        void                increaseDuration(int64_t value);
 
         virtual bool        operator>(const Stream& other) const; //TODO func betterThen(Stream* other) ? нет, максимум дублировать, т.к. испольуется в std::max_element
 
@@ -46,12 +44,11 @@ namespace fpp {
 
         virtual void        parseParametres();
 
-    protected: //TODO перенести поля в параметры
+    protected:
 
-        Object*             _context;
+        Object*             _context; //TODO убарть
 
         int64_t             _uid;
-//        int64_t             _duration;
         bool                _used;
 
         int64_t             _prev_dts;

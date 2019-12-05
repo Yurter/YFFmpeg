@@ -8,6 +8,7 @@ namespace fpp {
         _codec(nullptr)
         , _codec_id(DEFAULT_CODEC_ID)
         , _codec_name(DEFAULT_STRING)
+        , _codec_type(CodecType::Unknown)
         , _bitrate(DEFAULT_INT)
         , _duration(DEFAULT_INT)
         , _stream_index(INVALID_INT)
@@ -19,10 +20,15 @@ namespace fpp {
 
     void Parameters::setCodec(AVCodecID codec_id, CodecType codec_type) {
         switch (codec_type) {
+        case CodecType::Unknown:
+            log_error("Unknown codec type of " << avcodec_get_name(codec_id) << ", ignored");
+            return;
         case CodecType::Decoder:
+            setCodecType(codec_type);
             setCodec(utils::find_decoder(codec_id));
             return;
         case CodecType::Encoder:
+            setCodecType(codec_type);
             setCodec(utils::find_encoder(codec_id));
             return;
         }
@@ -30,10 +36,15 @@ namespace fpp {
 
     void Parameters::setCodec(std::string codec_short_name, CodecType codec_type) {
         switch (codec_type) {
+        case CodecType::Unknown:
+            log_error("Unknown codec type of " << codec_short_name << ", ignored");
+            return;
         case CodecType::Decoder:
+            setCodecType(codec_type);
             setCodec(utils::find_decoder(codec_short_name));
             return;
         case CodecType::Encoder:
+            setCodecType(codec_type);
             setCodec(utils::find_encoder(codec_short_name));
             return;
         }
@@ -89,6 +100,10 @@ namespace fpp {
         return _codec;
     }
 
+    CodecType Parameters::codecType() const {
+        return _codec_type;
+    }
+
     int64_t Parameters::bitrate() const {
         return _bitrate;
     }
@@ -114,7 +129,12 @@ namespace fpp {
     }
 
     std::string Parameters::toString() const {
-        std::string str = "TODO";
+        std::string str;
+        str += codecName() + ", ";
+        str += utils::codec_type_to_string(codecType()) + ", ";
+        str += "bit/s " + std::to_string(bitrate()) + ", ";
+        str += "dur " + std::to_string(duration()) + ", ";
+        str += "tb " + utils::rational_to_string(timeBase());
         return str;
     }
 
@@ -128,14 +148,8 @@ namespace fpp {
         return Code::OK;
     }
 
-    Parameters& Parameters::operator=(const Parameters& rhs) {
-        _codec_id =     rhs.codecId();
-        _codec_name =   rhs.codecName();
-        _bitrate =      rhs.bitrate();
-        _duration =     rhs.duration();
-        _stream_index = rhs.streamIndex();
-        _time_base =    rhs.timeBase();
-        return *this;
+    void Parameters::setCodecType(CodecType value) {
+        _codec_type = value;
     }
 
 } // namespace fpp
