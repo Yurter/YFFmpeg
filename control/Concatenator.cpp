@@ -60,8 +60,14 @@ namespace fpp {
 //            utils::sleep_for_ms(150);
         }
 
-        try_to(output_file.close());
-        output_file.join();
+        Packet eof_packet;
+        eof_packet.setType(MediaType::MEDIA_TYPE_VIDEO);
+        output_file.push(&eof_packet);
+//        output_file.join();
+
+//        try_to(output_file.close());
+//        try_to(output_file.stop());
+//        output_file.join();
 
         return Code::END_OF_FILE;
     }

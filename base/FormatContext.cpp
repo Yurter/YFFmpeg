@@ -148,7 +148,7 @@ namespace fpp {
         return _uid;
     }
 
-    Code FormatContext::parseFormatContext() {
+    Code FormatContext::parseFormatContext() { //TODO перенести код в Stream::parseParametres()
         if (_format_context == nullptr) {
             log_error("Format context not inited. Parsing failed");
             return Code::INVALID_INPUT;

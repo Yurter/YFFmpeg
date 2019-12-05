@@ -81,12 +81,14 @@ namespace fpp {
 
     std::string utils::codec_type_to_string(CodecType type) {
         switch (type) {
+        case CodecType::Unknown:
+            return "Unknown";
         case CodecType::Decoder:
             return "Decoder";
         case CodecType::Encoder:
             return "Encoder";
         }
-        return "Unknown";
+        return "Error";
     }
 
     std::string utils::rational_to_string(AVRational rational) {

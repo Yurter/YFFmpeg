@@ -12,63 +12,32 @@ namespace fpp {
 
     Frame::Frame(const Frame& other) {
         setName("Frame");
-//        if (not_inited_ptr(_data)) {
-//            alloc();
-//        }
         av_frame_ref(&_data, &other._data);
         setType(other.type());
         setInited(true);
-//        log_error("Copy constructor " << other.toString());
     }
 
-    Frame::Frame(const Frame&& other) {
+    Frame::Frame(const Frame&& other) { //TODO нужен ли?
+        UNUSED(other);
         log_error("MOVE FRAME");
     }
-
-//    Frame::Frame(AVFrame *frame) :
-//        Data<AVFrame*>(frame)//,
-//    //    _stream_index(INVALID_INT)
-//    {
-//        setName("Frame");
-//    //    _data = frame;
-//        if (not_inited_ptr(_data)) { alloc(); }
-
-////        static std::atomic_int memory_leak = 0;
-////        memory_leak += sizeof (*_data);
-////        log_warning("Allocated: " << memory_leak);
-//    //    if (_data == nullptr) { alloc(); }
-//    }
 
     Frame::~Frame() {
         av_frame_unref(&_data);
     }
 
     Frame& Frame::operator=(const Frame&& other) {
-//        if (not_inited_ptr(_data)) {
-//            alloc();
-//        }
         av_frame_ref(&_data, &other._data);
         setType(other.type());
         setInited(true);
         return *this;
     }
 
-//    bool Frame::alloc() //TODO
-//    {
-//        _data = av_frame_alloc();
-//        if (_data == nullptr) { return false; }
-//        return true;
-//    }
-
-//    void Frame::free() {
-////        av_frame_unref(_data); ??
-//        av_frame_free(&_data);
-//    }
-
     uint64_t Frame::size() const {
         if (isVideo()) {
             return uint64_t(av_image_get_buffer_size(AVPixelFormat(_data.format), _data.width, _data.height, 32));
-        } else if (isAudio()) {
+        }
+        if (isAudio()) {
             auto channels = av_get_channel_layout_nb_channels(_data.channel_layout);
             auto bufer_size = av_samples_get_buffer_size(nullptr/*_data.linesize*/ //TODO разобраться с параметром
                                                          , channels
@@ -80,23 +49,13 @@ namespace fpp {
         return 0;
     }
 
-//    bool Frame::empty() const {
-////        if (isVideo()) {
-////            return _data->linesize[0] == 0;
-////        }
-////        if (isAudio()) {
-////            return _data->nb_samples == 0;
-////        }
-////        return true;
+//    Code Frame::init() //TODO
+//    {
+//        return Code::ERR;
 //    }
 
-    Code Frame::init() //TODO
-    {
-        return Code::ERR;
-    }
-
     std::string Frame::toString() const {
-        /* Video frame: 33123 byte, dts 460, pts 460, duration 33 */
+        /* Video frame: 33123 bytes, dts 460, pts 460, duration 33 */
         std::string str = utils::media_type_to_string(type()) + " frame: ";
         if (isVideo()) {
             str += std::to_string(size()) + " bytes, "
@@ -107,7 +66,7 @@ namespace fpp {
                     + "px_fmt " + std::string(av_get_pix_fmt_name(AVPixelFormat(_data.format)));
             return str;
         }
-        /* Audio frame: 316 byte, dts 460, pts 460, duration 33   */
+        /* Audio frame: 316 bytes, dts 460, pts 460, duration 33 */
         if (isAudio()) {
             str += std::to_string(size()) + " bytes, "
                     + "pts " + utils::pts_to_string(_data.pts) + ", "
@@ -116,10 +75,11 @@ namespace fpp {
                     + "sample_rate " + std::to_string(_data.sample_rate);
             return str;
         }
-        /* erase ": " */ //TODO
-        str.pop_back();
-        str.pop_back();
-        return str;
+        /* Unknown frame: -1 bytes */
+        {
+            str += std::to_string(-1) + " bytes";
+            return str;
+        }
     }
 
 } // namespace fpp

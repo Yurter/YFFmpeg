@@ -10,8 +10,8 @@ namespace fpp {
     }
 
     MediaSink::~MediaSink() {
+        join();
         try_throw(close());
-//        join(); //TODO виснет на удалении объекта
     }
 
     Code MediaSink::init() {

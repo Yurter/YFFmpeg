@@ -64,6 +64,7 @@ namespace fpp {
 
     /* ? */
     enum class CodecType { //TODO конфликт имён
+        Unknown,
         Decoder,
         Encoder,
     };
