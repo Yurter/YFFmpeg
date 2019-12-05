@@ -1,7 +1,7 @@
-#TEMPLATE = app
+TEMPLATE = app
 
-TEMPLATE = lib
-CONFIG += static
+#TEMPLATE = lib
+#CONFIG += static
 
 TARGET = fpp
 CONFIG += console
@@ -78,7 +78,7 @@ HEADERS += \
     codec/EncoderContext.hpp \
     control/Concatenator.hpp \
     core/AsyncDiscardAmountQueue.hpp \
-    core/AsyncDiscardQueue.hpp \
+    core/AsyncDiscardSizeQueue.hpp \
     core/Chronometer.hpp \
     core/Timer.hpp \
     custom/CustomFrameSink.hpp \

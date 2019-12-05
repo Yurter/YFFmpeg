@@ -8,16 +8,16 @@
 namespace fpp {
 
     template <class Type>
-    class AsyncDiscardQueue { //TODO rename to AsyncDiscardSizeQueue
+    class AsyncDiscardSizeQueue {
 
     public:
 
-        AsyncDiscardQueue(uint64_t queue_capacity = 50 * 1024 * 1024 /* 50 Mb */) :
+        AsyncDiscardSizeQueue(uint64_t queue_capacity = 50 * 1024 * 1024 /* 50 Mb */) :
             _queue_capacity(queue_capacity)
             , _queue_size(0)
             , _stop_wait(false) {}
 
-        virtual ~AsyncDiscardQueue() { clear(); }
+        virtual ~AsyncDiscardSizeQueue() { clear(); }
 
         [[nodiscard]]
         bool push(const Type& data) {

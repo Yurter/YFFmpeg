@@ -1,7 +1,7 @@
 #pragma once
 #include "core/utils.hpp"
 #include "core/Thread.hpp"
-#include "core/AsyncDiscardQueue.hpp"
+#include "core/AsyncDiscardSizeQueue.hpp"
 #include "core/AsyncDiscardAmountQueue.hpp"
 #include "Processor.hpp"
 
@@ -15,8 +15,8 @@ namespace fpp {
         using IOFunction = std::function<Code(void)>;
         using WriteFunction = std::function<Code(outType&)>;
         using ProcessFunction = std::function<Code(outType&)>;
-        using InputQueue = AsyncDiscardQueue<inType>;
-        using OutputQueue = AsyncDiscardQueue<outType>;
+        using InputQueue = AsyncDiscardSizeQueue<inType>;
+        using OutputQueue = AsyncDiscardSizeQueue<outType>;
 
         TemplateProcessor() {
             setName("TemplateProcessor");
