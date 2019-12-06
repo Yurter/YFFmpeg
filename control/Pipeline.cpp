@@ -270,6 +270,7 @@ namespace fpp {
                     if_not(sequence_one[k]->equalTo(sequence_two[k])) {
                         log_warning("FORK POINT is " << sequence_one[k]->name());
                         //TODO склеить последовательности от 0 до k-1
+                        route_one.changePartTo()
                         break;
                     }
                 }
