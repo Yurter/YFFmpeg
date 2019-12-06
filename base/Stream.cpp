@@ -12,10 +12,9 @@ namespace fpp {
     Stream::Stream(AVStream* stream, Parameters* param) :
         Data<AVStream*>(stream, param->type()),
         parameters(param),
-        _context(nullptr),
         _uid(INVALID_INT),
-//        _duration(DEFAULT_INT),
         _used(false),
+        _context(nullptr),
         _prev_dts(DEFAULT_INT),
         _prev_pts(DEFAULT_INT),
         _packet_index(DEFAULT_INT),
@@ -102,6 +101,7 @@ namespace fpp {
     }
 
     AVCodecParameters* Stream::codecParameters() {
+        return_if(not_inited_ptr(_data), nullptr);
         return _data->codecpar;
     }
 
@@ -111,6 +111,9 @@ namespace fpp {
 
     void Stream::parseParametres() //TODO перенести код из FormatContext::parseFormatContext()
     {
+        return_error_if(not_inited_ptr(_data)
+                        , "Cannot parse virtual stream."
+                        , void());
         _data->time_base = parameters->timeBase();
     }
 

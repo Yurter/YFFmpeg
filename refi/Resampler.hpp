@@ -8,7 +8,7 @@ namespace fpp {
 
     public:
 
-        Resampler(StreamPair audio_streams);
+        Resampler(IOParams params);
         virtual ~Resampler() override;
 
         virtual Code       init() override;
@@ -21,7 +21,7 @@ namespace fpp {
 
     protected:
 
-        StreamPair          _io_streams;
+        IOParams            _params;
         SwrContext*         _resampler_context;
 
     };

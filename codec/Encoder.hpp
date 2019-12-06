@@ -8,7 +8,7 @@ namespace fpp {
 
     public:
 
-        Encoder(Stream* stream);
+        Encoder(const IOParams params);
 
         virtual Code        init() override;
         virtual Code        open() override;
@@ -16,7 +16,7 @@ namespace fpp {
         virtual Code        processInputData(Frame input_data) override;
         virtual bool        equalTo(const Processor * const other) const override;
 
-        AVCodecContext*     encoderContext();
+        const EncoderContext* encoderContext() const;
 
     private:
 

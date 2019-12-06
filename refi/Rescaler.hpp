@@ -8,7 +8,7 @@ namespace fpp {
 
     public:
 
-        Rescaler(StreamPair video_streams);
+        Rescaler(IOParams params);
         virtual ~Rescaler() override;
 
         virtual Code        init() override;
@@ -19,7 +19,7 @@ namespace fpp {
 
     private:
 
-        StreamPair          _io_streams;
+        IOParams            _params;
         SwsContext*         _rescaler_context;
 
     };

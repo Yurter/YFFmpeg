@@ -2,11 +2,10 @@
 
 namespace fpp {
 
-    Decoder::Decoder(Stream* stream) :
-        _decoder_context(stream)
+    Decoder::Decoder(const IOParams params) :
+        _decoder_context(params)
     {
         setName("Decoder");
-        try_throw(setStreams({ stream }));
     }
 
     Code Decoder::init() {
@@ -47,12 +46,14 @@ namespace fpp {
         auto other_decoder = dynamic_cast<const Decoder * const>(other);
         return_if(not_inited_ptr(other_decoder), false);
 
-        return_if(this->stream(0)->uid() == other->stream(0)->uid(), true);
+        return_if(_decoder_context.params.in->streamUid()
+                  == other_decoder->decoderContext()->params.in->streamUid(), true);
+
         return false;
     }
 
-    AVCodecContext* Decoder::decoderContext() {
-        return _decoder_context.codecContext();
+    const DecoderContext* Decoder::decoderContext() const {
+        return &_decoder_context;
     }
 
 } // namespace fpp

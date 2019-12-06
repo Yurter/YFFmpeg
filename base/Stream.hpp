@@ -46,10 +46,8 @@ namespace fpp {
 
     protected:
 
-        Object*             _context; //TODO убарть
-
-        int64_t             _uid;
         bool                _used;
+        Object*             _context;
 
         int64_t             _prev_dts;
         int64_t             _prev_pts;

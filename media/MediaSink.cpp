@@ -13,10 +13,6 @@ namespace fpp {
         try_throw(close());
         join();
     }
-//    MediaSink::~MediaSink() {
-//        join();
-//        try_throw(close());
-//    }
 
     Code MediaSink::init() {
         return_if(inited(), Code::INVALID_CALL_ORDER);
@@ -38,17 +34,6 @@ namespace fpp {
         return Code::OK;
     }
 
-//    Code MediaSink::close() {
-//        return_if(closed(), Code::OK);
-//        log_debug("Closing.");
-//        try_to(quit());
-//        try_to(_output_format_context.close());
-//        log_info("Destination: \"" << _output_format_context.mediaResourceLocator() << "\" closed.");
-//        log_info("To " << _output_format_context.mediaResourceLocator() << " writed "
-//                 << _output_format_context.stream(0)->packetIndex() << " packets.");
-//        setOpened(false);
-//        return Code::OK;
-//    }
     Code MediaSink::close() {
         return_if(closed(), Code::OK);
         log_warning("close");
@@ -86,12 +71,6 @@ namespace fpp {
 
     Code MediaSink::writeOutputData(Packet output_data) {
 //        if (av_interleaved_write_frame(_format_context, &packet.raw()) < 0) {
-//        if (_output_format_context.mediaResourceLocator() == std::string("group_video/event.flv")) {
-////            static int
-//            log_warning("pts = " << output_data.pts());
-//        }
-//        std::cout << "pts = " << output_data.pts() << std::endl;
-        bool test = opened();
         if (av_write_frame(_output_format_context.mediaFormatContext(), &output_data.raw()) < 0) {
             log_error("opened: " << utils::bool_to_string(opened()));
             log_error("running: " << utils::bool_to_string(running()));

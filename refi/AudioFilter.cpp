@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    AudioFilter::AudioFilter(const Parameters *input_data_params, std::string filters_descr) :
-        Filter(input_data_params, filters_descr)
+    AudioFilter::AudioFilter(IOParams params, std::string filters_descr) :
+        Filter(params, filters_descr)
     {
         setName("AudioFilter");
     }

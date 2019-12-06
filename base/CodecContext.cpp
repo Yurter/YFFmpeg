@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    CodecContext::CodecContext(Stream* stream, CodecType type) :
-        _stream(stream)
+    CodecContext::CodecContext(const Parameters * const params, CodecType type) :
+        params(params)
       , _codec_context(nullptr)
       , _type(type)
       , _opened(false)
@@ -18,7 +18,7 @@ namespace fpp {
     Code CodecContext::init() {
         return_if(inited(), Code::INVALID_CALL_ORDER);
         log_debug("Initialization.");
-        auto codec = _stream->parameters->codec();
+        auto codec = params->codec();
         return_if(not_inited_ptr(codec), Code::INVALID_INPUT);
         {
             _codec_context = avcodec_alloc_context3(codec);
@@ -37,14 +37,14 @@ namespace fpp {
     Code CodecContext::open() {
         return_if(opened(), Code::INVALID_CALL_ORDER);
         log_debug("Opening.");
-        auto codec = _stream->parameters->codec();
+        auto codec = params->codec();
         if (int ret = avcodec_open2(_codec_context, codec, nullptr); ret != 0) {
             std::string codec_type = av_codec_is_decoder(codec) ? "decoder" : "encoder";
             log_error("Cannot open codec: " << ret << ", "<< codec->name << ", " << codec_type);
             return Code::ERR;
         }
         { /* Crutch */ //TODO
-            if (_stream->parameters->isAudio()) {
+            if (params->isAudio()) {
                 _codec_context->channel_layout = static_cast<uint64_t>(
                             av_get_default_channel_layout(_codec_context->channels)
                             );

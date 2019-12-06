@@ -7,7 +7,7 @@ namespace fpp {
 
     public:
 
-        VideoFilter(const Parameters* input_data_params, std::string filters_descr);
+        VideoFilter(IOParams params, std::string filters_descr);
 
     };
 

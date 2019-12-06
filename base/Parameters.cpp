@@ -80,6 +80,10 @@ namespace fpp {
         _stream_index = stream_index;
     }
 
+    void Parameters::setStreamUid(int64_t value) {
+        _stream_uid = value;
+    }
+
     void Parameters::setTimeBase(AVRational time_base) {
         _time_base = time_base;
     }

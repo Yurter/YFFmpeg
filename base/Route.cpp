@@ -119,10 +119,11 @@ namespace fpp {
     Code Route::destroy() {
         for (auto processor = _sequence.begin(); processor != _sequence.end(); processor++) {
             auto next_processor = std::next(processor);
-            if (next_processor == _sequence.end()) {
-                return Code::OK;
-            }
+            return_if(next_processor == _sequence.end(), Code::OK);
+
             try_throw((*processor)->disconnectFrom(*next_processor));
+            проверка на оставшийся коннект после дисконекта
+                    если конект лист не пуст -> break
         }
         return Code::OK;
     }

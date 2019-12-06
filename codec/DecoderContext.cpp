@@ -2,14 +2,14 @@
 
 namespace fpp {
 
-    DecoderContext::DecoderContext(Stream* stream) :
-        CodecContext(stream, CodecType::Decoder)
+    DecoderContext::DecoderContext(const IOParams params) :
+        CodecContext(params, CodecType::Decoder)
     {
-        setName("DecoderContext");
+        setName("DecoderContext");EMPTY_CONSTRUCTOR
     }
 
     DecoderContext::~DecoderContext() {
-        // TODO
+        // TODO EMPTY_DESTRUCTOR ? context->close() ?
     }
 
     Code DecoderContext::decode(Packet input_packet, Frame& output_frame) {
@@ -47,12 +47,12 @@ namespace fpp {
     }
 
     Code DecoderContext::initParams() {
-        utils::parameters_to_avcodecpar(_stream->parameters, _stream->codecParameters());
-        if (avcodec_parameters_to_context(_codec_context, _stream->codecParameters()) < 0) {
-            log_error("avcodec_parameters_to_context failed");
-            return Code::ERR;
-        }
-        utils::parameters_to_context(_stream->parameters, _codec_context);
+//        utils::parameters_to_avcodecpar(_params, _stream->codecParameters());
+//        if (avcodec_parameters_to_context(_codec_context, _stream->codecParameters()) < 0) {
+//            log_error("avcodec_parameters_to_context failed");
+//            return Code::ERR;
+//        } findme
+        utils::parameters_to_context(_params, _codec_context);
         return Code::OK;
     }
 

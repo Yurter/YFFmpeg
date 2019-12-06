@@ -385,7 +385,7 @@ namespace fpp {
         }
     }
 
-    bool utils::rescaling_required(const StreamPair streams) {
+    bool utils::rescaling_required(IOParams params) {
         return_if(streams.first->isAudio(),  false);
         return_if(streams.second->isAudio(), false);
 
@@ -417,7 +417,7 @@ namespace fpp {
         return false;
     }
 
-    bool utils::resampling_required(const StreamPair streams) {
+    bool utils::resampling_required(IOParams params) {
         return_if(streams.first->isVideo(),  false);
         return_if(streams.second->isVideo(), false);
 
@@ -432,7 +432,7 @@ namespace fpp {
         return false;
     }
 
-    bool utils::video_filter_required(const StreamPair streams) {
+    bool utils::video_filter_required(IOParams params) {
         return_if(streams.first->isAudio(),  false);
         return_if(streams.second->isAudio(), false);
 
@@ -445,13 +445,13 @@ namespace fpp {
         return false;
     }
 
-    bool utils::audio_filter_required(const StreamPair streams) {
+    bool utils::audio_filter_required(IOParams params) {
         return false;
     }
 
-    bool utils::transcoding_required(const StreamPair streams) {
-        auto in = streams.first->parameters;
-        auto out = streams.second->parameters;
+    bool utils::transcoding_required(IOParams params) {
+        auto in = params.first->parameters;
+        auto out = params.second->parameters;
 
         return_if(in->codecId() != out->codecId(), true);
 //        return_if(in->codecName() != out->codecName(), true);

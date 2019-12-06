@@ -9,7 +9,7 @@ namespace fpp {
 
     public:
 
-        DecoderContext(Stream* stream);
+        DecoderContext(const IOParams params);
         virtual ~DecoderContext() override;
 
         Code                decode(Packet input_packet, Frame& output_frame);

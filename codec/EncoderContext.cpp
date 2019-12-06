@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    EncoderContext::EncoderContext(Stream* stream) :
-        CodecContext(stream, CodecType::Encoder)
+    EncoderContext::EncoderContext(const IOParams params) :
+        CodecContext(params, CodecType::Encoder)
     {
         setName("EncoderContext");
     }
@@ -35,14 +35,14 @@ namespace fpp {
 //            log_warning("avcodec_receive_packet failed");
             return Code::AGAIN;
         }
-        output_packet.setStreamIndex(_stream->parameters->streamIndex());
+        output_packet.setStreamIndex(_params->streamIndex());
         output_packet.setStreamUid(_stream->uid());
         return Code::OK;
     }
 
     Code EncoderContext::initParams() {
 //        return_if_not(_stream->inited(), Code::NOT_INITED);
-        utils::parameters_to_context(_stream->parameters, _codec_context);
+        utils::parameters_to_context(_params, _codec_context);
         //findme
 //        utils::parameters_to_avcodecpar(_stream->parameters, _stream->codecParameters());
 //        if (avcodec_parameters_to_context(_codec_context, _stream->codecParameters()) < 0) {

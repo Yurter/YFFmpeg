@@ -7,7 +7,7 @@ namespace fpp {
 
     public:
 
-        Filter(const Parameters* input_data_params, std::string filters_descr);
+        Filter(IOParams params, std::string filters_descr);
         virtual ~Filter() override;
 
         virtual Code        init() override;
@@ -23,7 +23,7 @@ namespace fpp {
 
     private:
 
-        const Parameters*   _input_data_params;
+        IOParams            _params;
         std::string         _filters_descr;
         AVFilterGraph*      _filter_graph;
         AVFilterContext*    _buffersrc_ctx;

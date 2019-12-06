@@ -2,11 +2,10 @@
 
 namespace fpp {
 
-    Encoder::Encoder(Stream* stream) :
-        _encoder_context(stream)
+    Encoder::Encoder(const IOParams params) :
+        _encoder_context(params)
     {
-        setName(std::to_string(uid()) + "Encoder");
-        try_throw(setStreams({ stream }));
+        setName("Encoder");
     }
 
     Code Encoder::init() {
@@ -50,12 +49,14 @@ namespace fpp {
         auto other_encoder = dynamic_cast<const Encoder * const>(other);
         return_if(not_inited_ptr(other_encoder), false);
 
-        return_if(this->stream(0)->uid() == other->stream(0)->uid(), true);
-        return false;
+        return_if(_encoder_context.params.in->streamUid()
+                  == other_encoder->encoderContext()->params.in->streamUid(), true);
+
+        return true;
     }
 
-    AVCodecContext* Encoder::encoderContext() {
-        return _encoder_context.codecContext();
+    const EncoderContext* Encoder::encoderContext() const {
+        return &_encoder_context;
     }
 
 } // namespace fpp

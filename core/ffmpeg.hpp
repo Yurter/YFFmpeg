@@ -255,3 +255,4 @@ namespace fpp {
 
 /* ? */
 #define EMPTY_CONSTRUCTOR
+#define EMPTY_DESTRUCTOR

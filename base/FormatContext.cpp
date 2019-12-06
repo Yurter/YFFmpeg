@@ -3,12 +3,11 @@
 
 namespace fpp {
 
-    FormatContext::FormatContext(const std::string mrl, Object* media_ptr, /*int64_t max_duration_sec,*/ IOType preset) :
-        _media_ptr(media_ptr)
-        , _uid(utils::gen_uid())
+    FormatContext::FormatContext(const std::string mrl, Object* stream_context, IOType preset) :
+        _uid(utils::gen_uid())
         , _media_resource_locator(mrl)
         , _opened(false)
-//        , _max_duration_sec(max_duration_sec)
+        , _stream_context(stream_context)
         , _reopening_after_failure(false)
         , _reopening_timeout(INVALID_INT)
         , _artificial_delay(DEFAULT_INT)
@@ -20,7 +19,7 @@ namespace fpp {
     }
 
     FormatContext::~FormatContext() {
-//        try_throw(close());
+//        try_throw(close()); //TODO
     }
 
     Code FormatContext::close() {

@@ -2,12 +2,11 @@
 
 namespace fpp {
 
-    Filter::Filter(const Parameters* input_data_params, std::string filters_descr) :
-        _input_data_params(input_data_params)
+    Filter::Filter(IOParams params, std::string filters_descr) :
+        _params(params)
       , _filters_descr(filters_descr)
     {
         setName("Filter");
-//        setStreams() //TODO
     }
 
     Filter::~Filter() {
@@ -16,7 +15,7 @@ namespace fpp {
 
     Code Filter::init() {
         return_if(inited(), Code::INVALID_CALL_ORDER);
-        auto out_params = dynamic_cast<const VideoParameters*>(_input_data_params);
+        auto out_params = dynamic_cast<const VideoParameters*>(_stream->parameters);
 
         char args[512];
         int ret = 0;
@@ -130,10 +129,13 @@ namespace fpp {
         auto other_filter = dynamic_cast<const Filter * const>(other);
         return_if(not_inited_ptr(other_filter), false);
 
-        return_if((this->stream(0)->uid() == other->stream(0)->uid())
-                  && (this->description() == other_filter->description()), true);
+//        return_if(this->stream(0)->uid() != other->stream(0)->uid(), false); //TODO сравниваются uid выходных потоков, поэтому условие никогда не выполнится
+        return_if(this->description() != other_filter->description(), false);
+//        return_if((this->stream(0)->uid() == other->stream(0)->uid())
+//                  && (this->description() == other_filter->description()), true);
 
-        return false;
+        return true;
+//        return false;
     }
 
     std::string Filter::description() const {

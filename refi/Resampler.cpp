@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    Resampler::Resampler(StreamPair audio_streams) :
-        _io_streams(audio_streams)
+    Resampler::Resampler(IOParams params) :
+        _params(params)
       , _resampler_context(nullptr)
     {
         setName("Resampler");

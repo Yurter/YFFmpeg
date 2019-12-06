@@ -8,7 +8,7 @@ namespace fpp {
 
     public:
 
-        CodecContext(Stream* stream, CodecType type);
+        CodecContext(const IOParams params, CodecType type);
         virtual ~CodecContext() override;
 
         virtual Code        initParams() = 0;
@@ -24,13 +24,14 @@ namespace fpp {
 
         AVCodecContext*     codecContext();
 
+        const IOParams      params;
+
     private:
 
         void                setOpened(bool value);
 
     protected:
 
-        Stream*             _stream;
         AVCodecContext*     _codec_context;
         CodecType           _type;
         bool                _opened;
