@@ -17,14 +17,15 @@ namespace fpp {
         Code                open();
         Code                close();
 
+        bool                opened() const;
+        bool                closed() const;
+
         std::string         toString() const override final;
 
         AVCodecContext*     codecContext();
 
     private:
 
-        bool                opened() const;
-        bool                closed() const;
         void                setOpened(bool value);
 
     protected:

@@ -214,7 +214,6 @@ namespace fpp {
 //            std::string filters_descr = "setpts=0.016*PTS";
             VideoFilter* video_filter = new VideoFilter(output_stream->parameters, filters_descr);
             try_to(route.append(video_filter));
-//            try_to(addElement(video_filter));
         }
 
         if (audio_filter_required) {
@@ -280,38 +279,48 @@ namespace fpp {
     Stream* Pipeline::findStream(int64_t uid) {
         int64_t context_uid = utils::get_context_uid(uid);
         for (auto&& source : _data_sources) {
-            if (source->is("MediaSource")) {
-                if (static_cast<MediaSource*>(source)->inputFormatContext()->uid() == context_uid) {
-                    for (auto&& stream : static_cast<MediaSource*>(source)->inputFormatContext()->streams()) {
-                        if (stream->uid() == uid) {
-                            return stream;
-                        }
-                    }
-                }
-            }
-            if (source->is("CustomPacketSource")) {
-                for (auto&& stream : static_cast<CustomPacketSource*>(source)->streams()) {
-                    if (stream->uid() == uid) {
-                        return stream;
-                    }
+//            if (source->is("MediaSource")) {
+//                if (static_cast<MediaSource*>(source)->inputFormatContext()->uid() == context_uid) {
+//                    for (auto&& stream : static_cast<MediaSource*>(source)->inputFormatContext()->streams()) {
+//                        if (stream->uid() == uid) {
+//                            return stream;
+//                        }
+//                    }
+//                }
+//            }
+//            if (source->is("CustomPacketSource")) {
+//                for (auto&& stream : static_cast<CustomPacketSource*>(source)->streams()) {
+//                    if (stream->uid() == uid) {
+//                        return stream;
+//                    }
+//                }
+//            }
+            for (auto&& stream : source->streams()) {
+                if (stream->uid() == uid) {
+                    return stream;
                 }
             }
         }
         for (auto&& sink : _data_sinks) {
-            if (sink->is("MediaSink")) {
-                if (static_cast<MediaSink*>(sink)->outputFormatContext().uid() == context_uid) {
-                    for (auto&& stream : static_cast<MediaSink*>(sink)->outputFormatContext().streams()) {
-                        if (stream->uid() == uid) {
-                            return stream;
-                        }
-                    }
-                }
-            }
-            if (sink->is("CustomPacketSink")) {
-                for (auto&& stream : static_cast<CustomPacketSink*>(sink)->streams()) {
-                    if (stream->uid() == uid) {
-                        return stream;
-                    }
+//            if (sink->is("MediaSink")) {
+//                if (static_cast<MediaSink*>(sink)->outputFormatContext().uid() == context_uid) {
+//                    for (auto&& stream : static_cast<MediaSink*>(sink)->outputFormatContext().streams()) {
+//                        if (stream->uid() == uid) {
+//                            return stream;
+//                        }
+//                    }
+//                }
+//            }
+//            if (sink->is("CustomPacketSink")) {
+//                for (auto&& stream : static_cast<CustomPacketSink*>(sink)->streams()) {
+//                    if (stream->uid() == uid) {
+//                        return stream;
+//                    }
+//                }
+//            }
+            for (auto&& stream : sink->streams()) {
+                if (stream->uid() == uid) {
+                    return stream;
                 }
             }
         }

@@ -99,7 +99,13 @@ namespace fpp {
 
             if (_pre_function) {
                 log_trace("Running _pre_function.");
-                try_to(_pre_function());
+//                try_to(_pre_function());
+                Code ret = _pre_function();
+                if (utils::exit_code(ret)
+                        && (ret != Code::END_OF_FILE)) {
+                    return ret;
+                }
+                return_if(ret == Code::AGAIN, ret); //TODO возожно следует занести AGAIN в еррор код
             }
 
             inType input_data;

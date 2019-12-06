@@ -97,11 +97,11 @@ namespace fpp {
 
     void Thread::join() const {
         log_debug("Thread joining.");
-        while (running()) { utils::sleep_for(MEDIUM_DELAY_MS); }
-//        while (running()) {
-//            log_warning("still running");
-//            utils::sleep_for(MEDIUM_DELAY_MS);
-//        }
+//        while (running()) { utils::sleep_for(MEDIUM_DELAY_MS); }
+        while (running()) {
+            log_debug("Waiting for thread...");
+            utils::sleep_for(MEDIUM_DELAY_MS);
+        }
     }
 
     Code Thread::exitCode() const {

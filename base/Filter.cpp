@@ -25,7 +25,8 @@ namespace fpp {
         AVFilterInOut *outputs = avfilter_inout_alloc();
         AVFilterInOut *inputs  = avfilter_inout_alloc();
         AVRational time_base = out_params->timeBase();
-        enum AVPixelFormat pix_fmts[] = { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE };
+//        enum AVPixelFormat pix_fmts[] = { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE };
+        enum AVPixelFormat pix_fmts[] = { out_params->pixelFormat(), AV_PIX_FMT_NONE };
 
         _filter_graph = avfilter_graph_alloc();
         if (!outputs || !inputs || !_filter_graph) {
@@ -159,6 +160,9 @@ namespace fpp {
             output_data.raw().linesize[1] = input_data.raw().linesize[1];
             output_data.raw().linesize[2] = input_data.raw().linesize[2];
 
+//            log_error("in_px_fmt " << input_data.raw().format);
+//            log_error("out_px_fmt " << output_data.raw().format);
+
 //            output_data.raw().linesize[0] = output_data.raw().width;
 //            output_data.raw().linesize[1] = output_data.raw().width;
 //            output_data.raw().linesize[2] = output_data.raw().height;
@@ -173,8 +177,12 @@ namespace fpp {
 //            utils::SaveAvFrame(&output_data.raw());
 //            exit(0);
 //            input_data.free();
-//            log_debug("Sending... " << output_data);
+//            log_error("Sending... " << output_data);
+
+            //  D E B U G - падения при отправке отфильтрованного фрейма
+
             try_to(sendOutputData(output_data));
+//            try_to(sendOutputData(input_data));
         }
     }
 

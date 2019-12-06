@@ -16,8 +16,8 @@ namespace fpp {
     }
 
     Code CodecContext::init() {
-        log_debug("Initialization.");
         return_if(inited(), Code::INVALID_CALL_ORDER);
+        log_debug("Initialization.");
         auto codec = _stream->parameters->codec();
         return_if(not_inited_ptr(codec), Code::INVALID_INPUT);
         {
@@ -35,8 +35,8 @@ namespace fpp {
     }
 
     Code CodecContext::open() {
-        log_debug("Opening.");
         return_if(opened(), Code::INVALID_CALL_ORDER);
+        log_debug("Opening.");
         auto codec = _stream->parameters->codec();
         if (int ret = avcodec_open2(_codec_context, codec, nullptr); ret != 0) {
             std::string codec_type = av_codec_is_decoder(codec) ? "decoder" : "encoder";
@@ -55,8 +55,8 @@ namespace fpp {
     }
 
     Code CodecContext::close() {
-        log_debug("Closing.");
         return_if(closed(), Code::INVALID_CALL_ORDER);
+        log_debug("Closing.");
         if (inited_ptr(_codec_context)) {
             // использовать ? avcodec_free_context(_codec_context)
             avcodec_close(_codec_context);
@@ -77,30 +77,6 @@ namespace fpp {
         str += "coded_height: " + std::to_string(_codec_context->coded_height) + delimeter;
         str += "time_base: "    + utils::rational_to_string(_codec_context->time_base) + delimeter;
         str += "pix_fmt: "      + std::string(av_get_pix_fmt_name(_codec_context->pix_fmt)) + delimeter;
-
-        //debug output
-//        str += "object size: "  + std::to_string(sizeof (*static_cast<Object*>(_stream->parameters))) + delimeter;
-//        str += "object raw: \n";
-//        for (size_t i = 0; i < sizeof (*static_cast<Object*>(_stream->parameters)); ++i) {
-//            if (i % 16 == 0) {
-//                str += "\n";
-//            }
-//            std::stringstream stream;
-//            auto number = unsigned(reinterpret_cast<const uint8_t*>(static_cast<Object*>(_stream->parameters))[i]);
-//            stream << std::hex << number;
-//            if (stream.str().length() == 1) {
-//                str += "0" + stream.str();
-//            } else {
-//                str += stream.str();
-//            }
-//            str += " ";
-//        }
-//        str += "\n object size: "  + std::to_string(sizeof (std::string)) + delimeter;
-//        str += "data: " + std::to_string(static_cast<MediaData*>(_stream->parameters)->type()) + delimeter;
-//        str += "duration: " + std::to_string(_stream->parameters->duration()) + delimeter;
-//        str += "___";
-        //~debug output
-
         str.erase(str.size() - delimeter.size(), delimeter.size());
         return str;
     }

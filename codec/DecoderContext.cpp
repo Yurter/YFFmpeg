@@ -18,6 +18,7 @@ namespace fpp {
                 char errstr[1024];
                 av_strerror(ret, errstr, 1024);
                 log_error("Could not send packet to decoder: " << errstr << ". Data: " << input_packet);
+                log_error("DecoderContext: " << this->toString());
 //                log_error("Error: " << errstr << ". Data: " << input_packet);
 //                log_error("Codeec_context's width: " << _codec_context->width
 //                          << ", height: " << _codec_context->height);

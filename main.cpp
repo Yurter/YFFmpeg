@@ -70,54 +70,54 @@ int main() {
 //        , { "test_2/timelapse20191203-16.flv", TML(449576), TML(540719) }
 //    });
 
-    for (int i = 0; i < 100; ++i) {
-        Concatenator concatenator("compil_data/" + std::to_string(i) + "_sausage.flv", {
-            { "compil_data/timelapse20191203-16.flv", FROM_START, TML(7464) }
-            , { "compil_data/event20191203-16-35-16-0.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(26694), TML(30362) }
-            , { "compil_data/event20191203-16-35-39-1.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(61657), TML(68286) }
-            , { "compil_data/event20191203-16-36-17-2.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(91502), TML(97964) }
-            , { "compil_data/event20191203-16-36-47-3.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(104750), TML(115432) }
-            , { "compil_data/event20191203-16-37-04-4.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(155211), TML(164851) }
-            , { "compil_data/event20191203-16-37-54-5.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(170806), TML(185490) }
-            , { "compil_data/event20191203-16-38-14-6.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(195335), TML(200835) }
-            , { "compil_data/event20191203-16-38-30-7.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(208656), TML(213171) }
-            , { "compil_data/event20191203-16-38-42-8.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(222016), 225574 }
-            , { "compil_data/event20191203-16-38-54-9.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(231545), TML(243085) }
-            , { "compil_data/event20191203-16-39-12-10.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(249837), TML(257425) }
-            , { "compil_data/event20191203-16-39-26-11.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(297203), TML(313058) }
-            , { "compil_data/event20191203-16-40-22-12.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(318974), TML(342773) }
-            , { "compil_data/event20191203-16-40-52-13.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(370179), TML(373755) }
-            , { "compil_data/event20191203-16-41-23-14.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(380534), TML(390187) }
-            , { "compil_data/event20191203-16-41-39-15.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(396093), TML(400531) }
-            , { "compil_data/event20191203-16-41-49-16.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(440347), TML(444174) }
-            , { "compil_data/event20191203-16-42-33-17.flv", FROM_START, TO_END }
-            , { "compil_data/timelapse20191203-16.flv", TML(450116), TML(460103) }
-        });
+//    for (int i = 0; i < 999; ++i) {
+//        Concatenator concatenator("compil_data/" + std::to_string(i) + "_sausage.flv", {
+//            { "compil_data/timelapse20191203-16.flv", FROM_START, TML(7464) }
+//            , { "compil_data/event20191203-16-35-16-0.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(26694), TML(30362) }
+//            , { "compil_data/event20191203-16-35-39-1.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(61657), TML(68286) }
+//            , { "compil_data/event20191203-16-36-17-2.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(91502), TML(97964) }
+//            , { "compil_data/event20191203-16-36-47-3.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(104750), TML(115432) }
+//            , { "compil_data/event20191203-16-37-04-4.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(155211), TML(164851) }
+//            , { "compil_data/event20191203-16-37-54-5.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(170806), TML(185490) }
+//            , { "compil_data/event20191203-16-38-14-6.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(195335), TML(200835) }
+//            , { "compil_data/event20191203-16-38-30-7.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(208656), TML(213171) }
+//            , { "compil_data/event20191203-16-38-42-8.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(222016), 225574 }
+//            , { "compil_data/event20191203-16-38-54-9.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(231545), TML(243085) }
+//            , { "compil_data/event20191203-16-39-12-10.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(249837), TML(257425) }
+//            , { "compil_data/event20191203-16-39-26-11.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(297203), TML(313058) }
+//            , { "compil_data/event20191203-16-40-22-12.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(318974), TML(342773) }
+//            , { "compil_data/event20191203-16-40-52-13.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(370179), TML(373755) }
+//            , { "compil_data/event20191203-16-41-23-14.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(380534), TML(390187) }
+//            , { "compil_data/event20191203-16-41-39-15.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(396093), TML(400531) }
+//            , { "compil_data/event20191203-16-41-49-16.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(440347), TML(444174) }
+//            , { "compil_data/event20191203-16-42-33-17.flv", FROM_START, TO_END }
+//            , { "compil_data/timelapse20191203-16.flv", TML(450116), TML(460103) }
+//        });
 
-        if (auto ret = concatenator.start(); ret != Code::OK) {
-            static_log_error("main", "Concatenator start failed: " << ret << " - " << utils::code_to_string(ret));
-        }
-        concatenator.join();
-    }
+//        if (auto ret = concatenator.start(); ret != Code::OK) {
+//            static_log_error("main", "Concatenator start failed: " << ret << " - " << utils::code_to_string(ret));
+//        }
+//        concatenator.join();
+//    }
 
-    return 0;
+//    return 0;
 
 //    CustomPacketSource test("", {}, [](Packet&){return Code::OK;}, [](Packet&){return Code::OK;});
 //    test.stream()
@@ -172,24 +172,57 @@ int main() {
         //system("route add 192.168.1.188 mask 255.255.255.255 192.168.137.124");
         {
             Pipeline* pipeline = new Pipeline;
-            if (auto ret = pipeline->start(); ret != Code::OK) {
-                static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
-            }
 
-            auto source = new MediaSource("rtsp://admin:admin@192.168.10.3:554");
+//            auto source = new MediaSource("rtsp://admin:admin@192.168.10.3:554");
 //            auto source = new MediaSource("video=Webcam C170");
+            auto source = new MediaSource("video=HP Wide Vision FHD Camera");
             source->setCloseOnDisconnect(false);
-            pipeline->addElement(source);
+            if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
+                static_log_error("yuraPacketHooker", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
+            }
 
             if (auto ret = pipeline->start(); ret != Code::OK) {
                 static_log_error("main", "Pipeline start failed: " << ret << " - " << utils::code_to_string(ret));
             }
+
+//            utils::sleep_for_sec(1);
 
 //            auto sink_event = new MediaSink("group_video/eventIP.flv", IOType::Event);
-//            pipeline->addElement(sink_event);
-
+//            if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
+//                static_log_error("yuraPacketHooker", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
+//            }
+//            utils::sleep_for_sec(1);
             auto sink_timelapse = new MediaSink("group_video/timelapseIP.flv", IOType::Timelapse);
-            pipeline->addElement(sink_timelapse);
+            if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
+                static_log_error("yuraPacketHooker", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
+            }
+            auto sink_timelapse2 = new MediaSink("group_video/2timelapseIP.flv", IOType::Timelapse);
+            if (auto ret = pipeline->addElement(sink_timelapse2); ret != fpp::Code::OK) {
+                static_log_error("yuraPacketHooker", "Pipeline add sink_timelapse2 failed: " << ret << " - " << utils::code_to_string(ret));
+            }
+
+            pipeline->simplifyRoutes();
+
+            utils::sleep_for_sec(50);
+
+            delete source;
+            delete sink_timelapse;
+//            utils::sleep_for_sec(1);
+//            auto sink_timelapse2 = new MediaSink("group_video/2timelapseIP.flv", IOType::Timelapse);
+//            if (auto ret = pipeline->addElement(sink_timelapse2); ret != fpp::Code::OK) {
+//                static_log_error("yuraPacketHooker", "Pipeline add sink_timelapse2 failed: " << ret << " - " << utils::code_to_string(ret));
+//            }
+////            utils::sleep_for_sec(1);
+//            auto sink_timelapse3 = new MediaSink("group_video/3timelapseIP.flv", IOType::Timelapse);
+//            if (auto ret = pipeline->addElement(sink_timelapse3); ret != fpp::Code::OK) {
+//                static_log_error("yuraPacketHooker", "Pipeline add sink_timelapse3 failed: " << ret << " - " << utils::code_to_string(ret));
+//            }
+////            utils::sleep_for_sec(1);
+//            auto sink_timelapse4 = new MediaSink("group_video/4timelapseIP.flv", IOType::Timelapse);
+//            if (auto ret = pipeline->addElement(sink_timelapse4); ret != fpp::Code::OK) {
+//                static_log_error("yuraPacketHooker", "Pipeline add sink_timelapse4 failed: " << ret << " - " << utils::code_to_string(ret));
+//            }
+//            utils::sleep_for_sec(1);
 
 //            auto sink_timelapse_2 = new MediaSink("group_video/timelapseIP2.flv", IOType::Timelapse);
 //            pipeline->addElement(sink_timelapse_2);
@@ -198,21 +231,41 @@ int main() {
 //            params->setCodec("libx264", CodecType::Encoder);
 //            params->setStreamIndex(0);
 //            auto custom_sink = new CustomPacketSink {
-//                        "test"
-//                        , { new VideoStream(params) }
-//                        , [](Packet& packet) {
-//                            UNUSED(packet);
-//                            return Code::OK;
-//                        }
-//                        , [](Packet& packet) {
-//                            UNUSED(packet);
-//                            return Code::OK;
-//                        }
+//                "test"
+//                , { new VideoStream(params) }
+//                , [](Packet& packet) {
+//                    UNUSED(packet);
+//                    return Code::OK;
+//                }
+//                , [](Packet& packet) {
+//                    UNUSED(packet);
+//                    return Code::OK;
+//                }
 //            };
-//            pipeline->addElement(custom_sink);
+//            if (auto ret = pipeline->addElement(custom_sink); ret != fpp::Code::OK) {
+//                static_log_error("yuraPacketHooker", "Pipeline add custom_sink failed: " << ret << " - " << utils::code_to_string(ret));
+//            }
+////            utils::sleep_for_sec(1);
+
+//            auto custom_sink2 = new CustomPacketSink {
+//                "test2"
+//                , { new VideoStream(params) }
+//                , [](Packet& packet) {
+//                    UNUSED(packet);
+//                    return Code::OK;
+//                }
+//                , [](Packet& packet) {
+//                    UNUSED(packet);
+//                    return Code::OK;
+//                }
+//            };
+//            if (auto ret = pipeline->addElement(custom_sink2); ret != fpp::Code::OK) {
+//                static_log_error("yuraPacketHooker", "Pipeline add custom_sink2 failed: " << ret << " - " << utils::code_to_string(ret));
+//            }
+//            utils::sleep_for_sec(1);
 
 //            pipeline->simplifyRoutes();
-            utils::sleep_for_min(1);
+//            utils::sleep_for_min(1);
 //            delete sink_event;
 //            delete sink_timelapse;
         }

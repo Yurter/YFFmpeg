@@ -10,7 +10,8 @@ namespace fpp {
       , _read_func(read_func)
       , _process_func(process_func)
     {
-        setName("CustomPacketSource");
+//        setName("CustomPacketSource");
+        setName("CsPktSource");
         try_throw(setStreams(streams));
     }
 
@@ -29,9 +30,11 @@ namespace fpp {
     }
 
     Code CustomPacketSource::close() {
-        try_to(sendEofPacket());
-        setOpened(false);
+        try_to(sendEofPacket()); //TODO костыль?
+        try_to(stop());
+        stopWait(); //TODO костыль?
         log_info("Source: \"" << _source_name << "\" closed.");
+        setOpened(false);
         return Code::OK;
     }
 

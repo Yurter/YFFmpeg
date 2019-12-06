@@ -5,17 +5,20 @@ namespace fpp {
     Encoder::Encoder(Stream* stream) :
         _encoder_context(stream)
     {
-        setName("Encoder");
+        setName(std::to_string(uid()) + "Encoder");
         try_throw(setStreams({ stream }));
     }
 
     Code Encoder::init() {
+        return_if(inited(), Code::INVALID_CALL_ORDER);
         log_debug("Initialization.");
         try_to(_encoder_context.init());
+        setInited(true);
         return Code::OK;
     }
 
     Code Encoder::open() {
+        return_if(opened(), Code::INVALID_CALL_ORDER);
         log_debug("Opening.");
         try_to(_encoder_context.open());
         setOpened(true);
@@ -23,6 +26,7 @@ namespace fpp {
     }
 
     Code Encoder::close() {
+        return_if(closed(), Code::INVALID_CALL_ORDER);
         log_debug("Closing.");
         try_to(_encoder_context.close());
         setOpened(false);

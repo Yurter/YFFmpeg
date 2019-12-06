@@ -53,6 +53,7 @@ namespace fpp {
         if (code == Code::FFMPEG_ERROR)     { return true; }
         if (code == Code::INVALID_INPUT)    { return true; }
         if (code == Code::NOT_IMPLEMENTED)  { return true; }
+//        if (code == Code::INVALID_CALL_ORDER) { return true; }
         return false;
     }
 
@@ -511,7 +512,8 @@ namespace fpp {
 
     void utils::SaveAvFrame(AVFrame *avFrame)
     {
-        FILE *fDump = fopen("frame_yuv", "ab");
+        static int counter = 0;
+        FILE *fDump = fopen(("debug_frames/" + std::to_string(counter++) + "_frame_yuv").c_str(), "wb");//"ab");
 
         uint32_t pitchY = avFrame->linesize[0];
         uint32_t pitchU = avFrame->linesize[1];

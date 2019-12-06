@@ -95,6 +95,14 @@ namespace fpp {
     }
 
     Code Route::startAll() {
+//        for (auto&& elem : _sequence) {
+//            if (elem->is("MediaSink")) {
+//                try_to(elem->init());
+//                try_to(elem->open());
+//                try_to(elem->start());
+//                break;
+//            }
+//        }
         for (auto&& elem : _sequence) {
 //            log_error("OPENING: " << elem->name());
             try_to(elem->init());

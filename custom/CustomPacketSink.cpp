@@ -10,7 +10,8 @@ namespace fpp {
       , _write_func(write_func)
       , _process_func(process_func)
     {
-        setName("CustomPacketSink");
+//        setName("CustomPacketSink");
+        setName("CustPktSink");
         try_throw(setStreams(streams));
     }
 
@@ -42,7 +43,7 @@ namespace fpp {
     }
 
     std::string CustomPacketSink::toString() const {
-        return "TODO";
+        return "CustomPacketSink TODO";
     }
 
     Code CustomPacketSink::processInputData(Packet input_data) {

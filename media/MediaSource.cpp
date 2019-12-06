@@ -16,16 +16,16 @@ namespace fpp {
     }
 
     Code MediaSource::init() {
-        log_debug("Initialization.");
         return_if(inited(), Code::INVALID_CALL_ORDER);
+        log_debug("Initialization.");
         try_to(_input_format_context.init());
         setInited(true);
         return Code::OK;
     }
 
     Code MediaSource::open() {
-        log_debug("Opening.");
         return_if(opened(), Code::INVALID_CALL_ORDER);
+        log_debug("Opening.");
         log_info(_input_format_context.mediaResourceLocator() << "\" is opening...");
         try_to(_input_format_context.open());
         log_info(_input_format_context.mediaResourceLocator() << "\" opened.");
@@ -118,6 +118,7 @@ namespace fpp {
         if (input_data.streamIndex() != 0) {
             return Code::AGAIN; //TODO fix it
         }
+//        log_error("readed " << input_data.raw().stream_index);
         //TODO этот код должен быть внутри processInputData()
         auto packet_stream = _input_format_context.stream(input_data.raw().stream_index);
         return_if(not_inited_ptr(packet_stream), Code::AGAIN);
@@ -126,6 +127,7 @@ namespace fpp {
         input_data.setStreamUid(packet_stream->uid());
 //        stream(0)->parameters->increaseDuration(input_data.duration()); //TODO
         stream(0)->parameters->increaseDuration(stream(0)->packet_duration()); //TODO
+//        log_error("writed" << input_data);
         return Code::OK;
     }
 

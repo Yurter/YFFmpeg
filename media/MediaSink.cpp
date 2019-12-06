@@ -10,9 +10,13 @@ namespace fpp {
     }
 
     MediaSink::~MediaSink() {
-        join();
         try_throw(close());
+        join();
     }
+//    MediaSink::~MediaSink() {
+//        join();
+//        try_throw(close());
+//    }
 
     Code MediaSink::init() {
         return_if(inited(), Code::INVALID_CALL_ORDER);
