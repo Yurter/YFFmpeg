@@ -115,7 +115,7 @@ int main() {
             }
 
             {
-                utils::sleep_for_sec(50);
+                utils::sleep_for_sec(60);
                 delete source;
                 delete sink_event;
                 delete sink_custom;

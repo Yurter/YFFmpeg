@@ -178,10 +178,10 @@ namespace fpp {
         bool audio_filter_required  = utils::audio_filter_required(params);
         bool transcoding_required   = utils::transcoding_required (params);
 
-        auto out_context = dynamic_cast<OutputFormatContext*>(output_stream->context()); //TODO кривой код: вынести IOType в Processor ?
+        auto out_context = dynamic_cast<MediaSink*>(output_stream->context()); //TODO кривой код: вынести IOType в Processor ?
         if (inited_ptr(out_context)) {
             video_filter_required = video_filter_required
-                                    || out_context->preset(IOType::Timelapse);
+                                    || out_context->outputFormatContext()->preset(IOType::Timelapse);
         }
 
         transcoding_required = (transcoding_required
