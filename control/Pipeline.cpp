@@ -243,6 +243,9 @@ namespace fpp {
 
 
         _route_list.push_back(route);
+        for (auto& proc : route.processorSequence()) {
+            try_to(proc->init());
+        }
         try_to(simplifyRoutes());
         try_to(route.init());
         try_to(route.startAll());
