@@ -55,6 +55,28 @@ void concatenator_debug() {
     }
 }
 
+void route_simplify_debug() {
+    Pipeline* pipeline = new Pipeline;
+
+    auto source = new MediaSource("video=HP Wide Vision FHD Camera");
+    if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
+        static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
+    }
+
+    for (int i = 0; i < 5; ++i) {
+        auto sink_event = new MediaSink("group_video/" + std::to_string(i) + "_event.flv", IOType::Event);
+        if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
+            static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
+        }
+    }
+
+    if (auto ret = pipeline->simplifyRoutes(); ret != fpp::Code::OK) {
+        static_log_error("main", "Pipeline simplify routes failed: " << ret << " - " << utils::code_to_string(ret));
+    }
+
+    utils::sleep_for_min(2);
+}
+
 int main() {
 
     static_log_info("main", "Program started...");

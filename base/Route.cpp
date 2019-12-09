@@ -57,6 +57,7 @@ namespace fpp {
         std::string str;
         std::string delimeter = " -> ";
         for (auto&& elem : _sequence) {
+            str += std::to_string(elem->uid()) + "_";
             str += elem->name();
             str += delimeter;
         }
@@ -135,10 +136,16 @@ namespace fpp {
     }
 
     Code Route::changePartTo(ProcessorVector other) {
-        for (auto& proc : other) {
-            return_if(not_inited_ptr(0), Code::INVALID_INPUT);
+        log_warning("From: " << this->toString());
+        //for (auto& proc : other) {
+        for (size_t i = 0; i < other.size(); ++i) {
+            return_if(not_inited_ptr(other[i]), Code::INVALID_INPUT);
+            try_to(_sequence[i]->disconnectFrom(_sequence[i + 1]));
+            _sequence[i] = other[i];
         }
+        try_to(other[other.size() - 1]->connectTo(_sequence[other.size() - 1]));
+        log_warning("To: " << this->toString());
+        return Code::OK;
     }
-
 
 } // namespace fpp

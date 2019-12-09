@@ -270,14 +270,24 @@ namespace fpp {
                     if_not(sequence_one[k]->equalTo(sequence_two[k])) {
                         log_warning("FORK POINT is " << sequence_one[k]->name());
                         //TODO склеить последовательности от 0 до k-1
-//                        route_one.changePartTo()
-//                        return Code::NOT_IMPLEMENTED;
+                        if (k > 0) {
+//                            ProcessorVector mutual(route_one.processorSequence().begin()
+//                                                   , route_one.processorSequence().begin() + int64_t(k - 1));
+                            ProcessorVector mutual;
+                            for (size_t j = 0; j < k; ++j) {
+                                mutual.push_back(route_one.processorSequence()[j]);
+                            }
+                            try_to(route_two.changePartTo(mutual));
+                        }
                         break;
                     }
                 }
             }
         }
-        return Code::NOT_IMPLEMENTED;
+        for (auto route : _route_list) {
+            log_warning("Result: " << route);
+        }
+        return Code::OK;
     }
 
     Stream* Pipeline::findStream(int64_t uid) {
