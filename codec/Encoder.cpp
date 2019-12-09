@@ -52,7 +52,7 @@ namespace fpp {
         return_if(_encoder_context.params.in->streamUid()
                   == other_encoder->encoderContext()->params.in->streamUid(), true);
 
-        return true;
+        return false;
     }
 
     const EncoderContext* Encoder::encoderContext() const {

@@ -54,8 +54,21 @@ namespace fpp {
         return _output_format_context.toString();
     }
 
-    OutputFormatContext& MediaSink::outputFormatContext() {
-        return _output_format_context;
+    bool MediaSink::equalTo(const Processor * const other) const {
+        return_error_if_not(inited(), "Can't compare untill not inited.", false);
+        return_error_if_not(other->inited(), "Can't compare untill not inited.", false);
+
+        auto other_media_sink = dynamic_cast<const MediaSink * const>(other);
+        return_if(not_inited_ptr(other_media_sink), false);
+
+        return_if(this->outputFormatContext()->mediaResourceLocator()
+                  == other_media_sink->outputFormatContext()->mediaResourceLocator(), true);
+
+        return false;
+    }
+
+    const OutputFormatContext* MediaSink::outputFormatContext() const {
+        return &_output_format_context;
     }
 
     Code MediaSink::processInputData(Packet input_data) {

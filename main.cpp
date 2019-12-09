@@ -84,9 +84,30 @@ int main() {
             if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
                 static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
             }
+
             auto sink_timelapse = new MediaSink("group_video/timelapse.flv", IOType::Timelapse);
             if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
                 static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
+            }
+
+            auto params = new fpp::VideoParameters;
+            params->setStreamIndex(0);
+            params->setCodec("libx264", fpp::CodecType::Encoder);
+            fpp::StreamVector out_streams = { new fpp::VideoStream(params) };
+            auto sink_custom = new CustomPacketSink(
+                        "restreamer"
+                        , out_streams
+                        , [](Packet& packet) {
+                            UNUSED(packet);
+                            return Code::OK;
+                        }
+                        , [](Packet& packet) {
+                            UNUSED(packet);
+                            return Code::OK;
+                        }
+            );
+            if (auto ret = pipeline->addElement(sink_custom); ret != fpp::Code::OK) {
+                static_log_error("main", "Pipeline add sink_custom failed: " << ret << " - " << utils::code_to_string(ret));
             }
 
             if (auto ret = pipeline->simplifyRoutes(); ret != fpp::Code::OK) {
@@ -96,6 +117,8 @@ int main() {
             {
                 utils::sleep_for_sec(50);
                 delete source;
+                delete sink_event;
+                delete sink_custom;
                 delete sink_timelapse;
             }
         }
