@@ -13,6 +13,8 @@ namespace fpp {
 
         virtual Code       init() override;
 
+        const IOParams      params;
+
     private:
 
         virtual Code        processInputData(Frame input_data) override;
@@ -21,7 +23,6 @@ namespace fpp {
 
     protected:
 
-        IOParams            _params;
         SwrContext*         _resampler_context;
 
     };

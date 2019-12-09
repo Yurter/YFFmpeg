@@ -49,7 +49,7 @@ namespace fpp {
         static AVCodec*     find_encoder(AVCodecID codec_id);
 
         static Code         init_codecpar(AVCodecParameters* codecpar, AVCodec* codec);
-        static void         parameters_to_context(Parameters* parametres, AVCodecContext* codec);
+        static void         parameters_to_context(const Parameters * const param, AVCodecContext* codec);
 //        static void         parameters_from_context(Parameters* parametres, AVCodecContext* codec);
         static void         parameters_to_avcodecpar(Parameters* parametres, AVCodecParameters* codecpar);
         static void         parameters_from_avcodecpar(Parameters* parametres, AVCodecParameters* codecpar);
@@ -59,11 +59,11 @@ namespace fpp {
 
         static Code         find_encoder_for(const Parameters * const src_prm, Parameters * const dst_prm/*, bool use_hwaccel*/);
 
-        static bool         rescaling_required(IOParams params);
-        static bool         resampling_required(IOParams params);
-        static bool         video_filter_required(IOParams params);
-        static bool         audio_filter_required(IOParams params);
-        static bool         transcoding_required(IOParams params);
+        static bool         rescaling_required(const IOParams params);
+        static bool         resampling_required(const IOParams params);
+        static bool         video_filter_required(const IOParams params);
+        static bool         audio_filter_required(const IOParams params);
+        static bool         transcoding_required(const IOParams params);
 
         static Stream*      find_best_stream(const StreamVector& stream_list);
 

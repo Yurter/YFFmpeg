@@ -124,7 +124,7 @@ namespace fpp {
         return_if(not_inited_ptr(packet_stream), Code::AGAIN);
         return_if_not(packet_stream->used(), Code::AGAIN);
         input_data.setType(packet_stream->type());
-        input_data.setStreamUid(packet_stream->uid());
+        input_data.setStreamUid(packet_stream->parameters->streamUid());
 //        stream(0)->parameters->increaseDuration(input_data.duration()); //TODO
         stream(0)->parameters->increaseDuration(stream(0)->packet_duration()); //TODO
 //        log_error("writed" << input_data);
@@ -161,7 +161,7 @@ namespace fpp {
         for (auto&& stream : _input_format_context.streams()) {
             if (stream->used()) {
                 eof_packet.setType(stream->type());
-                eof_packet.setStreamUid(stream->uid());
+                eof_packet.setStreamUid(stream->parameters->streamUid());
                 try_to(sendOutputData(eof_packet));
                 stream->setUsed(false);
             }

@@ -12,7 +12,6 @@ namespace fpp {
     Stream::Stream(AVStream* stream, Parameters* param) :
         Data<AVStream*>(stream, param->type()),
         parameters(param),
-        _uid(INVALID_INT),
         _used(false),
         _context(nullptr),
         _prev_dts(DEFAULT_INT),
@@ -73,7 +72,7 @@ namespace fpp {
     }
 
     void Stream::setUid(int64_t uid){
-        if (invalid_int(_uid)) { _uid = uid; }
+        if (invalid_int(parameters->streamUid())) { parameters->setStreamUid(uid); }
     }
 
     void Stream::setUsed(bool used) {
@@ -82,10 +81,6 @@ namespace fpp {
 
     Object* Stream::context() const {
         return _context;
-    }
-
-    int64_t Stream::uid() const {
-        return _uid;
     }
 
     int64_t Stream::index() const {

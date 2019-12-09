@@ -122,8 +122,10 @@ namespace fpp {
             return_if(next_processor == _sequence.end(), Code::OK);
 
             try_throw((*processor)->disconnectFrom(*next_processor));
-            проверка на оставшийся коннект после дисконекта
-                    если конект лист не пуст -> break
+
+            return Code::NOT_IMPLEMENTED;
+//            проверка на оставшийся коннект после дисконекта
+//                    если конект лист не пуст -> break
         }
         return Code::OK;
     }

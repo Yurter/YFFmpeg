@@ -120,6 +120,10 @@ namespace fpp {
         return _stream_index;
     }
 
+    int64_t Parameters::streamUid() const {
+        return _stream_uid;
+    }
+
     AVRational Parameters::timeBase() const {
         return _time_base;
     }

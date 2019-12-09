@@ -17,13 +17,14 @@ namespace fpp {
 
         std::string         description() const;
 
+        const IOParams      params;
+
     private:
 
         virtual Code        processInputData(Frame input_data) override;
 
     private:
 
-        IOParams            _params;
         std::string         _filters_descr;
         AVFilterGraph*      _filter_graph;
         AVFilterContext*    _buffersrc_ctx;

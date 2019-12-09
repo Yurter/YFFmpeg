@@ -25,7 +25,6 @@ namespace fpp {
         void                setUsed(bool used);
 
         Object*             context()       const;
-        int64_t             uid()           const;
         int64_t             index()         const;
         bool                used()          const;
         int64_t             packetIndex()   const;
@@ -38,7 +37,7 @@ namespace fpp {
 
     public:
 
-        Parameters*         parameters;
+        Parameters*         parameters; //TODO rename to params ?
 
     protected:
 

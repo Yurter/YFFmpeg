@@ -52,7 +52,7 @@ namespace fpp {
 //            log_error("avcodec_parameters_to_context failed");
 //            return Code::ERR;
 //        } findme
-        utils::parameters_to_context(_params, _codec_context);
+        utils::parameters_to_context(params.in, _codec_context);
         return Code::OK;
     }
 

@@ -3,7 +3,7 @@
 namespace fpp {
 
     Resampler::Resampler(IOParams params) :
-        _params(params)
+        params(params)
       , _resampler_context(nullptr)
     {
         setName("Resampler");
@@ -22,8 +22,8 @@ namespace fpp {
 
     //    auto in_param = dynamic_cast<AudioStream*>(_io_streams.first)->parameters; //TODO
     //    auto out_param = dynamic_cast<AudioStream*>(_io_streams.second)->parameters;
-        auto in_param = dynamic_cast<AudioParameters*>(_io_streams.first->parameters); //TODO
-        auto out_param = dynamic_cast<AudioParameters*>(_io_streams.second->parameters);
+        auto in_param = dynamic_cast<const AudioParameters * const>(params.in);
+        auto out_param = dynamic_cast<const AudioParameters * const>(params.out);
 
         _resampler_context = swr_alloc_set_opts(
             nullptr,
@@ -53,33 +53,34 @@ namespace fpp {
             log_error("swr_convert_frame failed"); //TODO формулировка
             return Code::ERR;
         }
-        do {
-            Frame output_data;
-            AVFrame* output_data_frame = &output_data.raw();
-            if (!initOutputFrame(&output_data_frame, _io_streams.second->codecParameters()->frame_size)) {
-                log_error("initOutputFrame failed"); //TODO формулировка
-                return Code::ERR;
-            }
-            if (configChanged(&input_data.raw(), &output_data.raw())) {
-                log_error("configChanged"); //TODO формулировка
-                return Code::ERR;
-            }
-            if (swr_convert_frame(_resampler_context, &output_data.raw(), nullptr) != 0) {
-                log_error("swr_convert_frame failed"); //TODO формулировка
-                return Code::ERR;
-            }
-            output_data.setType(MEDIA_TYPE_AUDIO);
+        return Code::NOT_IMPLEMENTED;
+//        do {
+//            Frame output_data;
+//            AVFrame* output_data_frame = &output_data.raw();
+//            if (!initOutputFrame(&output_data_frame, params.out->frameSize() _io_streams.second->codecParameters()->frame_size)) {
+//                log_error("initOutputFrame failed"); //TODO формулировка
+//                return Code::ERR;
+//            }
+//            if (configChanged(&input_data.raw(), &output_data.raw())) {
+//                log_error("configChanged"); //TODO формулировка
+//                return Code::ERR;
+//            }
+//            if (swr_convert_frame(_resampler_context, &output_data.raw(), nullptr) != 0) {
+//                log_error("swr_convert_frame failed"); //TODO формулировка
+//                return Code::ERR;
+//            }
+//            output_data.setType(MEDIA_TYPE_AUDIO);
 
-            try_to(sendOutputData(output_data));
-        } while (swr_get_out_samples(_resampler_context, 0) >= _io_streams.second->codecParameters()->frame_size);
+//            try_to(sendOutputData(output_data));
+//        } while (swr_get_out_samples(_resampler_context, 0) >= _io_streams.second->codecParameters()->frame_size);
 
         return Code::OK;
     }
 
     bool Resampler::initOutputFrame(AVFrame** frame, int frame_size) {
         frame_size = 1024; //TODO critical!
-        auto in_param = dynamic_cast<AudioParameters*>(_io_streams.first->parameters); //TODO
-        auto out_param = dynamic_cast<AudioParameters*>(_io_streams.second->parameters);
+        auto in_param = dynamic_cast<const AudioParameters * const>(params.in);
+        auto out_param = dynamic_cast<const AudioParameters * const>(params.out);
         /* Create a new frame to store the audio samples. */
         if (!(*frame = av_frame_alloc())) {
             log_error("Could not allocate output frame");
@@ -106,8 +107,8 @@ namespace fpp {
 
     //bool Resampler::configChanged(const AVFrame *in, const AVFrame *out)
     bool Resampler::configChanged(AVFrame* in, AVFrame* out) {
-        auto in_param = dynamic_cast<AudioParameters*>(_io_streams.first->parameters); //TODO
-        auto out_param = dynamic_cast<AudioParameters*>(_io_streams.second->parameters);
+        auto in_param = dynamic_cast<const AudioParameters * const>(params.in); //TODO убрать динамичный каст
+        auto out_param = dynamic_cast<const AudioParameters * const>(params.out);
 
         if (in) {
             if (in_param->channelLayout() != in->channel_layout

@@ -17,9 +17,10 @@ namespace fpp {
         virtual Code        processInputData(Frame input_data) override;
         virtual bool        equalTo(const Processor * const other) const override;
 
+        const IOParams      params;
+
     private:
 
-        IOParams            _params;
         SwsContext*         _rescaler_context;
 
     };

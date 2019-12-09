@@ -211,17 +211,17 @@ namespace fpp {
         return Code::OK;
     }
 
-    void utils::parameters_to_context(Parameters* parametres, AVCodecContext* codec) {
-        codec->codec_id = parametres->codecId();
-        codec->bit_rate = parametres->bitrate();
+    void utils::parameters_to_context(const Parameters * const param, AVCodecContext* codec) {
+        codec->codec_id = param->codecId();
+        codec->bit_rate = param->bitrate();
 
-        switch (parametres->type()) {
+        switch (param->type()) {
         case MediaType::MEDIA_TYPE_VIDEO: {
-            auto video_parameters = dynamic_cast<VideoParameters*>(parametres);
+            auto video_parameters = dynamic_cast<const VideoParameters*>(param);
             codec->pix_fmt      = video_parameters->pixelFormat();
             codec->width        = int(video_parameters->width());
             codec->height       = int(video_parameters->height());
-            codec->time_base    = parametres->timeBase();
+            codec->time_base    = param->timeBase();
             codec->framerate    = video_parameters->frameRate();
 
             if (auto ret = av_opt_set(codec->priv_data, "crf", "23", 0); ret != 0) {
@@ -254,7 +254,7 @@ namespace fpp {
             break;
         }
         case MediaType::MEDIA_TYPE_AUDIO: {
-            auto audio_parameters = dynamic_cast<AudioParameters*>(parametres);
+            auto audio_parameters = dynamic_cast<const AudioParameters*>(param);
             codec->sample_fmt       = audio_parameters->sampleFormat();
             codec->channel_layout   = audio_parameters->channelLayout();
             codec->channels         = int(audio_parameters->channels());
@@ -385,12 +385,12 @@ namespace fpp {
         }
     }
 
-    bool utils::rescaling_required(IOParams params) {
-        return_if(streams.first->isAudio(),  false);
-        return_if(streams.second->isAudio(), false);
+    bool utils::rescaling_required(const IOParams params) {
+        return_if(params.in->isAudio(),  false);
+        return_if(params.out->isAudio(), false);
 
-        auto in = static_cast<VideoParameters*>(streams.first->parameters);
-        auto out = static_cast<VideoParameters*>(streams.second->parameters);
+        auto in = static_cast<const VideoParameters * const>(params.in);
+        auto out = static_cast<const VideoParameters * const>(params.out);
 
         if (in->width() != out->width()) {
             static_log_warning("utils", "Rescaling required: width mismatch "
@@ -417,12 +417,12 @@ namespace fpp {
         return false;
     }
 
-    bool utils::resampling_required(IOParams params) {
-        return_if(streams.first->isVideo(),  false);
-        return_if(streams.second->isVideo(), false);
+    bool utils::resampling_required(const IOParams params) {
+        return_if(params.in->isVideo(),  false);
+        return_if(params.out->isVideo(), false);
 
-        auto in = static_cast<AudioParameters*>(streams.first->parameters);
-        auto out = static_cast<AudioParameters*>(streams.second->parameters);
+        auto in = static_cast<const AudioParameters * const>(params.in);
+        auto out = static_cast<const AudioParameters * const>(params.out);
 
         return_if(in->sampleRate()      != out->sampleRate(),       true);
         return_if(in->sampleFormat()    != out->sampleFormat(),     true);
@@ -432,12 +432,12 @@ namespace fpp {
         return false;
     }
 
-    bool utils::video_filter_required(IOParams params) {
-        return_if(streams.first->isAudio(),  false);
-        return_if(streams.second->isAudio(), false);
+    bool utils::video_filter_required(const IOParams params) {
+        return_if(params.in->isAudio(),  false);
+        return_if(params.out->isAudio(), false);
 
-        auto in = dynamic_cast<VideoParameters*>(streams.first->parameters);
-        auto out = dynamic_cast<VideoParameters*>(streams.second->parameters);
+        auto in = static_cast<const VideoParameters * const>(params.in);
+        auto out = static_cast<const VideoParameters * const>(params.out);
 
 //        return_if(!compare_float(in->frameRate(), out->frameRate()),  true);
         return_if(av_cmp_q(in->frameRate(), out->frameRate()) != 0, true);
@@ -445,13 +445,14 @@ namespace fpp {
         return false;
     }
 
-    bool utils::audio_filter_required(IOParams params) {
+    bool utils::audio_filter_required(const IOParams params) {
+        UNUSED(params);
         return false;
     }
 
-    bool utils::transcoding_required(IOParams params) {
-        auto in = params.first->parameters;
-        auto out = params.second->parameters;
+    bool utils::transcoding_required(const IOParams params) {
+        auto in = params.in;
+        auto out = params.out;
 
         return_if(in->codecId() != out->codecId(), true);
 //        return_if(in->codecName() != out->codecName(), true);

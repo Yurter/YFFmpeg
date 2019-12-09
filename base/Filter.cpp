@@ -3,7 +3,7 @@
 namespace fpp {
 
     Filter::Filter(IOParams params, std::string filters_descr) :
-        _params(params)
+        params(params)
       , _filters_descr(filters_descr)
     {
         setName("Filter");
@@ -15,7 +15,7 @@ namespace fpp {
 
     Code Filter::init() {
         return_if(inited(), Code::INVALID_CALL_ORDER);
-        auto out_params = dynamic_cast<const VideoParameters*>(_stream->parameters);
+        auto out_params = dynamic_cast<const VideoParameters*>(params.out); //TODO решить использовать входные или выходные параметры
 
         char args[512];
         int ret = 0;

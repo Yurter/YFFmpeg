@@ -270,7 +270,8 @@ namespace fpp {
                     if_not(sequence_one[k]->equalTo(sequence_two[k])) {
                         log_warning("FORK POINT is " << sequence_one[k]->name());
                         //TODO склеить последовательности от 0 до k-1
-                        route_one.changePartTo()
+//                        route_one.changePartTo()
+                        return Code::NOT_IMPLEMENTED;
                         break;
                     }
                 }
@@ -283,14 +284,14 @@ namespace fpp {
         int64_t context_uid = utils::get_context_uid(uid);
         for (auto&& source : _data_sources) {
             for (auto&& stream : source->streams()) {
-                if (stream->uid() == uid) {
+                if (stream->parameters->streamUid() == uid) {
                     return stream;
                 }
             }
         }
         for (auto&& sink : _data_sinks) {
             for (auto&& stream : sink->streams()) {
-                if (stream->uid() == uid) {
+                if (stream->parameters->streamUid() == uid) {
                     return stream;
                 }
             }
@@ -312,7 +313,7 @@ namespace fpp {
                 return Code::INVALID_INPUT;
             }
             Route route;
-            try_to(route.setMetaRoute(in_stream->uid(), out_stream->uid()));
+            try_to(route.setMetaRoute(in_stream->parameters->streamUid(), out_stream->parameters->streamIndex()));
             try_to(createSequence(route));
             _route_list.push_back(route);
         }
