@@ -72,7 +72,11 @@ namespace fpp {
     }
 
     void Stream::setUid(int64_t uid){
-        if (invalid_int(parameters->streamUid())) { parameters->setStreamUid(uid); }
+        if (invalid_int(parameters->streamUid())) {
+            parameters->setStreamUid(uid);
+        } else {
+            log_warning("Cannot set uid again, ignored");
+        }
     }
 
     void Stream::setUsed(bool used) {

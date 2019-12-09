@@ -271,7 +271,7 @@ namespace fpp {
                         log_warning("FORK POINT is " << sequence_one[k]->name());
                         //TODO склеить последовательности от 0 до k-1
 //                        route_one.changePartTo()
-                        return Code::NOT_IMPLEMENTED;
+//                        return Code::NOT_IMPLEMENTED;
                         break;
                     }
                 }
@@ -313,7 +313,7 @@ namespace fpp {
                 return Code::INVALID_INPUT;
             }
             Route route;
-            try_to(route.setMetaRoute(in_stream->parameters->streamUid(), out_stream->parameters->streamIndex()));
+            try_to(route.setMetaRoute(in_stream->parameters->streamUid(), out_stream->parameters->streamUid()));
             try_to(createSequence(route));
             _route_list.push_back(route);
         }

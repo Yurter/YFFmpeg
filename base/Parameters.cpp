@@ -12,6 +12,7 @@ namespace fpp {
         , _bitrate(DEFAULT_INT)
         , _duration(DEFAULT_INT)
         , _stream_index(INVALID_INT)
+        , _stream_uid(INVALID_INT)
         , _time_base(DEFAULT_RATIONAL)
         , _context_uid(INVALID_INT)
     {

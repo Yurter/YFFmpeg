@@ -62,7 +62,7 @@ namespace fpp {
 
     Code FormatContext::createStream(Stream* new_stream) {
 //        try_to(new_stream->init()); // перенёс на момент открытия контекста
-        new_stream->setContext(this);
+        new_stream->setContext(_stream_context);
         new_stream->setUid(utils::gen_stream_uid(uid(), numberStream()));
         new_stream->parameters->setStreamIndex(numberStream());
         new_stream->parameters->setContextUid(uid());
