@@ -242,6 +242,8 @@ namespace fpp {
         try_to(route.append(sink_ptr));
 
 
+        _route_list.push_back(route);
+        try_to(simplifyRoutes());
         try_to(route.init());
         try_to(route.startAll());
 
@@ -251,6 +253,7 @@ namespace fpp {
     }
 
     Code Pipeline::simplifyRoutes() {
+        return_if(_route_list.empty(), Code::OK);
         for (size_t i = 0; i < (_route_list.size() - 1); ++i) {
             for (size_t j = i + 1; j < _route_list.size(); ++j) {
                 Route& route_one = _route_list[i];
@@ -267,6 +270,12 @@ namespace fpp {
                 size_t min_size = std::min(sequence_one.size(), sequence_two.size());
 
                 for (size_t k = 0; k < min_size; ++k) {
+                    if (k > 0) {
+                        if (sequence_one[k]->uid() == sequence_two[k]->uid()) {
+                            //уже один и тот же
+                            break;
+                        }
+                    }
                     if_not(sequence_one[k]->equalTo(sequence_two[k])) {
                         log_warning("FORK POINT is " << sequence_one[k]->name());
                         //TODO склеить последовательности от 0 до k-1
@@ -325,7 +334,7 @@ namespace fpp {
             Route route;
             try_to(route.setMetaRoute(in_stream->parameters->streamUid(), out_stream->parameters->streamUid()));
             try_to(createSequence(route));
-            _route_list.push_back(route);
+//            _route_list.push_back(route);
         }
         return Code::OK;
     }

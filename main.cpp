@@ -3,6 +3,15 @@
 using namespace std;
 using namespace fpp;
 
+void progress_bar(int sec) {
+    int msec_interval = sec * 10;
+    static_log_info("main", "Progress:");
+    for (int i = 0; i < 100; ++i) {
+        std::cout << "\r" << "[" << std::string(i, '*') << std::string(100 - i, ' ') << "]";
+        utils::sleep_for_ms(msec_interval);
+    }
+}
+
 void concatenator_debug() {
     #define TML(x) (x) / 60
 
@@ -59,11 +68,12 @@ void route_simplify_debug() {
     Pipeline* pipeline = new Pipeline;
 
     auto source = new MediaSource("video=HP Wide Vision FHD Camera");
+    source->setCloseOnDisconnect(false);
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 3; ++i) {
         auto sink_event = new MediaSink("group_video/" + std::to_string(i) + "_event.flv", IOType::Event);
         if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
             static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
@@ -74,13 +84,19 @@ void route_simplify_debug() {
         static_log_error("main", "Pipeline simplify routes failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    utils::sleep_for_min(2);
+    progress_bar(60);
 }
 
 int main() {
 
     static_log_info("main", "Program started...");
     avdevice_register_all(); //TODO вызов необходим для работы USB-камер, перенести
+
+    {
+//        set_log_level(LogLevel::Trace);
+        route_simplify_debug();
+        return 0;
+    }
 
     try {
 

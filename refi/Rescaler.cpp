@@ -83,7 +83,9 @@ namespace fpp {
         auto other_rescaler = dynamic_cast<const Rescaler * const>(other);
         return_if(not_inited_ptr(other_rescaler), false);
 
-        return_if(this->stream(0)->parameters->streamUid() == other->stream(0)->parameters->streamUid(), true);
+//        return_if(this->stream(0)->parameters->streamUid() == other->stream(0)->parameters->streamUid(), true);
+        return_if(this->params.in->streamUid() == other_rescaler->params.in->streamUid(), true);
+
         return false;
     }
 
