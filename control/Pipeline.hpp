@@ -23,11 +23,10 @@ namespace fpp {
         Pipeline();
         virtual ~Pipeline() override;
 
-        Code                addElement(FrameSourcePtr   frame_source);
-        Code                addElement(FrameSinkPtr     frame_sink);
-        Code                addElement(PacketSourcePtr  packet_source);
-        Code                addElement(PacketSinkPtr    packet_sink);
-
+        Code                addElement(FrameSourcePtr   frame_source    );
+        Code                addElement(FrameSinkPtr     frame_sink      );
+        Code                addElement(PacketSourcePtr  packet_source   );
+        Code                addElement(PacketSinkPtr    packet_sink     );
         void                remElement(const int64_t uid);
 
         void                setOptions(int64_t options);        ///< Функция устанавливает переданные ей опции Option.
@@ -41,8 +40,6 @@ namespace fpp {
         virtual Code        run()       override;
         virtual Code        onStart()   override;
         virtual Code        onStop()    override;
-
-        bool                option(Option option) const;
 
         Code                checkFormatContexts();
 

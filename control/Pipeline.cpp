@@ -113,12 +113,6 @@ namespace fpp {
         return Code::OK;
     }
 
-    bool Pipeline::option(Option option) const {
-        UNUSED(option);
-        return false;
-//        return _options & option;
-    }
-
     Code Pipeline::checkFormatContexts() {
         return Code::OK; //debug
         return_if(_data_sources.empty(),   Code::NOT_INITED);
