@@ -74,7 +74,7 @@ void route_simplify_debug() {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 2; ++i) {
         auto sink_event = new MediaSink("group_video/" + std::to_string(i) + "_event.flv", IOType::Event);
         if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
             static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));

@@ -123,8 +123,8 @@ namespace fpp {
     }
 
     bool Filter::equalTo(const Processor * const other) const {
-        return_error_if_not(inited(), "Can't compare untill not inited.", false);
-        return_error_if_not(other->inited(), "Can't compare untill not inited.", false);
+//        return_error_if_not(inited(), "Can't compare untill not inited.", false);
+//        return_error_if_not(other->inited(), "Can't compare untill not inited.", false);
 
         auto other_filter = dynamic_cast<const Filter * const>(other);
         return_if(not_inited_ptr(other_filter), false);

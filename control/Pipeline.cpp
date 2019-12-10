@@ -203,6 +203,7 @@ namespace fpp {
         }
 
         if (decoding_required) {
+//            UPProcessor decoder = std::make_unique<Decoder>(Decoder(params));
             Decoder* decoder = new Decoder(params);
             try_to(route.append(decoder));
         }
@@ -243,9 +244,9 @@ namespace fpp {
 
 
         _route_list.push_back(route);
-        for (auto& proc : route.processorSequence()) {
-            try_to(proc->init());
-        }
+//        for (auto& proc : route.processorSequence()) {
+//            try_to(proc->init());
+//        }
         try_to(simplifyRoutes());
         try_to(route.init());
         try_to(route.startAll());

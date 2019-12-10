@@ -54,7 +54,8 @@ namespace fpp {
 
     };
 
-    using ProcessorSP = std::shared_ptr<Processor>;
+//    using ProcessorSP = std::shared_ptr<Processor>;
+    using UPProcessor = std::unique_ptr<Processor>;
     using ProcessorList = std::list<Processor*>;
     using ProcessorVector = std::vector<Processor*>;
 
