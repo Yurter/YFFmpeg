@@ -10,6 +10,7 @@ void progress_bar(int sec) {
         std::cout << "\r" << "[" << std::string(i, '*') << std::string(100 - i, ' ') << "]";
         utils::sleep_for_ms(msec_interval);
     }
+    std::cout << std::endl;
 }
 
 void concatenator_debug() {
@@ -80,9 +81,9 @@ void route_simplify_debug() {
         }
     }
 
-//    if (auto ret = pipeline->simplifyRoutes(); ret != fpp::Code::OK) {
-//        static_log_error("main", "Pipeline simplify routes failed: " << ret << " - " << utils::code_to_string(ret));
-//    }
+    if (auto ret = pipeline->simplifyRoutes(); ret != fpp::Code::OK) {
+        static_log_error("main", "Pipeline simplify routes failed: " << ret << " - " << utils::code_to_string(ret));
+    }
 
     progress_bar(60);
 }

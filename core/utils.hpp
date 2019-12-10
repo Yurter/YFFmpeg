@@ -78,6 +78,9 @@ namespace fpp {
 
 } // namespace fpp
 
+/* Обертка пространства имён fpp */
+#define NSFPP(x) do { using namespace fpp; x } while (false)
+
 /* Макрос получения экзмепляра объекта класса Logger */
 #define logger fpp::Logger::instance("fpp_log")
 
@@ -89,33 +92,30 @@ namespace fpp {
 #define set_log_level(x)        logger.setLogLevel(x)
 #define set_ffmpeg_log_level(x) logger.setFFmpegLogLevel(x)
 
-/* Макросы для отправки строковых сообщений в лог */
-#define print_info(caller_name,x)       logger.print(caller_name, code_pos, LogLevel::Info,    x)
-#define print_warning(caller_name,x)    logger.print(caller_name, code_pos, LogLevel::Warning, x)
-#define print_error(caller_name,x)      logger.print(caller_name, code_pos, LogLevel::Error,   x)
-#define print_debug(caller_name,x)      logger.print(caller_name, code_pos, LogLevel::Debug,   x)
-#define print_trace(caller_name,x)      logger.print(caller_name, code_pos, LogLevel::Trace,   x)
+/* Макрос для отправки строкового сообщения в лог */
+//#define log_message(caller_name, log_level, message) NSFPP( if_not(logger.ignoreMessage(log_level)) { std::stringstream log_ss; log_ss << message; logger.print(caller_name, code_pos, log_level, log_ss.str()); })
+#define log_message(caller_name, log_level, message)    NSFPP (\
+                                                            if_not(logger.ignoreMessage(log_level)) {\
+                                                                std::stringstream log_ss;\
+                                                                log_ss << message;\
+                                                                logger.print(caller_name, code_pos, log_level, log_ss.str());\
+                                                            }\
+                                                        )
 
-//#define print_msg(caller_name,lvl,msg)  logger.print(caller_name, code_pos, lvl, msg)
-//#define log_info(x)     NSFPP( if_not(logger.ignoreMessage(LogLevel::Info))     { std::stringstream log_ss; log_ss << x; print_msg(this->name(),LogLevel::Info,log_ss.str());     })
-
-/* ? */
-#define NSFPP(x) do { using namespace fpp; x } while (false)
-
-/* Макросы для отправки потоковых сообщений в лог */
-#define log_info(x)     NSFPP( if_not(logger.ignoreMessage(LogLevel::Info))     { std::stringstream log_ss; log_ss << x; print_info(this->name(),log_ss.str());     })
-#define log_warning(x)  NSFPP( if_not(logger.ignoreMessage(LogLevel::Warning))  { std::stringstream log_ss; log_ss << x; print_warning(this->name(),log_ss.str());  })
-#define log_error(x)    NSFPP( if_not(logger.ignoreMessage(LogLevel::Error))    { std::stringstream log_ss; log_ss << x; print_error(this->name(),log_ss.str());    })
-#define log_debug(x)    NSFPP( if_not(logger.ignoreMessage(LogLevel::Debug))    { std::stringstream log_ss; log_ss << x; print_debug(this->name(),log_ss.str());    })
-#define log_trace(x)    NSFPP( if_not(logger.ignoreMessage(LogLevel::Trace))    { std::stringstream log_ss; log_ss << x; print_trace(this->name(),log_ss.str());    })
+/* Макросы для отправки строкоых сообщений в лог */
+#define log_info(message)       log_message(this->name(), LogLevel::Info,       message)
+#define log_warning(message)    log_message(this->name(), LogLevel::Warning,    message)
+#define log_error(message)      log_message(this->name(), LogLevel::Error,      message)
+#define log_debug(message)      log_message(this->name(), LogLevel::Debug,      message)
+#define log_trace(message)      log_message(this->name(), LogLevel::Trace,      message)
 
 /* Макросы для отправки потоковых сообщений в лог вне контекста fpp */
-#define static_log_info(caller_name,x)      NSFPP( if_not(logger.ignoreMessage(LogLevel::Info))     { std::stringstream log_ss; log_ss << x; print_info(caller_name,log_ss.str());   })
-#define static_log_warning(caller_name,x)   NSFPP( if_not(logger.ignoreMessage(LogLevel::Warning))  { std::stringstream log_ss; log_ss << x; print_warning(caller_name,log_ss.str());})
-#define static_log_error(caller_name,x)     NSFPP( if_not(logger.ignoreMessage(LogLevel::Error))    { std::stringstream log_ss; log_ss << x; print_error(caller_name,log_ss.str());  })
-#define static_log_debug(caller_name,x)     NSFPP( if_not(logger.ignoreMessage(LogLevel::Debug))    { std::stringstream log_ss; log_ss << x; print_debug(caller_name,log_ss.str());  })
-#define static_log_trace(caller_name,x)     NSFPP( if_not(logger.ignoreMessage(LogLevel::Trace))    { std::stringstream log_ss; log_ss << x; print_trace(caller_name,log_ss.str());  })
-#define static_log_auto(caller_name,lvl,x)  NSFPP( if_not(logger.ignoreMessage(lvl))    { std::stringstream log_ss; log_ss << x; print_trace(caller_name,log_ss.str());  })
+#define static_log_info(caller_name, message)       log_message(caller_name, LogLevel::Info,    message)
+#define static_log_warning(caller_name, message)    log_message(caller_name, LogLevel::Warning, message)
+#define static_log_error(caller_name, message)      log_message(caller_name, LogLevel::Error,   message)
+#define static_log_debug(caller_name, message)      log_message(caller_name, LogLevel::Debug,   message)
+#define static_log_trace(caller_name, message)      log_message(caller_name, LogLevel::Trace,   message)
+#define static_log_auto(caller_name, log_level, message)    log_message(caller_name, log_level, message) //TODO убрать? заменить на метод в логгере?
 
 /* ? */
 #define code_pos std::string(__FUNCTION__) + ", line: " + std::to_string(__LINE__)
