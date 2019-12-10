@@ -16,25 +16,21 @@ namespace fpp {
         setName("Logger");
 //        av_log_set_callback(log_callback); //TODO later
         setFFmpegLogLevel(LogLevel::Error);
-        _message_queue.set_capacity(10'000);
-        print(this, code_pos, LogLevel::Info, "Logger opened.");
+//        print(this, code_pos, LogLevel::Info, "Logger opened.");
+//        log_info("Logger closed.");
         openFile(log_dir);
-        try_throw(start());
     }
 
     Logger::~Logger() {
-        try_throw(stop());
-        join();
-        print(this, code_pos, LogLevel::Info, "Logger closed.");
+//        if_not(ignoreMessage(LogLevel::Info)) {
+//            print(this, code_pos, LogLevel::Info, "Logger closed.");
+//        }
+        log_info("Logger closed.");
         av_log_set_callback(nullptr);
-        flush();
         closeFile();
     }
 
-    Code Logger::run() {
-        LogMessage message;
-        return_if_not(_message_queue.wait_and_pop(message), Code::EXIT);
-
+    Code Logger::print(const LogMessage& message) {
         HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
         switch (message.log_level) {
@@ -63,25 +59,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Logger::init() {
-        setInited(true);
-        return Code::OK;
-    }
-
-    Code Logger::onStop() {
-        _message_queue.stop_wait();
-        return Code::OK;
-    }
-
-    void Logger::flush() {
-        /* Прекращение получения новых сообщений */
-        setLogLevel(LogLevel::Quiet);
-        while (!_message_queue.empty()) {
-            try_throw(run());
-        }
-    }
-
-    void Logger::openFile(std::string log_dir) {
+    void Logger::openFile(const std::string &log_dir) {
         std::filesystem::create_directory(log_dir);
         _file.open(log_dir + "/" + genFileName());
     }
@@ -131,10 +109,6 @@ namespace fpp {
         return ss.str();
     }
 
-    bool Logger::ignoreMessage(LogLevel message_log_level) {
-        return message_log_level > _log_level;
-    }
-
     void Logger::log_callback(void* ptr, int level, const char* fmt, va_list vl) {
         va_list vl2;
         char line[1024];
@@ -152,7 +126,7 @@ namespace fpp {
             }
         }
 
-        static_print_auto("FFmpeg", convert_log_level(level), line);
+        static_log_auto("FFmpeg", convert_log_level(level), line);
     }
 
     LogLevel Logger::convert_log_level(int ffmpeg_level) { //TODO
@@ -241,20 +215,23 @@ namespace fpp {
         }
     }
 
-    void Logger::print(const Object* caller, std::string code_position, LogLevel log_level, const std::string message) {
-        if (ignoreMessage(log_level)) { return; }
-        std::string formated_message = formatMessage(caller->name(), code_position, log_level, message);
-        if (!_message_queue.push(LogMessage(log_level, formated_message))) {
-            // do nothing
-        }
+    bool Logger::ignoreMessage(const LogLevel message_log_level) {
+        return message_log_level > _log_level;
     }
 
-    void Logger::staticPrint(const std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
-        if (ignoreMessage(log_level)) { return; }
-        std::string formated_message = formatMessage(caller_name, code_position, log_level, message);
-        if (!_message_queue.push(LogMessage(log_level, formated_message))) {
-            // do nothing
-        }
+    void Logger::print(const std::string& caller_name, const std::string& code_position, const LogLevel log_level, const std::string& message) {
+        const std::string formated_message = formatMessage(caller_name, code_position, log_level, message);
+        try_throw(print({ log_level, formated_message }));
     }
+
+//    void Logger::print(const Object* caller, const std::string& code_position, const LogLevel log_level, const std::string message) {
+//        const std::string formated_message = formatMessage(caller->name(), code_position, log_level, message);
+//        try_throw(print({ log_level, formated_message }));
+//    }
+
+//    void Logger::staticPrint(const std::string caller_name, const std::string &code_position, const LogLevel log_level, const std::string message) {
+//        const std::string formated_message = formatMessage(caller_name, code_position, log_level, message);
+//        try_throw(print({ log_level, formated_message }));
+//    }
 
 } // namespace fpp

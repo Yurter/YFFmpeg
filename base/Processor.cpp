@@ -76,6 +76,9 @@ namespace fpp {
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
         _next_processor_list.push_back(other);
         log_debug("Connected to " << other->name());
+        if (running()) {
+            log_error("running = " << _next_processor_list.size() << " " << other->uid());
+        }
         return Code::OK;
     }
 

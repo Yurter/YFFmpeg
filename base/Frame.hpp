@@ -9,7 +9,7 @@ namespace fpp {
 
         Frame();
         Frame(const Frame& other);
-        Frame(const Frame&& other);
+//        Frame(const Frame&& other);
 //        Frame(AVFrame* frame); //TODO релиазовать
         virtual ~Frame() override;
 

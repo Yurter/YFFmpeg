@@ -17,10 +17,10 @@ namespace fpp {
         setInited(true);
     }
 
-    Frame::Frame(const Frame&& other) { //TODO нужен ли?
-        UNUSED(other);
-        log_error("MOVE FRAME");
-    }
+//    Frame::Frame(const Frame&& other) { //TODO нужен ли?
+//        UNUSED(other);
+//        log_error("MOVE FRAME");
+//    }
 
     Frame::~Frame() {
         av_frame_unref(&_data);
