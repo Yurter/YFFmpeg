@@ -34,8 +34,6 @@ namespace fpp {
 
         bool                ignoreMessage(const LogLevel message_log_level);
         void                print(const std::string& caller_name, const std::string& code_position, const LogLevel log_level, const std::string& message);
-//        void                print(const Object* caller, const std::string& code_position, const LogLevel log_level, const std::string message);
-//        void                staticPrint(const std::string caller_name, const std::string& code_position, const LogLevel log_level, const std::string message);
 
     private:
 
@@ -52,7 +50,7 @@ namespace fpp {
         void                openFile(const std::string& log_dir);
         void                closeFile();
         std::string         genFileName() const;
-        std::string         formatMessage(std::string caller_name, std::string code_position, LogLevel log_level, const std::string message);
+        std::string         formatMessage(std::string caller_name, const std::string& code_position, LogLevel log_level, const std::string& message);
         static void         log_callback(void* ptr, int level, const char* fmt, va_list vl);
         static LogLevel     convert_log_level(int ffmpeg_level);
         std::string         encodeLogLevel(LogLevel value);
@@ -61,6 +59,7 @@ namespace fpp {
 
         LogLevel            _log_level;
         std::ofstream       _file;
+        std::mutex          _print_mutex;
 
     };
 

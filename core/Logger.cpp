@@ -16,21 +16,18 @@ namespace fpp {
         setName("Logger");
 //        av_log_set_callback(log_callback); //TODO later
         setFFmpegLogLevel(LogLevel::Error);
-//        print(this, code_pos, LogLevel::Info, "Logger opened.");
-//        log_info("Logger closed.");
+        print(this->name(), code_pos, LogLevel::Info, "Logger opened.");
         openFile(log_dir);
     }
 
     Logger::~Logger() {
-//        if_not(ignoreMessage(LogLevel::Info)) {
-//            print(this, code_pos, LogLevel::Info, "Logger closed.");
-//        }
-        log_info("Logger closed.");
+        print(this->name(), code_pos, LogLevel::Info, "Logger closed.");
         av_log_set_callback(nullptr);
         closeFile();
     }
 
     Code Logger::print(const LogMessage& message) {
+        std::lock_guard lock(_print_mutex);
         HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
         switch (message.log_level) {
@@ -80,23 +77,26 @@ namespace fpp {
         return std::string(buffer);
     }
 
-    std::string Logger::formatMessage(std::string caller_name, std::string code_position, LogLevel log_level, const std::string message) {
+    std::string Logger::formatMessage(std::string caller_name, const std::string &code_position, LogLevel log_level, const std::string& message) {
         std::string header;
 
-        size_t name_length = 11;
-        if (caller_name.length() > name_length)
-        caller_name.resize(name_length, ' ');
+        const size_t max_name_length = 11;
+        const int message_offset = 30;
+
+        caller_name.resize(max_name_length, ' ');
 
         header += "[" + encodeLogLevel(log_level) + "]";
-        auto t = std::time(nullptr);
+        const int64_t t = std::time(nullptr);
         header += "[" + (std::stringstream() << std::put_time(std::localtime(&t), "%H:%M:%S")).str() + "]";
-        header += "[" + caller_name + "]";
-
-        int message_offset = 28;
+        header += "[" + caller_name + "] ";
 
         if (log_level >= LogLevel::Debug) {
-            header += "\n";
-            header += (std::stringstream() << TAB << std::setw(message_offset) << std::left << "Thread id: " << current_thread_id()).str();
+            std::string thread_id = (std::stringstream() << "[" << current_thread_id() << "]").str();
+            thread_id.resize(7, ' ');
+            header += thread_id;
+            header += " ";
+        }
+        if (log_level >= LogLevel::Trace) {
             header += "\n";
             header += (std::stringstream() << TAB << std::setw(message_offset) << std::left << "Code position: " << code_position).str();
             header += "\n";
@@ -104,7 +104,7 @@ namespace fpp {
         }
 
         std::stringstream ss;
-        ss << std::setw(message_offset + 2) << std::left << header << message;
+        ss << std::setw(message_offset) << std::left << header << message;
 
         return ss.str();
     }
@@ -223,15 +223,5 @@ namespace fpp {
         const std::string formated_message = formatMessage(caller_name, code_position, log_level, message);
         try_throw(print({ log_level, formated_message }));
     }
-
-//    void Logger::print(const Object* caller, const std::string& code_position, const LogLevel log_level, const std::string message) {
-//        const std::string formated_message = formatMessage(caller->name(), code_position, log_level, message);
-//        try_throw(print({ log_level, formated_message }));
-//    }
-
-//    void Logger::staticPrint(const std::string caller_name, const std::string &code_position, const LogLevel log_level, const std::string message) {
-//        const std::string formated_message = formatMessage(caller_name, code_position, log_level, message);
-//        try_throw(print({ log_level, formated_message }));
-//    }
 
 } // namespace fpp

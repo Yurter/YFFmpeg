@@ -90,7 +90,10 @@ void route_simplify_debug() {
 
 int main() {
 
+    set_log_level(LogLevel::Trace);
     static_log_info("main", "Program started...");
+    static_log_trace("main", "Program started...");
+    static_log_debug("main", "Program started...");
     avdevice_register_all(); //TODO вызов необходим для работы USB-камер, перенести
 
     {
