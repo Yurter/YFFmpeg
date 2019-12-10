@@ -102,6 +102,7 @@ namespace fpp {
             log_debug("Waiting for thread...");
             utils::sleep_for(MEDIUM_DELAY_MS);
         }
+        log_debug("Thread joined.");
     }
 
     Code Thread::exitCode() const {
