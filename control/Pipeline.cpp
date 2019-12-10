@@ -12,34 +12,30 @@ namespace fpp {
         try_throw(stop());
     }
 
-    Code Pipeline::addElement(FrameSource* frame_source) {
+    Code Pipeline::addElement(FrameSourcePtr frame_source) {
         try_to(frame_source->init());
         try_to(frame_source->open());
-        std::lock_guard lock(_processor_mutex);
-        _data_sources.push_back(frame_source);
+        _data_sources.push_back(std::move(frame_source));
         return Code::OK;
     }
 
-    Code Pipeline::addElement(FrameSink* frame_sink) {
-        std::lock_guard lock(_processor_mutex);
-        _data_sinks.push_back(frame_sink);
+    Code Pipeline::addElement(FrameSinkPtr frame_sink) {
+        _data_sinks.push_back(std::move(frame_sink));
         try_to(frame_sink->init());
         try_to(determineSequence(frame_sink));
         return Code::OK;
     }
 
-    Code Pipeline::addElement(PacketSource* packet_source) {
+    Code Pipeline::addElement(PacketSourcePtr packet_source) {
         try_to(packet_source->init());
         try_to(packet_source->open());
-        std::lock_guard lock(_processor_mutex);
-        _data_sources.push_back(packet_source);
+        _data_sources.push_back(std::move(packet_source));
         return Code::OK;
     }
 
-    Code Pipeline::addElement(PacketSink* packet_sink) {
+    Code Pipeline::addElement(PacketSinkPtr packet_sink) {
         try_to(packet_sink->init());
-        std::lock_guard lock(_processor_mutex);
-        _data_sinks.push_back(packet_sink);
+        _data_sinks.push_back(std::move(packet_sink));
         try_to(determineSequence(packet_sink));
         return Code::OK;
     }
@@ -49,13 +45,11 @@ namespace fpp {
 //        _options = options;
     }
 
-    void Pipeline::remElement(Processor* processor) {
-        std::lock_guard lock(_processor_mutex);
-        _data_sinks.remove_if([processor](auto proc) { return proc == processor; });
-        _data_sources.remove_if([processor](auto proc) { return proc == processor; });
+    void Pipeline::remElement(const int64_t uid) {
+        _data_sinks.remove_if([uid](const auto& sink) { return sink->uid() == uid; });
+        _data_sources.remove_if([uid](const auto& source) { return source->uid() == uid; });
 
         findRoute(processor).destroy();
-//        _route_list.remove_if([processor](const Route& route){ return route.contains(processor); });
         auto cond = [processor](const Route& route){ return route.contains(processor); };
         _route_list.erase(std::remove_if(_route_list.begin(), _route_list.end(), cond), _route_list.end());
     }
@@ -170,7 +164,9 @@ namespace fpp {
         return_error_if(not_inited_ptr(source_ptr)
                         , "Failed to cast input stream's context to Processor."
                         , Code::INVALID_INPUT);
-        try_to(route.append(source_ptr));
+//        try_to(route.append(source_ptr));
+        UPProcessor source = std::make_unique<Processor>(source_ptr);
+        try_to(route.append(std::move(source2)));
 
         bool rescaling_required     = utils::rescaling_required   (params);
         bool resampling_required    = utils::resampling_required  (params);
@@ -203,14 +199,13 @@ namespace fpp {
         }
 
         if (decoding_required) {
-//            UPProcessor decoder = std::make_unique<Decoder>(Decoder(params));
-            Decoder* decoder = new Decoder(params);
-            try_to(route.append(decoder));
+            UPProcessor decoder = std::make_unique<Decoder>(params);
+            try_to(route.append(std::move(decoder)));
         }
 
         if (rescaling_required) {
-            Rescaler* rescaler = new Rescaler(params);
-            try_to(route.append(rescaler));
+            UPProcessor rescaler = std::make_unique<Rescaler>(params);
+            try_to(route.append(std::move(rescaler)));
         }
 
         if (video_filter_required) {
@@ -218,8 +213,8 @@ namespace fpp {
 //            std::string filters_descr = "setpts=N/(10*TB)";
 //            std::string filters_descr = "setpts=0.016*PTS";
             std::string filters_descr = "select='not(mod(n,60))'";
-            VideoFilter* video_filter = new VideoFilter(params, filters_descr);
-            try_to(route.append(video_filter));
+            UPProcessor video_filter = std::make_unique<VideoFilter>(params, filters_descr);
+            try_to(route.append(std::move(video_filter)));
         }
 
         if (audio_filter_required) {
@@ -227,26 +222,23 @@ namespace fpp {
         }
 
         if (resampling_required) {
-            Resampler* resampler = new Resampler(params);
-            try_to(route.append(resampler));
+            UPProcessor resampler = std::make_unique<Resampler>(params);
+            try_to(route.append(std::move(resampler)));
         }
 
         if (encoding_required) {
-            Encoder* encoder = new Encoder(params);
-            try_to(route.append(encoder));
+            UPProcessor encoder = std::make_unique<Encoder>(params);
+            try_to(route.append(std::move(encoder)));
         }
 
         auto sink_ptr = dynamic_cast<Processor*>(output_stream->context());
         return_error_if(not_inited_ptr(source_ptr)
                         , "Failed to cast output stream's context to Processor."
                         , Code::INVALID_INPUT);
-        try_to(route.append(sink_ptr));
-
+        UPProcessor sink = std::make_unique<Processor>(sink_ptr);
+        try_to(route.append(std::move(sink)));
 
         _route_list.push_back(route);
-//        for (auto& proc : route.processorSequence()) {
-//            try_to(proc->init());
-//        }
         try_to(simplifyRoutes());
         try_to(route.init());
         try_to(route.startAll());

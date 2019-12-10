@@ -74,7 +74,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Route::append(Processor* processor) {
+    Code Route::append(ProcessorPtr* processor) {
         return_if(not_inited_ptr(processor), Code::INVALID_INPUT);
         _sequence.push_back(processor);
         return Code::OK;

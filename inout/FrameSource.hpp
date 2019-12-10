@@ -11,5 +11,7 @@ namespace fpp {
 
     };
 
+    using FrameSourcePtr = std::unique_ptr<FrameSource>;
+
 } // namespace fpp
 

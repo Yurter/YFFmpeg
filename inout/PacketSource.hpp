@@ -16,4 +16,6 @@ namespace fpp {
 
     };
 
+    using PacketSourcePtr = std::unique_ptr<PacketSource>;
+
 } // namespace fpp

@@ -21,7 +21,7 @@ namespace fpp {
         virtual std::string toString() const override;
 
         Code                setMetaRoute(int64_t input_stream_uid, int64_t output_stream_uid);
-        Code                append(Processor* processor);
+        Code                append(ProcessorPtr* processor);
 
         int64_t             inputStreamUid()  const;
         int64_t             outputStreamUid() const;

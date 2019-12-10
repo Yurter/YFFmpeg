@@ -16,4 +16,6 @@ namespace fpp {
 
     };
 
+    using FrameSinkPtr = std::unique_ptr<FrameSink>;
+
 } // namespace fpp

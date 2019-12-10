@@ -16,4 +16,6 @@ namespace fpp {
 
     };
 
+    using PacketSinkPtr = std::unique_ptr<PacketSink>;
+
 } // namespace fpp

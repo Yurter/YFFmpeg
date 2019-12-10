@@ -79,6 +79,7 @@ HEADERS += \
     control/Concatenator.hpp \
     core/AsyncDiscardAmountQueue.hpp \
     core/AsyncDiscardSizeQueue.hpp \
+    core/AsyncList.hpp \
     core/Chronometer.hpp \
     core/Timer.hpp \
     custom/CustomFrameSink.hpp \

@@ -12,29 +12,24 @@
 #include "refi/Resampler.hpp"
 #include "refi/VideoFilter.hpp"
 #include "refi/AudioFilter.hpp"
+#include "core/AsyncList.hpp"
 #include "base/Route.hpp"
 
 namespace fpp {
-
-    using MetaStream = std::pair<uint64_t,uint64_t>;
-    using MetaRoute = std::pair<MetaStream,MetaStream>;
-    using MetaMap = std::list<MetaRoute>;
-
-//    using ProcessorSequence = std::list<Processor*>;
 
     class Pipeline : public Thread {
 
     public:
 
-        Pipeline(); //TODO hwaccel flag_enum|set_method
+        Pipeline();
         virtual ~Pipeline() override;
 
-        Code                addElement(FrameSource*     frame_source);
-        Code                addElement(FrameSink*       frame_sink);
-        Code                addElement(PacketSource*    packet_source);
-        Code                addElement(PacketSink*      packet_sink);
+        Code                addElement(FrameSourcePtr   frame_source);
+        Code                addElement(FrameSinkPtr     frame_sink);
+        Code                addElement(PacketSourcePtr  packet_source);
+        Code                addElement(PacketSinkPtr    packet_sink);
 
-        void                remElement(Processor* processor);
+        void                remElement(const int64_t uid);
 
         void                setOptions(int64_t options);        ///< Функция устанавливает переданные ей опции Option.
         void                dump() const;                       ///< TODO description
@@ -71,16 +66,14 @@ namespace fpp {
 
     private:
 
+        using ProcessorList = AsyncList<ProcessorPtr>;
+
         ProcessorList       _data_sources;
         ProcessorList       _data_sinks;
-        std::mutex          _processor_mutex;
-
-
-        MetaMap             _metamap;
+        ProcessorList       _service_processors;
 
         RouteVector         _route_list;
 
-//        int64_t             _options;
     };
 
 } // namespace fpp
