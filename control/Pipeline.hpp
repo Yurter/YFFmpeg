@@ -12,7 +12,6 @@
 #include "refi/Resampler.hpp"
 #include "refi/VideoFilter.hpp"
 #include "refi/AudioFilter.hpp"
-#include "core/AsyncList.hpp"
 #include "base/Route.hpp"
 
 namespace fpp {
@@ -66,11 +65,8 @@ namespace fpp {
 
     private:
 
-        using ProcessorList = AsyncList<ProcessorPtr>;
-
         ProcessorList       _data_sources;
         ProcessorList       _data_sinks;
-        ProcessorList       _service_processors;
 
         RouteVector         _route_list;
 

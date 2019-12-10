@@ -44,6 +44,6 @@ namespace fpp {
 
     };
 
-    using MediaSourceList = std::list<PacketSource*>;
+    using MediaSourcePtr = std::unique_ptr<MediaSource>;
 
 } // namespace fpp

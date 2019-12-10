@@ -199,12 +199,12 @@ namespace fpp {
         }
 
         if (decoding_required) {
-            UPProcessor decoder = std::make_unique<Decoder>(params);
+            ProcessorPtr decoder = std::make_unique<Decoder>(params);
             try_to(route.append(std::move(decoder)));
         }
 
         if (rescaling_required) {
-            UPProcessor rescaler = std::make_unique<Rescaler>(params);
+            ProcessorPtr rescaler = std::make_unique<Rescaler>(params);
             try_to(route.append(std::move(rescaler)));
         }
 
@@ -213,7 +213,7 @@ namespace fpp {
 //            std::string filters_descr = "setpts=N/(10*TB)";
 //            std::string filters_descr = "setpts=0.016*PTS";
             std::string filters_descr = "select='not(mod(n,60))'";
-            UPProcessor video_filter = std::make_unique<VideoFilter>(params, filters_descr);
+            ProcessorPtr video_filter = std::make_unique<VideoFilter>(params, filters_descr);
             try_to(route.append(std::move(video_filter)));
         }
 
@@ -222,12 +222,12 @@ namespace fpp {
         }
 
         if (resampling_required) {
-            UPProcessor resampler = std::make_unique<Resampler>(params);
+            ProcessorPtr resampler = std::make_unique<Resampler>(params);
             try_to(route.append(std::move(resampler)));
         }
 
         if (encoding_required) {
-            UPProcessor encoder = std::make_unique<Encoder>(params);
+            ProcessorPtr encoder = std::make_unique<Encoder>(params);
             try_to(route.append(std::move(encoder)));
         }
 
@@ -235,7 +235,7 @@ namespace fpp {
         return_error_if(not_inited_ptr(source_ptr)
                         , "Failed to cast output stream's context to Processor."
                         , Code::INVALID_INPUT);
-        UPProcessor sink = std::make_unique<Processor>(sink_ptr);
+        ProcessorPtr sink = std::make_unique<Processor>(sink_ptr);
         try_to(route.append(std::move(sink)));
 
         _route_list.push_back(route);
@@ -409,7 +409,7 @@ namespace fpp {
         switch (media_type) {
         case MediaType::MEDIA_TYPE_VIDEO: {
             StreamVector all_video_streams;
-            for (auto&& source : _data_sources) {
+            for (auto& source : _data_sources) {
                 all_video_streams.push_back(source->stream(0)); //TODO !!! поиск по индексу, а не по типу
 //                auto medias_source = dynamic_cast<MediaSource*>(source);
 //                if (inited_ptr(medias_source)) {
@@ -437,7 +437,7 @@ namespace fpp {
 
     Route Pipeline::findRoute(Processor* processor) {
         for (auto&& route : _route_list) {
-            if (route.contains(processor)) {
+            if (route.contains(processor->uid())) {
                 return route;
             }
         }

@@ -27,6 +27,18 @@ namespace fpp {
             _list.remove_if(condition);
         }
 
+        bool empty() const {
+            std::lock_guard<std::mutex> lock(_list_mutex);
+            return _list.empty();
+        }
+
+//        auto begin() {
+//            return _list.begin();
+//        }
+//        auto end() {
+//            return _list.end();
+//        }
+
     private:
 
         std::list<Type>     _list;

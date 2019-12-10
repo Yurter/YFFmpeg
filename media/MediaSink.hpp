@@ -31,6 +31,6 @@ namespace fpp {
 
     };
 
-    using MediaSinkList = std::list<PacketSink*>;
+    using MediaSinkPtr = std::unique_ptr<MediaSink>;
 
 } // namespace fpp

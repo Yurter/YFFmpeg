@@ -1,4 +1,5 @@
 #pragma once
+#include "core/AsyncList.hpp"
 #include "core/Thread.hpp"
 #include "Stream.hpp"
 
@@ -55,6 +56,7 @@ namespace fpp {
     };
 
     using ProcessorPtr = std::unique_ptr<Processor>;
-    using ProcessorVector = std::vector<ProcessorPtr>;
+    using ProcessorList = AsyncList<ProcessorPtr>;
+    using ProcessorVector = std::vector<ProcessorPtr>; //TODO не потокобезопасен
 
 } // namespace fpp
