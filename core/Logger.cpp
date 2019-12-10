@@ -216,7 +216,7 @@ namespace fpp {
     }
 
     bool Logger::ignoreMessage(const LogLevel message_log_level) {
-        return message_log_level > _log_level;
+        return (message_log_level == LogLevel::Quiet) || (message_log_level > _log_level);
     }
 
     void Logger::print(const std::string& caller_name, const std::string& code_position, const LogLevel log_level, const std::string& message) {

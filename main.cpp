@@ -7,7 +7,7 @@ void progress_bar(int sec) {
     int msec_interval = sec * 10;
     static_log_info("main", "Progress:");
     for (int i = 0; i < 100; ++i) {
-        std::cout << "\r" << "[" << std::string(i, '*') << std::string(100 - i, ' ') << "]";
+//        std::cout << "\r" << "[" << std::string(i, '*') << std::string(100 - i, ' ') << "]";
         utils::sleep_for_ms(msec_interval);
     }
     std::cout << std::endl;
@@ -81,19 +81,16 @@ void route_simplify_debug() {
         }
     }
 
-    if (auto ret = pipeline->simplifyRoutes(); ret != fpp::Code::OK) {
-        static_log_error("main", "Pipeline simplify routes failed: " << ret << " - " << utils::code_to_string(ret));
-    }
+//    if (auto ret = pipeline->simplifyRoutes(); ret != fpp::Code::OK) {
+//        static_log_error("main", "Pipeline simplify routes failed: " << ret << " - " << utils::code_to_string(ret));
+//    }
 
     progress_bar(60);
 }
 
 int main() {
 
-    set_log_level(LogLevel::Trace);
     static_log_info("main", "Program started...");
-    static_log_trace("main", "Program started...");
-    static_log_debug("main", "Program started...");
     avdevice_register_all(); //TODO вызов необходим для работы USB-камер, перенести
 
     {
