@@ -90,16 +90,6 @@ void route_simplify_debug() {
 
 int main() {
 
-    std::list<ProcessorPointer> list_0;
-    std::list<ProcessorPointer> list_1(list_0);
-    list_0 = list_1;
-
-    AsyncList<ProcessorPointer> list_2;
-    AsyncList<ProcessorPointer> list_3(list_2);
-    AsyncList<ProcessorPointer> list_4(AsyncList<ProcessorPointer>);
-    list_2 = list_3;
-    list_3 = AsyncList<ProcessorPointer>();
-
     static_log_info("main", "Program started...");
     avdevice_register_all(); //TODO вызов необходим для работы USB-камер, перенести
 

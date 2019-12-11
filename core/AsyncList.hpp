@@ -17,12 +17,12 @@ namespace fpp {
             this->_list = other._list;
         }
 
-//        AsyncList(const AsyncList&& other) {
-//            this->_list = std::move(other._list);
-//        }
+        AsyncList(const AsyncList&& other) {
+            this->_list = std::move(other._list);
+        }
 
         AsyncList& operator=(const AsyncList& other) {
-//            std::lock_guard<std::mutex> lock(_list_mutex);
+            std::lock_guard<std::mutex> lock(_list_mutex);
             if (this != &other) {
                 this->_list = other._list;
             }
@@ -30,7 +30,7 @@ namespace fpp {
         }
 
         AsyncList& operator=(const AsyncList&& other) {
-//            std::lock_guard<std::mutex> lock(_list_mutex);
+            std::lock_guard<std::mutex> lock(_list_mutex);
             if (this != &other) {
                  this->_list = std::move(other._list);
             }

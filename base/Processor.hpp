@@ -7,6 +7,7 @@ namespace fpp {
 
     class Processor;
     using ProcessorPointer = std::shared_ptr<Processor>;
+//    using ProcessorPointer = std::unique_ptr<Processor>;
     using ProcessorVector = std::vector<ProcessorPointer>; //TODO не потокобезопасен
     using ProcessorList = AsyncList<ProcessorPointer>;
 
@@ -15,6 +16,7 @@ namespace fpp {
     public:
 
         Processor();
+//        Processor(const Processor* other);
         Processor(const Processor& other) = delete;
         Processor(const Processor&& other) = delete;
         Processor& operator=(const Processor& other) = delete;
@@ -23,7 +25,7 @@ namespace fpp {
 
         virtual Code        open();
         virtual Code        close();
-        virtual Code        push(const Object* input_data)/* { return Code::NOT_IMPLEMENTED; } //*/= 0;
+        virtual Code        push(const Object* input_data) { return Code::NOT_IMPLEMENTED; }//= 0;
 
         int64_t             uid() const;
         const StreamVector& streams() const;

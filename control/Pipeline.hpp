@@ -52,7 +52,7 @@ namespace fpp {
         Stream*             findBestInputStream(MediaType media_type);
         StreamList          getOutputStreams(MediaType media_type);
 
-        Route&              findRoute(const int64_t uid);
+        Route*              findRoute(const int64_t uid);
 
     private:
 
