@@ -54,11 +54,8 @@ namespace fpp {
         return _output_format_context.toString();
     }
 
-    bool MediaSink::equalTo(const Processor * const other) const {
-//        return_error_if_not(inited(), "Can't compare untill not inited.", false);
-//        return_error_if_not(other->inited(), "Can't compare untill not inited.", false);
-
-        auto other_media_sink = dynamic_cast<const MediaSink * const>(other);
+    bool MediaSink::equalTo(const ProcessorPointer other) const {
+        auto other_media_sink = dynamic_cast<const MediaSink * const>(other.get());
         return_if(not_inited_ptr(other_media_sink), false);
 
         return_if(this->outputFormatContext()->mediaResourceLocator()

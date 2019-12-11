@@ -16,9 +16,7 @@ namespace fpp {
         virtual Code        init() override;
         virtual std::string toString() const override;
 
-        Code                setSource(ProcessorPtr* source);
-        Code                setSink(ProcessorPtr* sink);
-        Code                append(ProcessorPtr processor);
+        Code                append(ProcessorPointer processor);
 
         Code                setMetaRoute(int64_t input_stream_uid, int64_t output_stream_uid);
 
@@ -30,7 +28,7 @@ namespace fpp {
         Code                startAll();
         Code                destroy();
 
-        ProcessorSequence   processorSequence();
+//        ProcessorSequence   processorSequence();
 
         Code                changePartTo(ProcessorVector other);
 
@@ -39,8 +37,6 @@ namespace fpp {
         int64_t             _input_stream_uid;
         int64_t             _output_stream_uid;
         ProcessorSequence   _sequence;
-        ProcessorPtr*       _source;
-        ProcessorPtr*       _sink;
 
     };
 

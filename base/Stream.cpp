@@ -11,7 +11,7 @@ namespace fpp {
 
     Stream::Stream(AVStream* stream, Parameters* param) :
         Data<AVStream*>(stream, param->type()),
-        parameters(param),
+        params(param),
         _used(false),
         _context(nullptr),
         _prev_dts(DEFAULT_INT),
@@ -25,15 +25,15 @@ namespace fpp {
     }
 
     Stream::~Stream() {
-        delete parameters;
+        delete params;
     }
 
     Code Stream::init() {
         if (inited_ptr(raw())) {
             /* Иницаиализация полей параметров кодека дефолтными значениями */
-            try_to(utils::init_codecpar(codecParameters(), parameters->codec()));
+            try_to(utils::init_codecpar(codecParameters(), params->codec()));
             /* Инициализация полей параметров кодека значениями из параметров потока */
-            utils::parameters_to_avcodecpar(parameters, codecParameters());
+            utils::parameters_to_avcodecpar(params, codecParameters());
         }
         setInited(true);
         return Code::OK;
@@ -42,11 +42,11 @@ namespace fpp {
     std::string Stream::toString() const {
         return_if_not(inited(), "not inited!");
 
-        std::string str = "[" + std::to_string(parameters->contextUid())
-                + ":" + std::to_string(parameters->streamIndex()) + "] "
+        std::string str = "[" + std::to_string(params->contextUid())
+                + ":" + std::to_string(params->streamIndex()) + "] "
                 + utils::media_type_to_string(type()) + " stream: ";
 
-        str += used() ? parameters->toString() : "not used";
+        str += used() ? params->toString() : "not used";
         return str;
     }
 
@@ -62,7 +62,7 @@ namespace fpp {
         _prev_pts += _packet_pts_delta;
         _packet_index++;
 
-        parameters->increaseDuration(_packet_duration);
+        params->increaseDuration(_packet_duration);
 
         return Code::OK;
     }
@@ -72,8 +72,8 @@ namespace fpp {
     }
 
     void Stream::setUid(int64_t uid){
-        if (invalid_int(parameters->streamUid())) {
-            parameters->setStreamUid(uid);
+        if (invalid_int(params->streamUid())) {
+            params->setStreamUid(uid);
         } else {
             log_warning("Cannot set uid again, ignored");
         }
@@ -105,15 +105,15 @@ namespace fpp {
     }
 
     bool Stream::operator>(const Stream& other) const {
-        return parameters->bitrate() > other.parameters->bitrate();
+        return params->bitrate() > other.params->bitrate();
     }
 
-    void Stream::parseParametres() //TODO перенести код из FormatContext::parseFormatContext()
+    void Stream::parseParameters() //TODO перенести код из FormatContext::parseFormatContext()
     {
         return_error_if(not_inited_ptr(_data)
                         , "Cannot parse virtual stream."
                         , void());
-        _data->time_base = parameters->timeBase();
+        _data->time_base = params->timeBase();
     }
 
 } // namespace fpp

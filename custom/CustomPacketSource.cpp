@@ -66,7 +66,7 @@ namespace fpp {
         for (auto&& stream : streams()) {
             if (stream->used()) {
                 eof_packet.setType(stream->type());
-                eof_packet.setStreamUid(stream->parameters->streamUid());
+                eof_packet.setStreamUid(stream->params->streamUid());
                 try_to(sendOutputData(eof_packet));
                 stream->setUsed(false);
             }

@@ -42,17 +42,14 @@ namespace fpp {
         return ret;
     }
 
-    bool Encoder::equalTo(const Processor * const other) const {
-//        return_error_if_not(inited(), "Can't compare untill not inited.", false);
-//        return_error_if_not(other->inited(), "Can't compare untill not inited.", false);
-
-        auto other_encoder = dynamic_cast<const Encoder * const>(other);
+    bool Encoder::equalTo(const ProcessorPointer other) const {
+        auto other_encoder = dynamic_cast<const Encoder * const>(other.get());
         return_if(not_inited_ptr(other_encoder), false);
 
-        return_if(_encoder_context.params.in->streamUid()
-                  == other_encoder->encoderContext()->params.in->streamUid(), true);
+        return_if(this->encoderContext()->params.in->streamUid()
+                  != other_encoder->encoderContext()->params.in->streamUid(), false);
 
-        return false;
+        return true;
     }
 
     const EncoderContext* Encoder::encoderContext() const {

@@ -12,37 +12,33 @@ namespace fpp {
         try_throw(stop());
     }
 
-    Code Pipeline::addElement(FrameSourcePtr frame_source) {
-        try_to(frame_source->init());
-        try_to(frame_source->open());
-        _data_sources.push_back(std::move(frame_source));
-        return Code::OK;
+    Code Pipeline::addElement(ProcessorPointer processor) { //TODO каша из кода
+        switch (processor->type()) {
+        case ProcessorType::Input:
+            try_to(processor->init());
+            try_to(processor->open());
+            _data_sources.push_back(processor);
+            return Code::OK;
+        case ProcessorType::Output:
+            _data_sinks.push_back(processor);
+            try_to(processor->init());
+            try_to(determineSequence(processor));
+            return Code::OK;
+        case ProcessorType::Process:
+            return Code::NOT_IMPLEMENTED;
+        case ProcessorType::Unknown:
+            return Code::INVALID_INPUT;
+        }
+        return Code::ERR;
     }
 
-    Code Pipeline::addElement(FrameSinkPtr frame_sink) {
-        _data_sinks.push_back(std::move(frame_sink));
-        try_to(frame_sink->init());
-        try_to(determineSequence(frame_sink.get()));
-        return Code::OK;
-    }
-
-    Code Pipeline::addElement(PacketSourcePtr packet_source) {
-        try_to(packet_source->init());
-        try_to(packet_source->open());
-        _data_sources.push_back(std::move(packet_source));
-        return Code::OK;
-    }
-
-    Code Pipeline::addElement(PacketSinkPtr packet_sink) {
-        try_to(packet_sink->init());
-        _data_sinks.push_back(std::move(packet_sink));
-        try_to(determineSequence(packet_sink.get()));
-        return Code::OK;
-    }
-
-    void Pipeline::setOptions(int64_t options) {
-        UNUSED(options);
-//        _options = options;
+    void Pipeline::remElement(ProcessorPointer processor) {
+        _data_sinks.remove_if([processor](const auto& sink) {
+            return sink->uid() == processor->uid();
+        });
+        _data_sources.remove_if([processor](const auto& source) {
+            return source->uid() == processor->uid();
+        });
     }
 
     void Pipeline::remElement(const int64_t uid) {
@@ -50,7 +46,7 @@ namespace fpp {
         _data_sources.remove_if([uid](const auto& source) { return source->uid() == uid; });
 
         findRoute(uid).destroy();
-        auto cond = [processor](const Route& route){ return route.contains(processor); };
+        auto cond = [uid](const Route& route){ return route.contains(uid); };
         _route_list.erase(std::remove_if(_route_list.begin(), _route_list.end(), cond), _route_list.end());
     }
 
@@ -70,7 +66,7 @@ namespace fpp {
     Code Pipeline::run() { //TODO
         bool all_processor_stopped = true;
         Code exit_code = Code::OK;
-        _data_sources.for_each([&all_processor_stopped,&exit_code](const ProcessorPtr& source) {
+        _data_sources.for_each([&all_processor_stopped,&exit_code](const auto& source) {
             return_if(utils::error_code(source->exitCode())
                       , void()/*thread_processor->exitCode()*/);
             if (utils::exit_code(source->exitCode())) {
@@ -83,7 +79,7 @@ namespace fpp {
                 /* Выброс отработавшего процессора из пула */
             }
         });
-        _data_sinks.for_each([&all_processor_stopped,&exit_code](const ProcessorPtr& sink) {
+        _data_sinks.for_each([&all_processor_stopped,&exit_code](const auto& sink) {
             return_if(utils::error_code(sink->exitCode())
                       , void()/*thread_processor->exitCode()*/);
             if (utils::exit_code(sink->exitCode())) {
@@ -120,7 +116,7 @@ namespace fpp {
     }
 
     Code Pipeline::stopProcesors() { //TODO
-        _data_sinks.for_each([](const ProcessorPtr& sink) {
+        _data_sinks.for_each([](const auto& sink) {
             try_throw_static(sink->stop());
         });
         return Code::OK;
@@ -147,8 +143,8 @@ namespace fpp {
         return_error_if(not_inited_ptr(source_ptr)
                         , "Failed to cast input stream's context to Processor."
                         , Code::INVALID_INPUT);
-        ProcessorPtr source = std::make_unique<Processor>(source_ptr);
-        try_to(route.append(std::move(source)));
+        ProcessorPointer source = std::make_shared<Processor>(source_ptr);
+        try_to(route.append(source));
 
         bool rescaling_required     = utils::rescaling_required   (params);
         bool resampling_required    = utils::resampling_required  (params);
@@ -181,13 +177,13 @@ namespace fpp {
         }
 
         if (decoding_required) {
-            ProcessorPtr decoder = std::make_unique<Decoder>(params);
-            try_to(route.append(std::move(decoder)));
+            ProcessorPointer decoder = std::make_shared<Decoder>(params);
+            try_to(route.append(decoder));
         }
 
         if (rescaling_required) {
-            ProcessorPtr rescaler = std::make_unique<Rescaler>(params);
-            try_to(route.append(std::move(rescaler)));
+            ProcessorPointer rescaler = std::make_shared<Rescaler>(params);
+            try_to(route.append(rescaler));
         }
 
         if (video_filter_required) {
@@ -195,8 +191,8 @@ namespace fpp {
 //            std::string filters_descr = "setpts=N/(10*TB)";
 //            std::string filters_descr = "setpts=0.016*PTS";
             std::string filters_descr = "select='not(mod(n,60))'";
-            ProcessorPtr video_filter = std::make_unique<VideoFilter>(params, filters_descr);
-            try_to(route.append(std::move(video_filter)));
+            ProcessorPointer video_filter = std::make_shared<VideoFilter>(params, filters_descr);
+            try_to(route.append(video_filter));
         }
 
         if (audio_filter_required) {
@@ -204,21 +200,21 @@ namespace fpp {
         }
 
         if (resampling_required) {
-            ProcessorPtr resampler = std::make_unique<Resampler>(params);
-            try_to(route.append(std::move(resampler)));
+            ProcessorPointer resampler = std::make_shared<Resampler>(params);
+            try_to(route.append(resampler));
         }
 
         if (encoding_required) {
-            ProcessorPtr encoder = std::make_unique<Encoder>(params);
-            try_to(route.append(std::move(encoder)));
+            ProcessorPointer encoder = std::make_shared<Encoder>(params);
+            try_to(route.append(encoder));
         }
 
         auto sink_ptr = dynamic_cast<Processor*>(output_stream->context());
         return_error_if(not_inited_ptr(source_ptr)
                         , "Failed to cast output stream's context to Processor."
                         , Code::INVALID_INPUT);
-        ProcessorPtr sink = std::make_unique<Processor>(sink_ptr);
-        try_to(route.append(std::move(sink)));
+        ProcessorPointer sink = std::make_shared<Processor>(sink_ptr);
+        try_to(route.append(sink));
 
         _route_list.push_back(route);
         try_to(simplifyRoutes());
@@ -279,7 +275,7 @@ namespace fpp {
 
     Stream* Pipeline::findStream(int64_t uid) {
         Stream* ret_stream = nullptr;
-        _data_sources.for_each([uid,&ret_stream](const ProcessorPtr& source) {
+        _data_sources.for_each([uid,&ret_stream](const auto& source) {
             for (auto&& stream : source->streams()) {
                 if (stream->params->streamUid() == uid) {
                     ret_stream = stream;
@@ -287,7 +283,7 @@ namespace fpp {
                 }
             }
         });
-        _data_sinks.for_each([uid,&ret_stream](const ProcessorPtr& sink) {
+        _data_sinks.for_each([uid,&ret_stream](const auto& sink) {
             for (auto&& stream : sink->streams()) {
                 if (stream->params->streamUid() == uid) {
                     ret_stream = stream;
@@ -315,7 +311,7 @@ namespace fpp {
         return nullptr;
     }
 
-    Code Pipeline::determineSequence(const Processor * const output_processor) {
+    Code Pipeline::determineSequence(const ProcessorPointer output_processor) {
         const auto& output_streams = output_processor->streams();
         if (output_streams.empty()) {
             log_error(output_processor->name() << " doesn't has any stream.");
@@ -410,7 +406,7 @@ namespace fpp {
         switch (media_type) {
         case MediaType::MEDIA_TYPE_VIDEO: {
             StreamVector all_video_streams;
-            _data_sources.for_each([media_type,&all_video_streams](const ProcessorPtr& source) {
+            _data_sources.for_each([media_type,&all_video_streams](const auto& source) {
                 UNUSED(media_type); //TODO
                 all_video_streams.push_back(source->stream(0));
             });

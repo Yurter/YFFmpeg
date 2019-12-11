@@ -29,8 +29,8 @@ namespace fpp {
     }
 
     bool AudioStream::operator>(const Stream& other) const {
-        auto this_params = static_cast<AudioParameters*>(parameters);
-        auto other_params = static_cast<AudioParameters*>(other.parameters);
+        auto this_params = static_cast<AudioParameters*>(params);
+        auto other_params = static_cast<AudioParameters*>(other.params);
         return this_params->bitrate() > other_params->bitrate();
     }
 

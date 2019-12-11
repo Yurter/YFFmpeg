@@ -14,7 +14,8 @@ namespace fpp {
     }
 
     std::string Object::name() const {
-        return _name;
+        return typeid(*this).name();
+//        return _name;
     }
 
     bool Object::is(std::string name) const {

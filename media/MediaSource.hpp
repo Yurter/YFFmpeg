@@ -16,7 +16,7 @@ namespace fpp {
         virtual Code        close() override;
         virtual std::string toString() const override;
 
-        virtual bool        equalTo(const Processor * const other) const override;
+        virtual bool        equalTo(const ProcessorPointer other) const override;
 
         void    setStartPoint(int64_t value);   //TODO
         void    setEndPoint(int64_t value); //TODO
@@ -43,7 +43,5 @@ namespace fpp {
         int64_t             _end_point;
 
     };
-
-    using MediaSourcePtr = std::unique_ptr<MediaSource>;
 
 } // namespace fpp

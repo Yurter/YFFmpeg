@@ -5,18 +5,25 @@
 
 namespace fpp {
 
+    class Processor;
+    using ProcessorPointer = std::shared_ptr<Processor>;
+    using ProcessorVector = std::vector<ProcessorPointer>; //TODO не потокобезопасен
+    using ProcessorList = AsyncList<ProcessorPointer>;
+
     class Processor : public Thread {
 
     public:
 
         Processor();
-        Processor(Processor& other) = delete;
-        Processor(Processor&& other) = delete;
+        Processor(const Processor& other) = delete;
+        Processor(const Processor&& other) = delete;
+        Processor& operator=(const Processor& other) = delete;
+        Processor& operator=(const Processor&& other) = delete;
         virtual ~Processor() override;
 
         virtual Code        open();
         virtual Code        close();
-        virtual Code        push(const Object* input_data) = 0;
+        virtual Code        push(const Object* input_data)/* { return Code::NOT_IMPLEMENTED; } //*/= 0;
 
         int64_t             uid() const;
         const StreamVector& streams() const;
@@ -24,16 +31,19 @@ namespace fpp {
         Code                addStream(Stream* stream);
         Code                setStreams(StreamVector streams);
 
+        void                setType(ProcessorType value);
         void                setOpened(bool opened);
         void                setCloseOnDisconnect(bool value);
         void                setDiscardType(MediaType type);
         void                setMetaData(const std::string& value);
 
-        Code                connectTo(Processor* other);
-        Code                disconnectFrom(Processor* other);
+        Code                connectTo(const ProcessorPointer other);
+        Code                disconnectFrom(const ProcessorPointer other);
 
-        virtual bool        equalTo(const Processor * const other) const;
+        virtual bool        equalTo(const ProcessorPointer other) const;
 
+        ProcessorType       type() const;
+        bool                typeIs(ProcessorType value) const;
         bool                opened() const;
         bool                closed() const;
         bool                discardType(MediaType type) const;
@@ -41,12 +51,12 @@ namespace fpp {
 
     protected:
 
-        using ProcessorList = std::list<Processor*>;
         ProcessorList       _next_processor_list;
 
     private:
 
         const int64_t       _uid;
+        ProcessorType       _type;
         bool                _opened;
         bool                _close_on_disconnect;
         int64_t             _discard_types;
@@ -54,9 +64,5 @@ namespace fpp {
         std::string         _meta_data;
 
     };
-
-    using ProcessorPtr = std::unique_ptr<Processor>;
-    using ProcessorList = AsyncList<ProcessorPtr>;
-    using ProcessorVector = std::vector<ProcessorPtr>; //TODO не потокобезопасен
 
 } // namespace fpp

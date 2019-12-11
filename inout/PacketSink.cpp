@@ -5,6 +5,7 @@ namespace fpp {
     PacketSink::PacketSink()
     {
         setName("PacketSink");
+        setType(ProcessorType::Output);
         try_throw(setPostFunction(std::bind(&PacketSink::writePacket, this)));
     }
 

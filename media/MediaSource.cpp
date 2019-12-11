@@ -74,12 +74,13 @@ namespace fpp {
         return str;
     }
 
-    bool MediaSource::equalTo(const Processor * const other) const {
-        auto other_media_source = dynamic_cast<const MediaSource * const>(other);
+    bool MediaSource::equalTo(const ProcessorPointer other) const {
+        auto other_media_source = dynamic_cast<const MediaSource * const>(other.get());
         return_if(not_inited_ptr(other_media_source), false);
 
         return_if(this->inputFormatContext()->mediaResourceLocator()
                   == other_media_source->inputFormatContext()->mediaResourceLocator(), true);
+
         return false;
     }
 
@@ -98,7 +99,7 @@ namespace fpp {
     Code MediaSource::readInputData(Packet& input_data) {
         if (_end_point != -1) { //TODO
             if (inited_ptr(stream(0))) {
-                if (stream(0)->parameters->duration() > (_end_point - _start_point)) {
+                if (stream(0)->params->duration() > (_end_point - _start_point)) {
                     return Code::END_OF_FILE;
                 }
             }
@@ -124,9 +125,9 @@ namespace fpp {
         return_if(not_inited_ptr(packet_stream), Code::AGAIN);
         return_if_not(packet_stream->used(), Code::AGAIN);
         input_data.setType(packet_stream->type());
-        input_data.setStreamUid(packet_stream->parameters->streamUid());
+        input_data.setStreamUid(packet_stream->params->streamUid());
 //        stream(0)->parameters->increaseDuration(input_data.duration()); //TODO
-        stream(0)->parameters->increaseDuration(stream(0)->packet_duration()); //TODO
+        stream(0)->params->increaseDuration(stream(0)->packet_duration()); //TODO
 //        log_error("writed" << input_data);
         return Code::OK;
     }
@@ -161,7 +162,7 @@ namespace fpp {
         for (auto&& stream : _input_format_context.streams()) {
             if (stream->used()) {
                 eof_packet.setType(stream->type());
-                eof_packet.setStreamUid(stream->parameters->streamUid());
+                eof_packet.setStreamUid(stream->params->streamUid());
                 try_to(sendOutputData(eof_packet));
                 stream->setUsed(false);
             }

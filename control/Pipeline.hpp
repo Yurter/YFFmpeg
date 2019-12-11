@@ -23,13 +23,10 @@ namespace fpp {
         Pipeline();
         virtual ~Pipeline() override;
 
-        Code                addElement(FrameSourcePtr   frame_source    );
-        Code                addElement(FrameSinkPtr     frame_sink      );
-        Code                addElement(PacketSourcePtr  packet_source   );
-        Code                addElement(PacketSinkPtr    packet_sink     );
+        Code                addElement(ProcessorPointer processor);
+        void                remElement(ProcessorPointer processor);
         void                remElement(const int64_t uid);
 
-        void                setOptions(int64_t options);        ///< Функция устанавливает переданные ей опции Option.
         void                dump() const;                       ///< TODO description
 
         Code                simplifyRoutes();
@@ -48,7 +45,7 @@ namespace fpp {
         Code                createSequence(Route& route);
 
         Stream*             findStream(int64_t uid);
-        Code                determineSequence(const Processor * const output_processor);
+        Code                determineSequence(const ProcessorPointer output_processor);
 
         virtual std::string toString() const override;
 

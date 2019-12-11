@@ -122,20 +122,16 @@ namespace fpp {
         return Code::OK;
     }
 
-    bool Filter::equalTo(const Processor * const other) const {
-//        return_error_if_not(inited(), "Can't compare untill not inited.", false);
-//        return_error_if_not(other->inited(), "Can't compare untill not inited.", false);
-
-        auto other_filter = dynamic_cast<const Filter * const>(other);
+    bool Filter::equalTo(const ProcessorPointer other) const {
+        auto other_filter = dynamic_cast<const Filter * const>(other.get());
         return_if(not_inited_ptr(other_filter), false);
 
-//        return_if(this->stream(0)->uid() != other->stream(0)->uid(), false); //TODO сравниваются uid выходных потоков, поэтому условие никогда не выполнится
-        return_if(this->description() != other_filter->description(), false);
-//        return_if((this->stream(0)->uid() == other->stream(0)->uid())
-//                  && (this->description() == other_filter->description()), true);
+        return_if(this->description()
+                  != other_filter->description(), false);
+        return_if(this->params.out->streamUid()
+                  != other_filter->params.out->streamUid(), false);
 
         return true;
-//        return false;
     }
 
     std::string Filter::description() const {

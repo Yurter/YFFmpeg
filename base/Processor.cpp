@@ -5,6 +5,7 @@ namespace fpp {
 
     Processor::Processor() :
         _uid(utils::gen_uid())
+      , _type(ProcessorType::Unknown)
       , _opened(false)
       , _close_on_disconnect(true)
       , _discard_types(MediaType::MEDIA_TYPE_UNKNOWN)
@@ -55,6 +56,10 @@ namespace fpp {
         return Code::OK;
     }
 
+    void Processor::setType(ProcessorType value) {
+        _type = value;
+    }
+
     void Processor::setOpened(bool opened) {
         _opened = opened;
     }
@@ -72,7 +77,7 @@ namespace fpp {
         _meta_data = value;
     }
 
-    Code fpp::Processor::connectTo(fpp::Processor* other) {
+    Code fpp::Processor::connectTo(const ProcessorPointer other) {
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
         _next_processor_list.push_back(other);
         log_debug("Connected to " << other->name());
@@ -82,9 +87,11 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Processor::disconnectFrom(Processor* other) {
+    Code Processor::disconnectFrom(const ProcessorPointer other) {
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
-        _next_processor_list.remove(other);
+        _next_processor_list.remove_if([&other](const auto& sink) {
+            return sink->uid() == other->uid();
+        });
         log_debug("Disconnected from " << other->name());
         if (_next_processor_list.empty()) {
             if (_close_on_disconnect) {
@@ -96,10 +103,18 @@ namespace fpp {
         return Code::OK;
     }
 
-    bool Processor::equalTo(const Processor * const other) const {
+    bool Processor::equalTo(const ProcessorPointer other) const {
         UNUSED(other);
-        log_warning("Method was not implemented.");
+        log_warning("Method equalTo() was not implemented.");
         return false;
+    }
+
+    ProcessorType Processor::type() const {
+        return _type;
+    }
+
+    bool Processor::typeIs(ProcessorType value) const {
+        return _type == value;
     }
 
     bool Processor::opened() const {

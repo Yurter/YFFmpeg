@@ -41,7 +41,7 @@ namespace fpp {
 
     protected:
 
-        virtual void        parseParametres();
+        virtual void        parseParameters();
 
     protected:
 

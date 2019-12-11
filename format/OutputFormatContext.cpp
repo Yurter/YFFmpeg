@@ -137,7 +137,7 @@ namespace fpp {
 //            }
             for (auto&& avstream : streams()) {
                 if (not_inited_codec_id(avstream->raw()->codecpar->codec_id)) {
-                    utils::parameters_to_avcodecpar(avstream->parameters, avstream->raw()->codecpar);
+                    utils::parameters_to_avcodecpar(avstream->params, avstream->raw()->codecpar);
                 }
                 try_to(avstream->init());
             }

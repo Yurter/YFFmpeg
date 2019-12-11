@@ -78,10 +78,10 @@ namespace fpp {
         }
 
         Code sendOutputData(const outType& output_data) {
-            for (auto next_processor : _next_processor_list) {
-                log_trace("Sending data to " << next_processor->name());
-                try_to(next_processor->push(&output_data));
-            }
+            _next_processor_list.for_each([&output_data](auto& next_processor) {
+                static_log_trace("TODO", "Sending data to " << next_processor->name());
+                try_throw_static(next_processor->push(&output_data));
+            });
             return Code::OK;
         }
 

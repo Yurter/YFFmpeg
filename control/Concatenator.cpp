@@ -21,8 +21,8 @@ namespace fpp {
     }
 
     Code Concatenator::run() {
-        MediaSink output_file(_output_file_name, IOType::Event); /* crutch: preset */
-        try_to(output_file.init());
+        ProcessorPointer output_file = std::make_shared<MediaSink>(_output_file_name, IOType::Event); /* crutch: preset */
+        try_to(output_file->init());
 
         { /* crutch */
             log_info("Initing stream");
@@ -30,15 +30,15 @@ namespace fpp {
             try_to(input_file.init());
             try_to(input_file.open());
 
-            try_to(output_file.stream(0)->parameters->completeFrom(input_file.stream(0)->parameters));
-            output_file.stream(0)->setUsed(true);
+            try_to(output_file->stream(0)->params->completeFrom(input_file.stream(0)->params));
+            output_file->stream(0)->setUsed(true);
             try_to(input_file.close());
             input_file.join();
             log_info("Stream inited");
         }
 
-        try_to(output_file.open());
-        try_to(output_file.start());
+        try_to(output_file->open());
+        try_to(output_file->start());
 
         for (auto& [input_file_name, start_point, end_point] : _concat_list) {
 //            log_info("input_file_name: " << input_file_name);
@@ -52,17 +52,17 @@ namespace fpp {
             try_to(input_file.open());
             input_file.stream(0)->setUsed(true); /* crutch */
 
-            try_to(input_file.connectTo(&output_file));
+            try_to(input_file.connectTo(output_file));
             try_to(input_file.start());
             input_file.join();
-            try_to(input_file.disconnectFrom(&output_file));
+            try_to(input_file.disconnectFrom(output_file));
 //            log_info("iter finished");
 //            utils::sleep_for_ms(150);
         }
 
         Packet eof_packet;
         eof_packet.setType(MediaType::MEDIA_TYPE_VIDEO);
-        output_file.push(&eof_packet);
+        try_to(output_file->push(&eof_packet));
 //        output_file.join();
 
 //        try_to(output_file.close());

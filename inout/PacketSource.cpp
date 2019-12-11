@@ -4,7 +4,9 @@ namespace fpp {
 
     PacketSource::PacketSource()
     {
-        setName("PacketSource");
+//        setName("PacketSource"); //TODO заменить все остальные сеттеры
+        setName(typeid(*this).name()); // TODO переместить внутрь метода name() ? длинные имена
+        setType(ProcessorType::Input);
         try_throw(setPreFunction(std::bind(&PacketSource::readPacket, this)));
     }
 

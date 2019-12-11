@@ -79,7 +79,8 @@ namespace fpp {
 } // namespace fpp
 
 /* Обертка пространства имён fpp */
-#define NSFPP(x) do { using namespace fpp; x } while (false)
+#define FPP_BEGIN do { using namespace fpp;
+#define FPP_END } while (false)
 
 /* Макрос получения экзмепляра объекта класса Logger */
 #define logger fpp::Logger::instance("fpp_log")
@@ -93,14 +94,13 @@ namespace fpp {
 #define set_ffmpeg_log_level(x) logger.setFFmpegLogLevel(x)
 
 /* Макрос для отправки строкового сообщения в лог */
-//#define log_message(caller_name, log_level, message) NSFPP( if_not(logger.ignoreMessage(log_level)) { std::stringstream log_ss; log_ss << message; logger.print(caller_name, code_pos, log_level, log_ss.str()); })
-#define log_message(caller_name, log_level, message)    NSFPP (\
+#define log_message(caller_name, log_level, message)    FPP_BEGIN\
                                                             if_not(logger.ignoreMessage(log_level)) {\
                                                                 std::stringstream log_ss;\
                                                                 log_ss << message;\
                                                                 logger.print(caller_name, code_pos, log_level, log_ss.str());\
                                                             }\
-                                                        )
+                                                        FPP_END
 
 /* Макросы для отправки строкоых сообщений в лог */
 #define log_info(message)       log_message(this->name(), LogLevel::Info,       message)

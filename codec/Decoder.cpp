@@ -39,17 +39,14 @@ namespace fpp {
         return ret;
     }
 
-    bool Decoder::equalTo(const Processor * const other) const {
-//        return_error_if_not(inited(), "Can't compare untill not inited.", false);
-//        return_error_if_not(other->inited(), "Can't compare untill not inited.", false);
-
-        auto other_decoder = dynamic_cast<const Decoder * const>(other);
+    bool Decoder::equalTo(const ProcessorPointer other) const {
+        auto other_decoder = dynamic_cast<const Decoder * const>(other.get());
         return_if(not_inited_ptr(other_decoder), false);
 
-        return_if(_decoder_context.params.in->streamUid()
-                  == other_decoder->decoderContext()->params.in->streamUid(), true);
+        return_if(this->decoderContext()->params.in->streamUid()
+                  != other_decoder->decoderContext()->params.in->streamUid(), false);
 
-        return false;
+        return true;
     }
 
     const DecoderContext* Decoder::decoderContext() const {

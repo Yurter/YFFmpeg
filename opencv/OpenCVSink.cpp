@@ -5,7 +5,7 @@ namespace fpp {
     OpenCVSink::OpenCVSink(const std::string mrl, VideoStream* video_stream) :
         _sink_name(mrl)
       , _video_stream(video_stream)
-      , _video_params(static_cast<VideoParameters*>(video_stream->parameters))
+      , _video_params(static_cast<VideoParameters*>(video_stream->params))
     {
         setName("OpenCVSink");
         _video_params->setPixelFormat(AV_PIX_FMT_BGR24);

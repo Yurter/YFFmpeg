@@ -68,15 +68,15 @@ void concatenator_debug() {
 void route_simplify_debug() {
     Pipeline* pipeline = new Pipeline;
 
-    MediaSourcePtr source = std::make_unique<MediaSource>("video=HP Wide Vision FHD Camera");
+    ProcessorPointer source = std::make_shared<MediaSource>("video=HP Wide Vision FHD Camera");
     source->setCloseOnDisconnect(false);
-    if (auto ret = pipeline->addElement(std::move(source)); ret != fpp::Code::OK) {
+    if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
     for (int i = 0; i < 2; ++i) {
-        MediaSinkPtr sink_event = std::make_unique<MediaSink>("group_video/" + std::to_string(i) + "_event.flv", IOType::Event);
-        if (auto ret = pipeline->addElement(std::move(sink_event)); ret != fpp::Code::OK) {
+        ProcessorPointer sink_event = std::make_shared<MediaSink>("group_video/" + std::to_string(i) + "_event.flv", IOType::Event);
+        if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
             static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
         }
     }
@@ -89,6 +89,16 @@ void route_simplify_debug() {
 }
 
 int main() {
+
+    std::list<ProcessorPointer> list_0;
+    std::list<ProcessorPointer> list_1(list_0);
+    list_0 = list_1;
+
+    AsyncList<ProcessorPointer> list_2;
+    AsyncList<ProcessorPointer> list_3(list_2);
+    AsyncList<ProcessorPointer> list_4(AsyncList<ProcessorPointer>);
+    list_2 = list_3;
+    list_3 = AsyncList<ProcessorPointer>();
 
     static_log_info("main", "Program started...");
     avdevice_register_all(); //TODO вызов необходим для работы USB-камер, перенести

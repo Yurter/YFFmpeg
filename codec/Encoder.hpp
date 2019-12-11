@@ -14,7 +14,7 @@ namespace fpp {
         virtual Code        open() override;
         virtual Code        close() override;
         virtual Code        processInputData(Frame input_data) override;
-        virtual bool        equalTo(const Processor * const other) const override;
+        virtual bool        equalTo(const ProcessorPointer other) const override;
 
         const EncoderContext* encoderContext() const;
 
