@@ -139,12 +139,14 @@ namespace fpp {
         input_stream->setUsed(true);
         output_stream->setUsed(true);
 
-        auto source_ptr = dynamic_cast<Processor*>(input_stream->context());
-        return_error_if(not_inited_ptr(source_ptr)
-                        , "Failed to cast input stream's context to Processor."
-                        , Code::INVALID_INPUT);
-        ProcessorPointer source = std::make_shared<Processor>(source_ptr);
-        try_to(route.append(source));
+        { //TODO не универсальый каст
+            auto source_ptr = dynamic_cast<Processor*>(input_stream->context());
+            return_error_if(not_inited_ptr(source_ptr)
+                            , "Failed to cast input stream's context to Processor."
+                            , Code::INVALID_INPUT);
+            ProcessorPointer source(source_ptr);
+            try_to(route.append(source));
+        }
 
         bool rescaling_required     = utils::rescaling_required   (params);
         bool resampling_required    = utils::resampling_required  (params);
@@ -209,12 +211,14 @@ namespace fpp {
             try_to(route.append(encoder));
         }
 
-        auto sink_ptr = dynamic_cast<Processor*>(output_stream->context());
-        return_error_if(not_inited_ptr(source_ptr)
-                        , "Failed to cast output stream's context to Processor."
-                        , Code::INVALID_INPUT);
-        ProcessorPointer sink = std::make_shared<Processor>(sink_ptr);
-        try_to(route.append(sink));
+        { //TODO не универсальый каст
+            auto sink_ptr = dynamic_cast<Processor*>(output_stream->context());
+            return_error_if(not_inited_ptr(sink_ptr)
+                            , "Failed to cast output stream's context to Processor."
+                            , Code::INVALID_INPUT);
+            ProcessorPointer sink(sink_ptr);
+            try_to(route.append(sink));
+        }
 
         _route_list.push_back(route);
         try_to(simplifyRoutes());

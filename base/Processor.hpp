@@ -7,7 +7,6 @@ namespace fpp {
 
     class Processor;
     using ProcessorPointer = std::shared_ptr<Processor>;
-//    using ProcessorPointer = std::unique_ptr<Processor>;
     using ProcessorVector = std::vector<ProcessorPointer>; //TODO не потокобезопасен
     using ProcessorList = AsyncList<ProcessorPointer>;
 
