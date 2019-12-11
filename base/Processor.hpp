@@ -24,7 +24,7 @@ namespace fpp {
 
         virtual Code        open();
         virtual Code        close();
-        virtual Code        push(const Object* input_data) { return Code::NOT_IMPLEMENTED; }//= 0;
+        virtual Code        push(const Object* input_data) = 0;
 
         int64_t             uid() const;
         const StreamVector& streams() const;

@@ -80,21 +80,20 @@ namespace fpp {
     std::string Logger::formatMessage(std::string caller_name, const std::string &code_position, LogLevel log_level, const std::string& message) {
         std::string header;
 
-        const size_t max_name_length = 11;
+        const size_t max_name_length = 20;
         const int message_offset = 30;
 
         caller_name.resize(max_name_length, ' ');
 
         header += "[" + encodeLogLevel(log_level) + "]";
         const int64_t t = std::time(nullptr);
-        header += "[" + (std::stringstream() << std::put_time(std::localtime(&t), "%H:%M:%S")).str() + "]";
-        header += "[" + caller_name + "] ";
+        header += "[" + (std::stringstream() << std::put_time(std::localtime(&t), "%H:%M:%S")).str() + "]"; //TODO if Debug выводить мс через хроно, вынести формирование временной метки в метод
+        header += "[" + caller_name + "]";
 
         if (log_level >= LogLevel::Debug) {
             std::string thread_id = (std::stringstream() << "[" << current_thread_id() << "]").str();
             thread_id.resize(7, ' ');
             header += thread_id;
-            header += " ";
         }
         if (log_level >= LogLevel::Trace) {
             header += "\n";
@@ -104,7 +103,9 @@ namespace fpp {
         }
 
         std::stringstream ss;
-        ss << std::setw(message_offset) << std::left << header << message;
+        ss << header << " " << message << (message.back() == '.' ? "" : ".");
+        //                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        //                                  нужно ли?
 
         return ss.str();
     }
