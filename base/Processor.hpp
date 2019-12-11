@@ -19,7 +19,7 @@ namespace fpp {
         virtual Code        push(const Object* input_data) = 0;
 
         int64_t             uid() const;
-        StreamVector        streams();
+        const StreamVector& streams() const;
         Stream*             stream(int64_t index) const;
         Code                addStream(Stream* stream);
         Code                setStreams(StreamVector streams);

@@ -72,6 +72,15 @@ namespace fpp {
         return Code::OK;
     }
 
+    Code Route::setMetaRoute(int64_t input_stream_uid, int64_t output_stream_uid) {
+        return_if(input_stream_uid == output_stream_uid, Code::INVALID_INPUT);
+        return_if(not_inited_int(input_stream_uid),  Code::INVALID_INPUT);
+        return_if(not_inited_int(output_stream_uid), Code::INVALID_INPUT);
+        _input_stream_uid = input_stream_uid;
+        _output_stream_uid = output_stream_uid;
+        return Code::OK;
+    }
+
     int64_t Route::inputStreamUid() const {
         return _input_stream_uid;
     }

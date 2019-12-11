@@ -29,7 +29,7 @@ namespace fpp {
         return _uid;
     }
 
-    StreamVector Processor::streams() {
+    const StreamVector &Processor::streams() const {
         return _streams;
     }
 

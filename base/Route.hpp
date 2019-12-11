@@ -20,6 +20,8 @@ namespace fpp {
         Code                setSink(ProcessorPtr* sink);
         Code                append(ProcessorPtr processor);
 
+        Code                setMetaRoute(int64_t input_stream_uid, int64_t output_stream_uid);
+
         int64_t             inputStreamUid()  const;
         int64_t             outputStreamUid() const;
 

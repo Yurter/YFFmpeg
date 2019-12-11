@@ -32,6 +32,13 @@ namespace fpp {
             return _list.empty();
         }
 
+        auto for_each(std::function<void(const Type&)> foo) {
+            std::lock_guard<std::mutex> lock(_list_mutex);
+            for (const auto& item : _list) {
+                foo(item);
+            }
+        }
+
 //        auto begin() {
 //            return _list.begin();
 //        }

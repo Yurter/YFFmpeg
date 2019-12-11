@@ -51,7 +51,7 @@ namespace fpp {
 
 
         Stream*             findStream(int64_t uid);
-        Code                determineSequence(Processor* output_processor);
+        Code                determineSequence(const Processor * const output_processor);
 
         virtual std::string toString() const override;
 

@@ -22,7 +22,7 @@ namespace fpp {
     Code Pipeline::addElement(FrameSinkPtr frame_sink) {
         _data_sinks.push_back(std::move(frame_sink));
         try_to(frame_sink->init());
-        try_to(determineSequence(frame_sink));
+        try_to(determineSequence(frame_sink.get()));
         return Code::OK;
     }
 
@@ -36,7 +36,7 @@ namespace fpp {
     Code Pipeline::addElement(PacketSinkPtr packet_sink) {
         try_to(packet_sink->init());
         _data_sinks.push_back(std::move(packet_sink));
-        try_to(determineSequence(packet_sink));
+        try_to(determineSequence(packet_sink.get()));
         return Code::OK;
     }
 
@@ -147,9 +147,9 @@ namespace fpp {
                         , "Failed to find output stream"
                         , Code::ERR);
 
-        const IOParams params { input_stream->parameters, output_stream->parameters };
+        const IOParams params { input_stream->params, output_stream->params };
 
-        try_to(output_stream->parameters->completeFrom(input_stream->parameters));
+        try_to(output_stream->params->completeFrom(input_stream->params));
 
         input_stream->setUsed(true);
         output_stream->setUsed(true);
@@ -283,33 +283,52 @@ namespace fpp {
                 }
             }
         }
-        for (auto route : _route_list) {
+        for (const auto& route : _route_list) {
             log_warning("Result: " << route);
         }
         return Code::OK;
     }
 
     Stream* Pipeline::findStream(int64_t uid) {
-        int64_t context_uid = utils::get_context_uid(uid);
-        for (auto&& source : _data_sources) {
+        Stream* ret_stream = nullptr;
+        _data_sources.for_each([uid,&ret_stream](const ProcessorPtr& source) {
             for (auto&& stream : source->streams()) {
-                if (stream->parameters->streamUid() == uid) {
-                    return stream;
+                if (stream->params->streamUid() == uid) {
+                    ret_stream = stream;
+                    return;
                 }
             }
-        }
-        for (auto&& sink : _data_sinks) {
+        });
+        _data_sinks.for_each([uid,&ret_stream](const ProcessorPtr& sink) {
             for (auto&& stream : sink->streams()) {
-                if (stream->parameters->streamUid() == uid) {
-                    return stream;
+                if (stream->params->streamUid() == uid) {
+                    ret_stream = stream;
+                    return;
                 }
             }
-        }
+        });
+        return ret_stream;
+
+        ////////////////////////////////////////////////////////////
+//        for (const auto& source : _data_sources) {
+//            for (auto&& stream : source->streams()) {
+//                if (stream->parameters->streamUid() == uid) {
+//                    return stream;
+//                }
+//            }
+//        }
+//        for (auto&& sink : _data_sinks) {
+//            for (auto&& stream : sink->streams()) {
+//                if (stream->parameters->streamUid() == uid) {
+//                    return stream;
+//                }
+//            }
+//        }
         return nullptr;
     }
 
-    Code Pipeline::determineSequence(Processor* output_processor) {
-        StreamVector output_streams = output_processor->streams();
+    Code Pipeline::determineSequence(const Processor * const output_processor) {
+        const auto& output_streams = output_processor->streams();
         if (output_streams.empty()) {
             log_error(output_processor->name() << " doesn't has any stream.");
             return Code::NOT_INITED;
@@ -322,9 +341,9 @@ namespace fpp {
                 return Code::INVALID_INPUT;
             }
             Route route;
-            try_to(route.setMetaRoute(in_stream->parameters->streamUid(), out_stream->parameters->streamUid()));
+            try_to(route.setMetaRoute(in_stream->params->streamUid()
+                                      , out_stream->params->streamUid()));
             try_to(createSequence(route));
-//            _route_list.push_back(route);
         }
         return Code::OK;
     }

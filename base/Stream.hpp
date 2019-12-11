@@ -37,7 +37,7 @@ namespace fpp {
 
     public:
 
-        Parameters*         parameters; //TODO rename to params ?
+        Parameters*         params;
 
     protected:
 
