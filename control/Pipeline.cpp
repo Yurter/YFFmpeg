@@ -49,7 +49,7 @@ namespace fpp {
         _data_sinks.remove_if([uid](const auto& sink) { return sink->uid() == uid; });
         _data_sources.remove_if([uid](const auto& source) { return source->uid() == uid; });
 
-        findRoute(processor).destroy();
+        findRoute(uid).destroy();
         auto cond = [processor](const Route& route){ return route.contains(processor); };
         _route_list.erase(std::remove_if(_route_list.begin(), _route_list.end(), cond), _route_list.end());
     }
@@ -67,42 +67,41 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Pipeline::run() {
+    Code Pipeline::run() { //TODO
         bool all_processor_stopped = true;
-        for (auto&& processor : _data_sources) {
-            auto thread_processor = static_cast<Thread*>(processor);
-            /* Прекращение работы, если процессор завершил работу с ошибкой */
-            return_if(utils::error_code(thread_processor->exitCode())
-                      , thread_processor->exitCode());
-            if (thread_processor->running()) {
+        Code exit_code = Code::OK;
+        _data_sources.for_each([&all_processor_stopped,&exit_code](const ProcessorPtr& source) {
+            return_if(utils::error_code(source->exitCode())
+                      , void()/*thread_processor->exitCode()*/);
+            if (utils::exit_code(source->exitCode())) {
+                exit_code = source->exitCode();
+            }
+            if (source->running()) {
                 all_processor_stopped = false;
-                break;
+                return;
             } else {
                 /* Выброс отработавшего процессора из пула */
             }
-        }
-        for (auto&& processor : _data_sinks) {
-            auto thread_processor = static_cast<Thread*>(processor);
-            /* Прекращение работы, если процессор завершил работу с ошибкой */
-            return_if(utils::error_code(thread_processor->exitCode())
-                      , thread_processor->exitCode());
-            if (thread_processor->running()) {
+        });
+        _data_sinks.for_each([&all_processor_stopped,&exit_code](const ProcessorPtr& sink) {
+            return_if(utils::error_code(sink->exitCode())
+                      , void()/*thread_processor->exitCode()*/);
+            if (utils::exit_code(sink->exitCode())) {
+                exit_code = sink->exitCode();
+            }
+            if (sink->running()) {
                 all_processor_stopped = false;
-                break;
+                return;
             } else {
                 /* Выброс отработавшего процессора из пула */
             }
-        }
-        if (all_processor_stopped) {
-            int debug_stop = 0;
-        }
+        });
         return_if(all_processor_stopped, Code::END_OF_FILE);
         utils::sleep_for(LONG_DELAY_MS/* * 10*/);
         return Code::OK;
     }
 
-    Code Pipeline::onStart() {
-        // TODO
+    Code Pipeline::onStart() { // TODO
         return Code::OK;
     }
 
@@ -113,28 +112,18 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Pipeline::checkFormatContexts() {
+    Code Pipeline::checkFormatContexts() { //TODO
         return Code::OK; //debug
         return_if(_data_sources.empty(),   Code::NOT_INITED);
 //        return_if(mediaSinks().empty(),     Code::NOT_INITED);
         return Code::OK;
     }
 
-    Code Pipeline::stopProcesors() {
-        for (auto&& processor : _data_sinks) {
-            auto thread_processor = static_cast<Thread*>(processor);
-            log_error("Thread: " << thread_processor->name());
-            try_to(thread_processor->stop());
-        }
+    Code Pipeline::stopProcesors() { //TODO
+        _data_sinks.for_each([](const ProcessorPtr& sink) {
+            try_throw_static(sink->stop());
+        });
         return Code::OK;
-    }
-
-    void Pipeline::freeProcesors() //TODO объекты в смартпоинтеры
-    {
-        //см TODO ↗
-//        for (auto&& proc : _processors) {
-//            delete proc;
-        //        }
     }
 
     Code Pipeline::createSequence(Route& route) {
@@ -158,9 +147,8 @@ namespace fpp {
         return_error_if(not_inited_ptr(source_ptr)
                         , "Failed to cast input stream's context to Processor."
                         , Code::INVALID_INPUT);
-//        try_to(route.append(source_ptr));
-        UPProcessor source = std::make_unique<Processor>(source_ptr);
-        try_to(route.append(std::move(source2)));
+        ProcessorPtr source = std::make_unique<Processor>(source_ptr);
+        try_to(route.append(std::move(source)));
 
         bool rescaling_required     = utils::rescaling_required   (params);
         bool resampling_required    = utils::resampling_required  (params);
@@ -244,45 +232,45 @@ namespace fpp {
 
     Code Pipeline::simplifyRoutes() {
         return_if(_route_list.empty(), Code::OK);
-        for (size_t i = 0; i < (_route_list.size() - 1); ++i) {
-            for (size_t j = i + 1; j < _route_list.size(); ++j) {
-                Route& route_one = _route_list[i];
-                Route& route_two = _route_list[j];
+//        for (size_t i = 0; i < (_route_list.size() - 1); ++i) {
+//            for (size_t j = i + 1; j < _route_list.size(); ++j) {
+//                Route& route_one = _route_list[i];
+//                Route& route_two = _route_list[j];
 
-                log_warning("");
-                log_warning("Comparing ");
-                log_warning(i << "] " << route_one);
-                log_warning(j << "] " << route_two);
+//                log_warning("");
+//                log_warning("Comparing ");
+//                log_warning(i << "] " << route_one);
+//                log_warning(j << "] " << route_two);
 
-                auto sequence_one = route_one.processorSequence(); //TODO заменить на сслыки или указатели
-                auto sequence_two = route_two.processorSequence();
+//                auto sequence_one = route_one.processorSequence(); //TODO заменить на сслыки или указатели
+//                auto sequence_two = route_two.processorSequence();
 
-                size_t min_size = std::min(sequence_one.size(), sequence_two.size());
+//                size_t min_size = std::min(sequence_one.size(), sequence_two.size());
 
-                for (size_t k = 0; k < min_size; ++k) {
-                    if (k > 0) {
-                        if (sequence_one[k]->uid() == sequence_two[k]->uid()) {
-                            //уже один и тот же
-                            break;
-                        }
-                    }
-                    if_not(sequence_one[k]->equalTo(sequence_two[k])) {
-                        log_warning("FORK POINT is " << sequence_one[k]->name());
-                        //TODO склеить последовательности от 0 до k-1
-                        if (k > 0) {
-//                            ProcessorVector mutual(route_one.processorSequence().begin()
-//                                                   , route_one.processorSequence().begin() + int64_t(k - 1));
-                            ProcessorVector mutual;
-                            for (size_t j = 0; j < k; ++j) {
-                                mutual.push_back(route_one.processorSequence()[j]);
-                            }
-                            try_to(route_two.changePartTo(mutual));
-                        }
-                        break;
-                    }
-                }
-            }
-        }
+//                for (size_t k = 0; k < min_size; ++k) {
+//                    if (k > 0) {
+//                        if (sequence_one[k]->uid() == sequence_two[k]->uid()) {
+//                            //уже один и тот же
+//                            break;
+//                        }
+//                    }
+//                    if_not(sequence_one[k]->equalTo(sequence_two[k])) {
+//                        log_warning("FORK POINT is " << sequence_one[k]->name());
+//                        //TODO склеить последовательности от 0 до k-1
+//                        if (k > 0) {
+////                            ProcessorVector mutual(route_one.processorSequence().begin()
+////                                                   , route_one.processorSequence().begin() + int64_t(k - 1));
+//                            ProcessorVector mutual;
+//                            for (size_t j = 0; j < k; ++j) {
+//                                mutual.push_back(route_one.processorSequence()[j]);
+//                            }
+//                            try_to(route_two.changePartTo(mutual));
+//                        }
+//                        break;
+//                    }
+//                }
+//            }
+//        }
         for (const auto& route : _route_list) {
             log_warning("Result: " << route);
         }
@@ -418,21 +406,14 @@ namespace fpp {
         return dump_str;
     }
 
-    Stream* Pipeline::findBestInputStream(MediaType media_type) {
+    Stream* Pipeline::findBestInputStream(MediaType media_type) { //TODO
         switch (media_type) {
         case MediaType::MEDIA_TYPE_VIDEO: {
             StreamVector all_video_streams;
-            for (auto& source : _data_sources) {
-                all_video_streams.push_back(source->stream(0)); //TODO !!! поиск по индексу, а не по типу
-//                auto medias_source = dynamic_cast<MediaSource*>(source);
-//                if (inited_ptr(medias_source)) {
-//                    all_video_streams.push_back(medias_source->inputFormatContext().bestStream(MediaType::MEDIA_TYPE_VIDEO));
-//                }
-//                auto custom_source = dynamic_cast<CustomPacketSource*>(source);
-//                if (inited_ptr(custom_source)) {
-//                    all_video_streams.push_back(custom_source->stream(MediaType::MEDIA_TYPE_VIDEO));
-//                }
-            }
+            _data_sources.for_each([media_type,&all_video_streams](const ProcessorPtr& source) {
+                UNUSED(media_type); //TODO
+                all_video_streams.push_back(source->stream(0));
+            });
             return static_cast<VideoStream*>(utils::find_best_stream(all_video_streams));
         }
         case MediaType::MEDIA_TYPE_AUDIO: {
@@ -448,13 +429,12 @@ namespace fpp {
         }
     }
 
-    Route Pipeline::findRoute(Processor* processor) {
+    Route& Pipeline::findRoute(const int64_t uid) { //TODO
         for (auto&& route : _route_list) {
-            if (route.contains(processor->uid())) {
+            if (route.contains(uid)) {
                 return route;
             }
         }
-        return Route();
     }
 
 } // namespace fpp

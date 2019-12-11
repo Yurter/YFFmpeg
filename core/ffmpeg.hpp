@@ -180,6 +180,15 @@ namespace fpp {
                             }\
                         } while (false)
 
+/* ? */
+#define try_throw_static(x) do { auto ret = x;\
+                                if (utils::exit_code(ret)) {\
+                                    static_log_error("TODO", "Function " << (#x)\
+                                    << " failed with code: " << ret\
+                                    << " - " << utils::code_to_string(ret));\
+                                }\
+                            } while (false)
+
 /* ? */ // В случае ошибки не возвращать ее код, а выбрасывать исключение (ex. в деструкторах); добавить параметр - текст ошибки
 //#define try_and_throw(x,msg) { auto ret = x;\
 //                    if (utils::exit_code(ret)) {\

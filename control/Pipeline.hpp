@@ -45,10 +45,7 @@ namespace fpp {
 
         Code                stopProcesors();
 
-        void                freeProcesors();
-
         Code                createSequence(Route& route);
-
 
         Stream*             findStream(int64_t uid);
         Code                determineSequence(const Processor * const output_processor);
@@ -58,7 +55,7 @@ namespace fpp {
         Stream*             findBestInputStream(MediaType media_type);
         StreamList          getOutputStreams(MediaType media_type);
 
-        Route               findRoute(Processor* processor);
+        Route&              findRoute(const int64_t uid);
 
     private:
 
