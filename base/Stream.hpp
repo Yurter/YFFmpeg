@@ -46,7 +46,7 @@ namespace fpp {
     protected:
 
         bool                _used;
-        Object*             _context;
+        Object*             _context; //TODO заменить на shared_ptr ? в пайплайне возникает проблема двойного удаления при формировании смартпои
 
         int64_t             _prev_dts;
         int64_t             _prev_pts;

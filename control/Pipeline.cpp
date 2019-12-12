@@ -144,7 +144,10 @@ namespace fpp {
             return_error_if(not_inited_ptr(source_ptr)
                             , "Failed to cast input stream's context to Processor."
                             , Code::INVALID_INPUT);
-            ProcessorPointer source(source_ptr);
+            //TODO проблема двойного освобождения указателя
+//            ProcessorPointer source(source_ptr);
+//            ProcessorPointer source = std::make_shared<MediaSource>(source_ptr);
+            ProcessorPointer source = std::make_shared<MediaSource>(*source_ptr);
             try_to(route.append(source));
         }
 
@@ -216,7 +219,10 @@ namespace fpp {
             return_error_if(not_inited_ptr(sink_ptr)
                             , "Failed to cast output stream's context to Processor."
                             , Code::INVALID_INPUT);
-            ProcessorPointer sink(sink_ptr);
+            //TODO проблема двойного освобождения указателя
+//            ProcessorPointer sink(sink_ptr);
+//            ProcessorPointer sink = std::make_shared<MediaSink>(sink_ptr);
+            ProcessorPointer sink = std::make_shared<MediaSink>(*sink_ptr);
             try_to(route.append(sink));
         }
 

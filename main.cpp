@@ -7,7 +7,7 @@ void progress_bar(int sec) {
     int msec_interval = sec * 10;
     static_log_info("main", "Progress:");
     for (int i = 0; i < 100; ++i) {
-        std::cout << "\r" << "[" << std::string(i, '*') << std::string(100 - i, ' ') << "]";
+//        std::cout << "\r" << "[" << std::string(i, '*') << std::string(100 - i, ' ') << "]";
         utils::sleep_for_ms(msec_interval);
     }
     std::cout << std::endl;
@@ -66,6 +66,7 @@ void concatenator_debug() {
 }
 
 void route_simplify_debug() {
+    set_log_level(LogLevel::Debug);
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
     ProcessorPointer source = std::make_shared<MediaSource>("video=HP Wide Vision FHD Camera");
@@ -93,11 +94,17 @@ int main() {
     static_log_info("main", "Program started...");
     avdevice_register_all(); //TODO вызов необходим для работы USB-камер, перенести
 
-    {
-        Route test_route;
-        test_route.append()
-        return 0;
-    }
+//    {
+//        auto raw_pointer = new MediaSink("group_video/event.flv", IOType::Event);
+////        ProcessorPointer smart_pointer_0(raw_pointer);
+////        ProcessorPointer smart_pointer_1(raw_pointer);
+//        ProcessorPointer smart_pointer_0 = std::make_shared<MediaSource>(*raw_pointer);
+//        ProcessorPointer smart_pointer_1 = std::make_shared<MediaSource>(*raw_pointer);
+//        AsyncList<ProcessorPointer> test_list;
+//        test_list.push_back(smart_pointer_0);
+//        test_list.push_back(smart_pointer_1);
+//        return 0;
+//    }
 
     {
 //        set_log_level(LogLevel::Trace);

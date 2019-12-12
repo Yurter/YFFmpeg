@@ -93,7 +93,7 @@ namespace fpp {
         if (log_level >= LogLevel::Debug) {
             std::string thread_id = (std::stringstream() << "[" << current_thread_id() << "]").str();
             thread_id.resize(7, ' ');
-            header += thread_id;
+            header += " " + thread_id;
         }
         if (log_level >= LogLevel::Trace) {
             header += "\n";

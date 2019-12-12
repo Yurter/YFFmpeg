@@ -6,11 +6,11 @@ namespace fpp {
     Route::Route()
     {
         setName("Route");
-        log_error("CONSTR");
+//        log_error("CONSTR");
     }
 
     Route::~Route() { //TODO
-        log_error("DESTR");
+//        log_error("DESTR");
 //        log_warning("deleting...");
 //        for (auto processor = _sequence.begin(); processor != _sequence.end(); processor++) {
 //            auto next_processor = std::next(processor);

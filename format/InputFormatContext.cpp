@@ -54,7 +54,6 @@ namespace fpp {
 
     Code InputFormatContext::openContext() {
         return_if_not(inited(), Code::INVALID_CALL_ORDER);
-//        log_info("MediaSource: \"" << _media_resource_locator << "\" is opening..."); //лог перенесен в медиасорс
         if (_media_resource_locator.find("video=") != std::string::npos) { //TODO костыль
             guessInputFromat();
         }
@@ -74,7 +73,6 @@ namespace fpp {
             _input_format = _format_context->iformat;
             try_to(parseFormatContext());
             av_dump_format(_format_context, 0, _media_resource_locator.c_str(), 0);
-            /*log_info("MediaSource: \"" << _media_resource_locator << "\" opened.");*/ //лог перенесен в медиасорс
             return Code::OK;
         }
     }
