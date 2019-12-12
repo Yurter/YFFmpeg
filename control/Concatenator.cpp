@@ -41,9 +41,10 @@ namespace fpp {
         try_to(output_file->start());
 
         for (auto& [input_file_name, start_point, end_point] : _concat_list) {
-//            log_info("input_file_name: " << input_file_name);
-//            log_info("start_point: " << start_point);
-//            log_info("end_point: " << end_point);
+            log_debug("File: " << input_file_name << ", "
+                      << "from " << (start_point == FROM_START ? "start" : std::to_string(start_point) + "ms ")
+                      << "to " << (end_point == FROM_START ? "end" : std::to_string(end_point) + "ms "));
+
             MediaSource input_file(input_file_name);
             input_file.setStartPoint(start_point);
             input_file.setEndPoint(end_point);
@@ -56,18 +57,11 @@ namespace fpp {
             try_to(input_file.start());
             input_file.join();
             try_to(input_file.disconnectFrom(output_file));
-//            log_info("iter finished");
-//            utils::sleep_for_ms(150);
         }
 
         Packet eof_packet;
         eof_packet.setType(MediaType::MEDIA_TYPE_VIDEO);
         try_to(output_file->push(&eof_packet));
-//        output_file.join();
-
-//        try_to(output_file.close());
-//        try_to(output_file.stop());
-//        output_file.join();
 
         return Code::END_OF_FILE;
     }
