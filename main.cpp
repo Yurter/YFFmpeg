@@ -7,7 +7,7 @@ void progress_bar(int sec) {
     int msec_interval = sec * 10;
     static_log_info("main", "Progress:");
     for (int i = 0; i < 100; ++i) {
-//        std::cout << "\r" << "[" << std::string(i, '*') << std::string(100 - i, ' ') << "]";
+        std::cout << "\r" << "[" << std::string(i, '*') << std::string(100 - i, ' ') << "]";
         utils::sleep_for_ms(msec_interval);
     }
     std::cout << std::endl;
@@ -66,7 +66,7 @@ void concatenator_debug() {
 }
 
 void route_simplify_debug() {
-    Pipeline* pipeline = new Pipeline;
+    PipelinePointer pipeline = std::make_shared<Pipeline>();
 
     ProcessorPointer source = std::make_shared<MediaSource>("video=HP Wide Vision FHD Camera");
     source->setCloseOnDisconnect(false);
@@ -85,7 +85,7 @@ void route_simplify_debug() {
 //        static_log_error("main", "Pipeline simplify routes failed: " << ret << " - " << utils::code_to_string(ret));
 //    }
 
-    progress_bar(60);
+    progress_bar(15);
 }
 
 int main() {

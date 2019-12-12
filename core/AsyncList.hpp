@@ -86,9 +86,12 @@ namespace fpp {
         }
 
         void clear() {
-            std::lock_guard<std::mutex> lock(_list_mutex);
-            std::list<Type> empty;
-            std::swap(_list, empty);
+            for (auto i = 0; i < _list.size(); ++i) {
+                _list.pop_front();
+            }
+//            std::lock_guard<std::mutex> lock(_list_mutex);
+//            std::list<Type> empty;
+//            std::swap(_list, empty);
         }
 
     private:

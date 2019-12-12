@@ -9,9 +9,11 @@ namespace fpp {
     {
         _doNotSendEOF = false;
         setName("MediaSource");
+        log_error("CONSTRUCTOR");
     }
 
     MediaSource::~MediaSource() {
+        log_error("DESTRUCTOR");
         try_throw(close());
     }
 

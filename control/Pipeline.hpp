@@ -16,6 +16,9 @@
 
 namespace fpp {
 
+    class Pipeline;
+    using PipelinePointer = std::shared_ptr<Pipeline>;
+
     class Pipeline : public Thread {
 
     public:

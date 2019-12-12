@@ -15,7 +15,6 @@ namespace fpp {
     public:
 
         Processor();
-//        Processor(const Processor* other);
         Processor(const Processor& other) = delete;
         Processor(const Processor&& other) = delete;
         Processor& operator=(const Processor& other) = delete;

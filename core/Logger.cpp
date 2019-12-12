@@ -103,9 +103,7 @@ namespace fpp {
         }
 
         std::stringstream ss;
-        ss << header << " " << message << (message.back() == '.' ? "" : ".");
-        //                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        //                                  нужно ли?
+        ss << header << " " << message;
 
         return ss.str();
     }
