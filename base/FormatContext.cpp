@@ -3,11 +3,11 @@
 
 namespace fpp {
 
-    FormatContext::FormatContext(const std::string mrl, Object* stream_context, IOType preset) :
+    FormatContext::FormatContext(const std::string mrl, IOType preset) :
         _uid(utils::gen_uid())
         , _media_resource_locator(mrl)
         , _opened(false)
-        , _stream_context(stream_context)
+//        , _stream_context(stream_context)
         , _reopening_after_failure(false)
         , _reopening_timeout(INVALID_INT)
         , _artificial_delay(DEFAULT_INT)
@@ -62,7 +62,7 @@ namespace fpp {
 
     Code FormatContext::createStream(Stream* new_stream) {
 //        try_to(new_stream->init()); // перенёс на момент открытия контекста
-        new_stream->setContext(_stream_context);
+//        new_stream->setContext(_stream_context);
         new_stream->setUid(utils::gen_stream_uid(uid(), numberStream()));
         new_stream->params->setStreamIndex(numberStream());
         new_stream->params->setContextUid(uid());

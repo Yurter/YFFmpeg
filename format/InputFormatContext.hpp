@@ -7,7 +7,7 @@ namespace fpp {
 
     public:
 
-        InputFormatContext(const std::string mrl, Object* stream_context, IOType preset = IOType::Auto);
+        InputFormatContext(const std::string mrl, /*ProcessorPointer stream_context,*/ IOType preset = IOType::Auto);
         virtual ~InputFormatContext() override;
 
         virtual Code        init()           override;

@@ -90,6 +90,10 @@ namespace fpp {
     }
 
     void Parameters::setContextUid(int64_t context_uid) {
+        if_not(invalid_int(_context_uid)) {
+            log_warning("Cannot set context_uid again: " << context_uid << ", ignored");
+            return;
+        }
         _context_uid = context_uid;
     }
 

@@ -139,17 +139,19 @@ namespace fpp {
         input_stream->setUsed(true);
         output_stream->setUsed(true);
 
-        { //TODO не универсальый каст
-            auto source_ptr = dynamic_cast<Processor*>(input_stream->context());
-            return_error_if(not_inited_ptr(source_ptr)
-                            , "Failed to cast input stream's context to Processor."
-                            , Code::INVALID_INPUT);
-            //TODO проблема двойного освобождения указателя
-//            ProcessorPointer source(source_ptr);
-//            ProcessorPointer source = std::make_shared<MediaSource>(source_ptr);
-            ProcessorPointer source = std::make_shared<MediaSource>(*source_ptr);
-            try_to(route.append(source));
-        }
+//        { //TODO не универсальый каст
+//            auto source_ptr = dynamic_cast<Processor*>(input_stream->context());
+//            return_error_if(not_inited_ptr(source_ptr)
+//                            , "Failed to cast input stream's context to Processor."
+//                            , Code::INVALID_INPUT);
+//            //TODO проблема двойного освобождения указателя
+////            ProcessorPointer source(source_ptr);
+////            ProcessorPointer source = std::make_shared<MediaSource>(source_ptr);
+//            ProcessorPointer source = std::make_shared<MediaSource>(*source_ptr);
+//            try_to(route.append(source));
+//        }
+        try_to(route.append(findProcessorByUid(input_stream->params->contextUid())));
+//        try_to(route.append(input_stream->context()));
 
         bool rescaling_required     = utils::rescaling_required   (params);
         bool resampling_required    = utils::resampling_required  (params);
@@ -157,11 +159,11 @@ namespace fpp {
         bool audio_filter_required  = utils::audio_filter_required(params);
         bool transcoding_required   = utils::transcoding_required (params);
 
-        auto out_context = dynamic_cast<MediaSink*>(output_stream->context()); //TODO кривой код: вынести IOType в Processor ?
-        if (inited_ptr(out_context)) {
-            video_filter_required = video_filter_required
-                                    || out_context->outputFormatContext()->preset(IOType::Timelapse);
-        }
+//        auto out_context = dynamic_cast<MediaSink*>(output_stream->context()); //TODO кривой код: вынести IOType в Processor ?
+//        if (inited_ptr(out_context)) {
+//            video_filter_required = video_filter_required
+//                                    || out_context->outputFormatContext()->preset(IOType::Timelapse);
+//        }
 
         transcoding_required = (transcoding_required
                                 || rescaling_required
@@ -177,9 +179,9 @@ namespace fpp {
                                 || resampling_required
                                 || video_filter_required
                                 || audio_filter_required;
-        if (inited_ptr(dynamic_cast<OpenCVSink*>(output_stream->context()))) { //TODO кривой код
-            encoding_required = false;
-        }
+//        if (inited_ptr(dynamic_cast<OpenCVSink*>(output_stream->context()))) { //TODO кривой код
+//            encoding_required = false;
+//        }
 
         if (decoding_required) {
             ProcessorPointer decoder = std::make_shared<Decoder>(params);
@@ -214,17 +216,18 @@ namespace fpp {
             try_to(route.append(encoder));
         }
 
-        { //TODO не универсальый каст
-            auto sink_ptr = dynamic_cast<Processor*>(output_stream->context());
-            return_error_if(not_inited_ptr(sink_ptr)
-                            , "Failed to cast output stream's context to Processor."
-                            , Code::INVALID_INPUT);
-            //TODO проблема двойного освобождения указателя
-//            ProcessorPointer sink(sink_ptr);
-//            ProcessorPointer sink = std::make_shared<MediaSink>(sink_ptr);
-            ProcessorPointer sink = std::make_shared<MediaSink>(*sink_ptr);
-            try_to(route.append(sink));
-        }
+//        { //TODO не универсальый каст
+//            auto sink_ptr = dynamic_cast<Processor*>(output_stream->context());
+//            return_error_if(not_inited_ptr(sink_ptr)
+//                            , "Failed to cast output stream's context to Processor."
+//                            , Code::INVALID_INPUT);
+//            //TODO проблема двойного освобождения указателя
+////            ProcessorPointer sink(sink_ptr);
+////            ProcessorPointer sink = std::make_shared<MediaSink>(sink_ptr);
+//            ProcessorPointer sink = std::make_shared<MediaSink>(*sink_ptr);
+//            try_to(route.append(sink));
+//        }
+        try_to(route.append(findProcessorByUid(output_stream->params->contextUid())));
 
         _route_list.push_back(route);
         try_to(simplifyRoutes());
@@ -234,6 +237,23 @@ namespace fpp {
         log_info("route: " << route);
 
         return Code::OK;
+    }
+
+    ProcessorPointer Pipeline::findProcessorByUid(const int64_t uid) {
+        ProcessorPointer result;
+        _data_sources.for_each([uid,&result](const auto& source) {
+            static_log_error("sources", "uid: " << uid << ", source->uid(): " << source->uid());
+            if (source->uid() == uid) {
+                result = source;
+            }
+        });
+        _data_sinks.for_each([uid,&result](const auto& sink) {
+            static_log_error("sinks", "uid: " << uid << ", sink->uid(): " << sink->uid());
+            if (sink->uid() == uid) {
+                result = sink;
+            }
+        });
+        return result;
     }
 
     Code Pipeline::simplifyRoutes() {

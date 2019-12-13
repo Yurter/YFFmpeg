@@ -47,6 +47,8 @@ namespace fpp {
 
         Code                createSequence(Route& route);
 
+        ProcessorPointer    findProcessorByUid(const int64_t uid);
+
         Stream*             findStream(int64_t uid);
         Code                determineSequence(const ProcessorPointer output_processor);
 

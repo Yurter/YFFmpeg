@@ -168,7 +168,7 @@ namespace fpp {
     }
 
     int64_t utils::get_context_uid(int64_t stream_uid) {
-        return stream_uid / 100 - 1;
+        return stream_uid / 100;
     }
 
     std::string utils::guess_format_short_name(std::string media_resurs_locator) {

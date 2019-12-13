@@ -3,7 +3,7 @@
 namespace fpp {
 
     MediaSource::MediaSource(const std::string mrl, IOType preset) :
-        _input_format_context(mrl, this, preset)
+        _input_format_context(mrl, /*this,*/ preset)
       , _start_point(FROM_START)
       , _end_point(TO_END)
     {
@@ -25,7 +25,7 @@ namespace fpp {
 
     Code MediaSource::open() {
         return_if(opened(), Code::INVALID_CALL_ORDER);
-        log_debug("Opening.");
+        log_debug("Opening");
         log_info(_input_format_context.mediaResourceLocator() << "\" is opening...");
         try_to(_input_format_context.open());
         log_info(_input_format_context.mediaResourceLocator() << "\" opened.");

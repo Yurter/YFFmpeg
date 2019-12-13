@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    OutputFormatContext::OutputFormatContext(const std::string mrl, Object* media_ptr, IOType preset) :
-        FormatContext(mrl, media_ptr, preset)
+    OutputFormatContext::OutputFormatContext(const std::string mrl, /*ProcessorPointer media_ptr,*/ IOType preset) :
+        FormatContext(mrl,/* media_ptr,*/ preset)
       , _output_format(nullptr)
     {
         setName("OutputFormatContext");

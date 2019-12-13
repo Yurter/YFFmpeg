@@ -6,6 +6,10 @@
 
 namespace fpp {
 
+    //TODO
+    class Processor;
+    using ProcessorPointer = std::shared_ptr<Processor>;
+
     class Stream : public Data<AVStream*> {
 
     public:
@@ -20,11 +24,11 @@ namespace fpp {
         virtual std::string toString() const override final;
         virtual Code        stampPacket(Packet& packet) final;
 
-        void                setContext(Object* context); //TODO заменить на Context* ? //TODO убарть
+//        void                setContext(ProcessorPointer* context);
         void                setUid(int64_t uid);
         void                setUsed(bool used);
 
-        Object*             context()       const;
+//        ProcessorPointer*   context()       const;
         int64_t             index()         const;
         bool                used()          const;
         int64_t             packetIndex()   const;
@@ -46,7 +50,7 @@ namespace fpp {
     protected:
 
         bool                _used;
-        Object*             _context; //TODO заменить на shared_ptr ? в пайплайне возникает проблема двойного удаления при формировании смартпои
+//        ProcessorPointer*   _context;
 
         int64_t             _prev_dts;
         int64_t             _prev_pts;

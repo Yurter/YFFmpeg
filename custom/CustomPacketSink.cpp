@@ -26,7 +26,7 @@ namespace fpp {
 //            stream->setRaw(avstream);
 
             stream->setUid(utils::gen_stream_uid(uid(), stream->params->streamIndex()));
-            stream->setContext(this);
+//            stream->setContext(this); //TODO
         }
         setInited(true);
         return Code::OK;

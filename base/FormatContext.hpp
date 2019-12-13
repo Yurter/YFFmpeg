@@ -10,7 +10,7 @@ namespace fpp {
 
     public:
 
-        FormatContext(const std::string mrl, Object* stream_context, IOType preset = IOType::Auto); ///< mrl - media resource locator.
+        FormatContext(const std::string mrl, /*ProcessorPointer* stream_context,*/ IOType preset = IOType::Auto); ///< mrl - media resource locator.
         FormatContext(const FormatContext& other)  = delete;
         FormatContext(const FormatContext&& other) = delete;
         virtual ~FormatContext() override;
@@ -83,7 +83,7 @@ namespace fpp {
         std::string			_media_resource_locator;
         std::atomic_bool	_opened;
         StreamVector        _streams;
-        Object*             _stream_context;
+//        ProcessorPointer*   _stream_context;
         bool                _reopening_after_failure;
         int64_t             _reopening_timeout;
         int64_t             _artificial_delay;

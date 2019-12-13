@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    InputFormatContext::InputFormatContext(const std::string mrl, Object* stream_context, IOType preset) :
-        FormatContext(mrl, stream_context, preset)
+    InputFormatContext::InputFormatContext(const std::string mrl, /*ProcessorPointer stream_context,*/ IOType preset) :
+        FormatContext(mrl, /*stream_context,*/ preset)
       , _input_format(nullptr)
     {
         setName("InputFormatContext");

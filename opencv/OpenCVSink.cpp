@@ -9,7 +9,7 @@ namespace fpp {
     {
         setName("OpenCVSink");
         _video_params->setPixelFormat(AV_PIX_FMT_BGR24);
-        _video_stream->setContext(this);
+//        _video_stream->setContext(this);
     }
 
     OpenCVSink::~OpenCVSink() {
