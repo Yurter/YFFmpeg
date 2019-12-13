@@ -63,9 +63,8 @@ namespace fpp {
     Code FormatContext::createStream(Stream* new_stream) {
 //        try_to(new_stream->init()); // перенёс на момент открытия контекста
 //        new_stream->setContext(_stream_context);
-        new_stream->setUid(utils::gen_stream_uid(uid(), numberStream()));
         new_stream->params->setStreamIndex(numberStream());
-        new_stream->params->setContextUid(uid());
+//        new_stream->params->setContextUid(uid());
         _streams.push_back(new_stream);
         return Code::OK;
     }
@@ -172,7 +171,7 @@ namespace fpp {
                 video_parameters->setPixelFormat(codec->pix_fmt);
                 video_parameters->setStreamIndex(i);
                 video_parameters->setTimeBase(avstream->time_base);
-                video_parameters->setContextUid(uid());
+//                video_parameters->setContextUid(uid());
                 try_to(createStream(new VideoStream(avstream, video_parameters)));
                 break;
             }
@@ -191,7 +190,7 @@ namespace fpp {
                 }
                 audio_parameters->setStreamIndex(i);
                 audio_parameters->setTimeBase(avstream->time_base);
-                audio_parameters->setContextUid(uid());
+//                audio_parameters->setContextUid(uid());
                 try_to(createStream(new AudioStream(avstream, audio_parameters)));
                 break;
             }

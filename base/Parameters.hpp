@@ -16,7 +16,6 @@ namespace fpp {
         void                setBitrate(int64_t bitrate);
         void                setDuration(int64_t duration);
         void                setStreamIndex(int64_t stream_index);
-        void                setStreamUid(int64_t value);
         void                setTimeBase(AVRational time_base);
         void                setContextUid(int64_t context_uid);
 
@@ -39,6 +38,7 @@ namespace fpp {
 
     private:
 
+        void                setStreamUid(int64_t value);
         void                setCodecType(CodecType value);
 
     protected:

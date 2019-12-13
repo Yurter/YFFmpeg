@@ -53,6 +53,11 @@ namespace fpp {
         return_if(streams.empty(), Code::INVALID_INPUT);
         return_if_not(_streams.empty(), Code::INVALID_CALL_ORDER);
         _streams = streams;
+        const int64_t this_context_uid = uid();
+        std::for_each(_streams.begin(), _streams.end()
+            ,[this_context_uid](Stream*& stream) {
+            stream->params->setContextUid(this_context_uid);
+        });
         return Code::OK;
     }
 

@@ -79,6 +79,7 @@ namespace fpp {
 
     void Parameters::setStreamIndex(int64_t stream_index) {
         _stream_index = stream_index;
+        setStreamUid(fpp::utils::gen_stream_uid(_context_uid, _stream_index));//TODO
     }
 
     void Parameters::setStreamUid(int64_t value) {
@@ -95,6 +96,7 @@ namespace fpp {
             return;
         }
         _context_uid = context_uid;
+        setStreamUid(fpp::utils::gen_stream_uid(_context_uid, _stream_index));//TODO
     }
 
     AVCodecID Parameters::codecId() const {

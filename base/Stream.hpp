@@ -24,14 +24,11 @@ namespace fpp {
         virtual std::string toString() const override final;
         virtual Code        stampPacket(Packet& packet) final;
 
-//        void                setContext(ProcessorPointer* context);
-        void                setUid(int64_t uid);
-        void                setUsed(bool used);
+        void                setUsed(bool value);
 
-//        ProcessorPointer*   context()       const;
         int64_t             index()         const;
         bool                used()          const;
-        int64_t             packetIndex()   const;
+        int64_t             packetIndex()   const;//TODO
 
         AVCodecParameters*  codecParameters();
 
@@ -50,7 +47,6 @@ namespace fpp {
     protected:
 
         bool                _used;
-//        ProcessorPointer*   _context;
 
         int64_t             _prev_dts;
         int64_t             _prev_pts;

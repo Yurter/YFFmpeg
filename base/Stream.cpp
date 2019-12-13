@@ -67,25 +67,9 @@ namespace fpp {
         return Code::OK;
     }
 
-//    void Stream::setContext(ProcessorPointer* context) {
-//        _context = context;
-//    }
-
-    void Stream::setUid(int64_t uid){
-        if (invalid_int(params->streamUid())) {
-            params->setStreamUid(uid);
-        } else {
-            log_warning("Cannot set uid again, ignored");
-        }
+    void Stream::setUsed(bool value) {
+        _used = value;
     }
-
-    void Stream::setUsed(bool used) {
-        _used = used;
-    }
-
-//    ProcessorPointer Stream::context() const {
-//        return _context;
-//    }
 
     int64_t Stream::index() const {
         return _data->index;
