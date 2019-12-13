@@ -44,6 +44,10 @@ namespace fpp {
 //            log_info("input_file_name: " << input_file_name);
 //            log_info("start_point: " << start_point);
 //            log_info("end_point: " << end_point);
+            log_debug("File: " << input_file_name << ", "
+                      << "from " << (start_point == FROM_START ? "start" : std::to_string(start_point) + "ms ")
+                      << "to " << (end_point == FROM_START ? "end" : std::to_string(end_point) + "ms "));
+
             MediaSource input_file(input_file_name);
             input_file.setStartPoint(start_point);
             input_file.setEndPoint(end_point);
