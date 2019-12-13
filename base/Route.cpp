@@ -106,20 +106,29 @@ namespace fpp {
         return Code::OK;
     }
 
+    ProcessorSequence Route::processorSequence() {
+        return _sequence;
+    }
+
 //    ProcessorSequence Route::processorSequence() {
 //        return _sequence;
 //    }
 
     Code Route::changePartTo(ProcessorVector other) { //TODO
-//        log_warning("From: " << this->toString());
-//        //for (auto& proc : other) {
-//        for (size_t i = 0; i < other.size(); ++i) {
-//            return_if(not_inited_ptr(other[i]), Code::INVALID_INPUT);
-//            try_to(_sequence[i]->get()->disconnectFrom(_sequence[i + 1]->get()));
-//            _sequence[i] = &other[i];
-//        }
-//        try_to(other[other.size() - 1]->connectTo(_sequence[other.size() - 1]->get()));
-//        log_warning("To: " << this->toString());
+        log_warning("From: " << this->toString());
+        //for (auto& proc : other) {
+        for (size_t i = 0; i < other.size(); ++i) {
+            return_if(not_inited_ptr(other[i]), Code::INVALID_INPUT);
+            try_to(_sequence[i]->disconnectFrom(_sequence[i + 1]));
+//            if ((i + 1) < other.size()) {
+//                try_to(_sequence[i]->disconnectFrom(other[i + 1]));
+//            }
+            _sequence[i] = other[i];
+        }
+        auto debug_value_0 = other[other.size() - 1];
+        auto debug_value_1 = _sequence[other.size()];
+        try_to(other[other.size() - 1]->connectTo(_sequence[other.size()]));
+        log_warning("To: " << this->toString());
         return Code::OK;
     }
 

@@ -28,7 +28,7 @@ namespace fpp {
         Code                startAll();
         Code                destroy();
 
-//        ProcessorSequence   processorSequence();
+        ProcessorSequence   processorSequence();
 
         Code                changePartTo(ProcessorVector other);
 

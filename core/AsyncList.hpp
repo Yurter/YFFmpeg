@@ -37,6 +37,13 @@ namespace fpp {
             return *this;
         }
 
+        Type& operator[](const size_t index) { //TODO
+            std::lock_guard<std::mutex> lock(_list_mutex);
+            auto result = _list.begin();
+            std::advance(result, index);
+            return *result;
+        }
+
         size_t size() const {
             std::lock_guard<std::mutex> lock(_list_mutex);
             return _list.size();
@@ -86,9 +93,9 @@ namespace fpp {
         }
 
         void clear() {
-//            std::lock_guard<std::mutex> lock(_list_mutex);
-//            std::list<Type> empty;
-//            std::swap(_list, empty);
+            std::lock_guard<std::mutex> lock(_list_mutex);
+            std::list<Type> empty;
+            std::swap(_list, empty);
         }
 
     private:

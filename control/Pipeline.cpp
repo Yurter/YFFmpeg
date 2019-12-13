@@ -242,13 +242,13 @@ namespace fpp {
     ProcessorPointer Pipeline::findProcessorByUid(const int64_t uid) {
         ProcessorPointer result;
         _data_sources.for_each([uid,&result](const auto& source) {
-            static_log_error("sources", "uid: " << uid << ", source->uid(): " << source->uid());
+//            static_log_error("sources", "uid: " << uid << ", source->uid(): " << source->uid());
             if (source->uid() == uid) {
                 result = source;
             }
         });
         _data_sinks.for_each([uid,&result](const auto& sink) {
-            static_log_error("sinks", "uid: " << uid << ", sink->uid(): " << sink->uid());
+//            static_log_error("sinks", "uid: " << uid << ", sink->uid(): " << sink->uid());
             if (sink->uid() == uid) {
                 result = sink;
             }
@@ -258,6 +258,52 @@ namespace fpp {
 
     Code Pipeline::simplifyRoutes() {
         return_if(_route_list.empty(), Code::OK);
+        for (size_t i = 0; i < (_route_list.size() - 1); ++i) {
+            for (size_t j = i + 1; j < _route_list.size(); ++j) {
+                Route& route_one = _route_list[i];
+                Route& route_two = _route_list[j];
+
+                log_warning("");
+                log_warning("Comparing ");
+                log_warning(i << "] " << route_one);
+                log_warning(j << "] " << route_two);
+
+                auto sequence_one = route_one.processorSequence();
+                auto sequence_two = route_two.processorSequence();
+
+                size_t min_size = std::min(sequence_one.size(), sequence_two.size());
+
+                for (size_t k = 0; k < min_size; ++k) {
+                    if (k > 0) {
+                        if (sequence_one[k]->uid() == sequence_two[k]->uid()) {
+                            //уже один и тот же
+                            break;
+                        }
+                    }
+                    if_not(sequence_one[k]->equalTo(sequence_two[k])) {
+                        log_warning("FORK POINT is " << sequence_one[k]->name());
+                        //TODO склеить последовательности от 0 до k-1
+                        if (k > 0) {
+//                            ProcessorVector mutual(route_one.processorSequence().begin()
+//                                                   , route_one.processorSequence().begin() + int64_t(k - 1));
+                            ProcessorVector mutual;
+                            for (size_t j = 0; j < k; ++j) {
+                                mutual.push_back(route_one.processorSequence()[j]);
+                            }
+                            try_to(route_two.changePartTo(mutual));
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        for (const auto& route : _route_list) {
+            log_warning("Result: " << route);
+        }
+        return Code::OK;
+    }
+//    Code Pipeline::simplifyRoutes() {
+//        return_if(_route_list.empty(), Code::OK);
 //        for (size_t i = 0; i < (_route_list.size() - 1); ++i) {
 //            for (size_t j = i + 1; j < _route_list.size(); ++j) {
 //                Route& route_one = _route_list[i];
@@ -300,8 +346,8 @@ namespace fpp {
 //        for (const auto& route : _route_list) {
 //            log_warning("Result: " << route);
 //        }
-        return Code::OK;
-    }
+//        return Code::OK;
+//    }
 
     Stream* Pipeline::findStream(int64_t uid) {
         Stream* ret_stream = nullptr;
