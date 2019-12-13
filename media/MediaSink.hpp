@@ -18,6 +18,8 @@ namespace fpp {
 
         OutputFormatContext& outputFormatContext();
 
+        void setRealTimeStamp(bool value) { _realtime_stamp = value; }
+
     private:
 
         virtual Code        processInputData(Packet input_data) override;
@@ -27,6 +29,8 @@ namespace fpp {
     private:
 
         OutputFormatContext _output_format_context;
+
+        bool    _realtime_stamp = false;
 
     };
 

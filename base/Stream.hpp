@@ -1,5 +1,6 @@
 #pragma once
 #include "Parameters.hpp"
+#include "core/Chronometer.hpp"
 #include "Packet.hpp"
 #include <vector>
 #include <list>
@@ -18,7 +19,7 @@ namespace fpp {
 
         virtual Code        init() override;
         virtual std::string toString() const override final;
-        virtual Code        stampPacket(Packet& packet) final;
+        virtual Code        stampPacket(Packet& packet, bool real_time = false) final;
 
         void                setContext(Object* context); //TODO заменить на Context* ? //TODO убарть
         void                setUid(int64_t uid);
@@ -43,6 +44,8 @@ namespace fpp {
     protected:
 
         virtual void        parseParametres();
+
+        Chronometer         _chronometer; //TODO
 
     protected:
 

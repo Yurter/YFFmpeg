@@ -187,26 +187,27 @@ int main() {
 
 //            utils::sleep_for_sec(1);
 
-//            auto sink_event = new MediaSink("group_video/eventIP.flv", IOType::Event);
-//            if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
-//                static_log_error("yuraPacketHooker", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
-//            }
+            auto sink_event = new MediaSink("group_video/eventIP.flv", IOType::Event);
+            sink_event->setRealTimeStamp(true);
+            if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
+                static_log_error("yuraPacketHooker", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
+            }
 //            utils::sleep_for_sec(1);
-            auto sink_timelapse = new MediaSink("group_video/timelapseIP.flv", IOType::Timelapse);
-            if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
-                static_log_error("yuraPacketHooker", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
-            }
-            auto sink_timelapse2 = new MediaSink("group_video/2timelapseIP.flv", IOType::Timelapse);
-            if (auto ret = pipeline->addElement(sink_timelapse2); ret != fpp::Code::OK) {
-                static_log_error("yuraPacketHooker", "Pipeline add sink_timelapse2 failed: " << ret << " - " << utils::code_to_string(ret));
-            }
+//            auto sink_timelapse = new MediaSink("group_video/timelapseIP.flv", IOType::Timelapse);
+//            if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
+//                static_log_error("yuraPacketHooker", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
+//            }
+//            auto sink_timelapse2 = new MediaSink("group_video/2timelapseIP.flv", IOType::Timelapse);
+//            if (auto ret = pipeline->addElement(sink_timelapse2); ret != fpp::Code::OK) {
+//                static_log_error("yuraPacketHooker", "Pipeline add sink_timelapse2 failed: " << ret << " - " << utils::code_to_string(ret));
+//            }
 
-            pipeline->simplifyRoutes();
+//            pipeline->simplifyRoutes();
 
-            utils::sleep_for_sec(50);
+            utils::sleep_for_sec(15);
 
             delete source;
-            delete sink_timelapse;
+            delete sink_event;
 //            utils::sleep_for_sec(1);
 //            auto sink_timelapse2 = new MediaSink("group_video/2timelapseIP.flv", IOType::Timelapse);
 //            if (auto ret = pipeline->addElement(sink_timelapse2); ret != fpp::Code::OK) {

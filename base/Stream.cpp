@@ -52,16 +52,31 @@ namespace fpp {
         return str;
     }
 
-    Code Stream::stampPacket(Packet& packet) {
+    Code Stream::stampPacket(Packet& packet, bool real_time) { //TODO штампы в реалтайме
         return_if(packet.type() != type(), Code::INVALID_INPUT);
+
+        if (_packet_index == 0) {
+            _chronometer.reset_timepoint();
+        }
+
+        if ((_packet_index != 0) && real_time) {
+            _packet_duration = _chronometer.elapsed_milliseconds();
+            _packet_dts_delta = _packet_pts_delta = _packet_duration;
+            _chronometer.reset_timepoint();
+        }
 
         packet.setDts(_prev_dts);
         packet.setPts(_prev_pts);
         packet.setDuration(_packet_duration);
         packet.setPos(-1);
 
-        _prev_dts += _packet_dts_delta;
-        _prev_pts += _packet_pts_delta;
+        if (real_time) {
+            _prev_dts += _packet_dts_delta;
+            _prev_pts += _packet_pts_delta;
+        } else {
+            _prev_dts += _packet_dts_delta;
+            _prev_pts += _packet_pts_delta;
+        }
         _packet_index++;
 
         parameters->increaseDuration(_packet_duration);
