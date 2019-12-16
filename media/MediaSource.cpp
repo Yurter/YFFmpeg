@@ -103,10 +103,6 @@ namespace fpp {
                 }
             }
         }
-        bool debug_value_0 = _input_format_context.closed();
-        bool debug_value_1 = _input_format_context.opened();
-        auto debug_value_2 = _input_format_context.mediaResourceLocator();
-        auto debug_value_3 = _input_format_context.mediaFormatContext();
         return_if(_input_format_context.closed(), Code::ERR); //TODO сорс читает после закрытия.. или до..
         if (int ret = av_read_frame(_input_format_context.mediaFormatContext(), &input_data.raw()); ret != 0) {
             return_info_if(ret == AVERROR_EOF
@@ -118,6 +114,10 @@ namespace fpp {
         if (input_data.streamIndex() != 0) {
             return Code::AGAIN; //TODO fix it
         }
+//        log_warning("packet.pts() = " << input_data.pts());
+//        if ((input_data.pts() == 0) && (stream(0)->packetIndex() != 0)) {
+//            return Code::AGAIN;
+//        }
 //        log_error("readed " << input_data.raw().stream_index);
         //TODO этот код должен быть внутри processInputData()
         auto packet_stream = _input_format_context.stream(input_data.raw().stream_index);

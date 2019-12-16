@@ -7,6 +7,12 @@
 
 namespace fpp {
 
+enum class StreamCrutch {
+    None,
+    RealTyme,
+    Append
+};
+
     class Stream : public Data<AVStream*> {
 
     public:
@@ -19,7 +25,7 @@ namespace fpp {
 
         virtual Code        init() override;
         virtual std::string toString() const override final;
-        virtual Code        stampPacket(Packet& packet, bool real_time = false) final;
+        virtual Code        stampPacket(Packet& packet, StreamCrutch mode = StreamCrutch::None) final;
 
         void                setContext(Object* context); //TODO заменить на Context* ? //TODO убарть
         void                setUid(int64_t uid);
@@ -61,6 +67,8 @@ namespace fpp {
         int64_t             _packet_dts_delta;
         int64_t             _packet_pts_delta;
         int64_t             _packet_duration;
+
+        int64_t             _local_pts = 0;
 
     };
 

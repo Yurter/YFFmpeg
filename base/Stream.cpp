@@ -52,17 +52,67 @@ namespace fpp {
         return str;
     }
 
-    Code Stream::stampPacket(Packet& packet, bool real_time) { //TODO штампы в реалтайме
+//    Code Stream::stampPacket(Packet& packet, StreamCrutch mode) { //TODO штампы в реалтайме
+//        return_if(packet.type() != type(), Code::INVALID_INPUT);
+
+//        auto new_pts = packet.pts() + _local_pts;
+//        if (new_pts < _prev_pts) {
+//            _local_pts = parameters->duration();
+//            new_pts = packet.pts() + _local_pts;
+//        }
+//        _packet_duration = (new_pts - _prev_pts) == 0 ? 10 : (new_pts - _prev_pts);
+//        parameters->increaseDuration(_packet_duration);
+
+//        packet.setDts(new_pts);
+//        packet.setPts(new_pts);
+//        packet.setDuration(_packet_duration);
+//        packet.setPos(-1);
+
+//        _prev_dts = packet.pts();
+//        _prev_pts = packet.pts();
+//        _packet_index++;
+
+//        return Code::OK;
+//    }
+    Code Stream::stampPacket(Packet& packet, StreamCrutch mode) { //TODO штампы в реалтайме
         return_if(packet.type() != type(), Code::INVALID_INPUT);
 
         if (_packet_index == 0) {
             _chronometer.reset_timepoint();
         }
 
-        if ((_packet_index != 0) && real_time) {
-            _packet_duration = _chronometer.elapsed_milliseconds();
+        if ((_packet_index != 0) && (mode == StreamCrutch::RealTyme)) {
+            auto time_delta = _chronometer.elapsed_milliseconds();
+            if (time_delta < 10) {
+                time_delta = 40; /* cructh */
+            }
+            _packet_duration = time_delta;
             _packet_dts_delta = _packet_pts_delta = _packet_duration;
             _chronometer.reset_timepoint();
+            _prev_dts += _packet_dts_delta;
+            _prev_pts += _packet_pts_delta;
+        } else if (mode == StreamCrutch::Append) {
+            auto new_pts = packet.pts() + _local_pts;
+            if (new_pts < _prev_pts) {
+                _local_pts = parameters->duration();
+                new_pts = packet.pts() + _local_pts;
+            }
+            _packet_duration = (new_pts - _prev_pts) == 0 ? 10 : (new_pts - _prev_pts);
+            parameters->increaseDuration(_packet_duration);
+
+            packet.setDts(new_pts);
+            packet.setPts(new_pts);
+            packet.setDuration(_packet_duration);
+            packet.setPos(-1);
+
+            _prev_dts = packet.pts();
+            _prev_pts = packet.pts();
+            _packet_index++;
+
+            return Code::OK;
+        } else {
+            _prev_dts += _packet_dts_delta;
+            _prev_pts += _packet_pts_delta;
         }
 
         packet.setDts(_prev_dts);
@@ -70,13 +120,6 @@ namespace fpp {
         packet.setDuration(_packet_duration);
         packet.setPos(-1);
 
-        if (real_time) {
-            _prev_dts += _packet_dts_delta;
-            _prev_pts += _packet_pts_delta;
-        } else {
-            _prev_dts += _packet_dts_delta;
-            _prev_pts += _packet_pts_delta;
-        }
         _packet_index++;
 
         parameters->increaseDuration(_packet_duration);

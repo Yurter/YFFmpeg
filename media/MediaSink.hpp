@@ -18,7 +18,7 @@ namespace fpp {
 
         OutputFormatContext& outputFormatContext();
 
-        void setRealTimeStamp(bool value) { _realtime_stamp = value; }
+        void setMode(StreamCrutch mode) { _mode = mode; }
 
     private:
 
@@ -30,7 +30,7 @@ namespace fpp {
 
         OutputFormatContext _output_format_context;
 
-        bool    _realtime_stamp = false;
+        StreamCrutch _mode = StreamCrutch::None;
 
     };
 

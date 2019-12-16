@@ -75,7 +75,7 @@ namespace fpp {
 
     Code MediaSink::processInputData(Packet input_data) {
         if (input_data.isVideo()) { //Debug if
-            try_to(_output_format_context.stream(input_data.streamIndex())->stampPacket(input_data, _realtime_stamp));
+            try_to(_output_format_context.stream(input_data.streamIndex())->stampPacket(input_data, _mode));
             if (_output_format_context.mediaResourceLocator() == std::string("group_video/event.flv")) {
 //                log_warning("packetIndex = " << _output_format_context.stream(input_data.streamIndex())->packetIndex());
             }

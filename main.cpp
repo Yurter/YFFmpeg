@@ -70,54 +70,54 @@ int main() {
 //        , { "test_2/timelapse20191203-16.flv", TML(449576), TML(540719) }
 //    });
 
-//    for (int i = 0; i < 999; ++i) {
-//        Concatenator concatenator("compil_data/" + std::to_string(i) + "_sausage.flv", {
-//            { "compil_data/timelapse20191203-16.flv", FROM_START, TML(7464) }
-//            , { "compil_data/event20191203-16-35-16-0.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(26694), TML(30362) }
-//            , { "compil_data/event20191203-16-35-39-1.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(61657), TML(68286) }
-//            , { "compil_data/event20191203-16-36-17-2.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(91502), TML(97964) }
-//            , { "compil_data/event20191203-16-36-47-3.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(104750), TML(115432) }
-//            , { "compil_data/event20191203-16-37-04-4.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(155211), TML(164851) }
-//            , { "compil_data/event20191203-16-37-54-5.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(170806), TML(185490) }
-//            , { "compil_data/event20191203-16-38-14-6.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(195335), TML(200835) }
-//            , { "compil_data/event20191203-16-38-30-7.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(208656), TML(213171) }
-//            , { "compil_data/event20191203-16-38-42-8.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(222016), 225574 }
-//            , { "compil_data/event20191203-16-38-54-9.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(231545), TML(243085) }
-//            , { "compil_data/event20191203-16-39-12-10.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(249837), TML(257425) }
-//            , { "compil_data/event20191203-16-39-26-11.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(297203), TML(313058) }
-//            , { "compil_data/event20191203-16-40-22-12.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(318974), TML(342773) }
-//            , { "compil_data/event20191203-16-40-52-13.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(370179), TML(373755) }
-//            , { "compil_data/event20191203-16-41-23-14.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(380534), TML(390187) }
-//            , { "compil_data/event20191203-16-41-39-15.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(396093), TML(400531) }
-//            , { "compil_data/event20191203-16-41-49-16.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(440347), TML(444174) }
-//            , { "compil_data/event20191203-16-42-33-17.flv", FROM_START, TO_END }
-//            , { "compil_data/timelapse20191203-16.flv", TML(450116), TML(460103) }
-//        });
+    for (int i = 0; i < 1; ++i) {
+        Concatenator concatenator("compil_data/" + std::to_string(i) + "_sausage.flv", {
+            { "compil_data/timelapse20191203-16.flv", FROM_START, TML(7464) }
+            , { "compil_data/event20191203-16-35-16-0.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(26694), TML(30362) }
+            , { "compil_data/event20191203-16-35-39-1.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(61657), TML(68286) }
+            , { "compil_data/event20191203-16-36-17-2.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(91502), TML(97964) }
+            , { "compil_data/event20191203-16-36-47-3.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(104750), TML(115432) }
+            , { "compil_data/event20191203-16-37-04-4.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(155211), TML(164851) }
+            , { "compil_data/event20191203-16-37-54-5.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(170806), TML(185490) }
+            , { "compil_data/event20191203-16-38-14-6.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(195335), TML(200835) }
+            , { "compil_data/event20191203-16-38-30-7.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(208656), TML(213171) }
+            , { "compil_data/event20191203-16-38-42-8.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(222016), 225574 }
+            , { "compil_data/event20191203-16-38-54-9.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(231545), TML(243085) }
+            , { "compil_data/event20191203-16-39-12-10.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(249837), TML(257425) }
+            , { "compil_data/event20191203-16-39-26-11.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(297203), TML(313058) }
+            , { "compil_data/event20191203-16-40-22-12.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(318974), TML(342773) }
+            , { "compil_data/event20191203-16-40-52-13.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(370179), TML(373755) }
+            , { "compil_data/event20191203-16-41-23-14.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(380534), TML(390187) }
+            , { "compil_data/event20191203-16-41-39-15.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(396093), TML(400531) }
+            , { "compil_data/event20191203-16-41-49-16.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(440347), TML(444174) }
+            , { "compil_data/event20191203-16-42-33-17.flv", FROM_START, TO_END }
+            , { "compil_data/timelapse20191203-16.flv", TML(450116), TML(460103) }
+        });
 
-//        if (auto ret = concatenator.start(); ret != Code::OK) {
-//            static_log_error("main", "Concatenator start failed: " << ret << " - " << utils::code_to_string(ret));
-//        }
-//        concatenator.join();
-//    }
+        if (auto ret = concatenator.start(); ret != Code::OK) {
+            static_log_error("main", "Concatenator start failed: " << ret << " - " << utils::code_to_string(ret));
+        }
+        concatenator.join();
+    }
 
-//    return 0;
+    return 0;
 
 //    CustomPacketSource test("", {}, [](Packet&){return Code::OK;}, [](Packet&){return Code::OK;});
 //    test.stream()
@@ -188,7 +188,7 @@ int main() {
 //            utils::sleep_for_sec(1);
 
             auto sink_event = new MediaSink("group_video/eventIP.flv", IOType::Event);
-            sink_event->setRealTimeStamp(true);
+//            sink_event->setRealTimeStamp(true);
             if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
                 static_log_error("yuraPacketHooker", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
             }
