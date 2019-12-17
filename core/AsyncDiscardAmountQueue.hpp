@@ -54,16 +54,11 @@ namespace fpp {
             return true;
         }
 
-        void pop_while(std::function<bool(Type&)>& pred) {
+        void pop_while(std::function<bool(Type&)>&& pred) {
             std::lock_guard lock(_queue_mutex);
             while (pred(_queue.front())) {
                 _queue.pop();
             }
-        }
-
-        void for_each(std::function<bool(Type&)>&& foo) {
-            std::lock_guard lock(_queue_mutex);
-            std::for_each(std::begin(_queue), std::end(_queue), foo);
         }
 
         auto front() {
