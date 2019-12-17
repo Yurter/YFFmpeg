@@ -173,9 +173,9 @@ int main() {
         {
             Pipeline* pipeline = new Pipeline;
 
-//            auto source = new MediaSource("rtsp://admin:admin@192.168.10.3:554");
+            auto source = new MediaSource("rtsp://admin:admin@192.168.10.3:554");
 //            auto source = new MediaSource("video=Webcam C170");
-            auto source = new MediaSource("video=HP Wide Vision FHD Camera");
+//            auto source = new MediaSource("video=HP Wide Vision FHD Camera");
             source->setCloseOnDisconnect(false);
             if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
                 static_log_error("yuraPacketHooker", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));

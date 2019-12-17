@@ -43,6 +43,7 @@ namespace fpp {
         try_to(output_file.start());
 
         int64_t out_duration = 0;
+        int64_t old_out_duration = 0;
         std::ofstream file_crutch;
         file_crutch.open(_output_file_name + ".txt");
         std::ofstream file_crutch2;
@@ -75,11 +76,17 @@ namespace fpp {
 //                utils::sleep_for_ms(50);
 //            }
 
-            file_crutch << input_file_name << '\t'
-                        << out_duration + (start_point == FROM_START ? 0 : start_point) << '\t'
-                        << out_duration + (end_point == TO_END ? input_file.stream(0)->parameters->duration() : end_point) << '\n';
-
+//            file_crutch << input_file_name << '\t'
+//                        << out_duration + (start_point == FROM_START ? 0 : start_point) << '\t'
+//                        << out_duration + (end_point == TO_END ? input_file.stream(0)->parameters->duration() : end_point) << '\n';
             out_duration = output_file.stream(0)->parameters->duration();
+
+            file_crutch << input_file_name << '\t'
+                        << old_out_duration << '\t'
+                        << out_duration << '\n';
+
+            old_out_duration = out_duration;
+
             file_crutch2 << "out_duration = " << out_duration << '\n';
 
             Code ret = input_file.exitCode();
