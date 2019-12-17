@@ -9,6 +9,7 @@ namespace fpp {
     public:
 
         Encoder(const IOParams params);
+        virtual ~Encoder() override;
 
         virtual Code        init() override;
         virtual Code        open() override;
@@ -17,6 +18,10 @@ namespace fpp {
         virtual bool        equalTo(const ProcessorPointer other) const override;
 
         const EncoderContext* encoderContext() const;
+
+    private:
+
+        virtual Code        onStop() override;
 
     private:
 

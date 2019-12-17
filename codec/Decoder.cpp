@@ -8,22 +8,26 @@ namespace fpp {
         setName("Decoder");
     }
 
+    Decoder::~Decoder() {
+        join();
+    }
+
     Code Decoder::init() {
-        log_debug("Initialization.");
+        log_debug("Initialization");
         try_to(_decoder_context.init());
         setInited(true);
         return Code::OK;
     }
 
     Code Decoder::open() {
-        log_debug("Opening.");
+        log_debug("Opening");
         try_to(_decoder_context.open());
         setOpened(true);
         return Code::OK;
     }
 
     Code Decoder::close() {
-        log_debug("Closing.");
+        log_debug("Closing");
         try_to(_decoder_context.close());
         setOpened(false);
         return Code::OK;
@@ -51,6 +55,12 @@ namespace fpp {
 
     const DecoderContext* Decoder::decoderContext() const {
         return &_decoder_context;
+    }
+
+    Code Decoder::onStop() {
+        log_debug("onStop");
+        stopWait();
+        return Code::OK;
     }
 
 } // namespace fpp

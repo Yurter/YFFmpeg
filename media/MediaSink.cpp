@@ -16,7 +16,7 @@ namespace fpp {
 
     Code MediaSink::init() {
         return_if(inited(), Code::INVALID_CALL_ORDER);
-        log_debug("Initialization.");
+        log_debug("Initialization");
         try_to(_output_format_context.init());
         try_to(setStreams(_output_format_context.streams()));
         setInited(true);
@@ -26,23 +26,22 @@ namespace fpp {
     Code MediaSink::open() {
         return_if(opened(), Code::OK);
         return_if_not(inited(), Code::NOT_INITED);
-        log_debug("Opening.");
+        log_debug("Opening");
         log_info(_output_format_context.mediaResourceLocator() << "\" is opening...");
         try_to(_output_format_context.open());
-        log_info(_output_format_context.mediaResourceLocator() << "\" opened.");
+        log_info(_output_format_context.mediaResourceLocator() << "\" opened");
         setOpened(true);
         return Code::OK;
     }
 
     Code MediaSink::close() {
         return_if(closed(), Code::OK);
-        log_warning("close");
-        log_debug("Closing.");
+        log_debug("Closing");
         try_to(stop());
         if (buferIsEmpty()) {
             stopWait(); //TODO костыль?
         }
-        log_info("Destination: \"" << _output_format_context.mediaResourceLocator() << "\" closed.");
+        log_info("Destination: \"" << _output_format_context.mediaResourceLocator() << "\" closed");
         if (_output_format_context.stream(0)->packetIndex() == 0) {
             log_warning(_output_format_context.mediaResourceLocator() << " closed empty!");
         }
@@ -93,7 +92,6 @@ namespace fpp {
     }
 
     Code MediaSink::onStop() {
-        log_warning("onStop");
         return_if(closed(), Code::INVALID_CALL_ORDER);
         log_debug("onStop");
         try_to(_output_format_context.close()); // Check it

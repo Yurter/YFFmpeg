@@ -69,7 +69,7 @@ void route_simplify_debug() {
     set_log_level(LogLevel::Debug);
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-    ProcessorPointer source = std::make_shared<MediaSource>("video=HP Wide Vision FHD Camera");
+    ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554");
     source->setCloseOnDisconnect(false);
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
@@ -89,6 +89,33 @@ void route_simplify_debug() {
     progress_bar(60);
 }
 
+void memory_leak_test() {
+    PipelinePointer pipeline = std::make_shared<Pipeline>();
+
+    ProcessorPointer source = std::make_shared<MediaSource>("video=HP Wide Vision FHD Camera");
+    source->setCloseOnDisconnect(false);
+
+    if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
+        static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
+    }
+
+//    ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("group_video/timelapse.flv", IOType::Timelapse);
+//    if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
+//        static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
+//    }
+
+    int counter = 0;
+    while (true) {
+        ProcessorPointer sink_event = std::make_shared<MediaSink>("group_video/" + std::to_string(counter++) + "_event.flv", IOType::Event);
+        if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
+            static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
+        }
+//        sink_event->disconnectFrom(sink_event);
+        utils::sleep_for_sec(10);
+        pipeline->remElement(sink_event->uid());
+    }
+}
+
 int main() {
 
     static_log_info("main", "Program started...");
@@ -106,14 +133,21 @@ int main() {
 //        return 0;
 //    }
 
+//    {
+////        set_log_level(LogLevel::Trace);
+//        route_simplify_debug();
+//        return 0;
+//    }
+
     {
-//        set_log_level(LogLevel::Trace);
-        route_simplify_debug();
+        set_log_level(LogLevel::Debug);
+        memory_leak_test();
         return 0;
     }
 
     try {
 
+        // video=HP Wide Vision FHD Camera
         // Webcam C170
         // USB2.0 PC CAMERA
         // rtsp://admin:admin@192.168.10.189:554/ch01.264

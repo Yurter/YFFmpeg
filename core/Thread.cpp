@@ -70,7 +70,7 @@ namespace fpp {
     }
 
     Code Thread::stop() {
-        log_debug("Thread stoping.");
+        log_debug("Thread stoping");
         _stop_flag = true;
         try_to(quit());
         try_to(onStop());
@@ -79,7 +79,7 @@ namespace fpp {
 
     Code Thread::quit() {
         return_if_not(running(), Code::OK);
-        log_debug("Thread quiting.");
+        log_debug("Thread quiting");
         _stop_flag = true; //TODO дублировать из стопа?
         try { /* TODO */
             if (_thread.joinable()) { _thread.join(); }
@@ -96,10 +96,9 @@ namespace fpp {
     }
 
     void Thread::join() const {
-        log_debug("Thread joining.");
-//        while (running()) { utils::sleep_for(MEDIUM_DELAY_MS); }
+        log_debug("Thread joining");
         while (running()) {
-            log_debug("Waiting for thread...");
+            log_debug("Waiting for " << this->name() << "'s thread...");
             utils::sleep_for(MEDIUM_DELAY_MS);
         }
     }

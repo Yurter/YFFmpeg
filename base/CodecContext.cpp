@@ -17,7 +17,7 @@ namespace fpp {
 
     Code CodecContext::init() {
         return_if(inited(), Code::INVALID_CALL_ORDER);
-        log_debug("Initialization.");
+        log_debug("Initialization");
         AVCodec* codec = nullptr;
         switch (_type) { //TODO ref
         case CodecType::Decoder:
@@ -46,7 +46,7 @@ namespace fpp {
 
     Code CodecContext::open() {
         return_if(opened(), Code::INVALID_CALL_ORDER);
-        log_debug("Opening.");
+        log_debug("Opening");
         AVCodec* codec = nullptr;
         switch (_type) { //TODO ref
         case CodecType::Decoder:
@@ -77,7 +77,7 @@ namespace fpp {
 
     Code CodecContext::close() {
         return_if(closed(), Code::INVALID_CALL_ORDER);
-        log_debug("Closing.");
+        log_debug("Closing");
         if (inited_ptr(_codec_context)) {
             // использовать ? avcodec_free_context(_codec_context)
             avcodec_close(_codec_context);

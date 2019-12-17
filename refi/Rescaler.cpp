@@ -10,6 +10,7 @@ namespace fpp {
     }
 
     Rescaler::~Rescaler() {
+        join();
         sws_freeContext(_rescaler_context);
     }
 
@@ -84,6 +85,12 @@ namespace fpp {
                   != other_rescaler->params.in->streamUid(), false);
 
         return true;
+    }
+
+    Code Rescaler::onStop() {
+        log_debug("onStop");
+        stopWait();
+        return Code::OK;
     }
 
 } // namespace fpp

@@ -93,6 +93,20 @@ namespace fpp {
     }
 
     Code Route::destroy() { //TODO
+        _sequence.access([](auto seq){
+            for (auto processor = seq.begin(); processor != seq.end(); processor++) {
+                auto next_processor = std::next(processor);
+                return_if(next_processor == seq.end(), Code::OK);
+
+                static_log_error("debug", "Dis " << (*processor)->name() << " from " << (*next_processor)->name());
+                (*processor)->disconnectFrom(*next_processor);
+
+//                return Code::OK;
+//                return Code::NOT_IMPLEMENTED;
+    //            проверка на оставшийся коннект после дисконекта
+    //                    если конект лист не пуст -> break
+            }
+        });
 //        for (auto processor = _sequence.begin(); processor != _sequence.end(); processor++) {
 //            auto next_processor = std::next(processor);
 //            return_if(next_processor == _sequence.end(), Code::OK);

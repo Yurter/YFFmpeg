@@ -21,6 +21,10 @@ namespace fpp {
 
     private:
 
+        virtual Code        onStop() override;
+
+    private:
+
         SwsContext*         _rescaler_context;
 
     };

@@ -17,7 +17,7 @@ namespace fpp {
 
     Code MediaSource::init() {
         return_if(inited(), Code::INVALID_CALL_ORDER);
-        log_debug("Initialization.");
+        log_debug("Initialization");
         try_to(_input_format_context.init());
         setInited(true);
         return Code::OK;
@@ -28,7 +28,7 @@ namespace fpp {
         log_debug("Opening");
         log_info(_input_format_context.mediaResourceLocator() << "\" is opening...");
         try_to(_input_format_context.open());
-        log_info(_input_format_context.mediaResourceLocator() << "\" opened.");
+        log_info(_input_format_context.mediaResourceLocator() << "\" opened");
         { //TODO refactoring
             try_to(setStreams(_input_format_context.streams()));
             for (auto&& avstream : streams()) { //TODO
@@ -55,12 +55,12 @@ namespace fpp {
 //    }
     Code MediaSource::close() {
         return_if(closed(), Code::OK);
-        log_debug("Closing.");
+        log_debug("Closing");
         try_to(sendEofPacket()); //TODO костыль?
         try_to(stop());
         stopWait(); //TODO костыль?
 //        try_to(_input_format_context.close());
-        log_info("Source: \"" << _input_format_context.mediaResourceLocator() << "\" closed.");
+        log_info("Source: \"" << _input_format_context.mediaResourceLocator() << "\" closed");
         setOpened(false);
         return Code::OK;
     }

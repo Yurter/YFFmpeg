@@ -224,30 +224,18 @@ namespace fpp {
             codec->time_base    = param->timeBase();
             codec->framerate    = video_parameters->frameRate();
 
-            if (auto ret = av_opt_set(codec->priv_data, "crf", "23", 0); ret != 0) {
-                static_log_warning("utils", "av_opt_set crf     failed: " << ret /*<< " - " << av_err2str(ret)*/);
-            }
-            if (auto ret = av_opt_set(codec->priv_data, "preset", "ultrafast", 0); ret != 0) {
-                static_log_warning("utils", "av_opt_set preset  failed: " << ret /*<< " - " << av_err2str(ret)*/);
-            }
-            if (auto ret = av_opt_set(codec->priv_data, "tune", "zerolatency", 0); ret != 0) {
-                static_log_warning("utils", "av_opt_set tune    failed: " << ret /*<< " - " << av_err2str(ret)*/);
-            }
-            if (auto ret = av_opt_set(codec->priv_data, "threads", "0", 0); ret != 0) {
-                static_log_warning("utils", "av_opt_set threads failed: " << ret /*<< " - " << av_err2str(ret)*/);
-            }
-
+            //TODO опции не применяются, лог раздражает
 //            if (auto ret = av_opt_set(codec->priv_data, "crf", "23", 0); ret != 0) {
-//                static_log_warning("utils", "av_opt_set crf failed: " << ret << " - " << av_err2str(ret));
+//                static_log_warning("utils", "av_opt_set crf     failed: " << ret /*<< " - " << av_err2str(ret)*/);
 //            }
 //            if (auto ret = av_opt_set(codec->priv_data, "preset", "ultrafast", 0); ret != 0) {
-//                static_log_warning("utils", "av_opt_set preset failed: " << ret << " - " << av_err2str(ret));
+//                static_log_warning("utils", "av_opt_set preset  failed: " << ret /*<< " - " << av_err2str(ret)*/);
 //            }
 //            if (auto ret = av_opt_set(codec->priv_data, "tune", "zerolatency", 0); ret != 0) {
-//                static_log_warning("utils", "av_opt_set tune failed: " << ret << " - " << av_err2str(ret));
+//                static_log_warning("utils", "av_opt_set tune    failed: " << ret /*<< " - " << av_err2str(ret)*/);
 //            }
 //            if (auto ret = av_opt_set(codec->priv_data, "threads", "0", 0); ret != 0) {
-//                static_log_warning("utils", "av_opt_set threads failed: " << ret << " - " << av_err2str(ret));
+//                static_log_warning("utils", "av_opt_set threads failed: " << ret /*<< " - " << av_err2str(ret)*/);
 //            }
 
     //        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
@@ -265,32 +253,6 @@ namespace fpp {
             break;
         }
     }
-
-//    void utils::parameters_from_context(Parameters* parametres, AVCodecContext* codec) {
-//        parametres->setCodec(codec->codec_id);
-//        parametres->setBitrate(codec->bit_rate);
-
-//        switch (parametres->type()) {
-//        case MediaType::MEDIA_TYPE_VIDEO: {
-//            auto video_parameters = dynamic_cast<VideoParameters*>(parametres);
-//            video_parameters->setPixelFormat(codec->pix_fmt);
-//            video_parameters->setWidth(codec->width);
-//            video_parameters->setHeight(codec->height);
-//    //        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
-//            break;
-//        }
-//        case MediaType::MEDIA_TYPE_AUDIO: {
-//            auto audio_parameters = dynamic_cast<AudioParameters*>(parametres);
-//            audio_parameters->setSampleFormat(codec->sample_fmt);
-//            audio_parameters->setChannelLayout(codec->channel_layout);
-//            audio_parameters->setChannels(codec->channels);
-//            audio_parameters->setSampleRate(codec->sample_rate);
-//            break;
-//        }
-//        case MediaType::MEDIA_TYPE_UNKNOWN:
-//            break;
-//        }
-//    }
 
     //TODO
     void utils::parameters_to_avcodecpar(Parameters* parametres, AVCodecParameters* codecpar) {

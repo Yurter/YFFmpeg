@@ -154,7 +154,6 @@ namespace fpp {
         }
         {
             av_dump_format(_format_context, 0, _media_resource_locator.c_str(), 1);
-            /*log_info("Destination: \"" << _media_resource_locator << "\" opened.");*/ //перенесено в медиасинк
             return Code::OK;
         }
     }

@@ -45,9 +45,9 @@ namespace fpp {
         _data_sinks.remove_if([uid](const auto& sink) { return sink->uid() == uid; });
         _data_sources.remove_if([uid](const auto& source) { return source->uid() == uid; });
 
-//        findRoute(uid)->destroy();
-//        auto cond = [uid](const Route& route){ return route.contains(uid); };
-//        _route_list.erase(std::remove_if(_route_list.begin(), _route_list.end(), cond), _route_list.end());
+        findRoute(uid)->destroy();
+        auto cond = [uid](const Route& route){ return route.contains(uid); };
+        _route_list.erase(std::remove_if(_route_list.begin(), _route_list.end(), cond), _route_list.end());
     }
 
     void Pipeline::dump() const {
@@ -230,7 +230,7 @@ namespace fpp {
         try_to(route.append(findProcessorByUid(output_stream->params->contextUid())));
 
         _route_list.push_back(route);
-        try_to(simplifyRoutes());
+//        try_to(simplifyRoutes());
         try_to(route.init());
         try_to(route.startAll());
 
@@ -502,11 +502,11 @@ namespace fpp {
     }
 
     Route *Pipeline::findRoute(const int64_t uid) { //TODO
-//        for (auto&& route : _route_list) {
-//            if (route.contains(uid)) {
-//                return &route;
-//            }
-//        }
+        for (auto&& route : _route_list) {
+            if (route.contains(uid)) {
+                return &route;
+            }
+        }
         return nullptr;
     }
 

@@ -85,13 +85,13 @@ namespace fpp {
     Code fpp::Processor::connectTo(const ProcessorPointer other) {
         std::lock_guard lock(_proc_mutex);
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
-        if (this->is("Encoder")) {
-            static_log_error("TODO", "0000000000 " << _next_processor_list.size());
-        }
+//        if (this->is("Encoder")) {
+//            static_log_error("TODO", "0000000000 " << _next_processor_list.size());
+//        }
         _next_processor_list.push_back(other);
-        if (this->is("Encoder")) {
-            static_log_error("TODO", "1111111111 " << _next_processor_list.size());
-        }
+//        if (this->is("Encoder")) {
+//            static_log_error("TODO", "1111111111 " << _next_processor_list.size());
+//        }
         log_debug("Connected to " << other->name());
 //        if (running()) {
 //            log_error("running = " << _next_processor_list.size() << " " << other->uid());
@@ -118,6 +118,7 @@ namespace fpp {
         if (_next_processor_list.empty()) {
             if (_close_on_disconnect) {
                 log_info("TODO self destroy"); //TODO заменить return type на void?
+                try_to(stop());
             } else {
                 log_warning("Connection list is empty");
             }

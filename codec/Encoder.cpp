@@ -8,9 +8,13 @@ namespace fpp {
         setName("Encoder");
     }
 
+    Encoder::~Encoder() {
+        join();
+    }
+
     Code Encoder::init() {
         return_if(inited(), Code::INVALID_CALL_ORDER);
-        log_debug("Initialization.");
+        log_debug("Initialization");
         try_to(_encoder_context.init());
         setInited(true);
         return Code::OK;
@@ -18,7 +22,7 @@ namespace fpp {
 
     Code Encoder::open() {
         return_if(opened(), Code::INVALID_CALL_ORDER);
-        log_debug("Opening.");
+        log_debug("Opening");
         try_to(_encoder_context.open());
         setOpened(true);
         return Code::OK;
@@ -26,7 +30,7 @@ namespace fpp {
 
     Code Encoder::close() {
         return_if(closed(), Code::INVALID_CALL_ORDER);
-        log_debug("Closing.");
+        log_debug("Closing");
         try_to(_encoder_context.close());
         setOpened(false);
         return Code::OK;
@@ -54,6 +58,12 @@ namespace fpp {
 
     const EncoderContext* Encoder::encoderContext() const {
         return &_encoder_context;
+    }
+
+    Code Encoder::onStop() {
+        log_debug("onStop");
+        stopWait();
+        return Code::OK;
     }
 
 } // namespace fpp
