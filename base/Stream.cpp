@@ -110,6 +110,17 @@ namespace fpp {
             _packet_index++;
 
             return Code::OK;
+        } else if (mode == StreamCrutch::Tmls) {
+            auto time_delta = _chronometer.elapsed_milliseconds();
+            if (time_delta < 10) {
+                time_delta = 40; /* cructh */
+            }
+            time_delta /= 60;
+            _packet_duration = time_delta;
+            _packet_dts_delta = _packet_pts_delta = _packet_duration;
+            _chronometer.reset_timepoint();
+            _prev_dts += _packet_dts_delta;
+            _prev_pts += _packet_pts_delta;
         } else {
             _prev_dts += _packet_dts_delta;
             _prev_pts += _packet_pts_delta;

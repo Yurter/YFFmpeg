@@ -10,7 +10,8 @@ namespace fpp {
 enum class StreamCrutch {
     None,
     RealTyme,
-    Append
+    Append,
+    Tmls
 };
 
     class Stream : public Data<AVStream*> {

@@ -45,11 +45,18 @@ namespace fpp {
         int64_t out_duration = 0;
         std::ofstream file_crutch;
         file_crutch.open(_output_file_name + ".txt");
+        std::ofstream file_crutch2;
+        file_crutch2.open(_output_file_name + "2.txt");
+        std::ofstream file_crutch3;
+        file_crutch3.open(_output_file_name + "3.txt");
 
         for (auto& [input_file_name, start_point, end_point] : _concat_list) {
             log_debug("File: " << input_file_name << ", "
-                      << "from " << (start_point == FROM_START ? "start" : std::to_string(start_point) + "ms ")
+                      << "from " << (start_point == FROM_START ? "start " : std::to_string(start_point) + "ms ")
                       << "to " << (end_point == FROM_START ? "end" : std::to_string(end_point) + "ms "));
+            file_crutch3 << "File: " << input_file_name << ", "
+                         << "from " << (start_point == FROM_START ? "start " : std::to_string(start_point) + "ms ")
+                         << "to " << (end_point == FROM_START ? "end" : std::to_string(end_point) + "ms ") << std::endl;
 
             MediaSource input_file(input_file_name);
             input_file.setStartPoint(start_point);
@@ -64,11 +71,19 @@ namespace fpp {
             input_file.join();
             try_to(input_file.disconnectFrom(&output_file));
 
+//            while (out_duration == output_file.stream(0)->parameters->duration()) {
+//                utils::sleep_for_ms(50);
+//            }
+
             file_crutch << input_file_name << '\t'
                         << out_duration + (start_point == FROM_START ? 0 : start_point) << '\t'
                         << out_duration + (end_point == TO_END ? input_file.stream(0)->parameters->duration() : end_point) << '\n';
 
-            out_duration += output_file.stream(0)->parameters->duration();
+            out_duration = output_file.stream(0)->parameters->duration();
+            file_crutch2 << "out_duration = " << out_duration << '\n';
+
+            Code ret = input_file.exitCode();
+            return_if(utils::error_code(ret), ret);
         }
 
         Packet eof_packet;

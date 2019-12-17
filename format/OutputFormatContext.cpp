@@ -73,7 +73,7 @@ namespace fpp {
             video_parameters->setCodec("libx264", CodecType::Encoder);
 //            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
 //            video_parameters->setCodec("h264_qsv", CodecType::Encoder);
-//            video_parameters->setFrameRate({ 23, 1 }); //TODO
+            video_parameters->setFrameRate({ 15, 1 }); //TODO
 //            video_parameters->setTimeBase({ 1, 1000 });
 //            video_parameters->setPixelFormat(AV_PIX_FMT_NV12);
 //            video_parameters->setPixelFormat(AV_PIX_FMT_BGR24);
