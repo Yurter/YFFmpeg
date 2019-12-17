@@ -33,6 +33,12 @@ void start_debug_timeout(MediaSource* source, int delay) {
 
 int main() {
 
+    AsyncDiscardAmountQueue<int> test;
+
+    test.for_each([](int& i) {
+        //
+    });
+
     static_log_info("main", "Program started...");
 
 //    Concatenator concatenator("sausage.flv", {
