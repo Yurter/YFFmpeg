@@ -24,8 +24,7 @@ namespace fpp {
         ProcessorPointer output_file = std::make_shared<MediaSink>(_output_file_name, IOType::Event); /* crutch: preset */
         try_to(output_file->init());
 
-        auto temp_ptr = std::dynamic_pointer_cast<MediaSink>(output_file);
-        temp_ptr->setMode(StreamCrutch::Append);
+        output_file->stream(0)->setStampType(StampType::Append);
 
         { /* crutch */
             log_info("Initing stream");

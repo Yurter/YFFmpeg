@@ -120,6 +120,9 @@ namespace fpp {
 //        stream(0)->parameters->increaseDuration(input_data.duration()); //TODO
         stream(0)->params->increaseDuration(stream(0)->packet_duration()); //TODO
 //        log_error("writed" << input_data);
+
+        try_to(stream(0)->stampPacket(input_data));
+        log_debug(input_data);
         return Code::OK;
     }
 

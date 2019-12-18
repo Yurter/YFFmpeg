@@ -10,16 +10,16 @@ namespace fpp {
     }
 
     Stream::Stream(AVStream* stream, Parameters* param) :
-        Data<AVStream*>(stream, param->type()),
-        params(param),
-        _used(false),
-//        _context(nullptr),
-        _prev_dts(DEFAULT_INT),
-        _prev_pts(DEFAULT_INT),
-        _packet_index(DEFAULT_INT),
-        _packet_dts_delta(INVALID_INT),
-        _packet_pts_delta(INVALID_INT),
-        _packet_duration(INVALID_INT)
+        Data<AVStream*>(stream, param->type())
+        , params(param)
+        , _used(false)
+        , _stamp_type(StampType::ConstantFramerate)
+        , _prev_dts(DEFAULT_INT)
+        , _prev_pts(DEFAULT_INT)
+        , _packet_index(DEFAULT_INT)
+        , _packet_dts_delta(INVALID_INT)
+        , _packet_pts_delta(INVALID_INT)
+        , _packet_duration(INVALID_INT)
     {
         setName("Stream");
     }
@@ -50,17 +50,25 @@ namespace fpp {
         return str;
     }
 
-    Code Stream::stampPacket(Packet& packet, StampType stamp_type) {
-        switch (stamp_type) {
-        case StampType::CBR:
-            return Code::OK;
-        case StampType::Copy:
-            return Code::OK;
-        case StampType::Convert:
+    Code Stream::stampPacket(Packet& packet) {
+        switch (_stamp_type) {
+        case StampType::ConstantFramerate: /* Константный фреймрейт */
+            break;
+        case StampType::VariableFramerate: /* Переменный фреймрейт  */
+            break;
+        case StampType::Append: { /* Используется при склейки файлов */
+            auto new_pts = packet.pts() + _pts_offset;
+            if (new_pts <= _prev_pts) {
+                _pts_offset = params->duration();
+                new_pts = packet.pts() + _pts_offset;
+            }
+            _packet_duration = new_pts - _prev_pts;
+            break;
+        }
+        case StampType::Convert: //TODO
             packet.setPts(av_rescale_q(packet.pts(), DEFAULT_TIME_BASE, params->timeBase()));
-            _packet_index++;
-            return Code::OK;
-        case StampType::Realtime:
+            break;
+        case StampType::Realtime: { /* Временные штампы реального времени */
             if (_packet_index == 0) { //TODO
                 _chronometer.reset_timepoint();
                 _packet_duration = 40;
@@ -70,12 +78,21 @@ namespace fpp {
             _packet_dts_delta = _packet_duration;
             _packet_dts_delta = _packet_duration;
             _chronometer.reset_timepoint();
-            _prev_dts += _packet_dts_delta;
-            _prev_pts += _packet_pts_delta;
-            _packet_index++;
-            return Code::OK;
+            break;
         }
-        return Code::INVALID_INPUT;
+        }
+
+        packet.setDts(_prev_dts);
+        packet.setPts(_prev_pts);
+        packet.setDuration(_packet_duration);
+        packet.setPos(-1);
+        params->increaseDuration(_packet_duration);
+
+        _prev_dts += _packet_dts_delta;
+        _prev_pts += _packet_pts_delta;
+        _packet_index++;
+
+        return Code::OK;
     }
 
 //    Code Stream::stampPacket(Packet& packet, StreamCrutch mode) { //TODO штампы в реалтайме
@@ -100,69 +117,69 @@ namespace fpp {
 
 //        return Code::OK;
 //    }
-    Code Stream::stampPacket(Packet& packet, StreamCrutch mode) { //TODO штампы в реалтайме
-        return_if(packet.type() != type(), Code::INVALID_INPUT);
+//    Code Stream::stampPacket(Packet& packet, StreamCrutch mode) { //TODO штампы в реалтайме
+//        return_if(packet.type() != type(), Code::INVALID_INPUT);
 
-        if (_packet_index == 0) {
-            _chronometer.reset_timepoint();
-        }
+//        if (_packet_index == 0) {
+//            _chronometer.reset_timepoint();
+//        }
 
-        if ((_packet_index != 0) && (mode == StreamCrutch::RealTyme)) {
-            auto time_delta = _chronometer.elapsed_milliseconds();
-            if (time_delta < 10) {
-                time_delta = 40; /* cructh */
-            }
-            _packet_duration = time_delta;
-            _packet_dts_delta = _packet_pts_delta = _packet_duration;
-            _chronometer.reset_timepoint();
-            _prev_dts += _packet_dts_delta;
-            _prev_pts += _packet_pts_delta;
-        } else if (mode == StreamCrutch::Append) {
-            auto new_pts = packet.pts() + _local_pts;
-            if (new_pts < _prev_pts) {
-                _local_pts = params->duration();
-                new_pts = packet.pts() + _local_pts;
-            }
-            _packet_duration = (new_pts - _prev_pts) == 0 ? 10 : (new_pts - _prev_pts);
-            params->increaseDuration(_packet_duration);
+//        if ((_packet_index != 0) && (mode == StreamCrutch::RealTyme)) {
+//            auto time_delta = _chronometer.elapsed_milliseconds();
+//            if (time_delta < 10) {
+//                time_delta = 40; /* cructh */
+//            }
+//            _packet_duration = time_delta;
+//            _packet_dts_delta = _packet_pts_delta = _packet_duration;
+//            _chronometer.reset_timepoint();
+//            _prev_dts += _packet_dts_delta;
+//            _prev_pts += _packet_pts_delta;
+//        } else if (mode == StreamCrutch::Append) {
+//            auto new_pts = packet.pts() + _local_pts;
+//            if (new_pts < _prev_pts) {
+//                _local_pts = params->duration();
+//                new_pts = packet.pts() + _local_pts;
+//            }
+//            _packet_duration = (new_pts - _prev_pts) == 0 ? 10 : (new_pts - _prev_pts);
+//            params->increaseDuration(_packet_duration);
 
-            packet.setDts(new_pts);
-            packet.setPts(new_pts);
-            packet.setDuration(_packet_duration);
-            packet.setPos(-1);
+//            packet.setDts(new_pts);
+//            packet.setPts(new_pts);
+//            packet.setDuration(_packet_duration);
+//            packet.setPos(-1);
 
-            _prev_dts = packet.pts();
-            _prev_pts = packet.pts();
-            _packet_index++;
+//            _prev_dts = packet.pts();
+//            _prev_pts = packet.pts();
+//            _packet_index++;
 
-            return Code::OK;
-        } else if (mode == StreamCrutch::Tmls) {
-            auto time_delta = _chronometer.elapsed_milliseconds();
-            if (time_delta < 10) {
-                time_delta = 40; /* cructh */
-            }
-            time_delta /= 60;
-            _packet_duration = time_delta;
-            _packet_dts_delta = _packet_pts_delta = _packet_duration;
-            _chronometer.reset_timepoint();
-            _prev_dts += _packet_dts_delta;
-            _prev_pts += _packet_pts_delta;
-        } else {
-            _prev_dts += _packet_dts_delta;
-            _prev_pts += _packet_pts_delta;
-        }
+//            return Code::OK;
+//        } else if (mode == StreamCrutch::Tmls) {
+//            auto time_delta = _chronometer.elapsed_milliseconds();
+//            if (time_delta < 10) {
+//                time_delta = 40; /* cructh */
+//            }
+//            time_delta /= 60;
+//            _packet_duration = time_delta;
+//            _packet_dts_delta = _packet_pts_delta = _packet_duration;
+//            _chronometer.reset_timepoint();
+//            _prev_dts += _packet_dts_delta;
+//            _prev_pts += _packet_pts_delta;
+//        } else {
+//            _prev_dts += _packet_dts_delta;
+//            _prev_pts += _packet_pts_delta;
+//        }
 
-        packet.setDts(_prev_dts);
-        packet.setPts(_prev_pts);
-        packet.setDuration(_packet_duration);
-        packet.setPos(-1);
+//        packet.setDts(_prev_dts);
+//        packet.setPts(_prev_pts);
+//        packet.setDuration(_packet_duration);
+//        packet.setPos(-1);
 
-        _packet_index++;
+//        _packet_index++;
 
-        params->increaseDuration(_packet_duration);
+//        params->increaseDuration(_packet_duration);
 
-        return Code::OK;
-    }
+//        return Code::OK;
+//    }
 
     void Stream::setUsed(bool value) {
         _used = value;

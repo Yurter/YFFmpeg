@@ -118,6 +118,13 @@ void memory_leak_test() {
 
 int main() {
 
+    // video=HP Wide Vision FHD Camera
+    // video=Webcam C170
+    // video=USB2.0 PC CAMERA
+    // rtsp://admin:admin@192.168.10.189:554/ch01.264
+    // rtsp://admin:Admin2019@192.168.10.12:554
+    // rtsp://admin:admin@192.168.10.3:554
+
     static_log_info("main", "Program started...");
     avdevice_register_all(); //TODO вызов необходим для работы USB-камер, перенести
 
@@ -149,29 +156,29 @@ int main() {
         set_log_level(LogLevel::Debug);
         PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-        ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:admin@192.168.10.3:554");
+        ProcessorPointer source = std::make_shared<MediaSource>("video=HP Wide Vision FHD Camera");
         source->setCloseOnDisconnect(false);
 
         if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
             static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
         }
 
-        ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("group_video/timelapse.flv", IOType::Timelapse);
-        if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
-            static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
+        ProcessorPointer sink_event = std::make_shared<MediaSink>("group_video/event.flv", IOType::Event);
+        if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
+            static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
         }
+
+//        ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("group_video/timelapse.flv", IOType::Timelapse);
+//        if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
+//            static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
+//        }
 
         utils::sleep_for_min(5);
     }
 
     try {
 
-        // video=HP Wide Vision FHD Camera
-        // Webcam C170
-        // USB2.0 PC CAMERA
-        // rtsp://admin:admin@192.168.10.189:554/ch01.264
-        // rtsp://admin:Admin2019@192.168.10.12:554
-        // rtsp://admin:admin@192.168.10.3:554
+
 
 //        {
 //            Pipeline* pipeline = new Pipeline;

@@ -38,7 +38,6 @@ namespace fpp {
         Code ret = _decoder_context.decode(input_data, decoded_frame);
         return_if(utils::exit_code(ret), ret);
         if (ret == Code::OK) {
-            log_debug(decoded_frame);
             try_to(sendOutputData(decoded_frame));
         }
         return ret;

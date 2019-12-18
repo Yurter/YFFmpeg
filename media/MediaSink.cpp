@@ -7,10 +7,6 @@ namespace fpp {
         _output_format_context(mrl, /*this,*/ preset)
     {
         setName("MediaSink");
-        //TODO
-        if (preset == IOType::Timelapse) {
-            setMode(StreamCrutch::Tmls);
-        }
     }
 
     MediaSink::~MediaSink() {
@@ -73,7 +69,7 @@ namespace fpp {
 
     Code MediaSink::processInputData(Packet input_data) {
         if (input_data.isVideo()) { //Debug if
-            try_to(_output_format_context.stream(input_data.streamIndex())->stampPacket(input_data, _mode));
+            try_to(_output_format_context.stream(input_data.streamIndex())->stampPacket(input_data));
             if (_output_format_context.mediaResourceLocator() == std::string("group_video/event.flv")) {
 //                log_warning("packetIndex = " << _output_format_context.stream(input_data.streamIndex())->packetIndex());
             }
