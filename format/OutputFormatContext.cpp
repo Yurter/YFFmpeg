@@ -77,7 +77,7 @@ namespace fpp {
 //            video_parameters->setTimeBase({ 1, 1000 });
 //            video_parameters->setPixelFormat(AV_PIX_FMT_NV12);
 //            video_parameters->setPixelFormat(AV_PIX_FMT_BGR24);
-            video_parameters->setContextUid(uid());
+//            video_parameters->setContextUid(uid());
             try_to(createStream(video_parameters));
             break;
         }
@@ -165,7 +165,7 @@ namespace fpp {
             return Code::ERR;
         }
         avio_close(_format_context->pb);
-        log_info("Destination: \"" << _media_resource_locator << "\" closed.");
+        log_info("Destination: \"" << _media_resource_locator << "\" closed");
         return Code::OK;
     }
 

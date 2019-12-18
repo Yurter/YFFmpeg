@@ -72,7 +72,6 @@ namespace fpp {
         void access(const std::function<void(std::list<Type>&)>&& foo) {
             std::lock_guard<std::mutex> lock(_list_mutex);
             foo(_list);
-
         }
 
         auto for_each(std::function<void(Type&)> foo) {

@@ -16,12 +16,12 @@ namespace fpp {
         setName("Logger");
 //        av_log_set_callback(log_callback); //TODO later
         setFFmpegLogLevel(LogLevel::Error);
-        print(this->name(), code_pos, LogLevel::Info, "Logger opened.");
+        print(this->name(), code_pos, LogLevel::Info, "Logger opened");
         openFile(log_dir);
     }
 
     Logger::~Logger() {
-        print(this->name(), code_pos, LogLevel::Info, "Logger closed.");
+        print(this->name(), code_pos, LogLevel::Info, "Logger closed");
         av_log_set_callback(nullptr);
         closeFile();
     }

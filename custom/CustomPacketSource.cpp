@@ -33,7 +33,7 @@ namespace fpp {
         try_to(sendEofPacket()); //TODO костыль?
         try_to(stop());
         stopWait(); //TODO костыль?
-        log_info("Source: \"" << _source_name << "\" closed.");
+        log_info("Source: \"" << _source_name << "\" closed");
         setOpened(false);
         return Code::OK;
     }

@@ -44,15 +44,6 @@ namespace fpp {
         return Code::OK;
     }
 
-//    Code MediaSource::close() {
-//        log_debug("Closing.");
-//        return_if(closed(), Code::OK);
-//        try_to(sendEofPacket());
-//        try_to(_input_format_context.close());
-//        setOpened(false);
-//        log_info("Source: \"" << _input_format_context.mediaResourceLocator() << "\" closed.");
-//        return Code::OK;
-//    }
     Code MediaSource::close() {
         return_if(closed(), Code::OK);
         log_debug("Closing");
