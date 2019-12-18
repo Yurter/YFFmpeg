@@ -10,6 +10,7 @@ namespace fpp {
 
     Pipeline::~Pipeline() {
         try_throw(stop());
+        join();
     }
 
     Code Pipeline::addElement(ProcessorPointer processor) { //TODO каша из кода
@@ -103,7 +104,10 @@ namespace fpp {
 
     Code Pipeline::onStop() {
         log_info("Stopping...");
-        try_to(stopProcesors());
+//        try_to(stopProcesors());
+        _data_sources.for_each([](auto& source){
+            try_throw_static(source->stop());
+        });
         log_info("Processing finished.");
         return Code::OK;
     }
@@ -115,8 +119,18 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Pipeline::stopProcesors() { //TODO
-        _data_sinks.for_each([](const auto& sink) {
+//    Code Pipeline::stopProcesors() { //TODO
+//        _data_sinks.for_each([](const auto& sink) {
+//            try_throw_static(sink->stop());
+//        });
+//        return Code::OK;
+//    }
+
+    Code Pipeline::joinProcesors() {
+        _data_sources.for_each([](auto& source) {
+            try_throw_static(source->stop());
+        });
+        _data_sinks.for_each([](auto& sink) {
             try_throw_static(sink->stop());
         });
         return Code::OK;

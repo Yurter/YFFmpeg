@@ -26,9 +26,9 @@ namespace fpp {
     Code MediaSource::open() {
         return_if(opened(), Code::INVALID_CALL_ORDER);
         log_debug("Opening");
-        log_info(_input_format_context.mediaResourceLocator() << "\" is opening...");
+        log_info('"' << _input_format_context.mediaResourceLocator() << "\" is opening...");
         try_to(_input_format_context.open());
-        log_info(_input_format_context.mediaResourceLocator() << "\" opened");
+        log_info('"' << _input_format_context.mediaResourceLocator() << "\" opened");
         { //TODO refactoring
             try_to(setStreams(_input_format_context.streams()));
             for (auto&& avstream : streams()) { //TODO
@@ -118,9 +118,13 @@ namespace fpp {
         input_data.setType(packet_stream->type());
         input_data.setStreamUid(packet_stream->params->streamUid());
 //        stream(0)->parameters->increaseDuration(input_data.duration()); //TODO
-        stream(0)->params->increaseDuration(stream(0)->packet_duration()); //TODO
+//        stream(0)->params->increaseDuration(stream(0)->packet_duration()); //TODO
 //        log_error("writed" << input_data);
 
+        if ((stream(0)->params->streamIndex() == 0)
+                && (input_data.pts() == 0)) {
+           stream(0)->setStampType(StampType::Copy); /* ? */
+        }
         try_to(stream(0)->stampPacket(input_data));
 //        log_debug(input_data);
         return Code::OK;
@@ -144,7 +148,7 @@ namespace fpp {
     Code MediaSource::onStop() {
         return_if(closed(), Code::INVALID_CALL_ORDER);
         log_debug("onStop");
-//        try_to(close());
+        try_to(sendEofPacket());
         try_to(_input_format_context.close());
         return Code::OK;
     }

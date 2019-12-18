@@ -56,6 +56,10 @@ namespace fpp {
             break;
         case StampType::VariableFramerate: /* Переменный фреймрейт  */
             break;
+        case StampType::Copy: /* Не менять параметры пакета */ //TODO
+            params->increaseDuration(_packet_duration);
+            _packet_index++;
+            return Code::OK;
         case StampType::Append: { /* Используется при склейки файлов */
             auto new_pts = packet.pts() + _pts_offset;
             if (new_pts <= _prev_pts) {

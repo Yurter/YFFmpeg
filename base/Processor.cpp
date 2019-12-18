@@ -73,7 +73,6 @@ namespace fpp {
         _close_on_disconnect = value;
     }
 
-
     void Processor::setDiscardType(MediaType type) {
         _discard_types |= type;
     }

@@ -19,6 +19,8 @@ namespace fpp {
 //        /* Object */
 //        const std::string name_without_namespace = name_with_namespace.substr(name_with_namespace.find_last_of(':') + 1);
 //        return name_without_namespace;
+        /* ^ Криво работает в момент удаления объекта: имя меняется по мере срабатывания деструкторов */
+        /* ^ мб устанавливать единожды... */
         return _name;
     }
 

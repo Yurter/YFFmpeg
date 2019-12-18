@@ -12,6 +12,7 @@ namespace fpp {
         virtual ~CodecContext() override;
 
         virtual Code        initParams() = 0;
+//        virtual Code        flush() = 0; //TODO (отправлять кодеку NULL)
         virtual Code        init() override;
 
         Code                open();

@@ -156,8 +156,7 @@ int main() {
         set_log_level(LogLevel::Debug);
         PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-        ProcessorPointer source = std::make_shared<MediaSource>("video=HP Wide Vision FHD Camera");
-        source->setCloseOnDisconnect(false);
+        ProcessorPointer source = std::make_shared<MediaSource>("webcam.flv");
 
         if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
             static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));

@@ -14,6 +14,7 @@ namespace fpp {
     enum class StampType {
         ConstantFramerate,
         VariableFramerate,
+        Copy,
         Append,
         Convert,
         Realtime,

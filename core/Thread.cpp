@@ -98,7 +98,7 @@ namespace fpp {
     void Thread::join() const {
         log_debug("Thread joining");
         while (running()) {
-            log_debug("Waiting for " << this->name() << "'s thread...");
+            log_debug("Waiting for thread...");
             utils::sleep_for(MEDIUM_DELAY_MS);
         }
         log_debug("Thread joined");
