@@ -72,8 +72,8 @@ namespace fpp {
             break;
         }
         case StampType::Convert: {
-            _prev_pts = av_rescale_q(packet.pts(), DEFAULT_TIME_BASE, params->timeBase());
-            _prev_dts = av_rescale_q(packet.dts(), DEFAULT_TIME_BASE, params->timeBase());
+//            _prev_pts = av_rescale_q(packet.pts(), DEFAULT_TIME_BASE, params->timeBase());
+//            _prev_dts = av_rescale_q(packet.dts(), DEFAULT_TIME_BASE, params->timeBase());
             _packet_duration = packet.pts() - _prev_pts;
             _packet_dts_delta = _packet_duration;
             _packet_pts_delta = _packet_duration;
@@ -94,14 +94,16 @@ namespace fpp {
         }
         }
 
-        packet.setDts(_prev_dts);
-        packet.setPts(_prev_pts);
+//        packet.setDts(_prev_dts);
+//        packet.setPts(_prev_pts);
         packet.setDuration(_packet_duration);
         packet.setPos(-1);
         params->increaseDuration(_packet_duration);
 
-        _prev_dts += _packet_dts_delta;
-        _prev_pts += _packet_pts_delta;
+//        _prev_dts += _packet_dts_delta;
+//        _prev_pts += _packet_pts_delta;
+        _prev_dts = packet.dts();
+        _prev_pts = packet.pts();
         _packet_index++;
 
         return Code::OK;
