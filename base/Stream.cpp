@@ -92,11 +92,11 @@ namespace fpp {
         } else if (mode == StreamCrutch::Append) {
             auto new_pts = packet.pts() + _local_pts;
             if (new_pts < _prev_pts) {
-                _local_pts = parameters->duration();
+                _local_pts = params->duration();
                 new_pts = packet.pts() + _local_pts;
             }
             _packet_duration = (new_pts - _prev_pts) == 0 ? 10 : (new_pts - _prev_pts);
-            parameters->increaseDuration(_packet_duration);
+            params->increaseDuration(_packet_duration);
 
             packet.setDts(new_pts);
             packet.setPts(new_pts);

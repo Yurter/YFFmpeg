@@ -7,6 +7,7 @@
 #include <Windows.h>
 #include <ctime>
 #include <filesystem>
+#include <regex>
 
 namespace fpp {
 
@@ -77,7 +78,7 @@ namespace fpp {
         return std::string(buffer);
     }
 
-    std::string Logger::formatMessage(std::string caller_name, const std::string &code_position, LogLevel log_level, const std::string& message) {
+    std::string Logger::formatMessage(std::string caller_name, const std::string& code_position, LogLevel log_level, const std::string& message) {
         std::string header;
 
         const size_t max_name_length = 20;
@@ -97,7 +98,7 @@ namespace fpp {
         }
         if (log_level >= LogLevel::Trace) {
             header += "\n";
-            header += (std::stringstream() << TAB << std::setw(message_offset) << std::left << "Code position: " << code_position).str();
+            header += (std::stringstream() << TAB << std::setw(message_offset) << std::left << "Code position: " << shortenCodePosition(code_position)).str();
             header += "\n";
             header += (std::stringstream() << TAB << std::setw(message_offset) << std::left << "Message: ").str();
         }
@@ -180,6 +181,26 @@ namespace fpp {
             return "   ";
         }
         return "?";
+    }
+
+    std::string Logger::shortenCodePosition(const std::string& value) const {
+        /* fpp::TemplateProcessor<class fpp::Packet,class fpp::Packet>::sendOutputData::<lambda_c571b16bdc37e6ce04bdf51947bc2df9>::operator () */
+        /* fpp::TemplateProcessor<T1,T2>::sendOutputData::<lambda_df9>::operator () */
+        std::string result = value;
+        { /* shortening lambda */
+            const std::string keyword_lambda = "lambda_";
+            const int visible_part_of_address = 3;
+            const int lambda_address_lingth = 32;
+            if (size_t pos = value.find(keyword_lambda); pos != std::string::npos) {
+                result.erase(pos + keyword_lambda.length(), lambda_address_lingth - visible_part_of_address);
+            }
+        }
+        { /* shortening template arguments */
+//            int template_count = 0;
+//            const std::string keyword_class = "class";
+//            const std::string keyword_comma = ",";
+        }
+        return result;
     }
 
     Logger& Logger::instance(std::string log_dir) {

@@ -24,7 +24,8 @@ namespace fpp {
         ProcessorPointer output_file = std::make_shared<MediaSink>(_output_file_name, IOType::Event); /* crutch: preset */
         try_to(output_file->init());
 
-        output_file.setMode(StreamCrutch::Append);
+        auto temp_ptr = std::dynamic_pointer_cast<MediaSink>(output_file);
+        temp_ptr->setMode(StreamCrutch::Append);
 
         { /* crutch */
             log_info("Initing stream");
@@ -70,7 +71,7 @@ namespace fpp {
             try_to(input_file.connectTo(output_file));
             try_to(input_file.start());
             input_file.join();
-            try_to(input_file.disconnectFrom(&output_file));
+            try_to(input_file.disconnectFrom(output_file));
 
 //            while (out_duration == output_file.stream(0)->parameters->duration()) {
 //                utils::sleep_for_ms(50);
@@ -79,7 +80,7 @@ namespace fpp {
 //            file_crutch << input_file_name << '\t'
 //                        << out_duration + (start_point == FROM_START ? 0 : start_point) << '\t'
 //                        << out_duration + (end_point == TO_END ? input_file.stream(0)->parameters->duration() : end_point) << '\n';
-            out_duration = output_file.stream(0)->parameters->duration();
+            out_duration = output_file->stream(0)->params->duration();
 
             file_crutch << input_file_name << '\t'
                         << old_out_duration << '\t'
@@ -95,7 +96,7 @@ namespace fpp {
 
         Packet eof_packet;
         eof_packet.setType(MediaType::MEDIA_TYPE_VIDEO);
-        try_to(output_file.push(&eof_packet));
+        try_to(output_file->push(&eof_packet));
 
         file_crutch.close();
 

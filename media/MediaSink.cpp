@@ -7,6 +7,10 @@ namespace fpp {
         _output_format_context(mrl, /*this,*/ preset)
     {
         setName("MediaSink");
+        //TODO
+        if (preset == IOType::Timelapse) {
+            setMode(StreamCrutch::Tmls);
+        }
     }
 
     MediaSink::~MediaSink() {

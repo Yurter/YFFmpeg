@@ -54,6 +54,7 @@ namespace fpp {
         static void         log_callback(void* ptr, int level, const char* fmt, va_list vl);
         static LogLevel     convert_log_level(int ffmpeg_level);
         std::string         encodeLogLevel(LogLevel value);
+        std::string         shortenCodePosition(const std::string& value) const;
 
     private:
 
