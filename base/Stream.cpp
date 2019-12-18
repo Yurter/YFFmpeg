@@ -50,6 +50,34 @@ namespace fpp {
         return str;
     }
 
+    Code Stream::stampPacket(Packet& packet, StampType stamp_type) {
+        switch (stamp_type) {
+        case StampType::CBR:
+            return Code::OK;
+        case StampType::Copy:
+            return Code::OK;
+        case StampType::Convert:
+            packet.setPts(av_rescale_q(packet.pts(), DEFAULT_TIME_BASE, params->timeBase()));
+            _packet_index++;
+            return Code::OK;
+        case StampType::Realtime:
+            if (_packet_index == 0) { //TODO
+                _chronometer.reset_timepoint();
+                _packet_duration = 40;
+            } else {
+                _packet_duration = _chronometer.elapsed_milliseconds();
+            }
+            _packet_dts_delta = _packet_duration;
+            _packet_dts_delta = _packet_duration;
+            _chronometer.reset_timepoint();
+            _prev_dts += _packet_dts_delta;
+            _prev_pts += _packet_pts_delta;
+            _packet_index++;
+            return Code::OK;
+        }
+        return Code::INVALID_INPUT;
+    }
+
 //    Code Stream::stampPacket(Packet& packet, StreamCrutch mode) { //TODO штампы в реалтайме
 //        return_if(packet.type() != type(), Code::INVALID_INPUT);
 

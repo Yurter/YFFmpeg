@@ -11,12 +11,19 @@ namespace fpp {
     class Processor;
     using ProcessorPointer = std::shared_ptr<Processor>;
 
-enum class StreamCrutch {
-    None,
-    RealTyme,
-    Append,
-    Tmls
-};
+    enum class StreamCrutch {
+        None,
+        RealTyme,
+        Append,
+        Tmls
+    };
+
+    enum class StampType {
+        CBR,
+        Copy,
+        Convert,
+        Realtime,
+    };
 
     class Stream : public Data<AVStream*> {
 
@@ -30,7 +37,7 @@ enum class StreamCrutch {
 
         virtual Code        init() override;
         virtual std::string toString() const override final;
-        virtual Code        stampPacket(Packet& packet, StreamCrutch mode = StreamCrutch::None) final;
+        Code                stampPacket(Packet& packet, StampType stamp_type);
 
         void                setUsed(bool value);
 

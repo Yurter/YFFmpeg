@@ -146,7 +146,7 @@ int main() {
 //    }
 
     {
-//        set_log_level(LogLevel::Trace);
+        set_log_level(LogLevel::Debug);
         PipelinePointer pipeline = std::make_shared<Pipeline>();
 
         ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:admin@192.168.10.3:554");
