@@ -1,5 +1,6 @@
 #pragma once
 #include "Parameters.hpp"
+#include "core/Chronometer.hpp"
 #include "Packet.hpp"
 #include <vector>
 #include <list>
@@ -9,6 +10,13 @@ namespace fpp {
     //TODO
     class Processor;
     using ProcessorPointer = std::shared_ptr<Processor>;
+
+enum class StreamCrutch {
+    None,
+    RealTyme,
+    Append,
+    Tmls
+};
 
     class Stream : public Data<AVStream*> {
 
@@ -22,7 +30,7 @@ namespace fpp {
 
         virtual Code        init() override;
         virtual std::string toString() const override final;
-        virtual Code        stampPacket(Packet& packet) final;
+        virtual Code        stampPacket(Packet& packet, StreamCrutch mode = StreamCrutch::None) final;
 
         void                setUsed(bool value);
 
@@ -44,6 +52,8 @@ namespace fpp {
 
         virtual void        parseParameters();
 
+        Chronometer         _chronometer; //TODO
+
     protected:
 
         bool                _used;
@@ -55,6 +65,8 @@ namespace fpp {
         int64_t             _packet_dts_delta;
         int64_t             _packet_pts_delta;
         int64_t             _packet_duration;
+
+        int64_t             _local_pts = 0;
 
     };
 

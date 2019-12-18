@@ -19,6 +19,8 @@ namespace fpp {
 
         const OutputFormatContext* outputFormatContext() const;
 
+        void setMode(StreamCrutch mode) { _mode = mode; }
+
     private:
 
         virtual Code        processInputData(Packet input_data) override;
@@ -28,6 +30,8 @@ namespace fpp {
     private:
 
         OutputFormatContext _output_format_context;
+
+        StreamCrutch _mode = StreamCrutch::None;
 
     };
 
