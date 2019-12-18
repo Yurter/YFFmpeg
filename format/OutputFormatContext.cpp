@@ -165,7 +165,7 @@ namespace fpp {
             return Code::ERR;
         }
         avio_close(_format_context->pb);
-        log_info("Destination: \"" << _media_resource_locator << "\" closed");
+//        log_info("Destination: \"" << _media_resource_locator << "\" closed");
         return Code::OK;
     }
 

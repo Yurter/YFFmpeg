@@ -63,9 +63,6 @@ namespace fpp {
         StreamVector        _streams;
         std::string         _meta_data;
 
-    protected:
-        std::mutex  _proc_mutex;
-
     };
 
 } // namespace fpp

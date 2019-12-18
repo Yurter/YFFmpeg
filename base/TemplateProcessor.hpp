@@ -78,10 +78,6 @@ namespace fpp {
         }
 
         Code sendOutputData(const outType& output_data) {
-            std::lock_guard lock(_proc_mutex);
-//            if (this->is("Encoder")) {
-//                static_log_error("TODO", "Sending data to " << _next_processor_list.size());
-//            }
             _next_processor_list.for_each([&output_data,this](auto& next_processor) {
                 static_log_trace("TODO", "Sending data to " << next_processor->name());
                 try_throw_static(next_processor->push(&output_data));

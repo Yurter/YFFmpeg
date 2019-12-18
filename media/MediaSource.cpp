@@ -98,7 +98,7 @@ namespace fpp {
         return_if(_input_format_context.closed(), Code::ERR); //TODO сорс читает после закрытия.. или до..
         if (int ret = av_read_frame(_input_format_context.mediaFormatContext(), &input_data.raw()); ret != 0) {
             return_info_if(ret == AVERROR_EOF
-                           , "Source reading completed."
+                           , "Source reading completed"
                            , Code::END_OF_FILE);
             log_error("Cannot read source: \"" << _input_format_context.mediaResourceLocator() << "\". Error " << ret);
             return Code::FFMPEG_ERROR;

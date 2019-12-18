@@ -235,7 +235,7 @@ int main() {
 //            }
 //        }
 
-        static_log_info("main", "Program finished.");
+        static_log_info("main", "Program finished");
 
     }
     catch (std::exception e) {

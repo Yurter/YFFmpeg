@@ -82,7 +82,6 @@ namespace fpp {
     }
 
     Code fpp::Processor::connectTo(const ProcessorPointer other) {
-        std::lock_guard lock(_proc_mutex);
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
 //        if (this->is("Encoder")) {
 //            static_log_error("TODO", "0000000000 " << _next_processor_list.size());
@@ -99,7 +98,6 @@ namespace fpp {
     }
 
     Code Processor::disconnectFrom(const ProcessorPointer other) {
-        std::lock_guard lock(_proc_mutex);
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
         if (this->is("MediaSource")) {
             static_log_error("TODO", "dis_0 " << _next_processor_list.size());
