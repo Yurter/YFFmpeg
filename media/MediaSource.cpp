@@ -122,7 +122,7 @@ namespace fpp {
 //        log_error("writed" << input_data);
 
         try_to(stream(0)->stampPacket(input_data));
-        log_debug(input_data);
+//        log_debug(input_data);
         return Code::OK;
     }
 

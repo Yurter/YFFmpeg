@@ -173,7 +173,7 @@ int main() {
 //            static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
 //        }
 
-        utils::sleep_for_min(5);
+        utils::sleep_for_sec(15);
     }
 
     try {

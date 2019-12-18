@@ -74,6 +74,7 @@ namespace fpp {
 //        log_info("Output: " << output_data);
 //        input_data.free();
 //        log_warning("Sending: " << output_data);
+//        log_debug(output_data);
         return sendOutputData(output_data);
     }
 
