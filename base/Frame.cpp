@@ -33,6 +33,14 @@ namespace fpp {
         return *this;
     }
 
+    int64_t Frame::pts() const {
+        return _data.pts;
+    }
+
+    void Frame::setPts(int64_t value) {
+        _data.pts = value;
+    }
+
     uint64_t Frame::size() const {
         if (isVideo()) {
             return uint64_t(av_image_get_buffer_size(AVPixelFormat(_data.format), _data.width, _data.height, 32));

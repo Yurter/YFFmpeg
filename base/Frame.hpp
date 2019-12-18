@@ -15,8 +15,11 @@ namespace fpp {
 
         Frame& operator=(const Frame&& other);
 
+        int64_t             pts() const;
+
+        void                setPts(int64_t value);
+
         virtual uint64_t    size() const override;
-//        virtual Code        init() override;
         virtual std::string toString() const override;
 
     };

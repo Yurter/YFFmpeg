@@ -127,7 +127,7 @@ namespace fpp {
 #define DEFAULT_PIXEL_FORMAT    AV_PIX_FMT_NONE
 #define DEFAULT_SAMPLE_FORMAT   AV_SAMPLE_FMT_NONE
 #define DEFAULT_CHANEL_LAYOUT   0
-#define DEFAULT_TIME_BASE       { 1, 1000 }
+#define DEFAULT_TIME_BASE       AVRational({ 1, 1000 })
 
 #define FROM_START              INVALID_INT
 #define TO_END                  INVALID_INT

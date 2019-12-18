@@ -45,7 +45,7 @@ namespace fpp {
         if (_output_format_context.stream(0)->packetIndex() == 0) {
             log_warning(_output_format_context.mediaResourceLocator() << " closed empty!");
         }
-        log_error(stream(0)->params->duration());
+        log_error("dur " << stream(0)->params->duration());
         setOpened(false);
         return Code::OK;
     }

@@ -67,11 +67,19 @@ namespace fpp {
                 new_pts = packet.pts() + _pts_offset;
             }
             _packet_duration = new_pts - _prev_pts;
+            _packet_dts_delta = _packet_duration;
+            _packet_pts_delta = _packet_duration;
             break;
         }
-        case StampType::Convert: //TODO
-            packet.setPts(av_rescale_q(packet.pts(), DEFAULT_TIME_BASE, params->timeBase()));
+        case StampType::Convert: {
+            _prev_pts = av_rescale_q(packet.pts(), DEFAULT_TIME_BASE, params->timeBase());
+            _prev_dts = av_rescale_q(packet.dts(), DEFAULT_TIME_BASE, params->timeBase());
+            _packet_duration = packet.pts() - _prev_pts;
+            _packet_dts_delta = _packet_duration;
+            _packet_pts_delta = _packet_duration;
+//            log_debug(_packet_duration);
             break;
+        }
         case StampType::Realtime: { /* Временные штампы реального времени */
             if (_packet_index == 0) { //TODO
                 _chronometer.reset_timepoint();
@@ -80,7 +88,7 @@ namespace fpp {
                 _packet_duration = _chronometer.elapsed_milliseconds();
             }
             _packet_dts_delta = _packet_duration;
-            _packet_dts_delta = _packet_duration;
+            _packet_pts_delta = _packet_duration;
             _chronometer.reset_timepoint();
             break;
         }

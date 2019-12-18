@@ -179,6 +179,8 @@ namespace fpp {
 
             //  D E B U G - падения при отправке отфильтрованного фрейма
 
+            output_data.setPts(output_data.pts() / 60); //TODO CRITICAL фильтр на пропуск кадров не меняет птс фреймов, поэтому на выходе птсы 0го, 60го, 120 и тд, а не 0, 1, 2..
+//            log_debug(output_data);
             try_to(sendOutputData(output_data));
 //            try_to(sendOutputData(input_data));
         }
