@@ -80,6 +80,7 @@ HEADERS += \
     core/AsyncDiscardAmountQueue.hpp \
     core/AsyncDiscardSizeQueue.hpp \
     core/AsyncList.hpp \
+    core/AsyncObject.hpp \
     core/Chronometer.hpp \
     core/Timer.hpp \
     custom/CustomFrameSink.hpp \
