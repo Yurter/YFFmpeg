@@ -205,7 +205,7 @@ int main() {
 
 //            pipeline->simplifyRoutes();
 
-            utils::sleep_for_min(20);
+            utils::sleep_for_min(1);
 
             delete source;
 //            delete sink_event;

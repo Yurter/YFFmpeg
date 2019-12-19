@@ -4,12 +4,13 @@
 namespace fpp {
 
     VideoParameters::VideoParameters() :
-        Parameters(MediaType::MEDIA_TYPE_VIDEO),
-        _width(DEFAULT_INT),
-        _height(DEFAULT_INT),
-        _aspect_ratio(DEFAULT_RATIONAL),
-        _frame_rate(DEFAULT_RATIONAL),
-        _pixel_format(DEFAULT_PIXEL_FORMAT)
+        Parameters(MediaType::MEDIA_TYPE_VIDEO)
+        , _width(DEFAULT_INT)
+        , _height(DEFAULT_INT)
+        , _aspect_ratio(DEFAULT_RATIONAL)
+        , _frame_rate(DEFAULT_RATIONAL)
+        , _pixel_format(DEFAULT_PIXEL_FORMAT)
+        , _gop_size(INVALID_INT)
     {
         setName("VideoParameters");
     }
@@ -89,6 +90,10 @@ namespace fpp {
         _pixel_format = pixel_format;
     }
 
+    void VideoParameters::setGopSize(int64_t value) {
+        _gop_size = value;
+    }
+
     int64_t VideoParameters::width() const {
         return _width;
     }
@@ -107,6 +112,10 @@ namespace fpp {
 
     AVPixelFormat VideoParameters::pixelFormat() const {
         return _pixel_format;
+    }
+
+    int64_t VideoParameters::gopSize() const {
+        return _gop_size;
     }
 
     std::string VideoParameters::toString() const {

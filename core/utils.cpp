@@ -223,6 +223,7 @@ namespace fpp {
             codec->height       = int(video_parameters->height());
             codec->time_base    = parametres->timeBase();
             codec->framerate    = video_parameters->frameRate();
+            codec->gop_size     = int(video_parameters->gopSize());
 
             if (auto ret = av_opt_set(codec->priv_data, "crf", "23", 0); ret != 0) {
                 static_log_warning("utils", "av_opt_set crf     failed: " << ret /*<< " - " << av_err2str(ret)*/);
