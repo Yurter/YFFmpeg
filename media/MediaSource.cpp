@@ -52,6 +52,7 @@ namespace fpp {
         stopWait(); //TODO костыль?
 //        try_to(_input_format_context.close());
         log_info("Source: \"" << _input_format_context.mediaResourceLocator() << "\" closed");
+        log_error("DUR = " << stream(0)->params->duration());
         setOpened(false);
         return Code::OK;
     }
@@ -90,7 +91,8 @@ namespace fpp {
     Code MediaSource::readInputData(Packet& input_data) {
         if (_end_point != -1) { //TODO
             if (inited_ptr(stream(0))) {
-                if (stream(0)->params->duration() > (_end_point - _start_point)) {
+//                log_warning("STREAM DURATION: " << stream(0)->params->duration());
+                if (stream(0)->params->duration() >= (_end_point - _start_point)) {
                     return Code::END_OF_FILE;
                 }
             }
@@ -121,9 +123,17 @@ namespace fpp {
 //        stream(0)->params->increaseDuration(stream(0)->packet_duration()); //TODO
 //        log_error("writed" << input_data);
 
-        if ((stream(0)->params->streamIndex() == 0)
+        if (stream(0)->packetIndex() == 0) {
+            log_error("!!! " << input_data);
+        }
+
+        if ((stream(0)->packetIndex() == 0)
                 && (input_data.pts() == 0)) {
            stream(0)->setStampType(StampType::Copy); /* ? */
+        }
+        if ((stream(0)->packetIndex() == 0)
+                && (input_data.pts() != 0)) {
+            stream(0)->setStampType(StampType::FromZero); /* ? */
         }
         try_to(stream(0)->stampPacket(input_data));
 //        log_debug(input_data);

@@ -28,6 +28,38 @@ void concatenator_debug_simple() {
     concatenator.join();
 }
 
+void concatenator_debug_timlapse_event() {
+    #define TML(x) (x) / 60
+    #define MINUTE 60'000
+
+    // 58'021 ms длительность таймлапса
+//    Concatenator concatenator("compil_data/concatenator_debug_timlapse_event.flv", {
+//        { "a_event.flv", (10 * MINUTE), (11 * MINUTE) }
+//    });
+    Concatenator concatenator("compil_data/concatenator_debug_timlapse_event.flv", {
+        { "a_event.flv", (0 * MINUTE), (11 * MINUTE) }
+    });
+//    Concatenator concatenator("compil_data/concatenator_debug_timlapse_event.flv", {
+//        { "a_event.flv", (10 * MINUTE), (11 * MINUTE) }
+//        { "a_timelapse.flv", FROM_START, TML(10 * MINUTE) }
+//        , { "a_event.flv", (10 * MINUTE), (11 * MINUTE) }
+//        , { "a_timelapse.flv", TML(11 * 60), TML(20 * 60) }
+//        , { "a_event.flv", (20 * 60), (21 * 60) }
+//        , { "a_timelapse.flv", TML(21 * 60), TML(30 * 60) }
+//        , { "a_event.flv", (30 * 60), (31 * 60) }
+//        , { "a_timelapse.flv", TML(31 * 60), TO_END }
+//    });
+
+    if (auto ret = concatenator.start(); ret != Code::OK) {
+        static_log_error("main", "Concatenator start failed: " << ret << " - " << utils::code_to_string(ret));
+    }
+    concatenator.join();
+}
+
+void seek_debug() {
+    //
+}
+
 void concatenator_debug() {
     #define TML(x) (x) / 60
 
@@ -158,17 +190,23 @@ int main() {
     static_log_info("main", "Program started...");
     avdevice_register_all(); //TODO вызов необходим для работы USB-камер, перенести
 
-    {
-        set_log_level(LogLevel::Debug);
-        timelapse_debug();
-        return 0;
-    }
+//    {
+//        set_log_level(LogLevel::Debug);
+//        timelapse_debug();
+//        return 0;
+//    }
 
 //    {
 //        set_log_level(LogLevel::Debug);
 //        concatenator_debug_simple();
 //        return 0;
 //    }
+
+    {
+        set_log_level(LogLevel::Debug);
+        concatenator_debug_timlapse_event();
+        return 0;
+    }
 
 //    {
 ////        set_log_level(LogLevel::Trace);

@@ -99,18 +99,18 @@ namespace fpp {
 
     Code Processor::disconnectFrom(const ProcessorPointer other) {
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
-        if (this->is("MediaSource")) {
-            static_log_error("TODO", "dis_0 " << _next_processor_list.size());
-            _next_processor_list.for_each([other](const auto& proc) {
-                static_log_error("TODO", "UID -> " << proc->uid() << ", other " << other->uid());
-            });
-        }
+//        if (this->is("MediaSource")) {
+//            static_log_error("TODO", "dis_0 " << _next_processor_list.size());
+//            _next_processor_list.for_each([other](const auto& proc) {
+//                static_log_error("TODO", "UID -> " << proc->uid() << ", other " << other->uid());
+//            });
+//        }
         _next_processor_list.remove_if([&other](const auto& sink) {
             return sink->uid() == other->uid();
         });
-        if (this->is("MediaSource")) {
-            static_log_error("TODO", "dis_1 " << _next_processor_list.size());
-        }
+//        if (this->is("MediaSource")) {
+//            static_log_error("TODO", "dis_1 " << _next_processor_list.size());
+//        }
         log_debug("Disconnected from " << other->name());
         if (_next_processor_list.empty()) {
             if (_close_on_disconnect) {

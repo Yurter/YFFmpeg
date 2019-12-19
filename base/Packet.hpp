@@ -34,6 +34,7 @@ namespace fpp {
         int64_t             pos()           const;
         int64_t             streamIndex()   const;
         int64_t             streamUid()     const;
+        bool                keyFrame()      const;
 
 //        bool                empty()     const;
         virtual uint64_t    size()      const override;

@@ -154,6 +154,10 @@ namespace fpp {
         return _stream_uid;
     }
 
+    bool Packet::keyFrame() const {
+        return _data.flags & AV_PKT_FLAG_KEY;
+    }
+
 //    bool Packet::empty() const {
 //        return size() == 0;
 //    }
@@ -165,6 +169,7 @@ namespace fpp {
     std::string Packet::toString() const {
         /* Video packet: 33123 bytes, dts 460, pts 460, duration 33 */
         std::string str = utils::media_type_to_string(type()) + " packet: "
+                + (keyFrame() ? "[I]" : "[_]") + ", "
                 + std::to_string(_data.size) + " bytes, "
                 + "dts " + utils::pts_to_string(_data.dts) + ", "
                 + "pts " + utils::pts_to_string(_data.pts) + ", "

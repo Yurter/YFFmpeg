@@ -18,6 +18,7 @@ namespace fpp {
         Append,
         Convert,
         Realtime,
+        FromZero,
     };
 
     class Stream : public Data<AVStream*> {
