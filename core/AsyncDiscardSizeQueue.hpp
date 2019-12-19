@@ -12,7 +12,8 @@ namespace fpp {
 
     public:
 
-        AsyncDiscardSizeQueue(uint64_t queue_capacity = 50 * 1024 * 1024 /* 50 Mb */) :
+//        AsyncDiscardSizeQueue(uint64_t queue_capacity = 50 * 1024 * 1024 /* 50 Mb */) :
+        AsyncDiscardSizeQueue(uint64_t queue_capacity = 350 * 1024 * 1024 /* 350 Mb */) :
             _queue_capacity(queue_capacity)
             , _queue_size(0)
             , _stop_wait(false) {}
@@ -94,6 +95,7 @@ namespace fpp {
 
         void push_and_notify(const Type& data) {
             while (notEnoughStorage(data.size())) {
+                std::cout << "DELETE " << data.size() << std::endl;
                 Type surplus_data;
                 pop_and_decrease_size(surplus_data);
             }

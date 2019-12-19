@@ -24,7 +24,7 @@ namespace fpp {
 
         virtual ~TemplateProcessor() {
             stopWait();
-            log_error("RESULT ->> " << pushed_count << " " << popped_count);
+//            log_error("RESULT ->> " << pushed_count << " " << popped_count);
         }
 
         bool buferIsEmpty() {
@@ -89,7 +89,7 @@ int popped_count = 0;
         }
 
         void stopWait() {
-            log_error("STOP_WHAT " << _input_queue.length() << " " << _output_queue.length());
+//            log_error("STOP_WHAT " << _input_queue.length() << " " << _output_queue.length());
 //            _input_queue.clear();
 //            _output_queue.clear();
             _input_queue.stop_wait();
@@ -134,7 +134,7 @@ int popped_count = 0;
                     && !this->is("MediaSource") // вся разница в этом условии
                     && !this->is("CustomPacketSource")) {
                 sendOutputData(outType());
-                log_error("GOT EOF DATA " << _input_queue.length() << " " << _output_queue.length());
+                log_error(">> GOT EOF DATA, got " << pushed_count << ", sended " << popped_count);
                 return Code::END_OF_FILE;
             }
             /* TODO не работает это условие :( */

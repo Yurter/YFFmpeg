@@ -140,4 +140,3 @@ INCLUDEPATH += D:\dev\00_opencv\410\build\include
 LIBS += -LD:\dev\00_opencv\410\build\x64\vc15\lib
 LIBS += -LD:\dev\00_opencv\410\build\x64\vc15\bin
 LIBS += -lopencv_world410 -lopencv_world410d
-
