@@ -13,10 +13,11 @@ namespace fpp {
         virtual ~DecoderContext() override;
 
         Code                decode(Packet input_packet, Frame& output_frame);
+        virtual Code        flush(Object* data)         override;
 
     private:
 
-        virtual Code        initParams() override;
+        virtual Code        initParams()    override;
 
     };
 

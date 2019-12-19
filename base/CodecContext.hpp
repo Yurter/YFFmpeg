@@ -12,7 +12,7 @@ namespace fpp {
         virtual ~CodecContext() override;
 
         virtual Code        initParams() = 0;
-//        virtual Code        flush() = 0; //TODO (отправлять кодеку NULL)
+        virtual Code        flush(Object* data) = 0; //TODO (отправлять кодеку NULL)
         virtual Code        init() override;
 
         Code                open();
@@ -30,6 +30,10 @@ namespace fpp {
     private:
 
         void                setOpened(bool value);
+
+    protected:
+        int in_coint = 0;
+        int out_coint = 0;
 
     protected:
 

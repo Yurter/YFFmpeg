@@ -1,5 +1,6 @@
 #include "Thread.hpp"
 #include "utils.hpp"
+#include "Chronometer.hpp"
 #include <exception>
 
 namespace fpp {
@@ -97,8 +98,12 @@ namespace fpp {
 
     void Thread::join() const {
         log_debug("Thread joining");
+        Chronometer chronometer;
         while (running()) {
-            log_debug("Waiting for thread...");
+            if (chronometer.elapsed_milliseconds() > 5000) {
+                log_debug("Waiting for thread...");
+                chronometer.reset_timepoint();
+            }
             utils::sleep_for(MEDIUM_DELAY_MS);
         }
         log_debug("Thread joined");

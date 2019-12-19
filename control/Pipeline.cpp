@@ -93,6 +93,9 @@ namespace fpp {
                 /* Выброс отработавшего процессора из пула */
             }
         });
+//        if (all_processor_stopped) {
+//            log_warning("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+//        }
         return_if(all_processor_stopped, Code::END_OF_FILE);
         utils::sleep_for(LONG_DELAY_MS/* * 10*/);
         return Code::OK;
@@ -108,7 +111,7 @@ namespace fpp {
         _data_sources.for_each([](auto& source){
             try_throw_static(source->stop());
         });
-        log_info("Processing finished.");
+        log_info("Processing finished");
         return Code::OK;
     }
 

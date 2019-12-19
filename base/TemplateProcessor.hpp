@@ -24,6 +24,7 @@ namespace fpp {
 
         virtual ~TemplateProcessor() {
             stopWait();
+            log_error("RESULT ->> " << pushed_count << " " << popped_count);
         }
 
         bool buferIsEmpty() {
@@ -33,8 +34,10 @@ namespace fpp {
         int64_t bufferSize() {
             return _input_queue.size();
         }
-
+int pushed_count = 0;
+int popped_count = 0;
         virtual Code push(const Object* input_data) override final {
+    pushed_count++;
             if (closed()) {
                 log_warning("Got " << input_data->name() << " but closed");
             }
@@ -86,8 +89,9 @@ namespace fpp {
         }
 
         void stopWait() {
-            _input_queue.clear();
-            _output_queue.clear();
+            log_error("STOP_WHAT " << _input_queue.length() << " " << _output_queue.length());
+//            _input_queue.clear();
+//            _output_queue.clear();
             _input_queue.stop_wait();
             _output_queue.stop_wait();
         }
@@ -95,10 +99,10 @@ namespace fpp {
     private:
 
         virtual Code run() override final {
-            log_trace("Running run.");
+            log_trace("Running run");
 
             if (_pre_function) {
-                log_trace("Running _pre_function.");
+                log_trace("Running _pre_function");
 //                try_to(_pre_function());
                 Code ret = _pre_function();
                 if (utils::exit_code(ret)
@@ -110,6 +114,8 @@ namespace fpp {
 
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
+
+            popped_count++;
 
             /* Не удалять проверки! */
 //            return_if(discardType(input_data.type()), Code::AGAIN);
@@ -128,6 +134,7 @@ namespace fpp {
                     && !this->is("MediaSource") // вся разница в этом условии
                     && !this->is("CustomPacketSource")) {
                 sendOutputData(outType());
+                log_error("GOT EOF DATA " << _input_queue.length() << " " << _output_queue.length());
                 return Code::END_OF_FILE;
             }
             /* TODO не работает это условие :( */
@@ -137,11 +144,11 @@ namespace fpp {
 //            }
 //////////////////////////////////////////////////////////////////
 
-            log_trace("Running processInputData.");
+            log_trace("Running processInputData");
             try_to(processInputData(input_data));
 
             if (_post_function) {
-                log_trace("Running _post_function.");
+                log_trace("Running _post_function");
                 try_to(_post_function());
             }
 

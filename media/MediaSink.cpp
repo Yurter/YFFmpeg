@@ -10,8 +10,8 @@ namespace fpp {
     }
 
     MediaSink::~MediaSink() {
-        try_throw(close());
         join();
+        try_throw(close());
     }
 
     Code MediaSink::init() {
@@ -45,7 +45,10 @@ namespace fpp {
         if (_output_format_context.stream(0)->packetIndex() == 0) {
             log_warning(_output_format_context.mediaResourceLocator() << " closed empty!");
         }
-        log_error("dur " << stream(0)->params->duration());
+        log_error("Sink dur = " << stream(0)->params->duration() << "ms | "
+                  << stream(0)->params->duration() / 1000 << "s | "
+                  << stream(0)->params->duration() / (60 * 1000) << "min | ");
+        log_error("write = " << stream(0)->packetIndex());
         setOpened(false);
         return Code::OK;
     }
@@ -75,6 +78,10 @@ namespace fpp {
 //                log_warning("packetIndex = " << _output_format_context.stream(input_data.streamIndex())->packetIndex());
             }
         }
+//        log_debug(input_data);
+//        log_debug(input_data.pts() << " " << input_data.dts() << " " << input_data.duration() << " | "
+//                  << utils::rational_to_string(stream(0)->params->timeBase()) << " "
+//                  << utils::rational_to_string(stream(0)->raw()->time_base));
         try_to(storeOutputData(input_data));
         return Code::OK;
     }

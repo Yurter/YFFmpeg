@@ -37,8 +37,11 @@ void concatenator_debug_timlapse_event() {
 //        { "a_event.flv", (10 * MINUTE), (11 * MINUTE) }
 //    });
     Concatenator concatenator("compil_data/concatenator_debug_timlapse_event.flv", {
-        { "a_event.flv", (0 * MINUTE), (11 * MINUTE) }
+        { "a_event.flv", FROM_START, TO_END }
     });
+//    Concatenator concatenator("compil_data/concatenator_debug_timlapse_event.flv", {
+//        { "a_event.flv", (0 * MINUTE), (11 * MINUTE) }
+//    });
 //    Concatenator concatenator("compil_data/concatenator_debug_timlapse_event.flv", {
 //        { "a_event.flv", (10 * MINUTE), (11 * MINUTE) }
 //        { "a_timelapse.flv", FROM_START, TML(10 * MINUTE) }
@@ -56,8 +59,28 @@ void concatenator_debug_timlapse_event() {
     concatenator.join();
 }
 
+void copy_file_debug() {
+    PipelinePointer pipeline = std::make_shared<Pipeline>();
+
+    ProcessorPointer source = std::make_shared<MediaSource>("a_event.flv");
+    if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
+        static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
+    }
+
+    ProcessorPointer sink_copy = std::make_shared<MediaSink>("debug_files/a_event_copy.flv", IOType::Event);
+    if (auto ret = pipeline->addElement(sink_copy); ret != fpp::Code::OK) {
+        static_log_error("main", "Pipeline add sink_copy failed: " << ret << " - " << utils::code_to_string(ret));
+    }
+
+    if (auto ret = pipeline->start(); ret != Code::OK) {
+        static_log_error("main", "Concatenator start failed: " << ret << " - " << utils::code_to_string(ret));
+    }
+
+    pipeline->join();
+}
+
 void seek_debug() {
-    //
+
 }
 
 void concatenator_debug() {
@@ -110,6 +133,22 @@ void concatenator_debug() {
         }
         concatenator.join();
     }
+}
+
+void event_debug() {
+    PipelinePointer pipeline = std::make_shared<Pipeline>();
+
+    ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554");
+    if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
+        static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
+    }
+
+    ProcessorPointer sink_event = std::make_shared<MediaSink>("group_video/event.flv", IOType::Event);
+    if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
+        static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
+    }
+
+    utils::sleep_for_sec(30);
 }
 
 void timelapse_debug() {
@@ -192,6 +231,12 @@ int main() {
 
 //    {
 //        set_log_level(LogLevel::Debug);
+//        event_debug();
+//        return 0;
+//    }
+
+//    {
+//        set_log_level(LogLevel::Debug);
 //        timelapse_debug();
 //        return 0;
 //    }
@@ -202,9 +247,15 @@ int main() {
 //        return 0;
 //    }
 
+//    {
+//        set_log_level(LogLevel::Debug);
+//        concatenator_debug_timlapse_event();
+//        return 0;
+//    }
+
     {
         set_log_level(LogLevel::Debug);
-        concatenator_debug_timlapse_event();
+        copy_file_debug();
         return 0;
     }
 

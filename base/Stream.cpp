@@ -81,7 +81,7 @@ namespace fpp {
             _packet_index++;
             return Code::OK;
         case StampType::Append: { /* Используется при склейки файлов */
-            log_debug("PACKET PTS: " << packet.pts());
+//            log_debug("PACKET PTS: " << packet.pts());
             auto new_pts = packet.pts() + _pts_offset;
             auto new_dts = packet.dts() + _pts_offset;
             if (new_pts <= _prev_pts) {
@@ -90,6 +90,7 @@ namespace fpp {
                 new_pts = packet.pts() + _pts_offset;
             }
             _packet_duration = new_pts - _prev_pts;
+            if (_packet_duration == 0) { _packet_duration = 40; }
             _packet_dts_delta = _packet_duration;
             _packet_pts_delta = _packet_duration;
             packet.setDts(new_dts);
@@ -125,7 +126,7 @@ namespace fpp {
         packet.setPos(-1);
         params->increaseDuration(_packet_duration);
         if (_stamp_type == StampType::Append) {
-            log_error(_packet_duration << " " << params->duration());
+//            log_error(_packet_duration << " " << params->duration());
         }
 
 //        _prev_dts += _packet_dts_delta;

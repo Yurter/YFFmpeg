@@ -62,6 +62,7 @@ namespace fpp {
 
     Code Encoder::onStop() {
         log_debug("onStop");
+        try_to(_encoder_context.flush(nullptr));
         stopWait();
         return Code::OK;
     }

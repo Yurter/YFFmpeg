@@ -10,9 +10,11 @@ namespace fpp {
 
     EncoderContext::~EncoderContext() {
         // TODO
+        flush(nullptr);
     }
 
     Code EncoderContext::encode(Frame input_frame, Packet& output_packet) {
+        in_coint++;
         try_to(output_packet.init());
         output_packet.setType(params.out->type());
         auto debug_value = this;
@@ -37,6 +39,7 @@ namespace fpp {
         }
         output_packet.setStreamIndex(params.out->streamIndex());
         output_packet.setStreamUid(params.out->streamUid());
+        out_coint++;
         return Code::OK;
     }
 
@@ -49,6 +52,39 @@ namespace fpp {
 //            log_error("avcodec_parameters_to_context failed");
 //            return Code::ERR;
 //        }
+        return Code::OK;
+    }
+
+    Code EncoderContext::flush(Object *data) {
+        log_error("FLUSH");
+        while (avcodec_send_frame(_codec_context, nullptr) != 0) {
+            Packet output_packet;
+            try_to(output_packet.init());
+            while (avcodec_receive_packet(_codec_context, &output_packet.raw()) != 0) {
+                log_error("Flushed success");
+            }
+        }
+        log_error("FLUSH finished");
+        return Code::OK;
+        Packet output_packet;
+        try_to(output_packet.init());
+        output_packet.setType(params.out->type());
+        auto debug_value = this;
+        auto op = opened();
+//        log_trace("Frame for encoding: " << input_frame);
+        int ret;
+        if ((ret = avcodec_send_frame(_codec_context, nullptr)) != 0) {
+            log_error("failed to flush encoder " << ret);
+            return Code::ERR;
+        }
+//        input_frame.free(); //memfix
+        if ((ret = avcodec_receive_packet(_codec_context, &output_packet.raw())) != 0) {
+//            log_warning("avcodec_receive_packet failed");
+            return Code::AGAIN;
+        }
+        log_error("Flushed success");
+        output_packet.setStreamIndex(params.out->streamIndex());
+        output_packet.setStreamUid(params.out->streamUid());
         return Code::OK;
     }
 

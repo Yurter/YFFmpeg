@@ -372,10 +372,6 @@ namespace fpp {
             return true;
         }
 
-//        return_if(in->width()  != out->width(),  true);
-//        return_if(in->height() != out->height(), true);
-//        return_if(in->pixelFormat() != out->pixelFormat(),  true);
-
         return false;
     }
 
@@ -401,8 +397,13 @@ namespace fpp {
         auto in = static_cast<const VideoParameters * const>(params.in);
         auto out = static_cast<const VideoParameters * const>(params.out);
 
-//        return_if(!compare_float(in->frameRate(), out->frameRate()),  true);
-        return_if(av_cmp_q(in->frameRate(), out->frameRate()) != 0, true);
+        if (av_cmp_q(in->frameRate(), out->frameRate()) != 0) {
+            static_log_warning("utils", "Video filter required: framerate mismatch "
+                               << rational_to_string(in->frameRate())
+                               << " != "
+                               << rational_to_string(out->frameRate()));
+            return true;
+        }
 
         return false;
     }
@@ -416,8 +417,11 @@ namespace fpp {
         auto in = params.in;
         auto out = params.out;
 
-        return_if(in->codecId() != out->codecId(), true);
-//        return_if(in->codecName() != out->codecName(), true);
+        if (in->codecId() != out->codecId()) {
+            static_log_warning("utils", "Rescaling required: codec id mismatch "
+                               << in->codecId() << " != " << out->codecId());
+            return true;
+        }
 
         return false;
     }

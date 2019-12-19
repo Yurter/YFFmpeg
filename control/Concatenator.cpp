@@ -101,6 +101,7 @@ namespace fpp {
         eof_packet.setType(MediaType::MEDIA_TYPE_VIDEO);
         try_to(output_file->push(&eof_packet));
 
+//        output_file->join();
         file_crutch.close();
 
         return Code::END_OF_FILE;
