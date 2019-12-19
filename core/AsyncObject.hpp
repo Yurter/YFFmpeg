@@ -48,7 +48,7 @@ namespace fpp {
             foo(_data);
         }
 
-    private:
+    protected:
 
         T                   _data;
         std::mutex          _mutex;
