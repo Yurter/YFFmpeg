@@ -10,8 +10,9 @@ namespace fpp {
 
     public:
 
-        template<class F = std::function<uint64_t(const T&)>>
-        AsyncQueue(uint64_t queue_capacity = 50, F&& get_item_size = [](const T&) -> uint64_t { return 1; }) :
+        using SizeGetter = std::function<uint64_t(const T&)>;
+
+        AsyncQueue(uint64_t queue_capacity = 50, SizeGetter&& get_item_size = [](const T&) -> uint64_t { return 1; }) :
             _queue_size(0)
             , _queue_capacity(queue_capacity)
             , _stop_wait(false)
@@ -22,7 +23,7 @@ namespace fpp {
         [[nodiscard]]
         bool push(const T& item) {
             std::lock_guard<std::mutex> lock(this->_mutex);
-            if (full()) { return false; }
+            if (not_enough_storage(item)) { return false; }
             push_and_notify(item);
             return true;
         }
@@ -60,14 +61,11 @@ namespace fpp {
         [[nodiscard]]
         bool wait_and_push(const T& data) {
             std::unique_lock<std::mutex> lock(this->_mutex);
-            if (push_available()) {
-                push_and_notify(data);
-                return true;
+            if (not_enough_storage(data)) {
+                _condition_variable_popped.wait(lock, [&]() {
+                    return !not_enough_storage(data) || _stop_wait;
+                });
             }
-
-            _condition_variable_popped.wait(lock, [&]() {
-                return push_available() || _stop_wait;
-            });
 
             if (_stop_wait) {
                 _stop_wait = false;
@@ -110,6 +108,7 @@ namespace fpp {
         }
 
         int64_t size() const {
+            std::lock_guard<std::mutex> lock(this->_mutex);
             return _queue_size;
         }
 
@@ -131,23 +130,17 @@ namespace fpp {
 
     private:
 
-        void push_and_notify(const T& data) {
-            this->_data.push(data);
+        void push_and_notify(const T& item) {
+            this->_data.push(item);
             _condition_variable_pushed.notify_one();
+            _queue_size += _get_item_size(item);
         }
 
-        void pop_and_notify(T& data) {
-            data = T(this->_data.front());
+        void pop_and_notify(T& item) {
+            item = T(this->_data.front());
             this->_data.pop();
             _condition_variable_popped.notify_one();
-        }
-
-        bool push_available() const {
-            return this->_data.size() < _queue_capacity;
-        }
-
-        bool full() const {
-            return this->_data.size() == _queue_capacity;
+            _queue_size -= _get_item_size(item);
         }
 
         bool not_enough_storage(const T& item) const {

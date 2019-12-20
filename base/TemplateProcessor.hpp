@@ -19,7 +19,7 @@ namespace fpp {
 
         TemplateProcessor() :
             _input_queue(50 MEGABYTES, [](const inType& input_data) { return input_data.size(); })
-          , _output_queue(50 MEGABYTES, [](const inType& output_data) { return output_data.size(); })
+          , _output_queue(50 MEGABYTES, [](const outType& output_data) { return output_data.size(); })
         {
             setName("TemplateProcessor");
         }
@@ -43,7 +43,7 @@ namespace fpp {
                 , Code::AGAIN
             );
             return_warning_if_not(
-                _input_queue.push(*static_cast<const inType*>(input_data))
+                _input_queue.wait_and_push(*static_cast<const inType*>(input_data))
                 , "Failed to store " << input_data->name()
                 , Code::AGAIN
             );

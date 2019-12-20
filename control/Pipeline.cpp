@@ -93,9 +93,6 @@ namespace fpp {
                 /* Выброс отработавшего процессора из пула */
             }
         });
-//        if (all_processor_stopped) {
-//            log_warning("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-//        }
         return_if(all_processor_stopped, Code::END_OF_FILE);
         utils::sleep_for(LONG_DELAY_MS/* * 10*/);
         return Code::OK;

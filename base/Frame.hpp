@@ -19,8 +19,8 @@ namespace fpp {
 
         void                setPts(int64_t value);
 
-        virtual uint64_t    size() const override;
-        virtual std::string toString() const override;
+        virtual uint64_t    size()      const override;
+        virtual std::string toString()  const override;
 
     };
 
