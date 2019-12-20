@@ -12,16 +12,17 @@ namespace fpp {
 
     Packet::Packet(const Packet& other) {
         setName("Packet");
-        setType(other.type());
-        setPts(other.pts());
-        setDts(other.dts());
-        setDuration(other.duration());
-        setPos(other.pos());
-        setStreamIndex(other.streamIndex());
-        setStreamUid(other.streamUid());
-        if (av_packet_ref(&_data, &other._data) != 0) {
-            log_error("av_packet_ref failed! " << other);
-        }
+        copyOther(other);
+//        setType(other.type());
+//        setPts(other.pts());
+//        setDts(other.dts());
+//        setDuration(other.duration());
+//        setPos(other.pos());
+//        setStreamIndex(other.streamIndex());
+//        setStreamUid(other.streamUid());
+//        if (av_packet_ref(&_data, &other._data) != 0) {
+//            log_error("av_packet_ref failed! " << other);
+//        }
         setInited(true);
     }
 
@@ -43,34 +44,60 @@ namespace fpp {
 
     Packet& Packet::operator=(const Packet& other) {
         setName("Packet");
-        setType(other.type());
-        setPts(other.pts());
-        setDts(other.dts());
-        setDuration(other.duration());
-        setPos(other.pos());
-        setStreamIndex(other.streamIndex());
-        setStreamUid(other.streamUid());
-        if (av_packet_ref(&_data, &other._data) != 0) {
-            log_error("av_packet_ref failed! " << other);
-        }
+//        copyOther(other);
+//        setType(other.type());
+//        setPts(other.pts());
+//        setDts(other.dts());
+//        setDuration(other.duration());
+//        setPos(other.pos());
+//        setStreamIndex(other.streamIndex());
+//        setStreamUid(other.streamUid());
+//        if (av_packet_ref(&_data, &other._data) != 0) {
+//            log_error("av_packet_ref failed! " << other);
+//        }
         setInited(true);
         return *this;
     }
 
     Packet& Packet::operator=(const Packet&& other) {
         setName("Packet");
-        setType(other.type());
-        setPts(other.pts());
-        setDts(other.dts());
-        setDuration(other.duration());
-        setPos(other.pos());
-        setStreamIndex(other.streamIndex());
-        setStreamUid(other.streamUid());
-        if (av_packet_ref(&_data, &other._data) != 0) {
-            log_error("av_packet_ref failed! " << other);
-        }
+        copyOther(other);
+//        setType(other.type());
+//        setPts(other.pts());
+//        setDts(other.dts());
+//        setDuration(other.duration());
+//        setPos(other.pos());
+//        setStreamIndex(other.streamIndex());
+//        setStreamUid(other.streamUid());
+//        if (av_packet_ref(&_data, &other._data) != 0) {
+//            log_error("av_packet_ref failed! " << other);
+//        }
         setInited(true);
         return *this;
+    }
+
+    Packet Packet::clone() const {av_packet_clone
+        if (!packet || packet->size <= 0)
+            {
+                return;
+            }
+
+            avpacket_unref(&m_raw);
+            av_init_packet(&m_raw);
+
+            AVPacket tmp = *packet;
+            if (deepCopy) {
+                // Preven referencing instead of deep copy
+                tmp.buf = nullptr;
+            }
+
+            int sts = av_copy_packet(&m_raw, &tmp);
+            if (sts < 0) {
+                throws_if(ec, sts, ffmpeg_category());
+                return;
+            }
+
+            m_completeFlag = m_raw.size > 0;
     }
 
 //    void Packet::copyFrom(const AVPacket& avpacket) {
@@ -177,6 +204,19 @@ namespace fpp {
                 + "stream index " + std::to_string(_data.stream_index) + ", "
                 + "stream uid " + std::to_string(_stream_uid);
         return str;
+    }
+
+    void Packet::copyOther(const Packet& other) {
+        setType(other.type());
+        setPts(other.pts());
+        setDts(other.dts());
+        setDuration(other.duration());
+        setPos(other.pos());
+        setStreamIndex(other.streamIndex());
+        setStreamUid(other.streamUid());
+        if (av_packet_ref(&_data, &other._data) != 0) {
+            log_error("av_packet_ref failed, " << other);
+        }
     }
 
 } // namespace fpp

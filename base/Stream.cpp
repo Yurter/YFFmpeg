@@ -114,9 +114,18 @@ namespace fpp {
             } else {
                 _packet_duration = _chronometer.elapsed_milliseconds();
             }
+
+            if (_packet_duration < 10) { _packet_duration = 40; }
+
             _packet_dts_delta = _packet_duration;
             _packet_pts_delta = _packet_duration;
             _chronometer.reset_timepoint();
+
+            auto new_dts = _prev_dts + _packet_dts_delta;
+            auto new_pts = _prev_pts + _packet_pts_delta;
+
+            packet.setDts(new_dts);
+            packet.setPts(new_pts);
             break;
         }
         }
@@ -127,7 +136,7 @@ namespace fpp {
         packet.setPos(-1);
         params->increaseDuration(_packet_duration);
         if (_stamp_type == StampType::Append) {
-            log_debug("PACKET PTS: " << packet.pts() << " " << packet.dts());
+//            log_debug("PACKET PTS: " << packet.pts() << " " << packet.dts());
         }
 
 //        _prev_dts += _packet_dts_delta;

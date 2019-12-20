@@ -19,6 +19,8 @@ namespace fpp {
 //        void                copyFrom(const AVPacket& avpacket);
 //        void                cloneFrom(const AVPacket& avpacket);
 
+        Packet              clone() const;
+
         virtual Code        init() override;
 
         void                setPts(int64_t pts);
@@ -39,6 +41,10 @@ namespace fpp {
 //        bool                empty()     const;
         virtual uint64_t    size()      const override;
         virtual std::string toString()  const override;
+
+    private:
+
+        void                copyOther(const Packet& other);
 
     private:
 

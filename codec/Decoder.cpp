@@ -9,7 +9,6 @@ namespace fpp {
     }
 
     Decoder::~Decoder() {
-//        log_warning("-------> DESTRUCTOR " << pushed_count << " " << popped_count << " " << bufferSize());
         join();
     }
 

@@ -7,7 +7,7 @@ void progress_bar(int sec) {
     int msec_interval = sec * 10;
     static_log_info("main", "Progress:");
     for (int i = 0; i < 100; ++i) {
-//        std::cout << "\r" << "[" << std::string(i, '*') << std::string(100 - i, ' ') << "]";
+        std::cout << "\r" << "[" << std::string(size_t(i), '>') << std::string(size_t(100 - i), ' ') << "]";
         utils::sleep_for_ms(msec_interval);
     }
     std::cout << std::endl;
@@ -36,7 +36,7 @@ void concatenator_debug_timlapse_event() {
 //    Concatenator concatenator("compil_data/concatenator_debug_timlapse_event.flv", {
 //        { "a_event.flv", (10 * MINUTE), (11 * MINUTE) }
 //    });
-    Concatenator concatenator("compil_data/concatenator_debug_timlapse_event.flv", {
+    Concatenator concatenator("debug_files/concatenator_debug_timlapse_event.flv", {
         { "a_event.flv", FROM_START, TO_END }
     });
 //    Concatenator concatenator("compil_data/concatenator_debug_timlapse_event.flv", {
@@ -62,7 +62,7 @@ void concatenator_debug_timlapse_event() {
 void copy_file_debug() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-    ProcessorPointer source = std::make_shared<MediaSource>("a_event.flv");
+    ProcessorPointer source = std::make_shared<MediaSource>("out.flv");
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
@@ -217,6 +217,29 @@ void memory_leak_test() {
     }
 }
 
+void write_video_from_camera() {
+    PipelinePointer pipeline = std::make_shared<Pipeline>();
+
+    ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:admin@192.168.10.3:554");
+
+    if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
+        static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
+    }
+
+//    ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOType::Event);
+//    if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
+//        static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
+//    }
+
+    ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("debug_files/timelapse.flv", IOType::Timelapse);
+    if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
+        static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
+    }
+
+//    utils::sleep_for_min(60);
+    progress_bar(30);
+}
+
 int main() {
 
     // video=HP Wide Vision FHD Camera
@@ -241,17 +264,23 @@ int main() {
 //        return 0;
 //    }
 
-    {
-        set_log_level(LogLevel::Debug);
-        concatenator_debug_simple();
-        return 0;
-    }
+//    {
+//        set_log_level(LogLevel::Debug);
+//        concatenator_debug_simple();
+//        return 0;
+//    }
 
 //    {
 //        set_log_level(LogLevel::Debug);
 //        concatenator_debug_timlapse_event();
 //        return 0;
 //    }
+
+    {
+        set_log_level(LogLevel::Debug);
+        write_video_from_camera();
+        return 0;
+    }
 
 //    {
 //        set_log_level(LogLevel::Debug);
