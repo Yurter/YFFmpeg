@@ -88,6 +88,7 @@ namespace fpp {
 //                log_error("OP");
                 _pts_offset = params->duration();
                 new_pts = packet.pts() + _pts_offset;
+                new_dts = packet.dts() + _pts_offset;
             }
             _packet_duration = new_pts - _prev_pts;
             if (_packet_duration == 0) { _packet_duration = 40; }
@@ -126,7 +127,7 @@ namespace fpp {
         packet.setPos(-1);
         params->increaseDuration(_packet_duration);
         if (_stamp_type == StampType::Append) {
-//            log_error(_packet_duration << " " << params->duration());
+            log_debug("PACKET PTS: " << packet.pts() << " " << packet.dts());
         }
 
 //        _prev_dts += _packet_dts_delta;

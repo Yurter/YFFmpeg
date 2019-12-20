@@ -88,6 +88,7 @@ namespace fpp {
 
     Code MediaSink::writeOutputData(Packet output_data) {
 //        if (av_interleaved_write_frame(_format_context, &packet.raw()) < 0) {
+        log_debug("WRITE PACKET PTS: " << output_data.pts() << " " << output_data.dts());
         if (av_write_frame(_output_format_context.mediaFormatContext(), &output_data.raw()) < 0) {
             log_error("opened: " << utils::bool_to_string(opened()));
             log_error("running: " << utils::bool_to_string(running()));

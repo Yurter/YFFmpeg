@@ -14,7 +14,7 @@ void progress_bar(int sec) {
 }
 
 void concatenator_debug_simple() {
-    Concatenator concatenator("compil_data/simple_sausage.flv", {
+    Concatenator concatenator("debug_files/simple_sausage.flv", {
         { "5sec.flv", FROM_START, TO_END }
         , { "5sec.flv", FROM_START, TO_END }
         , { "5sec.flv", FROM_START, TO_END }
@@ -241,11 +241,11 @@ int main() {
 //        return 0;
 //    }
 
-//    {
-//        set_log_level(LogLevel::Debug);
-//        concatenator_debug_simple();
-//        return 0;
-//    }
+    {
+        set_log_level(LogLevel::Debug);
+        concatenator_debug_simple();
+        return 0;
+    }
 
 //    {
 //        set_log_level(LogLevel::Debug);
@@ -253,11 +253,11 @@ int main() {
 //        return 0;
 //    }
 
-    {
-        set_log_level(LogLevel::Debug);
-        copy_file_debug();
-        return 0;
-    }
+//    {
+//        set_log_level(LogLevel::Debug);
+//        copy_file_debug();
+//        return 0;
+//    }
 
 //    {
 ////        set_log_level(LogLevel::Trace);
