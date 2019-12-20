@@ -77,19 +77,19 @@ HEADERS += \
     codec/Encoder.hpp \
     codec/EncoderContext.hpp \
     control/Concatenator.hpp \
-    core/AsyncDiscardAmountQueue.hpp \
-    core/AsyncDiscardSizeQueue.hpp \
-    core/AsyncList.hpp \
-    core/AsyncObject.hpp \
-    core/Chronometer.hpp \
-    core/Timer.hpp \
+    core/async/AsyncDiscardAmountQueue.hpp \
+    core/async/AsyncDiscardSizeQueue.hpp \
+    core/async/AsyncList.hpp \
+    core/async/AsyncObject.hpp \
+    core/time/Chronometer.hpp \
+    core/time/Timer.hpp \
     custom/CustomFrameSink.hpp \
     custom/CustomFrameSource.hpp \
     custom/CustomPacketSink.hpp \
     custom/CustomPacketSource.hpp \
     format/InputFormatContext.hpp \
     format/OutputFormatContext.hpp \
-    core/AsyncQueue.hpp \
+    core/async/AsyncQueue.hpp \
     base/Data.hpp \
     base/FormatContext.hpp \
     base/TemplateProcessor.hpp \

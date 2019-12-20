@@ -51,7 +51,7 @@ namespace fpp {
     protected:
 
         T                   _data;
-        std::mutex          _mutex;
+        mutable std::mutex  _mutex;
 
     };
 
