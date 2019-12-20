@@ -35,10 +35,6 @@ namespace fpp {
             return true;
         }
 
-        bool push_or_discard() {
-            std::lock_guard<std::mutex> lock(this->_mutex);
-        }
-
         int64_t force_push(const T& item) {
             std::lock_guard<std::mutex> lock(this->_mutex);
             int64_t popped_items_count = 0;
@@ -170,3 +166,4 @@ namespace fpp {
     };
 
 } // namespace fpp
+

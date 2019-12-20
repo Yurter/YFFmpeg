@@ -233,6 +233,13 @@ namespace fpp {
                                                 }\
                                             } while(false)
 
+#define return_warning_if_not(cond,msg,ret_value)  do {\
+                                                if_not(cond) {\
+                                                    log_warning(msg);\
+                                                    return ret_value;\
+                                                }\
+                                            } while(false)
+
 #define return_error_if(cond,msg,ret_value)  do {\
                                                 if (cond) {\
                                                     log_error(msg);\
