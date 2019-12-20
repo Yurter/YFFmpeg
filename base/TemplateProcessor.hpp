@@ -1,8 +1,7 @@
 #pragma once
 #include "core/utils.hpp"
 #include "core/Thread.hpp"
-#include "core/AsyncDiscardSizeQueue.hpp"
-#include "core/AsyncDiscardAmountQueue.hpp"
+#include "core/async/AsyncQueue.hpp"
 #include "Processor.hpp"
 
 namespace fpp {
@@ -15,16 +14,18 @@ namespace fpp {
         using IOFunction = std::function<Code(void)>;
         using WriteFunction = std::function<Code(outType&)>;
         using ProcessFunction = std::function<Code(outType&)>;
-        using InputQueue = AsyncDiscardSizeQueue<inType>;
-        using OutputQueue = AsyncDiscardSizeQueue<outType>;
+        using InputQueue = AsyncQueue<inType>;
+        using OutputQueue = AsyncQueue<outType>;
 
-        TemplateProcessor() {
+        TemplateProcessor() :
+            _input_queue(50 MEGABYTES, [](const inType& input_data) { return input_data.size(); })
+          , _output_queue(50 MEGABYTES, [](const inType& output_data) { return output_data.size(); })
+        {
             setName("TemplateProcessor");
         }
 
         virtual ~TemplateProcessor() {
             stopWait();
-//            log_error("RESULT ->> " << pushed_count << " " << popped_count);
         }
 
         bool buferIsEmpty() {
@@ -34,10 +35,8 @@ namespace fpp {
         int64_t bufferSize() {
             return _input_queue.size();
         }
-int pushed_count = 0;
-int popped_count = 0;
+
         virtual Code push(const Object* input_data) override final {
-    pushed_count++;
             if (closed()) {
                 log_warning("Got " << input_data->name() << " but closed");
             }
@@ -89,9 +88,6 @@ int popped_count = 0;
         }
 
         void stopWait() {
-//            log_error("STOP_WHAT " << _input_queue.length() << " " << _output_queue.length());
-//            _input_queue.clear();
-//            _output_queue.clear();
             _input_queue.stop_wait();
             _output_queue.stop_wait();
         }
@@ -115,8 +111,6 @@ int popped_count = 0;
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
 
-            popped_count++;
-
             /* Не удалять проверки! */
 //            return_if(discardType(input_data.type()), Code::AGAIN);
 //            log_warning(utils::bool_to_string(input_data.empty()));
@@ -134,7 +128,6 @@ int popped_count = 0;
                     && !this->is("MediaSource") // вся разница в этом условии
                     && !this->is("CustomPacketSource")) {
                 sendOutputData(outType());
-                log_error(">> GOT EOF DATA, got " << pushed_count << ", sended " << popped_count);
                 return Code::END_OF_FILE;
             }
             /* TODO не работает это условие :( */

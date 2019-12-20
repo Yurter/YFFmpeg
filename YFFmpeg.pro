@@ -77,8 +77,6 @@ HEADERS += \
     codec/Encoder.hpp \
     codec/EncoderContext.hpp \
     control/Concatenator.hpp \
-    core/async/AsyncDiscardAmountQueue.hpp \
-    core/async/AsyncDiscardSizeQueue.hpp \
     core/async/AsyncList.hpp \
     core/async/AsyncObject.hpp \
     core/time/Chronometer.hpp \

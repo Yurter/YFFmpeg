@@ -10,8 +10,8 @@ namespace fpp {
 
     public:
 
-        template<class F>
-        AsyncQueue(uint64_t queue_capacity = 50, F&& get_item_size = [](const T&){ return 1; }) :
+        template<class F = std::function<uint64_t(const T&)>>
+        AsyncQueue(uint64_t queue_capacity = 50, F&& get_item_size = [](const T&) -> uint64_t { return 1; }) :
             _queue_size(0)
             , _queue_capacity(queue_capacity)
             , _stop_wait(false)
@@ -141,7 +141,7 @@ namespace fpp {
         }
 
         void pop_and_notify(T& data) {
-            data = Type(this->_data.front());
+            data = T(this->_data.front());
             this->_data.pop();
             _condition_variable_popped.notify_one();
         }

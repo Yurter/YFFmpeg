@@ -2,7 +2,7 @@
 #include <functional>
 #include <thread>
 #include <chrono>
-#include "AsyncQueue.hpp"
+#include "core/async/AsyncQueue.hpp"
 
 namespace fpp {
 
@@ -22,26 +22,26 @@ namespace fpp {
         Timer() {
             _thread = std::thread([&]() {
                 DelayedFunction delayed_function;
-                while (_function_queue.wait_and_pop(delayed_function)) {
-                    std::this_thread::sleep_for(
-                        std::chrono::milliseconds(delayed_function.delay)
-                    );
-                }
+//                while (_function_queue.wait_and_pop(delayed_function)) {
+//                    std::this_thread::sleep_for(
+//                        std::chrono::milliseconds(delayed_function.delay)
+//                    );
+//                }
             });
         }
 
         ~Timer() {
-            _function_queue.clear();
-            _function_queue.stop_wait();
+//            _function_queue.clear();
+//            _function_queue.stop_wait();
             if (_thread.joinable()) {
                 _thread.join();
             }
         }
 
         void setTimeout(std::function<void()> function, int delay) {
-            if (!_function_queue.push({ function, delay })) {
-                //
-            }
+//            if (!_function_queue.push({ function, delay })) {
+//                //
+//            }
         }
 
         void setInterval(DelayedFunction function, int interval) {
@@ -62,7 +62,7 @@ namespace fpp {
 
         using FunctionsQueue = AsyncQueue<DelayedFunction>;
 
-        FunctionsQueue      _function_queue;
+//        FunctionsQueue      _function_queue;
         std::thread         _thread;
 
     };

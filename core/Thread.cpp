@@ -1,6 +1,6 @@
 #include "Thread.hpp"
 #include "utils.hpp"
-#include "Chronometer.hpp"
+#include "time/Chronometer.hpp"
 #include <exception>
 
 namespace fpp {

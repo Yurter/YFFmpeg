@@ -1,7 +1,8 @@
 #pragma once
-#include "core/AsyncQueue.hpp"
+//#include "core/async/AsyncQueue.hpp"
 #include "core/Thread.hpp"
 #include <fstream>
+#include <mutex>
 
 namespace fpp {
 
@@ -21,7 +22,7 @@ namespace fpp {
 
     };
 
-    using MessageQueue = AsyncQueue<LogMessage>;
+//    using MessageQueue = AsyncQueue<LogMessage>;
 
     class Logger : public Object {
 

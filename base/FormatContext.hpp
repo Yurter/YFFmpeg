@@ -2,7 +2,7 @@
 #include "stream/VideoStream.hpp"
 #include "stream/AudioStream.hpp"
 #include "core/utils.hpp"
-#include "core/Chronometer.hpp"
+#include "core/time/Chronometer.hpp"
 
 namespace fpp {
 

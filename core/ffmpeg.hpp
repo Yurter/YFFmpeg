@@ -266,3 +266,7 @@ namespace fpp {
 /* ? */
 #define EMPTY_CONSTRUCTOR
 #define EMPTY_DESTRUCTOR
+
+/* ? */
+#define KILOBYTES * 1024
+#define MEGABYTES * 1024 * 1024
