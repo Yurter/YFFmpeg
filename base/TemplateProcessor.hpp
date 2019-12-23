@@ -85,7 +85,7 @@ namespace fpp {
 
         Code sendOutputData(const outType& output_data) {
             increaseOutputDataCount();
-            _next_processor_list.for_each([output_data,this](auto& next_processor) {
+            _next_processor_list.for_each([&output_data,this](auto& next_processor) {
                 static_log_trace("TODO", "Sending data to " << next_processor->name());
                 try_throw_static(next_processor->push(&output_data));
             });
