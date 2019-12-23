@@ -77,6 +77,7 @@ namespace fpp {
     }
 
     void MediaSource::setStartPoint(int64_t value) {
+        return_if(_start_time_point == value, void());
         if ((value != FROM_START) && (value < 0)) {
             log_warning("Cannot set start time point less then zero: " << value << ", ignored");
             return;
@@ -90,6 +91,7 @@ namespace fpp {
     }
 
     void MediaSource::setEndPoint(int64_t value) {
+        return_if(_end_time_point == value, void());
         if ((value != TO_END) && (value < 0)) {
             log_warning("Cannot set end time point less then zero: " << value << ", ignored");
             return;

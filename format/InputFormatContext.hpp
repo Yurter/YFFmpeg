@@ -3,6 +3,13 @@
 
 namespace fpp {
 
+    enum class SeekPrecision {
+        Forward,
+        Backward,
+        Precisely,
+        Any,
+    };
+
     class InputFormatContext : public FormatContext {
 
     public:
@@ -13,7 +20,7 @@ namespace fpp {
         virtual Code        init()           override;
         virtual std::string toString() const override;
 
-        Code                seek(int64_t stream_index, int64_t timestamp);
+        Code                seek(int64_t stream_index, int64_t timestamp, SeekPrecision seek_precision = SeekPrecision::Forward);
 
     private:
 

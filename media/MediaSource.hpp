@@ -44,11 +44,4 @@ namespace fpp {
 
     };
 
-    enum class SeekPrecision {
-        Forward,
-        Backward,
-        Precisely,
-        Any,
-    };
-
 } // namespace fpp

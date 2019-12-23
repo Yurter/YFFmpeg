@@ -35,10 +35,24 @@ namespace fpp {
         return "TODO";
     }
 
-    Code InputFormatContext::seek(int64_t stream_index, int64_t timestamp) {
-        auto ret = av_seek_frame(_format_context, int(stream_index), timestamp, AVSEEK_FLAG_BACKWARD);//AVSEEK_FLAG_BACKWARD);//0);
+    Code InputFormatContext::seek(int64_t stream_index, int64_t timestamp, SeekPrecision seek_precision) {
+        int flags = 0;
+        switch (seek_precision) {
+        case SeekPrecision::Forward:
+            flags = 0;
+            break;
+        case SeekPrecision::Backward:
+            flags = AVSEEK_FLAG_BACKWARD;
+            break;
+        case SeekPrecision::Any:
+            flags = AVSEEK_FLAG_ANY;
+            break;
+        case SeekPrecision::Precisely:
+            return Code::NOT_IMPLEMENTED;
+        }
+        auto ret = av_seek_frame(_format_context, int(stream_index), timestamp, flags);
         return_error_if(ret != 0
-                        , "Failed to seek timestamp " << timestamp << " in stream " << stream_index
+                        , "Failed to seek timestamp " << utils::msec_to_time(timestamp) << " in stream " << stream_index
                         , Code::FFMPEG_ERROR);
         return Code::OK;
     }

@@ -25,7 +25,7 @@ namespace fpp {
         try_to(output_file->init());
 
         output_file->stream(0)->setStampType(StampType::Append);
-        log_debug("OUT UID: " << output_file->stream(0)->params->streamUid());
+//        log_debug("OUT UID: " << output_file->stream(0)->params->streamUid());
 
         { /* crutch */
             log_info("Initing stream");
@@ -74,13 +74,6 @@ namespace fpp {
             input_file.join();
             try_to(input_file.disconnectFrom(output_file));
 
-//            while (out_duration == output_file.stream(0)->parameters->duration()) {
-//                utils::sleep_for_ms(50);
-//            }
-
-//            file_crutch << input_file_name << '\t'
-//                        << out_duration + (start_point == FROM_START ? 0 : start_point) << '\t'
-//                        << out_duration + (end_point == TO_END ? input_file.stream(0)->parameters->duration() : end_point) << '\n';
             out_duration = output_file->stream(0)->params->duration();
 
             file_crutch << input_file_name << '\t'
@@ -92,18 +85,13 @@ namespace fpp {
             file_crutch2 << "out_duration = " << out_duration << '\n';
 
             log_error(i++ << " ===========================================================");
-
-//            Code ret = input_file.exitCode();
-//            return_if(utils::error_code(ret), ret);
         }
 
         Packet eof_packet;
         eof_packet.setType(MediaType::MEDIA_TYPE_VIDEO);
         try_to(output_file->push(&eof_packet));
 
-//        output_file->join();
         file_crutch.close();
-
         return Code::END_OF_FILE;
     }
 

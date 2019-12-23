@@ -59,6 +59,27 @@ void concatenator_debug_timlapse_event() {
     concatenator.join();
 }
 
+void concatenator_kostya() {
+    #define TML(x) (x) / 60
+    #define MINUTE * 60'000
+
+    Concatenator concatenator("debug_files/concatenator_kostya.flv", {
+        { "timelapse.flv", FROM_START, TML(10 MINUTE) }         /* 10 сек */
+        , { "event.flv", (10 MINUTE), (11 MINUTE) }             /*  1 мин */
+        , { "timelapse.flv", TML(11 MINUTE), TML(15 MINUTE) }   /*  4 сек */
+        , { "event.flv", (15 MINUTE), (16 MINUTE) }             /*  1 мин */
+        , { "timelapse.flv", TML(16 MINUTE), TML(23 MINUTE) }   /*  7 сек */
+        , { "event.flv", (23 MINUTE), (24 MINUTE) }             /*  1 мин */
+        , { "timelapse.flv", TML(24 MINUTE), TO_END }           /*  ? сек */
+                                                        /* Итого: 3 мин 21 сек + */
+    });
+
+    if (auto ret = concatenator.start(); ret != Code::OK) {
+        static_log_error("main", "Concatenator start failed: " << ret << " - " << utils::code_to_string(ret));
+    }
+    concatenator.join();
+}
+
 void copy_file_debug() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
