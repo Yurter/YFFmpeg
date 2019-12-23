@@ -18,12 +18,12 @@ namespace fpp {
 
         virtual bool        equalTo(const ProcessorPointer other) const override;
 
-        void    setStartPoint(int64_t value);   //TODO
-        void    setEndPoint(int64_t value); //TODO
+        void                setStartPoint(int64_t value);
+        void                setEndPoint(int64_t value);
 
         void        doNotSendEOF() { _doNotSendEOF = true; } //TODO костыль для конкатенации
 
-        const InputFormatContext * inputFormatContext() const;
+        const InputFormatContext* inputFormatContext() const;
 
     private:
 
@@ -39,9 +39,16 @@ namespace fpp {
 
         bool    _doNotSendEOF; //TODO
 
-        int64_t             _start_point;
-        int64_t             _end_point;
+        int64_t             _start_time_point;
+        int64_t             _end_time_point;
 
+    };
+
+    enum class SeekPrecision {
+        Forward,
+        Backward,
+        Precisely,
+        Any,
     };
 
 } // namespace fpp

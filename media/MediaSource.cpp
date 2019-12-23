@@ -4,8 +4,8 @@ namespace fpp {
 
     MediaSource::MediaSource(const std::string mrl, IOType preset) :
         _input_format_context(mrl, /*this,*/ preset)
-      , _start_point(FROM_START)
-      , _end_point(TO_END)
+      , _start_time_point(FROM_START)
+      , _end_time_point(TO_END)
     {
         _doNotSendEOF = false;
         setName("MediaSource");
@@ -34,9 +34,9 @@ namespace fpp {
             for (auto&& avstream : streams()) { //TODO
                 try_to(avstream->init());
             }
-            if (_start_point != FROM_START) {
+            if (_start_time_point != FROM_START) {
                 for (auto& stream : streams()) {
-                    try_to(_input_format_context.seek(stream->index(), _start_point));
+                    try_to(_input_format_context.seek(stream->index(), _start_time_point));
                 }
             }
         }
@@ -77,11 +77,29 @@ namespace fpp {
     }
 
     void MediaSource::setStartPoint(int64_t value) {
-        _start_point = value;
+        if ((value != FROM_START) && (value < 0)) {
+            log_warning("Cannot set start time point less then zero: " << value << ", ignored");
+            return;
+        }
+        if ((_end_time_point != TO_END) && (value > _end_time_point)) {
+            log_warning("Cannot set start time point more then end time point "
+                        << _end_time_point <<  ": " << value << ", ignored");
+            return;
+        }
+        _start_time_point = value;
     }
 
     void MediaSource::setEndPoint(int64_t value) {
-        _end_point = value;
+        if ((value != TO_END) && (value < 0)) {
+            log_warning("Cannot set end time point less then zero: " << value << ", ignored");
+            return;
+        }
+        if ((_start_time_point != FROM_START) && (value < _start_time_point)) {
+            log_warning("Cannot set end time point less then start time point "
+                        << _start_time_point <<  ": " << value << ", ignored");
+            return;
+        }
+        _end_time_point = value;
     }
 
     const InputFormatContext * MediaSource::inputFormatContext() const {
@@ -89,9 +107,10 @@ namespace fpp {
     }
 
     Code MediaSource::readInputData(Packet& input_data) {
-        if (_end_point != -1) { //TODO
+        if (_end_time_point != TO_END) { //TODO
             if (inited_ptr(stream(0))) {
-                if (stream(0)->params->duration() >= (_end_point - _start_point)) {
+                const auto planned_duration = _end_time_point - _start_time_point;
+                if (stream(0)->params->duration() >= planned_duration) {
                     return Code::END_OF_FILE;
                 }
             }
@@ -119,16 +138,29 @@ namespace fpp {
         }
 //        log_error(input_data);
 
+        if (inputDataCount() == 0) {
+            log_debug("Read from "
+                      << (_start_time_point == FROM_START ? "start" : utils::msec_to_time(_start_time_point))
+                      << ", first row packet: " << input_data);
+        }
+
         if ((stream(0)->packetIndex() == 0)
                 && (input_data.pts() != 0)
-                && (_start_point == FROM_START)) {
+                && (_start_time_point == FROM_START)) {
            stream(0)->setStampType(StampType::Realtime); /* с камеры */
         } else if ((stream(0)->packetIndex() == 0)
                    && (input_data.pts() != 0)
-                   && (_start_point != FROM_START)) {
+                   && (_start_time_point != FROM_START)) {
            stream(0)->setStampType(StampType::FromZero); /* не с начала файла */
         }
         try_to(stream(0)->stampPacket(input_data));
+
+
+        if (inputDataCount() == 0) {
+            log_debug("Read from "
+                      << (_start_time_point == FROM_START ? "start" : utils::msec_to_time(_start_time_point))
+                      << ", first packet: " << input_data);
+        }
 //        log_debug("->>>>> input_data: " << input_data.pts() << " " << input_data.dts());
         return Code::OK;
     }
