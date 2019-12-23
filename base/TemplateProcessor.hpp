@@ -40,6 +40,7 @@ namespace fpp {
             if (closed()) {
                 log_warning("Got " << input_data->name() << " but closed");
             }
+//            if (this->is("Decoder")) { log_debug("GOT: " << input_data->toString()); }
             return_warning_if_not(
                 _input_queue.wait_and_push(*static_cast<const inType*>(input_data))
                 , "Failed to store " << input_data->name()
@@ -113,6 +114,8 @@ namespace fpp {
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
 
+//            if (this->is("Decoder")) { log_debug(">> POP: " << input_data.toString()); }
+
             /* Не удалять проверки! */
 //            return_if(discardType(input_data.type()), Code::AGAIN);
 //            log_warning(utils::bool_to_string(input_data.empty()));
@@ -138,6 +141,8 @@ namespace fpp {
 //                return Code::END_OF_FILE;
 //            }
 //////////////////////////////////////////////////////////////////
+
+//            if (this->is("Decoder")) { log_debug("## proc: " << input_data.toString()); }
 
             log_trace("Running processInputData");
             try_to(processInputData(input_data));

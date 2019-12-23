@@ -15,6 +15,7 @@ namespace fpp {
 
     Code DecoderContext::decode(Packet input_packet, Frame& output_frame) {
         in_coint++;
+//        log_debug("$$ inp: " << input_packet);
         if (!input_packet.empty()) {
             if (int ret = avcodec_send_packet(_codec_context, &input_packet.raw()); ret != 0) {
                 char errstr[1024];
@@ -23,9 +24,9 @@ namespace fpp {
                 log_error("DecoderContext: " << this->toString());
                 return Code::FFMPEG_ERROR;
             }
-            av_packet_unref(&input_packet.raw());
+//            av_packet_unref(&input_packet.raw());
         }
-        int ret = avcodec_receive_frame(_codec_context, &output_frame.raw());
+        int ret = avcodec_receive_frame(_codec_context, &output_frame.raw()); //TODO брать тип из типа потока (добавить потоку тип)
         switch (ret) {
         case 0:
             output_frame.setType(input_packet.type());

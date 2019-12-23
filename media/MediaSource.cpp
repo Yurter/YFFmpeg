@@ -118,7 +118,7 @@ namespace fpp {
         input_data.setStreamUid(packet_stream->params->streamUid());
 
         if (stream(0)->packetIndex() == 0) {
-            log_error("!!! " << input_data);
+//            log_error("!!! " << input_data);
         }
 //        log_error(input_data);
 

@@ -96,7 +96,7 @@ namespace fpp {
             log_error("Error muxing packet");
             return Code::ERR;
         }
-        av_packet_unref(&output_data.raw()); //memfix TODO мув в деструктор пакета
+//        av_packet_unref(&output_data.raw()); //memfix TODO мув в деструктор пакета
         return Code::OK;
     }
 

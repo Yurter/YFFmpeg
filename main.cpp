@@ -237,7 +237,7 @@ void write_video_from_camera() {
     }
 
 //    utils::sleep_for_min(60);
-    progress_bar(30);
+    progress_bar(60);
 }
 
 int main() {
@@ -278,6 +278,7 @@ int main() {
 
     {
         set_log_level(LogLevel::Debug);
+        set_ffmpeg_log_level(LogLevel::Quiet);
         write_video_from_camera();
         return 0;
     }

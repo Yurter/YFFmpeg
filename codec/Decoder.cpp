@@ -35,6 +35,7 @@ namespace fpp {
 
     Code Decoder::processInputData(Packet input_data) {
         Frame decoded_frame;
+//        log_debug("$$ dec: " << input_data);
         Code ret = _decoder_context.decode(input_data, decoded_frame);
         return_if(utils::exit_code(ret), ret);
         if (ret == Code::OK) {
