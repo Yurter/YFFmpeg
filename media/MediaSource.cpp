@@ -51,11 +51,8 @@ namespace fpp {
         try_to(stop());
         stopWait(); //TODO костыль?
 //        try_to(_input_format_context.close());
-        log_info("Source: \"" << _input_format_context.mediaResourceLocator() << "\" closed");
-        log_error("DUR = " << stream(0)->params->duration() << "ms | "
-                  << stream(0)->params->duration() / 1000 << "s | "
-                  << stream(0)->params->duration() / (60 * 1000) << "min | ");
-        log_error("READ = " << stream(0)->packetIndex());
+        log_info("Source: \"" << _input_format_context.mediaResourceLocator() << "\" closed, "
+                 << utils::msec_to_time(stream(0)->params->duration()));
         setOpened(false);
         return Code::OK;
     }

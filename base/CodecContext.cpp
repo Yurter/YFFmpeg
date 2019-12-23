@@ -82,7 +82,6 @@ namespace fpp {
             // использовать ? avcodec_free_context(_codec_context)
             avcodec_close(_codec_context);
         }
-        log_error("in " << in_coint << " out " << out_coint);
         setOpened(false);
         return Code::OK;
     }

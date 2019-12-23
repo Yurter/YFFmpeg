@@ -9,12 +9,21 @@ namespace fpp {
       , _opened(false)
       , _close_on_disconnect(true)
       , _discard_types(MediaType::MEDIA_TYPE_UNKNOWN)
+      , _input_data_count(0)
+      , _output_data_count(0)
+      , _discarded_data_count(0)
+      , _processing_iterations_count(0)
     {
         setName("Processor");
     }
 
     Processor::~Processor() {
-        //TODO
+        log_debug("Iterations count: " << processingIterationCount());
+        log_debug("Data usage brief: "
+                  << "in " << inputDataCount() << ", "
+                  << "out " << outputDataCount() << ", "
+                  << "discarded " << discardedDataCount()
+        );
     }
 
     Code Processor::open() {
@@ -24,7 +33,6 @@ namespace fpp {
     Code Processor::close() {
         return Code::NOT_IMPLEMENTED;
     }
-
 
     int64_t Processor::uid() const {
         return _uid;
@@ -151,6 +159,38 @@ namespace fpp {
 
     std::string Processor::metaData() const {
         return _meta_data;
+    }
+
+    uint64_t Processor::inputDataCount() const {
+        return _input_data_count;
+    }
+
+    uint64_t Processor::outputDataCount() const {
+        return _output_data_count;
+    }
+
+    uint64_t Processor::discardedDataCount() const {
+        return _discarded_data_count;
+    }
+
+    uint64_t Processor::processingIterationCount() const {
+        return _processing_iterations_count;
+    }
+
+    void Processor::increaseInputDataCount() {
+        _input_data_count++;
+    }
+
+    void Processor::increaseOutputDataCount() {
+        _output_data_count++;
+    }
+
+    void Processor::increaseDiscardedDataCount() {
+        _discarded_data_count++;
+    }
+
+    void Processor::increaseProcessingIterationCount() {
+        _processing_iterations_count++;
     }
 
 } // namespace fpp

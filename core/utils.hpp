@@ -31,6 +31,8 @@ namespace fpp {
         static void         sleep_for_sec(int64_t seconds);
         static void         sleep_for_min(int64_t minutes);
 
+        static std::string  msec_to_time(int64_t value);
+
         static bool         exit_code(Code code);
         static bool         error_code(Code code);
         static std::string  code_to_string(Code code);

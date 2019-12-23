@@ -14,7 +14,6 @@ namespace fpp {
     }
 
     Code EncoderContext::encode(Frame input_frame, Packet& output_packet) {
-        in_coint++;
         try_to(output_packet.init());
         output_packet.setType(params.out->type());
         auto debug_value = this;
@@ -39,7 +38,6 @@ namespace fpp {
         }
         output_packet.setStreamIndex(params.out->streamIndex());
         output_packet.setStreamUid(params.out->streamUid());
-        out_coint++;
         return Code::OK;
     }
 

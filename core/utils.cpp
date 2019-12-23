@@ -44,6 +44,14 @@ namespace fpp {
         sleep_for_sec(minutes * 60);
     }
 
+    std::string utils::msec_to_time(int64_t value) {
+        const int64_t ms = value % 1000;
+        const int64_t ss = (value / 1000) % 60;
+        const int64_t mm = ((value / 1000) % 3600) / 60;
+        const int64_t hh = (value / 1000) / 3600;
+        return std::to_string(hh) + ':' + std::to_string(mm) + ':' + std::to_string(ss) + '.' + std::to_string(ms);
+    }
+
     bool utils::exit_code(Code code) {
         if (code == Code::ERR)              { return true; }
         if (code == Code::EXIT)             { return true; }

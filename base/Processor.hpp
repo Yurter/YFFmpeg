@@ -51,6 +51,18 @@ namespace fpp {
 
     protected:
 
+        uint64_t            inputDataCount()            const;
+        uint64_t            outputDataCount()           const;
+        uint64_t            discardedDataCount()        const;
+        uint64_t            processingIterationCount()  const;
+
+        void                increaseInputDataCount();
+        void                increaseOutputDataCount();
+        void                increaseDiscardedDataCount();
+        void                increaseProcessingIterationCount();
+
+    protected:
+
         ProcessorList       _next_processor_list;
 
     private:
@@ -62,6 +74,10 @@ namespace fpp {
         int64_t             _discard_types;
         StreamVector        _streams;
         std::string         _meta_data;
+        uint64_t            _input_data_count;
+        uint64_t            _output_data_count;
+        uint64_t            _discarded_data_count;
+        uint64_t            _processing_iterations_count;
 
     };
 

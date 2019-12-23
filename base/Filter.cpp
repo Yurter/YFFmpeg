@@ -120,7 +120,6 @@ namespace fpp {
 
     Code Filter::close() {
         setOpened(false);
-        log_error("in " << in_coint << " out " << out_coint);
         return Code::OK;
     }
 
@@ -141,7 +140,6 @@ namespace fpp {
     }
 
     Code Filter::processInputData(Frame input_data) {
-        in_coint++;
         if (av_buffersrc_add_frame_flags(_buffersrc_ctx, &input_data.raw(), AV_BUFFERSRC_FLAG_KEEP_REF) < 0) {
             log_error("Error while feeding the filtergraph: " << input_data);
             return Code::FFMPEG_ERROR;
@@ -184,7 +182,6 @@ namespace fpp {
 
             output_data.setPts(output_data.pts() / 60); //TODO CRITICAL фильтр на пропуск кадров не меняет птс фреймов, поэтому на выходе птсы 0го, 60го, 120 и тд, а не 0, 1, 2..
 //            log_debug(output_data);
-            out_coint++;
             try_to(sendOutputData(output_data));
 //            try_to(sendOutputData(input_data));
         }

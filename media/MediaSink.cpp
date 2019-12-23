@@ -41,14 +41,11 @@ namespace fpp {
         if (buferIsEmpty()) {
             stopWait(); //TODO костыль?
         }
-        log_info("Destination: \"" << _output_format_context.mediaResourceLocator() << "\" closed");
-        if (_output_format_context.stream(0)->packetIndex() == 0) {
+        log_info("Destination: \"" << _output_format_context.mediaResourceLocator() << "\" closed, "
+                 << utils::msec_to_time(stream(0)->params->duration()));
+        if (outputDataCount() == 0) {
             log_warning(_output_format_context.mediaResourceLocator() << " closed empty!");
         }
-        log_error("Sink dur = " << stream(0)->params->duration() << "ms | "
-                  << stream(0)->params->duration() / 1000 << "s | "
-                  << stream(0)->params->duration() / (60 * 1000) << "min | ");
-        log_error("write = " << stream(0)->packetIndex());
         setOpened(false);
         return Code::OK;
     }
@@ -88,7 +85,7 @@ namespace fpp {
 
     Code MediaSink::writeOutputData(Packet output_data) {
 //        if (av_interleaved_write_frame(_format_context, &packet.raw()) < 0) {
-        log_error("duration: " << stream(0)->params->duration());
+//        log_error("duration: " << stream(0)->params->duration());
         if (av_write_frame(_output_format_context.mediaFormatContext(), &output_data.raw()) < 0) {
             log_error("opened: " << utils::bool_to_string(opened()));
             log_error("running: " << utils::bool_to_string(running()));

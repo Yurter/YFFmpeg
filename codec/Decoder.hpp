@@ -26,6 +26,7 @@ namespace fpp {
     private:
 
         DecoderContext      _decoder_context;
+        bool                _got_first_key_frame;
 
     };
 

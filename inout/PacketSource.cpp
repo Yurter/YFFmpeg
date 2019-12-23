@@ -23,6 +23,7 @@ namespace fpp {
         }
         return_if(ret == Code::AGAIN, ret);
         try_to(storeInputData(packet));
+        increaseInputDataCount();
         return Code::OK;
     }
 

@@ -24,8 +24,6 @@ namespace fpp {
         virtual Code        processInputData(Frame input_data) override;
 
     private:
-        int in_coint = 0;
-        int out_coint = 0;
 
         std::string         _filters_descr;
         AVFilterGraph*      _filter_graph;

@@ -13,6 +13,7 @@ namespace fpp {
         Packet packet;
         try_to(restoreOutputData(packet));
         try_to(writeOutputData(packet));
+        increaseOutputDataCount();
         return Code::OK;
     }
 

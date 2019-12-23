@@ -37,6 +37,7 @@ namespace fpp {
         }
 
         virtual Code push(const Object* input_data) override final {
+            increaseInputDataCount();
             if (closed()) {
                 log_warning("Got " << input_data->name() << " but closed");
             }
@@ -83,7 +84,8 @@ namespace fpp {
         }
 
         Code sendOutputData(const outType& output_data) {
-            _next_processor_list.for_each([&output_data,this](auto& next_processor) {
+            increaseOutputDataCount();
+            _next_processor_list.for_each([output_data,this](auto& next_processor) {
                 static_log_trace("TODO", "Sending data to " << next_processor->name());
                 try_throw_static(next_processor->push(&output_data));
             });
@@ -146,6 +148,7 @@ namespace fpp {
 
             log_trace("Running processInputData");
             try_to(processInputData(input_data));
+            increaseProcessingIterationCount();
 
             if (_post_function) {
                 log_trace("Running _post_function");

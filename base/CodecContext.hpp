@@ -32,10 +32,6 @@ namespace fpp {
         void                setOpened(bool value);
 
     protected:
-        int in_coint = 0;
-        int out_coint = 0;
-
-    protected:
 
         AVCodecContext*     _codec_context;
         CodecType           _type;
