@@ -54,6 +54,7 @@ namespace fpp {
     }
 
     Code EncoderContext::flush(Object *data) {
+        return Code::OK;
         log_error("FLUSH");
         while (avcodec_send_frame(_codec_context, nullptr) != 0) {
             Packet output_packet;
