@@ -37,11 +37,14 @@ namespace fpp {
         }
 
         virtual Code push(const Object* input_data) override final {
-            return_warning_if(
-                closed()
-                , "Got " << input_data->name() << " but closed"
-                , Code::AGAIN
-            );
+//            return_warning_if(
+//                closed()
+//                , "Got " << input_data->name() << " but closed"
+//                , Code::AGAIN
+//            );
+            if (closed()) {
+                log_warning("Got " << input_data->name() << " but closed");
+            }
             return_warning_if_not(
                 _input_queue.wait_and_push(*static_cast<const inType*>(input_data))
                 , "Failed to store " << input_data->name()

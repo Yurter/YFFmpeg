@@ -118,7 +118,7 @@ namespace fpp {
         input_data.setStreamUid(packet_stream->params->streamUid());
 
         if (stream(0)->packetIndex() == 0) {
-//            log_error("!!! " << input_data);
+            log_error("!!! " << input_data);
         }
 //        log_error(input_data);
 
@@ -132,56 +132,9 @@ namespace fpp {
            stream(0)->setStampType(StampType::FromZero); /* не с начала файла */
         }
         try_to(stream(0)->stampPacket(input_data));
-        log_debug("->>>>> input_data: " << input_data.pts() << " " << input_data.dts());
+//        log_debug("->>>>> input_data: " << input_data.pts() << " " << input_data.dts());
         return Code::OK;
     }
-//    Code MediaSource::readInputData(Packet& input_data) {
-//        if (_end_point != -1) { //TODO
-//            if (inited_ptr(stream(0))) {
-////                log_warning("STREAM DURATION: " << stream(0)->params->duration());
-//                if (stream(0)->params->duration() >= (_end_point - _start_point)) {
-//                    return Code::END_OF_FILE;
-//                }
-//            }
-//        }
-//        return_if(_input_format_context.closed(), Code::ERR); //TODO сорс читает после закрытия.. или до..
-//        if (int ret = av_read_frame(_input_format_context.mediaFormatContext(), &input_data.raw()); ret != 0) {
-//            return_info_if(ret == AVERROR_EOF
-//                           , "Source reading completed"
-//                           , Code::END_OF_FILE);
-//            log_error("Cannot read source: \"" << _input_format_context.mediaResourceLocator() << "\". Error " << ret);
-//            return Code::FFMPEG_ERROR;
-//        }
-//        if (input_data.streamIndex() != 0) {
-//            return Code::AGAIN; //TODO fix it
-//        }
-//        //TODO этот код должен быть внутри processInputData()
-//        auto packet_stream = _input_format_context.stream(input_data.raw().stream_index);
-//        return_if(not_inited_ptr(packet_stream), Code::AGAIN);
-//        return_if_not(packet_stream->used(), Code::AGAIN);
-//        input_data.setType(packet_stream->type());
-//        input_data.setStreamUid(packet_stream->params->streamUid());
-
-//        if (stream(0)->packetIndex() == 0) {
-////            log_error("!!! " << input_data);
-//        }
-////        log_error(input_data);
-
-//        if ((stream(0)->packetIndex() == 0)
-//                && (input_data.pts() == 0)) {
-//           stream(0)->setStampType(StampType::Copy); /* ? */
-//        }
-//        if ((stream(0)->packetIndex() == 0)
-//                && (input_data.pts() != 0)) {
-//            stream(0)->setStampType(StampType::FromZero); /* ? */
-//        }
-//        if (stream(0)->packetIndex() == 0) {
-//            log_error("FIRST FRAME: " << input_data);
-//        }
-//        try_to(stream(0)->stampPacket(input_data));
-////        log_debug(input_data);
-//        return Code::OK;
-//    }
 
     Code MediaSource::processInputData(Packet input_data) {
         if (input_data.empty()) {

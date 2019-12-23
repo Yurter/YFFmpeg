@@ -76,28 +76,29 @@ namespace fpp {
         return *this;
     }
 
-    Packet Packet::clone() const {av_packet_clone
-        if (!packet || packet->size <= 0)
-            {
-                return;
-            }
+    Packet Packet::clone() const {
+        return Packet();
+//        if (!packet || packet->size <= 0)
+//            {
+//                return;
+//            }
 
-            avpacket_unref(&m_raw);
-            av_init_packet(&m_raw);
+//            avpacket_unref(&m_raw);
+//            av_init_packet(&m_raw);
 
-            AVPacket tmp = *packet;
-            if (deepCopy) {
-                // Preven referencing instead of deep copy
-                tmp.buf = nullptr;
-            }
+//            AVPacket tmp = *packet;
+//            if (deepCopy) {
+//                // Preven referencing instead of deep copy
+//                tmp.buf = nullptr;
+//            }
 
-            int sts = av_copy_packet(&m_raw, &tmp);
-            if (sts < 0) {
-                throws_if(ec, sts, ffmpeg_category());
-                return;
-            }
+//            int sts = av_copy_packet(&m_raw, &tmp);
+//            if (sts < 0) {
+//                throws_if(ec, sts, ffmpeg_category());
+//                return;
+//            }
 
-            m_completeFlag = m_raw.size > 0;
+//            m_completeFlag = m_raw.size > 0;
     }
 
 //    void Packet::copyFrom(const AVPacket& avpacket) {

@@ -124,6 +124,10 @@ namespace fpp {
             auto new_dts = _prev_dts + _packet_dts_delta;
             auto new_pts = _prev_pts + _packet_pts_delta;
 
+            if (_packet_index == 0) {
+                new_dts = new_pts = 0;
+            }
+
             packet.setDts(new_dts);
             packet.setPts(new_pts);
             break;
