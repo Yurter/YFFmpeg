@@ -18,7 +18,7 @@ namespace fpp {
         using OutputQueue = AsyncQueue<outType>;
 
         TemplateProcessor() :
-            _input_queue(50 MEGABYTES, [](const inType& input_data) { return input_data.size(); })
+            _input_queue(50 MEGABYTES,  [](const inType& input_data)   { return input_data.size();  })
           , _output_queue(50 MEGABYTES, [](const outType& output_data) { return output_data.size(); })
         {
             setName("TemplateProcessor");
@@ -37,18 +37,13 @@ namespace fpp {
         }
 
         virtual Code push(const Object* input_data) override final {
-//            return_warning_if(
-//                closed()
-//                , "Got " << input_data->name() << " but closed"
-//                , Code::AGAIN
-//            );
             if (closed()) {
                 log_warning("Got " << input_data->name() << " but closed");
             }
             return_warning_if_not(
                 _input_queue.wait_and_push(*static_cast<const inType*>(input_data))
                 , "Failed to store " << input_data->name()
-                , Code::AGAIN
+                , Code::EXIT
             );
             return Code::OK;
         }
