@@ -30,7 +30,7 @@ namespace fpp {
         AVRational          timeBase()      const;
         int64_t             contextUid()    const;
 
-        void                increaseDuration(int64_t value);
+        void                increaseDuration(const int64_t value);
 
         virtual std::string toString() const override;
 

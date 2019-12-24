@@ -115,6 +115,10 @@ namespace fpp {
     }
 
     Code OutputFormatContext::createContext() {
+        return_error_if(inited_ptr(_format_context)
+                        , "Context already created!"
+                        , Code::INVALID_CALL_ORDER);
+        _format_context = avformat_alloc_context();
         std::string format_short_name = utils::guess_format_short_name(_media_resource_locator);
         const char* format_name = format_short_name.empty() ? nullptr : format_short_name.c_str();
         if (avformat_alloc_output_context2(&_format_context, nullptr, format_name, _media_resource_locator.c_str()) < 0) {
@@ -161,13 +165,12 @@ namespace fpp {
     }
 
     Code OutputFormatContext::closeContext() {
-        return_if(closed(), Code::INVALID_CALL_ORDER);
+        return_if(closed(), Code::OK);
         if (av_write_trailer(_format_context) != 0) {
             log_error("Failed to write the stream trailer to an output media file");
             return Code::ERR;
         }
         avio_close(_format_context->pb);
-//        log_info("Destination: \"" << _media_resource_locator << "\" closed");
         return Code::OK;
     }
 

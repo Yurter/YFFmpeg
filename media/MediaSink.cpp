@@ -10,7 +10,6 @@ namespace fpp {
     }
 
     MediaSink::~MediaSink() {
-        join();
         try_throw(close());
     }
 

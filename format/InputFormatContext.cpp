@@ -58,6 +58,9 @@ namespace fpp {
     }
 
     Code fpp::InputFormatContext::createContext() {
+        return_error_if(inited_ptr(_format_context)
+                        , "Context already created!"
+                        , Code::INVALID_CALL_ORDER);
         _format_context = avformat_alloc_context();
         if (not_inited_ptr(_format_context)) {
             log_error("Failed to alloc input context.");
@@ -92,6 +95,7 @@ namespace fpp {
     }
 
     Code InputFormatContext::closeContext() {
+        return_if(closed(), Code::OK);
         if (inited_ptr(_format_context)) {
             avformat_close_input(&_format_context);
             return Code::OK;

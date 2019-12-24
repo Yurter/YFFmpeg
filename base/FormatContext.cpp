@@ -7,7 +7,6 @@ namespace fpp {
         _uid(utils::gen_uid())
         , _media_resource_locator(mrl)
         , _opened(false)
-//        , _stream_context(stream_context)
         , _reopening_after_failure(false)
         , _reopening_timeout(INVALID_INT)
         , _artificial_delay(DEFAULT_INT)
@@ -19,7 +18,9 @@ namespace fpp {
     }
 
     FormatContext::~FormatContext() {
-//        try_throw(close()); //TODO
+        if_not(closed()) {
+            log_warning("Context deleted without closing!");
+        }
     }
 
     Code FormatContext::close() {
@@ -61,27 +62,24 @@ namespace fpp {
     }
 
     Code FormatContext::createStream(Stream* new_stream) {
-//        try_to(new_stream->init()); // перенёс на момент открытия контекста
-//        new_stream->setContext(_stream_context);
         new_stream->params->setStreamIndex(numberStream());
-//        new_stream->params->setContextUid(uid());
         _streams.push_back(new_stream);
         return Code::OK;
     }
 
     Code FormatContext::createStream(Parameters* param) {
-//        return_if(not_inited_codec_id(param->codecId()), Code::INVALID_INPUT); //Нужна ли проверка?..
-        auto avstream = avformat_new_stream(_format_context, param->codec());
+//        return_if_not(param->inited(), Code::INVALID_INPUT); //TODO метод inited() не виртуальный, добавить проверку параметров
+        auto avstream = avformat_new_stream(_format_context, param->codec()); //TODO memory leak
         return_if(not_inited_ptr(avstream), Code::ERR);
         Stream* new_stream = nullptr;
         if (param->isVideo()) {
-            auto video_param = dynamic_cast<VideoParameters*>(param);
-            new_stream = new VideoStream(video_param);
+            auto video_param = dynamic_cast<VideoParameters*>(param);   //TODO memory leak
+            new_stream = new VideoStream(video_param);                  //TODO memory leak
             new_stream->setRaw(avstream);
         }
         if (param->isAudio()) {
-            auto audio_param = dynamic_cast<AudioParameters*>(param);
-            new_stream = new AudioStream(audio_param);
+            auto audio_param = dynamic_cast<AudioParameters*>(param);   //TODO memory leak
+            new_stream = new AudioStream(audio_param);                  //TODO memory leak
             new_stream->setRaw(avstream);
         }
         return createStream(new_stream);

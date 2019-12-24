@@ -139,7 +139,7 @@ namespace fpp {
         return _context_uid;
     }
 
-    void Parameters::increaseDuration(int64_t value) {
+    void Parameters::increaseDuration(const int64_t value) {
         _duration += value;
     }
 
