@@ -1,35 +1,40 @@
 #include "Frame.hpp"
 #include "core/utils.hpp"
-#include <atomic>
 
 namespace fpp {
 
     Frame::Frame() :
         Data<AVFrame>()
     {
-        EMPTY_CONSTRUCTOR
+        setName("Frame");
     }
 
     Frame::Frame(const Frame& other) {
         setName("Frame");
-        av_frame_ref(&_data, &other._data);
-        setType(other.type());
-        setInited(true);
+        copyOther(other);
     }
 
-//    Frame::Frame(const Frame&& other) { //TODO нужен ли?
-//        UNUSED(other);
-//        log_error("MOVE FRAME");
-//    }
+    Frame::Frame(const Frame&& other) {
+        setName("Frame");
+        copyOther(other);
+    }
+
+    Frame::Frame(const AVFrame& frame, const MediaType type) {
+        setName("Frame");
+        copyOther(frame, type);
+    }
 
     Frame::~Frame() {
         av_frame_unref(&_data);
     }
 
+    Frame& Frame::operator=(const Frame& other) {
+        copyOther(other);
+        return *this;
+    }
+
     Frame& Frame::operator=(const Frame&& other) {
-        av_frame_ref(&_data, &other._data);
-        setType(other.type());
-        setInited(true);
+        copyOther(other);
         return *this;
     }
 
@@ -88,6 +93,18 @@ namespace fpp {
             str += std::to_string(-1) + " bytes";
             return str;
         }
+    }
+
+    void Frame::copyOther(const Frame& other) {
+        av_frame_ref(&_data, &other._data);
+        setType(other.type());
+        setInited(true);
+    }
+
+    void Frame::copyOther(const AVFrame& other, const MediaType type) {
+        av_frame_ref(&_data, &other);
+        setType(type);
+        setInited(true);
     }
 
 } // namespace fpp

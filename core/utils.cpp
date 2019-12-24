@@ -1,12 +1,9 @@
 #include "utils.hpp"
-//extern "C" {
-//#include <libavutil/rational.h>
-//}
 #include <thread>
 
-#define FLOAT_EPSILON 0.0001f
-
 namespace fpp {
+
+    static std::atomic_llong object_uid_handle = 0;
 
     std::string utils::media_type_to_string(MediaType media_type) {
         switch (media_type) {
@@ -442,7 +439,8 @@ namespace fpp {
     }
 
     bool utils::compare_float(float a, float b) {
-        return fabs(a - b) < FLOAT_EPSILON;
+        const float epsilon = 0.0001f;
+        return fabs(a - b) < epsilon;
     }
 
     int utils::save_frame_as_jpeg(AVCodecContext* pCodecCtx, AVFrame* pFrame, int FrameNo) {

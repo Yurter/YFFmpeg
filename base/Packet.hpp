@@ -16,8 +16,6 @@ namespace fpp {
         Packet& operator=(const Packet& other);
         Packet& operator=(const Packet&& other);
 
-        Packet              clone() const;
-
         virtual Code        init() override;
 
         void                setPts(int64_t pts);

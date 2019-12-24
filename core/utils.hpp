@@ -8,11 +8,9 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
+#include <atomic>
 
 namespace fpp {
-
-    static int64_t object_uid_handle = DEFAULT_INT; //TODO remove warning //сделать атомиком?
-    #define USE_HWACCEL true //TODO
 
     class utils {
 
@@ -21,6 +19,10 @@ namespace fpp {
         utils()         = delete;
         utils(utils&)   = delete;
         utils(utils&&)  = delete;
+        ~utils()        = default;
+
+        utils& operator=(const utils& other) = delete;
+        utils& operator=(const utils&& other) = delete;
 
         static std::string  media_type_to_string(MediaType media_type);
         static std::string  pts_to_string(int64_t pts);
