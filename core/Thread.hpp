@@ -31,8 +31,8 @@ namespace fpp {
     protected:
 
         virtual Code        run();
-        virtual Code        onStart();
-        virtual Code        onStop();
+        virtual Code        onStart();  //вызывается из потока перед основным циклом
+        virtual Code        onStop();   //Должен гарантированно вызыватся после остановки потока
 
     private:
 

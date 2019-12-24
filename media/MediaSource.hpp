@@ -15,7 +15,6 @@ namespace fpp {
         virtual Code        open() override;
         virtual Code        close() override;
         virtual std::string toString() const override;
-
         virtual bool        equalTo(const ProcessorPointer other) const override;
 
         void                setStartPoint(int64_t value);

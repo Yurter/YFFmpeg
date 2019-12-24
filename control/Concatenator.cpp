@@ -12,7 +12,6 @@ namespace fpp {
 
     Concatenator::~Concatenator() {
         try_throw(stop());
-        join();
     }
 
     Code Concatenator::init() {

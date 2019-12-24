@@ -258,7 +258,7 @@ void write_video_from_camera() {
     }
 
 //    utils::sleep_for_min(60);
-    progress_bar(30 * 60);
+    progress_bar(15);
 }
 
 int main() {
@@ -291,18 +291,18 @@ int main() {
 //        return 0;
 //    }
 
-    {
-        set_log_level(LogLevel::Debug);
-        concatenator_debug_timlapse_event();
-        return 0;
-    }
-
 //    {
 //        set_log_level(LogLevel::Debug);
-//        set_ffmpeg_log_level(LogLevel::Quiet);
-//        write_video_from_camera();
+//        concatenator_debug_timlapse_event();
 //        return 0;
 //    }
+
+    {
+        set_log_level(LogLevel::Debug);
+        set_ffmpeg_log_level(LogLevel::Quiet);
+        write_video_from_camera();
+        return 0;
+    }
 
 //    {
 //        set_log_level(LogLevel::Debug);

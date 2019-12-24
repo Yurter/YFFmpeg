@@ -27,11 +27,11 @@ namespace fpp {
         closeFile();
     }
 
-    Code Logger::print(const LogMessage& message) {
+    Code Logger::print(const LogLevel log_level, const std::string& log_text) {
         std::lock_guard lock(_print_mutex);
         HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
-        switch (message.log_level) {
+        switch (log_level) {
         case LogLevel::Quiet:
             break;
         case LogLevel::Info:
@@ -51,8 +51,8 @@ namespace fpp {
             break;
         }
 
-        _file << message.log_text << std::endl;
-        std::cout << message.log_text << std::endl;
+        _file << log_text << std::endl;
+        std::cout << log_text << std::endl;
         SetConsoleTextAttribute(hStdout, FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
         return Code::OK;
     }
@@ -241,7 +241,7 @@ namespace fpp {
 
     void Logger::print(const std::string& caller_name, const std::string& code_position, const LogLevel log_level, const std::string& message) {
         const std::string formated_message = formatMessage(caller_name, code_position, log_level, message);
-        try_throw(print({ log_level, formated_message }));
+        try_throw(print(log_level, formated_message));
     }
 
 } // namespace fpp

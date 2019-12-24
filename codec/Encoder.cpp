@@ -9,7 +9,7 @@ namespace fpp {
     }
 
     Encoder::~Encoder() {
-        join();
+        try_throw(stop());
     }
 
     Code Encoder::init() {

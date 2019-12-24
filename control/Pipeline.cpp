@@ -10,7 +10,6 @@ namespace fpp {
 
     Pipeline::~Pipeline() {
         try_throw(stop());
-        join();
     }
 
     Code Pipeline::addElement(ProcessorPointer processor) { //TODO каша из кода

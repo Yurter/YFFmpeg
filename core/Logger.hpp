@@ -1,28 +1,9 @@
 #pragma once
-//#include "core/async/AsyncQueue.hpp"
-#include "core/Thread.hpp"
+#include "Object.hpp"
 #include <fstream>
 #include <mutex>
 
 namespace fpp {
-
-    class LogMessage {
-
-    public:
-
-        LogMessage() {}
-        LogMessage(LogLevel level, const std::string& text) :
-            log_level(level)
-            , log_text(text) {}
-
-        uint64_t    size() const { return 1; /* log_text.size(); */ }
-
-        LogLevel    log_level;
-        std::string log_text;
-
-    };
-
-//    using MessageQueue = AsyncQueue<LogMessage>;
 
     class Logger : public Object {
 
@@ -47,7 +28,7 @@ namespace fpp {
 
     private:
 
-        Code                print(const LogMessage& message);
+        Code                print(const LogLevel log_level, const std::string& log_text);
         void                openFile(const std::string& log_dir);
         void                closeFile();
         std::string         genFileName() const;

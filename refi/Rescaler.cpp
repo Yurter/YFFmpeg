@@ -10,8 +10,8 @@ namespace fpp {
     }
 
     Rescaler::~Rescaler() {
-        join();
-        sws_freeContext(_rescaler_context);
+        try_throw(stop());
+        sws_freeContext(_rescaler_context); //TODO перенести в клоз
     }
 
     // TODO https://stackoverflow.com/questions/12831761/how-to-resize-a-picture-using-ffmpegs-sws-scale

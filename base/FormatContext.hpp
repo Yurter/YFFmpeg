@@ -81,7 +81,7 @@ namespace fpp {
 
         int64_t             _uid;
         std::string			_media_resource_locator;
-        std::atomic_bool	_opened;
+        bool                _opened;
         StreamVector        _streams;
         bool                _reopening_after_failure;
         int64_t             _reopening_timeout;
@@ -93,7 +93,5 @@ namespace fpp {
         AVFormatContext*	_format_context;
 
     };
-
-//    using FormatContextList = std::list<FormatContext*>;
 
 } // namespace fpp

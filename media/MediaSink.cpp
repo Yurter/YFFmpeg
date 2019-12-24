@@ -40,10 +40,12 @@ namespace fpp {
         if (buferIsEmpty()) {
             stopWait(); //TODO костыль?
         }
+        try_to(_output_format_context.close());
         log_info("Destination: \"" << _output_format_context.mediaResourceLocator() << "\" closed, "
                  << utils::msec_to_time(stream(0)->params->duration()));
-        if (outputDataCount() == 0) {
-            log_warning(_output_format_context.mediaResourceLocator() << " closed empty!");
+//        if (outputDataCount() == 0) {
+        if (stream(0)->params->duration() == 0) {
+            log_warning('"' << _output_format_context.mediaResourceLocator() << "\" closed empty!");
         }
         setOpened(false);
         return Code::OK;
@@ -70,36 +72,22 @@ namespace fpp {
     Code MediaSink::processInputData(Packet input_data) {
         if (input_data.isVideo()) { //Debug if
             try_to(_output_format_context.stream(input_data.streamIndex())->stampPacket(input_data));
-            if (_output_format_context.mediaResourceLocator() == std::string("group_video/event.flv")) {
-//                log_warning("packetIndex = " << _output_format_context.stream(input_data.streamIndex())->packetIndex());
-            }
         }
-//        log_debug(input_data);
-//        log_debug(input_data.pts() << " " << input_data.dts() << " " << input_data.duration() << " | "
-//                  << utils::rational_to_string(stream(0)->params->timeBase()) << " "
-//                  << utils::rational_to_string(stream(0)->raw()->time_base));
         try_to(storeOutputData(input_data));
         return Code::OK;
     }
 
     Code MediaSink::writeOutputData(Packet output_data) {
-//        if (av_interleaved_write_frame(_format_context, &packet.raw()) < 0) {
-//        log_error("duration: " << stream(0)->params->duration());
         if (av_write_frame(_output_format_context.mediaFormatContext(), &output_data.raw()) < 0) {
-            log_error("opened: " << utils::bool_to_string(opened()));
-            log_error("running: " << utils::bool_to_string(running()));
-            log_error("packet: " << output_data);
             log_error("Error muxing packet");
             return Code::ERR;
         }
-//        av_packet_unref(&output_data.raw()); //memfix TODO мув в деструктор пакета
         return Code::OK;
     }
 
     Code MediaSink::onStop() {
-        return_if(closed(), Code::INVALID_CALL_ORDER);
         log_debug("onStop");
-        try_to(_output_format_context.close()); // Check it
+        try_to(close());
         return Code::OK;
     }
 

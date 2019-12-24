@@ -3,7 +3,7 @@
 namespace fpp {
 
     MediaSource::MediaSource(const std::string mrl, IOType preset) :
-        _input_format_context(mrl, /*this,*/ preset)
+        _input_format_context(mrl, preset)
       , _start_time_point(FROM_START)
       , _end_time_point(TO_END)
     {
@@ -16,7 +16,7 @@ namespace fpp {
     }
 
     Code MediaSource::init() {
-        return_if(inited(), Code::INVALID_CALL_ORDER);
+        return_if(inited(), Code::OK);
         log_debug("Initialization");
         try_to(_input_format_context.init());
         setInited(true);
@@ -24,7 +24,7 @@ namespace fpp {
     }
 
     Code MediaSource::open() {
-        return_if(opened(), Code::INVALID_CALL_ORDER);
+        return_if(opened(), Code::OK);
         log_debug("Opening");
         log_info('"' << _input_format_context.mediaResourceLocator() << "\" is opening...");
         try_to(_input_format_context.open());
@@ -50,7 +50,7 @@ namespace fpp {
         try_to(sendEofPacket()); //TODO костыль?
         try_to(stop());
         stopWait(); //TODO костыль?
-//        try_to(_input_format_context.close());
+        try_to(_input_format_context.close());
         log_info("Source: \"" << _input_format_context.mediaResourceLocator() << "\" closed, "
                  << utils::msec_to_time(stream(0)->params->duration()));
         setOpened(false);
@@ -183,10 +183,8 @@ namespace fpp {
     }
 
     Code MediaSource::onStop() {
-        return_if(closed(), Code::INVALID_CALL_ORDER);
         log_debug("onStop");
-        try_to(sendEofPacket());
-        try_to(_input_format_context.close());
+        try_to(close());
         return Code::OK;
     }
 

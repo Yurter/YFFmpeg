@@ -10,8 +10,7 @@ namespace fpp {
     }
 
     Filter::~Filter() {
-        join(); //TODO вынести в наследники, если они остануться
-        close();
+        try_throw(stop());
     }
 
     Code Filter::init() {

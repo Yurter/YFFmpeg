@@ -10,7 +10,7 @@ namespace fpp {
     }
 
     Decoder::~Decoder() {
-        join();
+        try_throw(stop());
     }
 
     Code Decoder::init() {

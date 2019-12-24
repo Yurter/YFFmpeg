@@ -28,8 +28,7 @@ namespace fpp {
     }
 
     Thread::~Thread() {
-        try_throw(quit());
-        join();
+        try_throw(stop());
     }
 
     Code Thread::start() {
@@ -37,9 +36,8 @@ namespace fpp {
 //        log_trace("Thread starting."); //блокирует конструктор логгера.
         _stop_flag = false;
         if_not(inited()) { try_to(init()); }
-        _running = true; // TODO вынес из тела потока, т.к. может не успеть установиться в true из потока
+        _running = true;
         _thread = std::thread([this]() {
-//            _running = true;
             log_debug("Thread started");
             try_throw(onStart());
             try {
@@ -71,17 +69,19 @@ namespace fpp {
     }
 
     Code Thread::stop() {
+        return_if_not(running(), Code::OK);
         log_debug("Thread stoping");
-        _stop_flag = true;
         try_to(quit());
+        join();
         try_to(onStop());
+        log_debug("Thread stopped");
         return Code::OK;
     }
 
     Code Thread::quit() {
         return_if_not(running(), Code::OK);
         log_debug("Thread quiting");
-        _stop_flag = true; //TODO дублировать из стопа?
+        _stop_flag = true;
         try { /* TODO */
             if (_thread.joinable()) { _thread.join(); }
         } catch (std::exception e) {
