@@ -126,7 +126,7 @@ namespace fpp {
             }
         }
 
-        static_log_auto("FFmpeg", convert_log_level(level), line);
+        static_log("FFmpeg", convert_log_level(level), line);
     }
 
     LogLevel Logger::convert_log_level(int ffmpeg_level) { //TODO

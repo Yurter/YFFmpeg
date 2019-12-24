@@ -40,11 +40,9 @@ namespace fpp {
 
         int64_t             index()         const;
         bool                used()          const;
-        int64_t             packetIndex()   const;//TODO
+        int64_t             packetIndex()   const;
 
         AVCodecParameters*  codecParameters();
-
-        int64_t packet_duration() const { return _packet_duration; } //TODO
 
         virtual bool        operator>(const Stream& other) const; //TODO func betterThen(Stream* other) ? нет, максимум дублировать, т.к. испольуется в std::max_element
 
@@ -56,12 +54,11 @@ namespace fpp {
 
         virtual void        parseParameters();
 
-        Chronometer         _chronometer; //TODO
-
     protected:
 
         bool                _used;
         StampType           _stamp_type;
+        Chronometer         _chronometer;
 
         int64_t             _prev_dts;
         int64_t             _prev_pts;

@@ -119,7 +119,7 @@ namespace fpp {
 #define static_log_error(caller_name, message)      log_message(caller_name, LogLevel::Error,   message)
 #define static_log_debug(caller_name, message)      log_message(caller_name, LogLevel::Debug,   message)
 #define static_log_trace(caller_name, message)      log_message(caller_name, LogLevel::Trace,   message)
-#define static_log_auto(caller_name, log_level, message)    log_message(caller_name, log_level, message) //TODO убрать? заменить на метод в логгере?
+#define static_log(caller_name, log_level, message) log_message(caller_name, log_level,         message)
 
 /* ? */
 #define code_pos std::string(__FUNCTION__) + ", line: " + std::to_string(__LINE__)
