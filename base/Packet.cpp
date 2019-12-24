@@ -13,16 +13,12 @@ namespace fpp {
     Packet::Packet(const Packet& other) {
         setName("Packet");
         copyOther(other);
-//        setType(other.type());
-//        setPts(other.pts());
-//        setDts(other.dts());
-//        setDuration(other.duration());
-//        setPos(other.pos());
-//        setStreamIndex(other.streamIndex());
-//        setStreamUid(other.streamUid());
-//        if (av_packet_ref(&_data, &other._data) != 0) {
-//            log_error("av_packet_ref failed! " << other);
-//        }
+        setInited(true);
+    }
+
+    Packet::Packet(const Packet&& other) {
+        setName("Packet");
+        copyOther(other);
         setInited(true);
     }
 
@@ -43,90 +39,16 @@ namespace fpp {
     }
 
     Packet& Packet::operator=(const Packet& other) {
-        setName("Packet");
-//        copyOther(other);
-//        setType(other.type());
-//        setPts(other.pts());
-//        setDts(other.dts());
-//        setDuration(other.duration());
-//        setPos(other.pos());
-//        setStreamIndex(other.streamIndex());
-//        setStreamUid(other.streamUid());
-//        if (av_packet_ref(&_data, &other._data) != 0) {
-//            log_error("av_packet_ref failed! " << other);
-//        }
+        copyOther(other);
         setInited(true);
         return *this;
     }
 
     Packet& Packet::operator=(const Packet&& other) {
-        setName("Packet");
         copyOther(other);
-//        setType(other.type());
-//        setPts(other.pts());
-//        setDts(other.dts());
-//        setDuration(other.duration());
-//        setPos(other.pos());
-//        setStreamIndex(other.streamIndex());
-//        setStreamUid(other.streamUid());
-//        if (av_packet_ref(&_data, &other._data) != 0) {
-//            log_error("av_packet_ref failed! " << other);
-//        }
         setInited(true);
         return *this;
     }
-
-    Packet Packet::clone() const {
-        return Packet();
-//        if (!packet || packet->size <= 0)
-//            {
-//                return;
-//            }
-
-//            avpacket_unref(&m_raw);
-//            av_init_packet(&m_raw);
-
-//            AVPacket tmp = *packet;
-//            if (deepCopy) {
-//                // Preven referencing instead of deep copy
-//                tmp.buf = nullptr;
-//            }
-
-//            int sts = av_copy_packet(&m_raw, &tmp);
-//            if (sts < 0) {
-//                throws_if(ec, sts, ffmpeg_category());
-//                return;
-//            }
-
-//            m_completeFlag = m_raw.size > 0;
-    }
-
-//    void Packet::copyFrom(const AVPacket& avpacket) {
-//        setPts(avpacket.pts);
-//        setDts(avpacket.dts);
-//        setDuration(avpacket.duration);
-//        setPos(avpacket.pos);
-//        setStreamIndex(avpacket.stream_index);
-//        if (av_packet_ref(&_data, &avpacket) != 0) {
-//            log_error("av_packet_ref failed! copyFrom().");
-//        }
-//        setInited(true);
-//    }
-
-//    void Packet::cloneFrom(const AVPacket& avpacket) {
-//        setPts(avpacket.pts);
-//        setDts(avpacket.dts);
-//        setDuration(avpacket.duration);
-//        setPos(avpacket.pos);
-//        setStreamIndex(avpacket.stream_index);
-//        if (av_packet_ref(&_data, &avpacket) != 0) {
-//            log_error("av_packet_ref failed! copyFrom().");
-//        }
-//    AVPacket newPacket(oldPacket);
-//    newPacket->data = reinterpret_cast<uint8_t*>(new uint64_t[(oldPacket->size + FF_INPUT_BUFFER_PADDING_SIZE)/sizeof(uint64_t) + 1]);
-//    memcpy(newPacket->data, oldPacket->data, oldPacket->size);
-//        setInited(true);
-//    }
 
     Code Packet::init() {
         av_init_packet(&_data);
@@ -185,10 +107,6 @@ namespace fpp {
     bool Packet::keyFrame() const {
         return _data.flags & AV_PKT_FLAG_KEY;
     }
-
-//    bool Packet::empty() const {
-//        return size() == 0;
-//    }
 
     uint64_t Packet::size() const {
         return uint64_t(_data.size);

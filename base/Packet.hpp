@@ -9,15 +9,12 @@ namespace fpp {
 
         Packet();
         Packet(const Packet& other);
-//        Packet(const Packet&& other);
+        Packet(const Packet&& other);
         Packet(const AVPacket& avpacket);
         virtual ~Packet() override;
 
         Packet& operator=(const Packet& other);
         Packet& operator=(const Packet&& other);
-
-//        void                copyFrom(const AVPacket& avpacket);
-//        void                cloneFrom(const AVPacket& avpacket);
 
         Packet              clone() const;
 
@@ -38,7 +35,6 @@ namespace fpp {
         int64_t             streamUid()     const;
         bool                keyFrame()      const;
 
-//        bool                empty()     const;
         virtual uint64_t    size()      const override;
         virtual std::string toString()  const override;
 
