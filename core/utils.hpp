@@ -11,7 +11,7 @@
 
 namespace fpp {
 
-    static int64_t object_uid_handle = DEFAULT_INT; //TODO remove warning
+    static int64_t object_uid_handle = DEFAULT_INT; //TODO remove warning //сделать атомиком?
     #define USE_HWACCEL true //TODO
 
     class utils {

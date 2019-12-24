@@ -51,9 +51,11 @@ namespace fpp {
         int64_t pop_while(std::function<bool(const T&)>&& pred) {
             std::lock_guard<std::mutex> lock(this->_mutex);
             int64_t popped_items_count = 0;
-            while (pred(this->_data.front())) {
-                this->_data.pop();
-                popped_items_count++;
+            if (!this->_data.empty()) {
+                while (pred(this->_data.front())) {
+                    this->_data.pop();
+                    popped_items_count++;
+                }
             }
             return popped_items_count;
         }
@@ -102,7 +104,7 @@ namespace fpp {
             return this->_data.empty();
         }
 
-        int64_t lenght() const {
+        int64_t length() const {
             std::lock_guard<std::mutex> lock(this->_mutex);
             return this->_data.size();
         }

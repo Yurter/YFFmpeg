@@ -1,7 +1,7 @@
-TEMPLATE = app
+#TEMPLATE = app
 
-#TEMPLATE = lib
-#CONFIG += static
+TEMPLATE = lib
+CONFIG += static
 
 TARGET = fpp
 CONFIG += console

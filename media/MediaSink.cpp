@@ -36,12 +36,13 @@ namespace fpp {
     Code MediaSink::close() {
         return_if(closed(), Code::OK);
         log_debug("Closing");
+        stopWait();
         try_to(stop());
-        if (buferIsEmpty()) {
-            stopWait(); //TODO костыль?
-        }
+//        if (buferIsEmpty()) {
+//            stopWait(); //TODO костыль?
+//        }
         try_to(_output_format_context.close());
-        log_info("Destination: \"" << _output_format_context.mediaResourceLocator() << "\" closed, "
+        log_info("Destination: \"" << _output_format_context.mediaResourceLocator() << "\" closed, " //TODO метод отрабатывает дважды: из деструктора и из онСтоп
                  << utils::msec_to_time(stream(0)->params->duration()));
 //        if (outputDataCount() == 0) {
         if (stream(0)->params->duration() == 0) {

@@ -61,17 +61,22 @@ void concatenator_debug_timlapse_event() {
 
 void concatenator_kostya() {
     #define TML(x) (x) / 60
-    #define MINUTE * 60'000
+
+/*
+    File: data\\Videos/5dfa15940713000000000004/2019/12/23/timelapse20191223-14.flv, from -15ms to 0ms
+    File: data\\Videos/5dfa15940713000000000004/2019/12/23/event20191223-15-38-26-0.flv, from start to end
+    File: data\\Videos/5dfa15940713000000000004/2019/12/23/timelapse20191223-14.flv, from 45ms to 164ms
+    File: data\\Videos/5dfa15940713000000000004/2019/12/23/event20191223-15-38-38-1.flv, from start to end
+    File: data\\Videos/5dfa15940713000000000004/2019/12/23/timelapse20191223-14.flv, from 347ms to 1000ms
+*/
 
     Concatenator concatenator("debug_files/concatenator_kostya.flv", {
-        { "timelapse.flv", FROM_START, TML(10 MINUTE) }         /* 10 сек */
-        , { "event.flv", (10 MINUTE), (11 MINUTE) }             /*  1 мин */
-        , { "timelapse.flv", TML(11 MINUTE), TML(15 MINUTE) }   /*  4 сек */
-        , { "event.flv", (15 MINUTE), (16 MINUTE) }             /*  1 мин */
-        , { "timelapse.flv", TML(16 MINUTE), TML(23 MINUTE) }   /*  7 сек */
-        , { "event.flv", (23 MINUTE), (24 MINUTE) }             /*  1 мин */
-        , { "timelapse.flv", TML(24 MINUTE), TO_END }           /*  ? сек */
-                                                        /* Итого: 3 мин 21 сек + */
+        { "23/timelapse20191223-12.flv", FROM_START, TML(0) }       /* 0 сек */
+        , { "23/event20191223-15-38-26-0.flv", FROM_START, TO_END } /* 12 сек 411 мсек */
+        , { "23/timelapse20191223-12.flv", 45, 164 }                /* 119 мсек */
+        , { "23/event20191223-15-38-38-1.flv", FROM_START, TO_END } /* 11 сек 887 мсек */
+        , { "23/timelapse20191223-12.flv", 347, 1000 }              /* 653 мсек */
+                                                                /* Итого: 25 сек +- */
     });
 
     if (auto ret = concatenator.start(); ret != Code::OK) {
@@ -297,10 +302,16 @@ int main() {
 //        return 0;
 //    }
 
+//    {
+//        set_log_level(LogLevel::Debug);
+//        set_ffmpeg_log_level(LogLevel::Quiet);
+//        write_video_from_camera();
+//        return 0;
+//    }
+
     {
         set_log_level(LogLevel::Debug);
-        set_ffmpeg_log_level(LogLevel::Quiet);
-        write_video_from_camera();
+        concatenator_kostya();
         return 0;
     }
 
