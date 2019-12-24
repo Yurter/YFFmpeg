@@ -16,7 +16,7 @@ namespace fpp {
     }
 
     CustomPacketSink::~CustomPacketSink() {
-        //
+        try_throw(close());
     }
 
     Code CustomPacketSink::init() {
@@ -38,9 +38,22 @@ namespace fpp {
     }
 
     Code CustomPacketSink::close() {
+        return_if(closed(), Code::OK);
+        log_debug("Closing");
+        stopWait();
+        try_to(stop());
+        log_info("Destination: \"" << _sink_name << "\" closed, " //TODO метод отрабатывает дважды: из деструктора и из онСтоп
+                 << utils::msec_to_time(stream(0)->params->duration()));
+        if (stream(0)->params->duration() == 0) {
+            log_warning('"' << _sink_name << "\" closed empty!");
+        }
         setOpened(false);
         return Code::OK;
     }
+//    Code CustomPacketSink::close() {
+//        setOpened(false);
+//        return Code::OK;
+//    }
 
     std::string CustomPacketSink::toString() const {
         return "CustomPacketSink TODO";
@@ -57,6 +70,12 @@ namespace fpp {
 
     Code CustomPacketSink::writeOutputData(Packet output_data) {
         try_to(_write_func(output_data));
+        return Code::OK;
+    }
+
+    Code CustomPacketSink::onStop() {
+        log_debug("onStop");
+        try_to(close());
         return Code::OK;
     }
 
