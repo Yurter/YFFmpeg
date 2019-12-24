@@ -15,7 +15,9 @@ namespace fpp {
     }
 
     Code Concatenator::init() {
-        return_if(_concat_list.size() < 1, Code::INVALID_INPUT);
+        return_error_if(_concat_list.size() < 1
+                        , "concat list can't be empty"
+                        , Code::INVALID_INPUT);
         return Code::OK;
     }
 

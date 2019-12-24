@@ -231,6 +231,7 @@ namespace fpp {
             codec->height       = int(video_parameters->height());
             codec->time_base    = param->timeBase();
             codec->framerate    = video_parameters->frameRate();
+            codec->gop_size     = int(video_parameters->gopSize());
 
             //TODO опции не применяются, лог раздражает
 //            if (auto ret = av_opt_set(codec->priv_data, "crf", "23", 0); ret != 0) {

@@ -26,6 +26,7 @@ namespace fpp {
             auto video_parameters = new VideoParameters;
             video_parameters->setCodec("libx264", CodecType::Encoder);
             video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
+            video_parameters->setGopSize(2);
 //            video_parameters->setContextUid(uid());
 //            video_parameters->setTimeBase({ 1, 1000 });
 //            video_parameters->setFrameRate({ 22, 1 });
@@ -78,6 +79,7 @@ namespace fpp {
 //            video_parameters->setPixelFormat(AV_PIX_FMT_NV12);
 //            video_parameters->setPixelFormat(AV_PIX_FMT_BGR24);
 //            video_parameters->setContextUid(uid());
+			video_parameters->setGopSize(2);
             try_to(createStream(video_parameters));
 //            stream(0)->setStampType(StampType::Convert);
             stream(0)->setStampType(StampType::ConstantFramerate);
