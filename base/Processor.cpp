@@ -38,7 +38,7 @@ namespace fpp {
         return _uid;
     }
 
-    const StreamVector &Processor::streams() const {
+    const StreamVector& Processor::streams() const {
         return _streams;
     }
 
@@ -53,7 +53,7 @@ namespace fpp {
     Code Processor::addStream(Stream* stream) {
         return_if(not_inited_ptr(stream), Code::INVALID_INPUT);
         _streams.push_back(stream);
-        log_info("Stream added: " << stream->toString());
+        log_debug("Stream added: " << stream->toString());
         return Code::OK;
     }
 
@@ -63,7 +63,7 @@ namespace fpp {
         _streams = streams;
         const int64_t this_context_uid = uid();
         std::for_each(_streams.begin(), _streams.end()
-            ,[this_context_uid](Stream*& stream) {
+            , [this_context_uid](Stream*& stream) {
             stream->params->setContextUid(this_context_uid);
         });
         return Code::OK;
@@ -91,34 +91,16 @@ namespace fpp {
 
     Code fpp::Processor::connectTo(const ProcessorPointer other) {
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
-//        if (this->is("Encoder")) {
-//            static_log_error("TODO", "0000000000 " << _next_processor_list.size());
-//        }
         _next_processor_list.push_back(other);
-//        if (this->is("Encoder")) {
-//            static_log_error("TODO", "1111111111 " << _next_processor_list.size());
-//        }
         log_debug("Connected to " << other->name());
-//        if (running()) {
-//            log_error("running = " << _next_processor_list.size() << " " << other->uid());
-//        }
         return Code::OK;
     }
 
     Code Processor::disconnectFrom(const ProcessorPointer other) {
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
-//        if (this->is("MediaSource")) {
-//            static_log_error("TODO", "dis_0 " << _next_processor_list.size());
-//            _next_processor_list.for_each([other](const auto& proc) {
-//                static_log_error("TODO", "UID -> " << proc->uid() << ", other " << other->uid());
-//            });
-//        }
         _next_processor_list.remove_if([&other](const auto& sink) {
             return sink->uid() == other->uid();
         });
-//        if (this->is("MediaSource")) {
-//            static_log_error("TODO", "dis_1 " << _next_processor_list.size());
-//        }
         log_debug("Disconnected from " << other->name());
         if (_next_processor_list.empty()) {
             if (_close_on_disconnect) {

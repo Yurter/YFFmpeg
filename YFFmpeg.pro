@@ -79,6 +79,7 @@ HEADERS += \
     control/Concatenator.hpp \
     core/async/AsyncList.hpp \
     core/async/AsyncObject.hpp \
+    core/async/AsyncVector.hpp \
     core/time/Chronometer.hpp \
     core/time/Timer.hpp \
     custom/CustomFrameSink.hpp \

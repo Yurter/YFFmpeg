@@ -52,7 +52,7 @@ namespace fpp {
         }
         if (isAudio()) {
             auto channels = av_get_channel_layout_nb_channels(_data.channel_layout);
-            auto bufer_size = av_samples_get_buffer_size(nullptr/*_data.linesize*/ //TODO разобраться с параметром
+            auto bufer_size = av_samples_get_buffer_size(nullptr
                                                          , channels
                                                          , _data.nb_samples
                                                          , AVSampleFormat(_data.format)
@@ -61,11 +61,6 @@ namespace fpp {
         }
         return 0;
     }
-
-//    Code Frame::init() //TODO
-//    {
-//        return Code::ERR;
-//    }
 
     std::string Frame::toString() const {
         /* Video frame: 33123 bytes, dts 460, pts 460, duration 33 */
