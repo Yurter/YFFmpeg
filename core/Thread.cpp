@@ -43,6 +43,7 @@ namespace fpp {
             try {
                 do {
                     if (_stop_flag) { break; }
+                    log_trace("Execute loop function");
                     _exit_code = _loop_function();
                 } while_not (utils::exit_code(_exit_code));
 

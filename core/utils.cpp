@@ -443,6 +443,10 @@ namespace fpp {
         return fabs(a - b) < epsilon;
     }
 
+    bool utils::equal_rational(const AVRational a, const AVRational b) {
+        return av_cmp_q(a, b) == 0;
+    }
+
     int utils::save_frame_as_jpeg(AVCodecContext* pCodecCtx, AVFrame* pFrame, int FrameNo) {
         AVCodec *jpegCodec = avcodec_find_encoder(AV_CODEC_ID_JPEG2000);
         if (!jpegCodec) {

@@ -54,14 +54,13 @@ namespace fpp {
 
         static Code         init_codecpar(AVCodecParameters* codecpar, AVCodec* codec);
         static void         parameters_to_context(const Parameters * const param, AVCodecContext* codec);
-//        static void         parameters_from_context(Parameters* parametres, AVCodecContext* codec);
         static void         parameters_to_avcodecpar(Parameters* parametres, AVCodecParameters* codecpar);
         static void         parameters_from_avcodecpar(Parameters* parametres, AVCodecParameters* codecpar);
 
         static VideoParameters*    default_video_parameters(AVCodecID codec_id);
         static AudioParameters*    default_audio_parameters(AVCodecID codec_id);
 
-        static Code         find_encoder_for(const Parameters * const src_prm, Parameters * const dst_prm/*, bool use_hwaccel*/);
+        static Code         find_encoder_for(const Parameters * const src_prm, Parameters * const dst_prm);
 
         static bool         rescaling_required(const IOParams params);
         static bool         resampling_required(const IOParams params);
@@ -72,6 +71,7 @@ namespace fpp {
         static Stream*      find_best_stream(const StreamVector& stream_list);
 
         static bool         compare_float(float a, float b);
+        static bool         equal_rational(const AVRational a, const AVRational b);
 
         static int          save_frame_as_jpeg(AVCodecContext* pCodecCtx, AVFrame* pFrame, int FrameNo);
         static void SaveAvFrame(AVFrame *avFrame);
@@ -79,6 +79,14 @@ namespace fpp {
 //        static cv::Mat      frame_to_mat(Frame)
 
     };
+
+    inline bool operator==(const AVRational& lhs, const AVRational& rhs) {
+        return av_cmp_q(lhs, rhs) == 0;
+    }
+
+    inline bool operator!=(const AVRational& lhs, const AVRational& rhs) {
+        return av_cmp_q(lhs, rhs) != 0;
+    }
 
 } // namespace fpp
 

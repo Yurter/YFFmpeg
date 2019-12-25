@@ -41,7 +41,6 @@ namespace fpp {
             if (closed()) {
                 log_warning("Got " << input_data->name() << " but closed");
             }
-//            if (this->is("Decoder")) { log_debug("GOT: " << input_data->toString()); }
             return_warning_if_not(
                 _input_queue.wait_and_push(*static_cast<const inType*>(input_data))
                 , "Failed to store " << input_data->name()
@@ -100,8 +99,6 @@ namespace fpp {
     private:
 
         virtual Code run() override final {
-            log_trace("Running run");
-
             if (_pre_function) {
                 log_trace("Running _pre_function");
 //                try_to(_pre_function());
@@ -110,20 +107,29 @@ namespace fpp {
                         && (ret != Code::END_OF_FILE)) {
                     return ret;
                 }
-                return_if(ret == Code::AGAIN, ret); //TODO возожно следует занести AGAIN в еррор код
+                return_if(ret == Code::AGAIN, ret);
             }
 
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
 
-//            if (this->is("Decoder")) { log_debug(">> POP: " << input_data.toString()); }
+            if (input_data.empty()) {
+                log_error("GOT EMPTY DATA 1, " << input_data.size() << " : " << input_data);
+            }
+
+            if (input_data.empty()
+                    && !this->is("MediaSource") // вся разница в этом условии
+                    && !this->is("CustomPacketSource")) {
+                sendOutputData(outType());
+                return Code::END_OF_FILE;
+            }
 
             /* Не удалять проверки! */
-//            return_if(discardType(input_data.type()), Code::AGAIN);
-//            log_warning(utils::bool_to_string(input_data.empty()));
-//            return_error_if(input_data.typeIs(MediaType::MEDIA_TYPE_UNKNOWN)
-//                            , "Got " << utils::media_type_to_string(MediaType::MEDIA_TYPE_UNKNOWN) << " data."
-//                            , Code::INVALID_INPUT);
+            return_if(discardType(input_data.type()), Code::AGAIN);
+
+            if (input_data.empty()) {
+                log_error("GOT EMPTY DATA 2");
+            }
 
 //////////////////////////////////////////////////////////////////
             //TODO
@@ -131,20 +137,18 @@ namespace fpp {
 //                    && this->is("MediaSink")) {
 //                return Code::END_OF_FILE;
 //            }
-            if (input_data.empty()
-                    && !this->is("MediaSource") // вся разница в этом условии
-                    && !this->is("CustomPacketSource")) {
-                sendOutputData(outType());
-                return Code::END_OF_FILE;
-            }
+//            if (input_data.empty()
+//                    && !this->is("MediaSource") // вся разница в этом условии
+//                    && !this->is("CustomPacketSource")) {
+//                sendOutputData(outType());
+//                return Code::END_OF_FILE;
+//            }
             /* TODO не работает это условие :( */
 //            if (input_data.empty()) {
 //                try_to(sendOutputData(outType()));
 //                return Code::END_OF_FILE;
 //            }
 //////////////////////////////////////////////////////////////////
-
-//            if (this->is("Decoder")) { log_debug("## proc: " << input_data.toString()); }
 
             log_trace("Running processInputData");
             try_to(processInputData(input_data));

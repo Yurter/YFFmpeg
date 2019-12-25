@@ -16,9 +16,9 @@ namespace fpp {
         VariableFramerate,
         Copy,
         Append,
-        Convert,
+        Rescale,
         Realtime,
-        FromZero,
+        Offset,
     };
 
     class Stream : public Data<AVStream*> {

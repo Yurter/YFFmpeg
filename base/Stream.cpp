@@ -59,7 +59,7 @@ namespace fpp {
         case StampType::VariableFramerate: { /* Переменный фреймрейт  */
             break;
         }
-        case StampType::FromZero: {
+        case StampType::Offset: {
             if (packetIndex() == 0) {
                 _pts_offset = -packet.pts();
             }
@@ -98,7 +98,7 @@ namespace fpp {
             packet.setPts(new_pts);
             break;
         }
-        case StampType::Convert: {
+        case StampType::Rescale: {
 //            _prev_pts = av_rescale_q(packet.pts(), DEFAULT_TIME_BASE, params->timeBase());
 //            _prev_dts = av_rescale_q(packet.dts(), DEFAULT_TIME_BASE, params->timeBase());
             _packet_duration = packet.pts() - _prev_pts;

@@ -67,6 +67,7 @@ namespace fpp {
             return_error_if(ret < 0
                             , "Cannot read source: \"" << mediaResourceLocator() << "\". "
                             , Code::FFMPEG_ERROR);
+            initPacket(packet);
             return Code::OK;
         }
         case ReadWriteMode::Interleaved:
@@ -130,6 +131,15 @@ namespace fpp {
         }
         _input_format = input_format;
         return Code::OK;
+    }
+
+    void InputFormatContext::initPacket(Packet& packet) {
+        auto packet_stream = stream(packet.streamIndex());
+//        return_if(not_inited_ptr(packet_stream), Code::AGAIN);
+//        return_if_not(packet_stream->used(), Code::AGAIN);
+        packet.setType(packet_stream->type());
+        packet.setStreamUid(packet_stream->params->streamUid());
+//        return Code::OK;
     }
 
 } // namespace fpp

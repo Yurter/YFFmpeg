@@ -257,31 +257,10 @@ void write_video_from_camera() {
         static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("debug_files/timelapse.flv", IOType::Timelapse);
-    if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
-        static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
-    }
-
-//    utils::sleep_for_min(60);
-    progress_bar(15);
-
-    {
-        PipelinePointer pipeline_2 = std::make_shared<Pipeline>();
-        ProcessorPointer source_2 = std::make_shared<MediaSource>("debug_files/event.flv");
-
-        if (auto ret = pipeline->addElement(source_2); ret != fpp::Code::OK) {
-            static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
-        }
-
-        ProcessorPointer sink_event_2 = std::make_shared<MediaSink>("debug_files/event_copy.flv", IOType::Event);
-        if (auto ret = pipeline->addElement(sink_event_2); ret != fpp::Code::OK) {
-            static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
-        }
-
-        source_2->join();
-        sink_event_2->join();
-        static_log_error("","????????????????????????????");
-    }
+//    ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("debug_files/timelapse.flv", IOType::Timelapse);
+//    if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
+//        static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
+//    }
 
     progress_bar(15);
 }
@@ -332,17 +311,17 @@ int main() {
 //        return 0;
 //    }
 
-    {
-        timer_debug();
-        return 0;
-    }
-
 //    {
-//        set_log_level(LogLevel::Debug);
-//        set_ffmpeg_log_level(LogLevel::Quiet);
-//        write_video_from_camera();
+//        timer_debug();
 //        return 0;
 //    }
+
+    {
+        set_log_level(LogLevel::Debug);
+        set_ffmpeg_log_level(LogLevel::Quiet);
+        write_video_from_camera();
+        return 0;
+    }
 
 //    {
 //        set_log_level(LogLevel::Debug);

@@ -9,6 +9,7 @@ namespace fpp {
     {
         _doNotSendEOF = false;
         setName("MediaSource");
+        setDiscardType(MediaType::MEDIA_TYPE_AUDIO);
     }
 
     MediaSource::~MediaSource() {
@@ -115,60 +116,24 @@ namespace fpp {
                 return Code::END_OF_FILE;
             }
         }
-        //
-        Code ret = _input_format_context.read(input_data);
-        { //TODO crutch
-            return_if(utils::error_code(ret), ret);
-            if (input_data.streamIndex() != 0) { return Code::AGAIN; }
-        }
-        return ret;
-        //
 
-        //TODO этот код должен быть внутри processInputData()
-        auto packet_stream = _input_format_context.stream(input_data.raw().stream_index);
-        return_if(not_inited_ptr(packet_stream), Code::AGAIN);
-        return_if_not(packet_stream->used(), Code::AGAIN);
-        input_data.setType(packet_stream->type());
-        input_data.setStreamUid(packet_stream->params->streamUid());
+        try_to(_input_format_context.read(input_data));
+        return Code::OK;
+    }
 
-        if (inputDataCount() == 0) {
-            log_debug("Read from "
-                      << (_start_time_point == FROM_START ? "start" : utils::msec_to_time(_start_time_point))
-                      << ", first row packet: " << input_data);
+    Code MediaSource::processInputData(Packet input_data) {
+        if (stream(input_data.streamIndex())->packetIndex() == 0) { //TODO костыль? каждый раз проверяет..
+            determineStampType(input_data);
         }
 
-        if ((stream(0)->packetIndex() == 0)
-                && (input_data.pts() != 0)
-                && (_start_time_point == FROM_START)) {
-           stream(0)->setStampType(StampType::Realtime); /* с камеры */
-        } else if ((stream(0)->packetIndex() == 0)
-                   && (input_data.pts() != 0)
-                   && (_start_time_point != FROM_START)) {
-           stream(0)->setStampType(StampType::FromZero); /* не с начала файла */
-        }
-        try_to(stream(0)->stampPacket(input_data));
-
+        try_to(stream(input_data.streamIndex())->stampPacket(input_data));
 
         if (inputDataCount() == 0) {
             log_debug("Read from "
                       << (_start_time_point == FROM_START ? "start" : utils::msec_to_time(_start_time_point))
                       << ", first packet: " << input_data);
         }
-        return Code::OK;
-    }
 
-    Code MediaSource::processInputData(Packet input_data) {
-        if (input_data.empty()) {
-            try_to(sendEofPacket());
-            return Code::END_OF_FILE;
-//            return sendEofPacket();
-        }
-//        auto packet_stream = _input_format_context.stream(input_data.raw().stream_index);
-//        return_if(not_inited_ptr(packet_stream), Code::AGAIN);
-//        return_if_not(packet_stream->used(), Code::AGAIN);
-//        input_data.setType(packet_stream->type());
-//        input_data.setStreamUid(packet_stream->uid());
-//        if (inited_int(_artificial_delay)) { utils::sleep_for(_artificial_delay); } //todo НЕ УДАЛЯТЬ
         return sendOutputData(input_data);
     }
 
@@ -265,6 +230,22 @@ namespace fpp {
             }
         }
         return Code::OK;
+    }
+
+    void MediaSource::determineStampType(const Packet& packet) {
+        if (packet.pts() != 0) { /* Требуется перештамповывать пакеты */
+            if (_start_time_point == FROM_START) { /* Чтение из источника, передающего пакеты не с начала */
+                stream(packet.streamIndex())->setStampType(StampType::Realtime);
+            } else {
+                stream(packet.streamIndex())->setStampType(StampType::Offset); /* Происходит чтение не с начала файла */
+            }
+        } else {
+            if (stream(packet.streamIndex())->params->timeBase() != DEFAULT_TIME_BASE) { /* Требуется рескейлить в миллисекунды */
+                stream(packet.streamIndex())->setStampType(StampType::Rescale);
+            } else {
+                stream(packet.streamIndex())->setStampType(StampType::Copy);
+            }
+        }
     }
 
 } // namespace fpp

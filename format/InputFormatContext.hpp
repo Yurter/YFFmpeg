@@ -30,6 +30,7 @@ namespace fpp {
         virtual Code        closeContext()  override;
 
         Code                guessInputFromat();
+        void                initPacket(Packet& packet);
 
     private:
 

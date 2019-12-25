@@ -31,6 +31,7 @@ namespace fpp {
         virtual Code        onStop() override;
 
         Code                sendEofPacket();
+        void                determineStampType(const Packet& packet);
 
     private:
 
