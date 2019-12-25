@@ -257,10 +257,10 @@ void write_video_from_camera() {
         static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-//    ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("debug_files/timelapse.flv", IOType::Timelapse);
-//    if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
-//        static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
-//    }
+    ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("debug_files/timelapse.flv", IOType::Timelapse);
+    if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
+        static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
+    }
 
     progress_bar(15);
 }

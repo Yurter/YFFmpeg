@@ -85,7 +85,7 @@ namespace fpp {
         Code sendOutputData(const outType& output_data) {
             increaseOutputDataCount();
             _next_processor_list.for_each([&output_data,this](auto& next_processor) {
-                static_log_trace("TODO", "Sending data to " << next_processor->name());
+                static_log_trace("Sender", "Sending data to " << next_processor->name());
                 try_throw_static(next_processor->push(&output_data));
             });
             return Code::OK;
@@ -101,55 +101,19 @@ namespace fpp {
         virtual Code run() override final {
             if (_pre_function) {
                 log_trace("Running _pre_function");
-//                try_to(_pre_function());
-                Code ret = _pre_function();
-                if (utils::exit_code(ret)
-                        && (ret != Code::END_OF_FILE)) {
-                    return ret;
-                }
-                return_if(ret == Code::AGAIN, ret);
+                try_to(_pre_function());
             }
 
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
 
             if (input_data.empty()) {
-                log_error("GOT EMPTY DATA 1, " << input_data.size() << " : " << input_data);
-            }
-
-            if (input_data.empty()
-                    && !this->is("MediaSource") // вся разница в этом условии
-                    && !this->is("CustomPacketSource")) {
-                sendOutputData(outType());
+                log_debug("Got EOF " << input_data.name());
+                try_to(sendOutputData(outType()));
                 return Code::END_OF_FILE;
             }
 
-            /* Не удалять проверки! */
             return_if(discardType(input_data.type()), Code::AGAIN);
-
-            if (input_data.empty()) {
-                log_error("GOT EMPTY DATA 2");
-            }
-
-//////////////////////////////////////////////////////////////////
-            //TODO
-//            if (input_data.empty()
-//                    && this->is("MediaSink")) {
-//                return Code::END_OF_FILE;
-//            }
-//            if (input_data.empty()
-//                    && !this->is("MediaSource") // вся разница в этом условии
-//                    && !this->is("CustomPacketSource")) {
-//                sendOutputData(outType());
-//                return Code::END_OF_FILE;
-//            }
-            /* TODO не работает это условие :( */
-//            if (input_data.empty()) {
-//                try_to(sendOutputData(outType()));
-//                return Code::END_OF_FILE;
-//            }
-//////////////////////////////////////////////////////////////////
-
             log_trace("Running processInputData");
             try_to(processInputData(input_data));
             increaseProcessingIterationCount();
