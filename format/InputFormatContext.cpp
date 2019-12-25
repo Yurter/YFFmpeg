@@ -57,6 +57,23 @@ namespace fpp {
         return Code::OK;
     }
 
+    Code InputFormatContext::read(Packet& packet, ReadWriteMode read_mode) {
+        switch (read_mode) {
+        case ReadWriteMode::Instant: {
+            int ret = av_read_frame(mediaFormatContext(), &packet.raw());
+            return_info_if(ret == AVERROR_EOF
+                           , "Reading completed"
+                           , Code::END_OF_FILE);
+            return_error_if(ret < 0
+                            , "Cannot read source: \"" << mediaResourceLocator() << "\". "
+                            , Code::FFMPEG_ERROR);
+            return Code::OK;
+        }
+        case ReadWriteMode::Interleaved:
+            return Code::NOT_IMPLEMENTED;
+        }
+    }
+
     Code fpp::InputFormatContext::createContext() {
         return_error_if(inited_ptr(_format_context)
                         , "Context already created!"

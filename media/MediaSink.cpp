@@ -10,6 +10,7 @@ namespace fpp {
     }
 
     MediaSink::~MediaSink() {
+        log_error("!!!!!!!!!!!!!!!!!!!!!");
         try_throw(close());
     }
 
@@ -79,10 +80,7 @@ namespace fpp {
     }
 
     Code MediaSink::writeOutputData(Packet output_data) {
-        if (av_write_frame(_output_format_context.mediaFormatContext(), &output_data.raw()) < 0) {
-            log_error("Error muxing packet");
-            return Code::ERR;
-        }
+        try_to(_output_format_context.write(output_data));
         return Code::OK;
     }
 

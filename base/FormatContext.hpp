@@ -6,6 +6,11 @@
 
 namespace fpp {
 
+    enum class ReadWriteMode {
+        Instant,
+        Interleaved,
+    };
+
     class FormatContext : public Object {
 
     public:

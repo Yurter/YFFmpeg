@@ -7,11 +7,13 @@ namespace fpp {
 
     public:
 
-        OutputFormatContext(const std::string mrl, /*ProcessorPointer media_ptr,*/ IOType preset = IOType::Auto);
+        OutputFormatContext(const std::string mrl, IOType preset = IOType::Auto);
         virtual ~OutputFormatContext() override;
 
         virtual Code        init()           override;
         virtual std::string toString() const override;
+
+        Code                write(Packet packet, ReadWriteMode write_mode = ReadWriteMode::Instant);
 
     private:
 

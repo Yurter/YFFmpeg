@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    OutputFormatContext::OutputFormatContext(const std::string mrl, /*ProcessorPointer media_ptr,*/ IOType preset) :
-        FormatContext(mrl,/* media_ptr,*/ preset)
+    OutputFormatContext::OutputFormatContext(const std::string mrl, IOType preset) :
+        FormatContext(mrl, preset)
       , _output_format(nullptr)
     {
         setName("OutputFormatContext");
@@ -114,6 +114,24 @@ namespace fpp {
                 + utils::guess_format_short_name(_media_resource_locator) + ", " //TODO пустая строка
                 + "to '" + _media_resource_locator + "'";
         return str;
+    }
+
+    Code OutputFormatContext::write(Packet packet, ReadWriteMode write_mode) {
+        switch (write_mode) {
+        case ReadWriteMode::Instant:
+            if (av_write_frame(mediaFormatContext(), &packet.raw()) < 0) {
+                log_error("Error muxing packet");
+                return Code::FFMPEG_ERROR;
+            }
+            break;
+        case ReadWriteMode::Interleaved:
+            if (av_interleaved_write_frame(mediaFormatContext(), &packet.raw()) < 0) {
+                log_error("Error muxing packet");
+                return Code::FFMPEG_ERROR;
+            }
+            break;
+        }
+        return Code::OK;
     }
 
     Code OutputFormatContext::createContext() {

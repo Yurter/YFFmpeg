@@ -118,7 +118,7 @@ namespace fpp {
             }
         }
         return_if(_input_format_context.closed(), Code::ERR); //TODO сорс читает после закрытия.. или до..
-        if (int ret = av_read_frame(_input_format_context.mediaFormatContext(), &input_data.raw()); ret != 0) {
+        if (int ret = av_read_frame(_input_format_context.mediaFormatContext(), &input_data.raw()); ret != 0) { //TODO создать метод в контексте
             return_info_if(ret == AVERROR_EOF
                            , "Source reading completed"
                            , Code::END_OF_FILE);
