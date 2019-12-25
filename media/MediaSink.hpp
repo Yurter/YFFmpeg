@@ -1,6 +1,7 @@
 #pragma once
 #include "inout/PacketSink.hpp"
 #include "format/OutputFormatContext.hpp"
+#include "core/time/Timer.hpp"
 
 namespace fpp {
 
@@ -19,6 +20,8 @@ namespace fpp {
 
         const OutputFormatContext* outputFormatContext() const;
 
+        void                setFlushTimeout(int64_t msec);
+
     private:
 
         virtual Code        processInputData(Packet input_data) override;
@@ -28,6 +31,9 @@ namespace fpp {
     private:
 
         OutputFormatContext _output_format_context;
+
+        Timer               _flush_timer;
+        int64_t             _flush_timeout_ms;
 
     };
 

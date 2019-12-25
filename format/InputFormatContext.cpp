@@ -72,6 +72,7 @@ namespace fpp {
         case ReadWriteMode::Interleaved:
             return Code::NOT_IMPLEMENTED;
         }
+        return Code::INVALID_INPUT;
     }
 
     Code fpp::InputFormatContext::createContext() {

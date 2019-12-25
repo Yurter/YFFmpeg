@@ -4,13 +4,13 @@
 namespace fpp {
 
     MediaSink::MediaSink(const std::string mrl, IOType preset) :
-        _output_format_context(mrl, /*this,*/ preset)
+        _output_format_context(mrl, preset)
+      , _flush_timeout_ms(INVALID_INT)
     {
         setName("MediaSink");
     }
 
     MediaSink::~MediaSink() {
-        log_error("!!!!!!!!!!!!!!!!!!!!!");
         try_throw(close());
     }
 
@@ -69,6 +69,14 @@ namespace fpp {
 
     const OutputFormatContext* MediaSink::outputFormatContext() const {
         return &_output_format_context;
+    }
+
+    void MediaSink::setFlushTimeout(int64_t msec) {
+        if (msec < 0) {
+            log_warning("Cannot set flush timeout less then zero: " << msec << ", ignored");
+            return;
+        }
+        _flush_timeout_ms = msec;
     }
 
     Code MediaSink::processInputData(Packet input_data) {

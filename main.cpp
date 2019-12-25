@@ -286,6 +286,16 @@ void write_video_from_camera() {
     progress_bar(15);
 }
 
+#include "core/time/Timer.hpp"
+void timer_debug() {
+    Timer timer;
+//    timer.setTimeout([](){ static_log_info("Timer", "Hello world 1"); }, 2000);
+//    timer.setTimeout([](){ static_log_info("Timer", "Hello world 2"); }, 3000);
+//    timer.setTimeout([](){ static_log_info("Timer", "Hello world 3"); }, 1000);
+    timer.setInterval([](){ static_log_info("Timer", "Hello world : interval"); }, 2000);
+    utils::sleep_for_sec(11);
+}
+
 int main() {
 
     // video=HP Wide Vision FHD Camera
@@ -323,11 +333,16 @@ int main() {
 //    }
 
     {
-        set_log_level(LogLevel::Debug);
-        set_ffmpeg_log_level(LogLevel::Quiet);
-        write_video_from_camera();
+        timer_debug();
         return 0;
     }
+
+//    {
+//        set_log_level(LogLevel::Debug);
+//        set_ffmpeg_log_level(LogLevel::Quiet);
+//        write_video_from_camera();
+//        return 0;
+//    }
 
 //    {
 //        set_log_level(LogLevel::Debug);
