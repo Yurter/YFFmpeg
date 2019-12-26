@@ -99,7 +99,7 @@ namespace fpp {
         case StampType::Rescale:
             _packet_duration = packet.pts() - _prev_pts;
 
-            _packet_duration = av_rescale_q(_packet_duration, params->timeBase(), DEFAULT_TIME_BASE);
+            _packet_duration = av_rescale_q(_packet_duration, packet.timeBase(), params->timeBase());
             packet.setDuration(_packet_duration);
 
             packet.setPos(-1);
