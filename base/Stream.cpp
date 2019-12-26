@@ -13,7 +13,7 @@ namespace fpp {
         Data<AVStream*>(stream, param->type())
         , params(param)
         , _used(false)
-        , _stamp_type(StampType::ConstantFramerate)
+        , _stamp_type(StampType::Copy)
         , _prev_dts(DEFAULT_INT)
         , _prev_pts(DEFAULT_INT)
         , _packet_index(DEFAULT_INT)
@@ -34,6 +34,8 @@ namespace fpp {
             try_to(utils::init_codecpar(codecParameters(), params->codec()));
             /* Инициализация полей параметров кодека значениями из параметров потока */
             utils::parameters_to_avcodecpar(params, codecParameters());
+            _data->time_base = params->timeBase();
+            log_error("TB: " << params->timeBase() << " " << _data->time_base);
         }
         setInited(true);
         return Code::OK;
@@ -52,6 +54,19 @@ namespace fpp {
 
     Code Stream::stampPacket(Packet& packet) {
         switch (_stamp_type) {
+        case StampType::Copy:
+            _packet_duration = packet.pts() - _prev_pts;
+
+            packet.setDuration(_packet_duration);
+            _packet_duration = av_rescale_q(_packet_duration, params->timeBase(), DEFAULT_TIME_BASE);
+
+            packet.setPos(-1);
+
+            params->increaseDuration(_packet_duration);
+
+            _prev_dts = packet.dts();
+            _prev_pts = packet.pts();
+            break;
         case StampType::Realtime: {
             { //TODO костыль сброса таймера на получении первого пакета
                 if (_packet_index == 0) {
@@ -62,29 +77,42 @@ namespace fpp {
                 }
             }
 
-            params->increaseDuration(_packet_duration);
-
             _packet_dts_delta = _packet_duration;
             _packet_pts_delta = _packet_duration;
             _chronometer.reset_timepoint();
 
-            auto new_dts = _prev_dts + _packet_dts_delta;
-            auto new_pts = _prev_pts + _packet_pts_delta;
+            const auto new_dts = _prev_dts + _packet_dts_delta;
+            const auto new_pts = _prev_pts + _packet_pts_delta;
+
+            packet.setDts(av_rescale_q(new_dts, DEFAULT_TIME_BASE, params->timeBase()));
+            packet.setPts(av_rescale_q(new_pts, DEFAULT_TIME_BASE, params->timeBase()));
+
+            packet.setDuration(av_rescale_q(_packet_duration, DEFAULT_TIME_BASE, params->timeBase()));
+            packet.setPos(-1);
+
+            params->increaseDuration(_packet_duration);
 
             _prev_dts = new_dts;
             _prev_pts = new_pts;
-
-            new_dts = av_rescale_q(new_dts, DEFAULT_TIME_BASE, params->timeBase());
-            new_pts = av_rescale_q(new_pts, DEFAULT_TIME_BASE, params->timeBase());
-            _packet_duration = av_rescale_q(_packet_duration, DEFAULT_TIME_BASE, params->timeBase());
-
-            packet.setDts(new_dts);
-            packet.setPts(new_pts);
-            packet.setDuration(_packet_duration);
-            packet.setPos(-1);
-
             break;
         }
+        case StampType::Rescale:
+            _packet_duration = packet.pts() - _prev_pts;
+
+            _packet_duration = av_rescale_q(_packet_duration, params->timeBase(), DEFAULT_TIME_BASE);
+            packet.setDuration(_packet_duration);
+
+            packet.setPos(-1);
+
+            params->increaseDuration(_packet_duration);
+
+            _prev_dts = packet.dts();
+            _prev_pts = packet.pts();
+
+            packet.setDts(av_rescale_q(packet.dts(), params->timeBase(), DEFAULT_TIME_BASE));
+            packet.setPts(av_rescale_q(packet.pts(), params->timeBase(), DEFAULT_TIME_BASE));
+            log_warning(packet);
+            break;
         default:
             return Code::NOT_IMPLEMENTED;
         }

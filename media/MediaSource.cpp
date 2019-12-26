@@ -134,7 +134,7 @@ namespace fpp {
                       << ", first packet: " << input_data);
         }
 
-        log_warning("IN : " << input_data);
+//        log_warning("IN : " << input_data);
 
         return sendOutputData(input_data);
     }

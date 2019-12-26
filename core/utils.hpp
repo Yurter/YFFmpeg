@@ -88,6 +88,11 @@ namespace fpp {
         return av_cmp_q(lhs, rhs) != 0;
     }
 
+    inline std::ostream& operator<<(std::ostream& os, const AVRational& rational) {
+        os << utils::rational_to_string(rational);
+        return os;
+    }
+
 } // namespace fpp
 
 /* Обертка пространства имён fpp */

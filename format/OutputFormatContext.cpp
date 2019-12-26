@@ -31,6 +31,7 @@ namespace fpp {
 //            video_parameters->setTimeBase({ 1, 1000 });
 //            video_parameters->setFrameRate({ 22, 1 });
             try_to(createStream(video_parameters));
+            stream(0)->setStampType(StampType::Rescale);
             /* Audio */
             // Временно без звука
             break;
@@ -82,7 +83,7 @@ namespace fpp {
 			video_parameters->setGopSize(2);
             try_to(createStream(video_parameters));
 //            stream(0)->setStampType(StampType::Convert);
-            stream(0)->setStampType(StampType::ConstantFramerate);
+//            stream(0)->setStampType(StampType::ConstantFramerate);
             break;
         }
 //        case OpenCV: {
@@ -166,6 +167,7 @@ namespace fpp {
                     utils::parameters_to_avcodecpar(avstream->params, avstream->raw()->codecpar);
                 }
                 try_to(avstream->init());
+//                log_error("!!!! > " << avstream->raw()->time_base << " : " << avstream->params->timeBase());
             }
         }
         if (!(_format_context->flags & AVFMT_NOFILE)) {
