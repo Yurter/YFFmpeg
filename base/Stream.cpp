@@ -34,8 +34,6 @@ namespace fpp {
             try_to(utils::init_codecpar(codecParameters(), params->codec()));
             /* Инициализация полей параметров кодека значениями из параметров потока */
             utils::parameters_to_avcodecpar(params, codecParameters());
-            _data->time_base = params->timeBase();
-            log_error("TB: " << params->timeBase() << " " << _data->time_base);
         }
         setInited(true);
         return Code::OK;
@@ -55,17 +53,11 @@ namespace fpp {
     Code Stream::stampPacket(Packet& packet) {
         switch (_stamp_type) {
         case StampType::Copy:
-            _packet_duration = packet.pts() - _prev_pts;
-
-            packet.setDuration(_packet_duration);
-            _packet_duration = av_rescale_q(_packet_duration, params->timeBase(), DEFAULT_TIME_BASE);
-
-            packet.setPos(-1);
-
-            params->increaseDuration(_packet_duration);
-
+            packet.setDuration(packet.pts() - _prev_pts);
+            _packet_duration = av_rescale_q(packet.duration(), packet.timeBase(), params->timeBase());
             _prev_dts = packet.dts();
             _prev_pts = packet.pts();
+            packet.setPos(-1);
             break;
         case StampType::Realtime: {
             { //TODO костыль сброса таймера на получении первого пакета
@@ -90,35 +82,34 @@ namespace fpp {
             packet.setDuration(av_rescale_q(_packet_duration, DEFAULT_TIME_BASE, params->timeBase()));
             packet.setPos(-1);
 
-            params->increaseDuration(_packet_duration);
-
             _prev_dts = new_dts;
             _prev_pts = new_pts;
             break;
         }
         case StampType::Rescale:
-            _packet_duration = packet.pts() - _prev_pts;
-
-            _packet_duration = av_rescale_q(_packet_duration, packet.timeBase(), params->timeBase());
-            packet.setDuration(_packet_duration);
-
-            packet.setPos(-1);
-
-            params->increaseDuration(_packet_duration);
+            log_error("1) " << packet);
+            log_error("] " << packet.timeBase() << " - " << params->timeBase());
+            log_error("] " << packet.pts() << " - " << _prev_pts << " = " << packet.pts() - _prev_pts << " -> " << av_rescale_q(packet.pts() - _prev_pts, packet.timeBase(), params->timeBase()));
+            _packet_duration = av_rescale_q(packet.pts() - _prev_pts, packet.timeBase(), params->timeBase());
 
             _prev_dts = packet.dts();
             _prev_pts = packet.pts();
 
             packet.setDts(av_rescale_q(packet.dts(), packet.timeBase(), params->timeBase()));
             packet.setPts(av_rescale_q(packet.pts(), packet.timeBase(), params->timeBase()));
-            log_warning(packet);
+
+            packet.setDuration(_packet_duration);
+            packet.setTimeBase(params->timeBase());
+            packet.setPos(-1);
+            log_error("2) " << packet);
+            // 1) Video packet: [I], 30653 bytes, dts 1128000, pts 1138583, duration 0, time_base 1/10000000, stream index 0, stream uid 300
+            // 2) Video packet: [I], 30653 bytes, dts 113, pts 114, duration 1, time_base 1/1000, stream index 0, stream uid 300
             break;
         default:
             return Code::NOT_IMPLEMENTED;
         }
 
-        packet.setTimeBase(params->timeBase());
-
+        params->increaseDuration(_packet_duration);
         _packet_index++;
         return Code::OK;
     }

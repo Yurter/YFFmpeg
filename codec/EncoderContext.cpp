@@ -36,15 +36,7 @@ namespace fpp {
     }
 
     Code EncoderContext::initParams() {
-//        return_if_not(_stream->inited(), Code::NOT_INITED);
         utils::parameters_to_context(params.out, _codec_context);
-        log_error("### " << _codec_context->time_base);
-        //findme
-//        utils::parameters_to_avcodecpar(_stream->parameters, _stream->codecParameters());
-//        if (avcodec_parameters_to_context(_codec_context, _stream->codecParameters()) < 0) {
-//            log_error("avcodec_parameters_to_context failed");
-//            return Code::ERR;
-//        }
         return Code::OK;
     }
 

@@ -145,44 +145,18 @@ namespace fpp {
         }
         /* pull filtered frames from the filtergraph */
         while (1) {
-//            AVFrame* filt_frame = av_frame_alloc();
             Frame output_data;
             int ret = av_buffersink_get_frame(_buffersink_ctx, &output_data.raw());
             if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
                 return Code::AGAIN;
             if (ret < 0)
                 return Code::FFMPEG_ERROR;
-//            Frame output_data(filt_frame);
             output_data.setType(MEDIA_TYPE_VIDEO);
-            output_data.raw().linesize[0] = input_data.raw().linesize[0];
+            output_data.raw().linesize[0] = input_data.raw().linesize[0]; //TODO убрать?
             output_data.raw().linesize[1] = input_data.raw().linesize[1];
             output_data.raw().linesize[2] = input_data.raw().linesize[2];
 
-//            log_error("in_px_fmt " << input_data.raw().format);
-//            log_error("out_px_fmt " << output_data.raw().format);
-
-//            output_data.raw().linesize[0] = output_data.raw().width;
-//            output_data.raw().linesize[1] = output_data.raw().width;
-//            output_data.raw().linesize[2] = output_data.raw().height;
-
-//            std::begin(input_data.raw().linesize)
-//            for (int i = 0; i < AV_NUM_DATA_POINTERS; ++i) {
-////                log_info("output_data.raw().linesize[i] = " << output_data.raw().linesize[i]);
-////                log_info("input_data.raw().linesize[i] = " << input_data.raw().linesize[i]);
-//                output_data.raw().linesize[i] = input_data.raw().linesize[i];
-//            }
-//            av_frame_copy_props(&output_data.raw(), &input_data.raw());
-//            utils::SaveAvFrame(&output_data.raw());
-//            exit(0);
-//            input_data.free();
-//            log_error("Sending... " << output_data);
-
-            //  D E B U G - падения при отправке отфильтрованного фрейма
-
-            output_data.setPts(output_data.pts() / 60); //TODO CRITICAL фильтр на пропуск кадров не меняет птс фреймов, поэтому на выходе птсы 0го, 60го, 120 и тд, а не 0, 1, 2..
-//            log_debug(output_data);
             try_to(sendOutputData(output_data));
-//            try_to(sendOutputData(input_data));
         }
     }
 
