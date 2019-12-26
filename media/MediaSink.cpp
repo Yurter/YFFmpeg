@@ -15,7 +15,7 @@ namespace fpp {
     }
 
     Code MediaSink::init() {
-        return_if(inited(), Code::INVALID_CALL_ORDER);
+        return_if(inited(), Code::OK);
         log_debug("Initialization");
         try_to(_output_format_context.init());
         try_to(setStreams(_output_format_context.streams()));
@@ -43,7 +43,7 @@ namespace fpp {
 //            stopWait(); //TODO костыль?
 //        }
         try_to(_output_format_context.close());
-        log_info("Destination: \"" << _output_format_context.mediaResourceLocator() << "\" closed, " //TODO метод отрабатывает дважды: из деструктора и из онСтоп
+        log_info("Destination \"" << _output_format_context.mediaResourceLocator() << "\" closed, " //TODO метод отрабатывает дважды: из деструктора и из онСтоп
                  << utils::msec_to_time(stream(0)->params->duration()));
 //        if (outputDataCount() == 0) {
         if (stream(0)->params->duration() == 0) {
@@ -94,7 +94,7 @@ namespace fpp {
 
     Code MediaSink::onStop() {
         log_debug("onStop");
-        try_to(close());
+//        try_to(close());
         return Code::OK;
     }
 

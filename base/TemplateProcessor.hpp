@@ -96,6 +96,20 @@ namespace fpp {
             _output_queue.stop_wait();
         }
 
+        Code sendEof() {
+            log_debug("Sending EOF");
+            outType eof;
+            for (auto& stream : streams()) {
+                if (stream->used()) {
+                    eof.setType(stream->type());
+                    eof.setStreamUid(stream->params->streamUid());
+                    try_to(sendOutputData(eof));
+                    stream->setUsed(false);
+                }
+            }
+            return Code::OK;
+        }
+
     private:
 
         virtual Code run() override final {

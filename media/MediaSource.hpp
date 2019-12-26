@@ -30,7 +30,6 @@ namespace fpp {
         virtual Code        processInputData(Packet input_data) override;
         virtual Code        onStop() override;
 
-        Code                sendEofPacket();
         void                determineStampType(const Packet& packet);
 
     private:

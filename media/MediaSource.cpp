@@ -48,11 +48,12 @@ namespace fpp {
     Code MediaSource::close() {
         return_if(closed(), Code::OK);
         log_debug("Closing");
-        try_to(sendEofPacket()); //TODO костыль?
+//        try_to(sendEofPacket()); //TODO костыль?
+        try_to(sendEof()); //TODO костыль?
         try_to(stop());
         stopWait(); //TODO костыль?
         try_to(_input_format_context.close());
-        log_info("Source: \"" << _input_format_context.mediaResourceLocator() << "\" closed, "
+        log_info("Source \"" << _input_format_context.mediaResourceLocator() << "\" closed, "
                  << utils::msec_to_time(stream(0)->params->duration()));
         setOpened(false);
         return Code::OK;
@@ -121,7 +122,7 @@ namespace fpp {
     }
 
     Code MediaSource::processInputData(Packet input_data) {
-        if (stream(input_data.streamIndex())->packetIndex() == 0) { //TODO костыль? каждый раз проверяет..
+        if (stream(input_data.streamIndex())->packetIndex() == 0) { //TODO костыль? каждый раз проверяет.. -> перенести в онСтарт - раз прочитать пакеты из каждого потока
             determineStampType(input_data);
         }
 
@@ -133,29 +134,31 @@ namespace fpp {
                       << ", first packet: " << input_data);
         }
 
+        log_warning("IN : " << input_data);
+
         return sendOutputData(input_data);
     }
 
     Code MediaSource::onStop() {
         log_debug("onStop");
-        try_to(close());
+//        try_to(close());
         return Code::OK;
     }
 
-    Code MediaSource::sendEofPacket() {
-        return_if(_doNotSendEOF, Code::OK);
-        log_debug("Sending EOF");
-        Packet eof_packet;
-        for (auto&& stream : _input_format_context.streams()) {
-            if (stream->used()) {
-                eof_packet.setType(stream->type());
-                eof_packet.setStreamUid(stream->params->streamUid());
-                try_to(sendOutputData(eof_packet));
-                stream->setUsed(false);
-            }
-        }
-        return Code::OK;
-    }
+//    Code MediaSource::sendEofPacket() {
+//        return_if(_doNotSendEOF, Code::OK);
+//        log_debug("Sending EOF");
+//        Packet eof_packet;
+//        for (auto&& stream : _input_format_context.streams()) {
+//            if (stream->used()) {
+//                eof_packet.setType(stream->type());
+//                eof_packet.setStreamUid(stream->params->streamUid());
+//                try_to(sendOutputData(eof_packet));
+//                stream->setUsed(false);
+//            }
+//        }
+//        return Code::OK;
+//    }
 
     void MediaSource::determineStampType(const Packet& packet) {
         if (packet.pts() != 0) { /* Требуется перештамповывать пакеты */
@@ -165,11 +168,12 @@ namespace fpp {
                 stream(packet.streamIndex())->setStampType(StampType::Offset); /* Происходит чтение не с начала файла */
             }
         } else {
-            if (stream(packet.streamIndex())->params->timeBase() != DEFAULT_TIME_BASE) { /* Требуется рескейлить в миллисекунды */
-                stream(packet.streamIndex())->setStampType(StampType::Rescale);
-            } else {
-                stream(packet.streamIndex())->setStampType(StampType::Copy);
-            }
+//            if (stream(packet.streamIndex())->params->timeBase() != DEFAULT_TIME_BASE) { /* Требуется рескейлить в миллисекунды */
+//                stream(packet.streamIndex())->setStampType(StampType::Rescale);
+//            } else {
+//                stream(packet.streamIndex())->setStampType(StampType::Copy);
+//            }
+            stream(packet.streamIndex())->setStampType(StampType::Copy);
         }
     }
 

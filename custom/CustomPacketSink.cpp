@@ -42,7 +42,7 @@ namespace fpp {
         log_debug("Closing");
         stopWait();
         try_to(stop());
-        log_info("Destination: \"" << _sink_name << "\" closed, " //TODO метод отрабатывает дважды: из деструктора и из онСтоп
+        log_info("Destination \"" << _sink_name << "\" closed, " //TODO метод отрабатывает дважды: из деструктора и из онСтоп
                  << utils::msec_to_time(stream(0)->params->duration()));
         if (stream(0)->params->duration() == 0) {
             log_warning('"' << _sink_name << "\" closed empty!");

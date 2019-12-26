@@ -28,7 +28,7 @@ namespace fpp {
 //        virtual Code        processInputData(Packet input_data) override;
         virtual Code        onStop() override;
 
-        Code                sendEofPacket();
+//        Code                sendEofPacket();
 
         std::string                     _source_name;
         StreamVector                    _streams;

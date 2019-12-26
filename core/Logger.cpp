@@ -173,6 +173,7 @@ namespace fpp {
             return "warn";
         case LogLevel::Error:
             return "err ";
+        case LogLevel::Verbose:
         case LogLevel::Debug:
             return "deb ";
         case LogLevel::Trace:

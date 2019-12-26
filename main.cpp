@@ -262,7 +262,8 @@ void write_video_from_camera() {
         static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    progress_bar(15);
+    utils::sleep_for_sec(15);
+//    progress_bar(15);
 }
 
 #include "core/time/Timer.hpp"
@@ -317,7 +318,7 @@ int main() {
 //    }
 
     {
-        set_log_level(LogLevel::Debug);
+//        set_log_level(LogLevel::Debug);
         set_ffmpeg_log_level(LogLevel::Quiet);
         write_video_from_camera();
         return 0;

@@ -52,70 +52,17 @@ namespace fpp {
 
     Code Stream::stampPacket(Packet& packet) {
         switch (_stamp_type) {
-        case StampType::ConstantFramerate: /* Константный фреймрейт */
-            packet.setDts(_prev_dts + _packet_duration);
-            packet.setPts(_prev_pts + _packet_duration);
-            break;
-        case StampType::VariableFramerate: { /* Переменный фреймрейт  */
-            break;
-        }
-        case StampType::Offset: {
-            if (packetIndex() == 0) {
-                _pts_offset = -packet.pts();
-            }
-            auto new_pts = packet.pts() + _pts_offset;
-            auto new_dts = packet.dts() + _pts_offset;
-//            if (new_pts <= _prev_pts) {
-//                _pts_offset = params->duration();
-//                new_pts = packet.pts() + _pts_offset;
-//            }
-            _packet_duration = new_pts - _prev_pts;
-            _packet_dts_delta = _packet_duration;
-            _packet_pts_delta = _packet_duration;
-            packet.setDts(new_dts);
-            packet.setPts(new_pts);
-            break;
-        }
-        case StampType::Copy: /* Не менять параметры пакета */ //TODO
-            params->increaseDuration(_packet_duration);
-            _packet_index++;
-            return Code::OK;
-        case StampType::Append: { /* Используется при склейки файлов */
-//            log_debug("PACKET PTS: " << packet.pts());
-            auto new_pts = packet.pts() + _pts_offset;
-            auto new_dts = packet.dts() + _pts_offset;
-            if (new_pts <= _prev_pts) {
-//                log_error("OP");
-                _pts_offset = params->duration();
-                new_pts = packet.pts() + _pts_offset;
-                new_dts = packet.dts() + _pts_offset;
-            }
-            _packet_duration = new_pts - _prev_pts;
-            if (_packet_duration == 0) { _packet_duration = 40; }
-            _packet_dts_delta = _packet_duration;
-            _packet_pts_delta = _packet_duration;
-            packet.setDts(new_dts);
-            packet.setPts(new_pts);
-            break;
-        }
-        case StampType::Rescale: {
-//            _prev_pts = av_rescale_q(packet.pts(), DEFAULT_TIME_BASE, params->timeBase());
-//            _prev_dts = av_rescale_q(packet.dts(), DEFAULT_TIME_BASE, params->timeBase());
-            _packet_duration = packet.pts() - _prev_pts;
-            _packet_dts_delta = _packet_duration;
-            _packet_pts_delta = _packet_duration;
-//            log_debug(_packet_duration);
-            break;
-        }
-        case StampType::Realtime: { /* Временные штампы реального времени */
-            if (_packet_index == 0) { //TODO
-                _chronometer.reset_timepoint();
-                _packet_duration = 40;
-            } else {
-                _packet_duration = _chronometer.elapsed_milliseconds();
+        case StampType::Realtime: {
+            { //TODO костыль сброса таймера на получении первого пакета
+                if (_packet_index == 0) {
+                    _chronometer.reset_timepoint();
+                    _packet_duration = 40;
+                } else {
+                    _packet_duration = _chronometer.elapsed_milliseconds();
+                }
             }
 
-            if (_packet_duration < 10) { _packet_duration = 40; }
+            params->increaseDuration(_packet_duration);
 
             _packet_dts_delta = _packet_duration;
             _packet_pts_delta = _packet_duration;
@@ -124,33 +71,128 @@ namespace fpp {
             auto new_dts = _prev_dts + _packet_dts_delta;
             auto new_pts = _prev_pts + _packet_pts_delta;
 
-            if (_packet_index == 0) {
-                new_dts = new_pts = 0;
-            }
+            _prev_dts = new_dts;
+            _prev_pts = new_pts;
+
+            new_dts = av_rescale_q(new_dts, DEFAULT_TIME_BASE, params->timeBase());
+            new_pts = av_rescale_q(new_pts, DEFAULT_TIME_BASE, params->timeBase());
+            _packet_duration = av_rescale_q(_packet_duration, DEFAULT_TIME_BASE, params->timeBase());
 
             packet.setDts(new_dts);
             packet.setPts(new_pts);
+            packet.setDuration(_packet_duration);
+            packet.setPos(-1);
+
             break;
         }
+        default:
+            return Code::NOT_IMPLEMENTED;
         }
 
-//        packet.setDts(_prev_dts);
-//        packet.setPts(_prev_pts);
-        packet.setDuration(_packet_duration);
-        packet.setPos(-1);
-        params->increaseDuration(_packet_duration);
-        if (_stamp_type == StampType::Append) {
-//            log_debug("PACKET PTS: " << packet.pts() << " " << packet.dts());
-        }
-
-//        _prev_dts += _packet_dts_delta;
-//        _prev_pts += _packet_pts_delta;
-        _prev_dts = packet.dts();
-        _prev_pts = packet.pts();
         _packet_index++;
-
         return Code::OK;
     }
+//    Code Stream::stampPacket(Packet& packet) {
+//        switch (_stamp_type) {
+//        case StampType::ConstantFramerate: /* Константный фреймрейт */
+//            packet.setDts(_prev_dts + _packet_duration);
+//            packet.setPts(_prev_pts + _packet_duration);
+//            break;
+//        case StampType::VariableFramerate: { /* Переменный фреймрейт  */
+//            break;
+//        }
+//        case StampType::Offset: {
+//            if (packetIndex() == 0) {
+//                _pts_offset = -packet.pts();
+//            }
+//            auto new_pts = packet.pts() + _pts_offset;
+//            auto new_dts = packet.dts() + _pts_offset;
+////            if (new_pts <= _prev_pts) {
+////                _pts_offset = params->duration();
+////                new_pts = packet.pts() + _pts_offset;
+////            }
+//            _packet_duration = new_pts - _prev_pts;
+//            _packet_dts_delta = _packet_duration;
+//            _packet_pts_delta = _packet_duration;
+//            packet.setDts(new_dts);
+//            packet.setPts(new_pts);
+//            break;
+//        }
+//        case StampType::Copy: /* Не менять параметры пакета */ //TODO
+//            params->increaseDuration(_packet_duration);
+//            _packet_index++;
+//            return Code::OK;
+//        case StampType::Append: { /* Используется при склейки файлов */
+////            log_debug("PACKET PTS: " << packet.pts());
+//            auto new_pts = packet.pts() + _pts_offset;
+//            auto new_dts = packet.dts() + _pts_offset;
+//            if (new_pts <= _prev_pts) {
+////                log_error("OP");
+//                _pts_offset = params->duration();
+//                new_pts = packet.pts() + _pts_offset;
+//                new_dts = packet.dts() + _pts_offset;
+//            }
+//            _packet_duration = new_pts - _prev_pts;
+//            if (_packet_duration == 0) { _packet_duration = 40; }
+//            _packet_dts_delta = _packet_duration;
+//            _packet_pts_delta = _packet_duration;
+//            packet.setDts(new_dts);
+//            packet.setPts(new_pts);
+//            break;
+//        }
+//        case StampType::Rescale: {
+////            _prev_pts = av_rescale_q(packet.pts(), DEFAULT_TIME_BASE, params->timeBase());
+////            _prev_dts = av_rescale_q(packet.dts(), DEFAULT_TIME_BASE, params->timeBase());
+//            _packet_duration = packet.pts() - _prev_pts;
+//            _packet_dts_delta = _packet_duration;
+//            _packet_pts_delta = _packet_duration;
+////            log_debug(_packet_duration);
+//            break;
+//        }
+//        case StampType::Realtime: { /* Временные штампы реального времени */
+//            if (_packet_index == 0) { //TODO
+//                _chronometer.reset_timepoint();
+//                _packet_duration = 40;
+//            } else {
+//                _packet_duration = _chronometer.elapsed_milliseconds();
+//            }
+
+//            if (_packet_duration < 10) { _packet_duration = 40; }
+
+//            _packet_dts_delta = _packet_duration;
+//            _packet_pts_delta = _packet_duration;
+//            _chronometer.reset_timepoint();
+
+//            auto new_dts = _prev_dts + _packet_dts_delta;
+//            auto new_pts = _prev_pts + _packet_pts_delta;
+
+//            if (_packet_index == 0) {
+//                new_dts = new_pts = 0;
+//            }
+
+//            packet.setDts(new_dts);
+//            packet.setPts(new_pts);
+//            break;
+//        }
+//        }
+
+////        packet.setDts(_prev_dts);
+////        packet.setPts(_prev_pts);
+//        packet.setDuration(_packet_duration);
+//        packet.setPos(-1);
+//        params->increaseDuration(_packet_duration);
+//        if (_stamp_type == StampType::Append) {
+////            log_debug("PACKET PTS: " << packet.pts() << " " << packet.dts());
+//        }
+
+////        _prev_dts += _packet_dts_delta;
+////        _prev_pts += _packet_pts_delta;
+//        _prev_dts = packet.dts();
+//        _prev_pts = packet.pts();
+//        _packet_index++;
+
+//        return Code::OK;
+//    }
 
     void Stream::setUsed(bool value) {
         _used = value;

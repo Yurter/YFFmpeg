@@ -119,6 +119,7 @@ namespace fpp {
 #define log_warning(message)    log_message(this->name(), LogLevel::Warning,    message)
 #define log_error(message)      log_message(this->name(), LogLevel::Error,      message)
 #define log_debug(message)      log_message(this->name(), LogLevel::Debug,      message)
+#define log_verbose(message)    log_message(this->name(), LogLevel::Verbose,    message)
 #define log_trace(message)      log_message(this->name(), LogLevel::Trace,      message)
 
 /* Макросы для отправки потоковых сообщений в лог вне контекста fpp */
@@ -127,6 +128,7 @@ namespace fpp {
 #define static_log_error(caller_name, message)      log_message(caller_name, LogLevel::Error,   message)
 #define static_log_debug(caller_name, message)      log_message(caller_name, LogLevel::Debug,   message)
 #define static_log_trace(caller_name, message)      log_message(caller_name, LogLevel::Trace,   message)
+#define static_log_verbose(caller_name, message)    log_message(caller_name, LogLevel::Verbose, message)
 #define static_log(caller_name, log_level, message) log_message(caller_name, log_level,         message)
 
 /* ? */
