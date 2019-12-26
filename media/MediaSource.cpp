@@ -7,9 +7,8 @@ namespace fpp {
       , _start_time_point(FROM_START)
       , _end_time_point(TO_END)
     {
-        _doNotSendEOF = false;
         setName("MediaSource");
-        setDiscardType(MediaType::MEDIA_TYPE_AUDIO);
+        setDiscardType(MediaType::MEDIA_TYPE_AUDIO); //TODO
     }
 
     MediaSource::~MediaSource() {
@@ -48,7 +47,6 @@ namespace fpp {
     Code MediaSource::close() {
         return_if(closed(), Code::OK);
         log_debug("Closing");
-//        try_to(sendEofPacket()); //TODO костыль?
         try_to(sendEof()); //TODO костыль?
         try_to(stop());
         stopWait(); //TODO костыль?
@@ -144,21 +142,6 @@ namespace fpp {
 //        try_to(close());
         return Code::OK;
     }
-
-//    Code MediaSource::sendEofPacket() {
-//        return_if(_doNotSendEOF, Code::OK);
-//        log_debug("Sending EOF");
-//        Packet eof_packet;
-//        for (auto&& stream : _input_format_context.streams()) {
-//            if (stream->used()) {
-//                eof_packet.setType(stream->type());
-//                eof_packet.setStreamUid(stream->params->streamUid());
-//                try_to(sendOutputData(eof_packet));
-//                stream->setUsed(false);
-//            }
-//        }
-//        return Code::OK;
-//    }
 
     void MediaSource::determineStampType(const Packet& packet) {
         if (packet.pts() != 0) { /* Требуется перештамповывать пакеты */

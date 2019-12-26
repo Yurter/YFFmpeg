@@ -83,7 +83,7 @@ namespace fpp {
         if (input_data.isVideo()) { //Debug if
             try_to(_output_format_context.stream(input_data.streamIndex())->stampPacket(input_data));
         }
-        log_warning(input_data);
+//        log_warning(input_data);
         try_to(storeOutputData(input_data));
         return Code::OK;
     }

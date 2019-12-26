@@ -20,6 +20,8 @@ namespace fpp {
         , _packet_dts_delta(INVALID_INT)
         , _packet_pts_delta(INVALID_INT)
         , _packet_duration(INVALID_INT)
+        , _pts_offset(DEFAULT_INT)
+        , _dts_offset(DEFAULT_INT)
     {
         setName("Stream");
     }
@@ -54,6 +56,7 @@ namespace fpp {
         switch (_stamp_type) {
         case StampType::Copy:
             packet.setDuration(packet.pts() - _prev_pts);
+            packet.setTimeBase(params->timeBase());
             _packet_duration = av_rescale_q(packet.duration(), packet.timeBase(), params->timeBase());
             _prev_dts = packet.dts();
             _prev_pts = packet.pts();
@@ -87,9 +90,6 @@ namespace fpp {
             break;
         }
         case StampType::Rescale:
-            log_error("1) " << packet);
-            log_error("] " << packet.timeBase() << " - " << params->timeBase());
-            log_error("] " << packet.pts() << " - " << _prev_pts << " = " << packet.pts() - _prev_pts << " -> " << av_rescale_q(packet.pts() - _prev_pts, packet.timeBase(), params->timeBase()));
             _packet_duration = av_rescale_q(packet.pts() - _prev_pts, packet.timeBase(), params->timeBase());
 
             _prev_dts = packet.dts();
@@ -101,10 +101,57 @@ namespace fpp {
             packet.setDuration(_packet_duration);
             packet.setTimeBase(params->timeBase());
             packet.setPos(-1);
-            log_error("2) " << packet);
-            // 1) Video packet: [I], 30653 bytes, dts 1128000, pts 1138583, duration 0, time_base 1/10000000, stream index 0, stream uid 300
-            // 2) Video packet: [I], 30653 bytes, dts 113, pts 114, duration 1, time_base 1/1000, stream index 0, stream uid 300
             break;
+        case StampType::Append: {
+            auto new_pts = packet.pts() + _pts_offset;
+            auto new_dts = packet.dts() + _dts_offset;
+
+            if (new_pts <= _prev_pts) {
+                auto offset = av_rescale_q(params->duration(), params->timeBase(), packet.timeBase());
+                _pts_offset = offset;
+                _dts_offset = offset;
+                new_pts = packet.pts() + _pts_offset;
+                new_dts = packet.dts() + _dts_offset;
+            }
+
+            _packet_duration = new_pts - _prev_pts;
+
+            _packet_dts_delta = _packet_duration;
+            _packet_pts_delta = _packet_duration;
+
+            packet.setDts(new_dts);
+            packet.setPts(new_pts);
+            packet.setDuration(_packet_duration);
+
+            _packet_duration = av_rescale_q(_packet_duration, packet.timeBase(), params->timeBase());
+            _prev_dts = new_dts;
+            _prev_pts = new_pts;
+            break;
+        }
+//        case StampType::Append: {
+//            auto new_pts = packet.pts() + _pts_offset;
+//            auto new_dts = packet.dts() + _dts_offset;
+
+//            if (new_pts <= _prev_pts) {
+//                _pts_offset = params->duration();
+//                _dts_offset = params->duration();
+//                new_pts = packet.pts() + _pts_offset;
+//                new_dts = packet.dts() + _dts_offset;
+//            }
+
+//            _packet_duration = new_pts - _prev_pts;
+
+//            _packet_dts_delta = _packet_duration;
+//            _packet_pts_delta = _packet_duration;
+
+//            packet.setDts(new_dts);
+//            packet.setPts(new_pts);
+//            packet.setDuration(_packet_duration);
+
+//            _prev_dts = new_dts;
+//            _prev_pts = new_pts;
+//            break;
+//        }
         default:
             return Code::NOT_IMPLEMENTED;
         }

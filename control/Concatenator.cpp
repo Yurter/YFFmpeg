@@ -25,6 +25,8 @@ namespace fpp {
         ProcessorPointer output_file = std::make_shared<MediaSink>(_output_file_name, IOType::Event); /* crutch: preset */
         try_to(output_file->init());
 
+        output_file->setDiscardType(MediaType::MEDIA_TYPE_EOF);
+
         output_file->stream(0)->setStampType(StampType::Append);
 //        log_debug("OUT UID: " << output_file->stream(0)->params->streamUid());
 
@@ -65,7 +67,7 @@ namespace fpp {
             MediaSource input_file(input_file_name);
             input_file.setStartPoint(start_point);
             input_file.setEndPoint(end_point);
-            input_file.doNotSendEOF(); /* crutch */
+//            input_file.doNotSendEOF(); /* crutch */
             try_to(input_file.init());
             try_to(input_file.open());
             input_file.stream(0)->setUsed(true); /* crutch */
@@ -88,9 +90,12 @@ namespace fpp {
             log_error(i++ << " ===========================================================");
         }
 
-        Packet eof_packet;
-        eof_packet.setType(MediaType::MEDIA_TYPE_VIDEO);
-        try_to(output_file->push(&eof_packet));
+        output_file->resetDiscardTypes();
+        Packet eof;
+        eof.setType(MediaType::MEDIA_TYPE_EOF);
+        try_to(output_file->push(&eof));
+
+        output_file->join();
 
         file_crutch.close();
         return Code::END_OF_FILE;

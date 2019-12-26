@@ -35,6 +35,7 @@ namespace fpp {
         void                setOpened(bool opened);
         void                setCloseOnDisconnect(bool value);
         void                setDiscardType(MediaType type);
+        void                resetDiscardTypes() { _discard_types = 0; } //TODO костыль: нельзя закрыть синк еоф пакетом в конкатенаторе
         void                setMetaData(const std::string& value);
 
         Code                connectTo(const ProcessorPointer other);

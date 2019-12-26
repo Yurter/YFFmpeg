@@ -20,8 +20,6 @@ namespace fpp {
         void                setStartPoint(int64_t value);
         void                setEndPoint(int64_t value);
 
-        void        doNotSendEOF() { _doNotSendEOF = true; } //TODO костыль для конкатенации
-
         const InputFormatContext* inputFormatContext() const;
 
     private:
@@ -35,8 +33,6 @@ namespace fpp {
     private:
 
         InputFormatContext  _input_format_context;
-
-        bool    _doNotSendEOF; //TODO
 
         int64_t             _start_time_point;
         int64_t             _end_time_point;

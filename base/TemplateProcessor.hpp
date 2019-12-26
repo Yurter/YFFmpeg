@@ -99,16 +99,23 @@ namespace fpp {
         Code sendEof() {
             log_debug("Sending EOF");
             outType eof;
-            for (auto& stream : streams()) {
-                if (stream->used()) {
-                    eof.setType(stream->type());
-                    eof.setStreamUid(stream->params->streamUid());
-                    try_to(sendOutputData(eof));
-                    stream->setUsed(false);
-                }
-            }
+            eof.setType(MediaType::MEDIA_TYPE_EOF);
+            try_to(sendOutputData(eof));
             return Code::OK;
         }
+//        Code sendEof() {
+//            log_debug("Sending EOF");
+//            outType eof;
+//            for (auto& stream : streams()) {
+//                if (stream->used()) {
+//                    eof.setType(stream->type());
+//                    eof.setStreamUid(stream->params->streamUid());
+//                    try_to(sendOutputData(eof));
+//                    stream->setUsed(false);
+//                }
+//            }
+//            return Code::OK;
+//        }
 
     private:
 
@@ -121,13 +128,18 @@ namespace fpp {
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
 
-            if (input_data.empty()) {
+//            if (this->is("MediaSource")) {
+//                log_error("input_data " << input_data.type() << " " << input_data);
+//            }
+
+            return_if(discardType(input_data.type()), Code::AGAIN);
+
+            if (input_data.typeIs(MediaType::MEDIA_TYPE_EOF)) {
                 log_debug("Got EOF " << input_data.name());
                 try_to(sendOutputData(outType()));
                 return Code::END_OF_FILE;
             }
 
-            return_if(discardType(input_data.type()), Code::AGAIN);
             log_trace("Running processInputData");
             try_to(processInputData(input_data));
             increaseProcessingIterationCount();

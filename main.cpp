@@ -252,10 +252,10 @@ void write_video_from_camera() {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-//    ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOType::Event);
-//    if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
-//        static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
-//    }
+    ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOType::Event);
+    if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
+        static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
+    }
 
     ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("debug_files/timelapse.flv", IOType::Timelapse);
     if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
@@ -300,11 +300,11 @@ int main() {
 //        return 0;
 //    }
 
-//    {
-//        set_log_level(LogLevel::Debug);
-//        concatenator_debug_simple();
-//        return 0;
-//    }
+    {
+        set_log_level(LogLevel::Debug);
+        concatenator_debug_simple();
+        return 0;
+    }
 
 //    {
 //        set_log_level(LogLevel::Debug);
@@ -317,12 +317,12 @@ int main() {
 //        return 0;
 //    }
 
-    {
-//        set_log_level(LogLevel::Debug);
-        set_ffmpeg_log_level(LogLevel::Quiet);
-        write_video_from_camera();
-        return 0;
-    }
+//    {
+////        set_log_level(LogLevel::Debug);
+//        set_ffmpeg_log_level(LogLevel::Quiet);
+//        write_video_from_camera();
+//        return 0;
+//    }
 
 //    {
 //        set_log_level(LogLevel::Debug);

@@ -20,11 +20,6 @@ extern "C" {
 
 namespace fpp {
 
-    /* ? */
-    //enum Yode {hwaccel
-    //    //
-    //};
-
     /* Варианты для быстрой преднастройки */
     /* параметров медиа-контекстов        */
     enum IOType {
@@ -81,6 +76,7 @@ namespace fpp {
         MEDIA_TYPE_UNKNOWN  = 0x0001,
         MEDIA_TYPE_VIDEO    = 0x0002,
         MEDIA_TYPE_AUDIO    = 0x0004,
+        MEDIA_TYPE_EOF      = 0x0008,
     };
 
     /* Категории сообщений, которые выводятся в консоль.

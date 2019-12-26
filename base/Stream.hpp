@@ -69,6 +69,7 @@ namespace fpp {
         int64_t             _packet_duration;
 
         int64_t             _pts_offset = 0;
+        int64_t             _dts_offset = 0;
 
     };
 

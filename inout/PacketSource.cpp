@@ -16,15 +16,22 @@ namespace fpp {
 
     Code PacketSource::readPacket() { //TODO refactoring
         Packet packet;
-        Code ret = readInputData(packet);
-        if (utils::exit_code(ret)
-                && (ret != Code::END_OF_FILE)) {
-            return ret;
-        }
-        return_if(ret == Code::AGAIN, ret);
+        try_to(readInputData(packet));
         try_to(storeInputData(packet));
         increaseInputDataCount();
         return Code::OK;
     }
+//    Code PacketSource::readPacket() { //TODO refactoring
+//        Packet packet;
+//        Code ret = readInputData(packet);
+//        if (utils::exit_code(ret)
+//                && (ret != Code::END_OF_FILE)) {
+//            return ret;
+//        }
+//        return_if(ret == Code::AGAIN, ret);
+//        try_to(storeInputData(packet));
+//        increaseInputDataCount();
+//        return Code::OK;
+//    }
 
 } // namespace fpp

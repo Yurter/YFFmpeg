@@ -25,6 +25,7 @@ namespace fpp {
         CodecType           codecType()     const;
         int64_t             bitrate()       const;
         int64_t             duration()      const;
+        int64_t             durationTime()  const; //TODO нужно хранить длительность в таймбейсе, а для лога возвращать рекскалированное
         int64_t             streamIndex()   const;
         int64_t             streamUid()     const;
         AVRational          timeBase()      const;

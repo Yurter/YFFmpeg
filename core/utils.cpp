@@ -13,6 +13,8 @@ namespace fpp {
             return "Video";
         case MediaType::MEDIA_TYPE_AUDIO:
             return "Audio";
+        case MediaType::MEDIA_TYPE_EOF:
+            return "EOF";
         }
         return "Invalid";
     }
