@@ -192,7 +192,7 @@ namespace fpp {
 //            std::string filters_descr = "select='not(mod(n,2))'";
 //            std::string filters_descr = "select='not(mod(n,2))',setpts=0.5*PTS";
 
-            const int X = 60; //TODO "магическое" число
+            const int X = 4; //TODO "магическое" число
             std::string filters_descr = "select='not(mod(n," + std::to_string(X) + "))',setpts=" + std::to_string(1.f / X) + "*PTS";
             ProcessorPointer video_filter = std::make_shared<VideoFilter>(params, filters_descr);
             try_to(route.append(video_filter));

@@ -32,24 +32,14 @@ void concatenator_debug_timlapse_event() {
     #define TML(x) (x) / 60
     #define MINUTE * 60'000
 
-    // 58'021 ms длительность таймлапса
-//    Concatenator concatenator("debug_files/concatenator_debug_timlapse_event.flv", {
-//        { "event.flv", (10 * MINUTE), (11 * MINUTE) }
-//    });
-//    Concatenator concatenator("debug_files/concatenator_debug_timlapse_event.flv", {
-//        { "event.flv", FROM_START, TO_END }
-//    });
-//    Concatenator concatenator("compil_data/concatenator_debug_timlapse_event.flv", {
-//        { "a_event.flv", (0 * MINUTE), (11 * MINUTE) }
-//    });
     Concatenator concatenator("debug_files/concatenator_debug_timlapse_event.flv", {
         { "timelapse.flv", FROM_START, TML(10 MINUTE) }         /* 10 сек */
-        , { "event.flv", (10 MINUTE), (11 MINUTE) }             /*  1 мин */
-        , { "timelapse.flv", TML(11 MINUTE), TML(15 MINUTE) }   /*  4 сек */
-        , { "event.flv", (15 MINUTE), (16 MINUTE) }             /*  1 мин */
-        , { "timelapse.flv", TML(16 MINUTE), TML(23 MINUTE) }   /*  7 сек */
-        , { "event.flv", (23 MINUTE), (24 MINUTE) }             /*  1 мин */
-        , { "timelapse.flv", TML(24 MINUTE), TO_END }           /*  ? сек */
+//        , { "event.flv", (10 MINUTE), (11 MINUTE) }             /*  1 мин */
+//        , { "timelapse.flv", TML(11 MINUTE), TML(15 MINUTE) }   /*  4 сек */
+//        , { "event.flv", (15 MINUTE), (16 MINUTE) }             /*  1 мин */
+//        , { "timelapse.flv", TML(16 MINUTE), TML(23 MINUTE) }   /*  7 сек */
+//        , { "event.flv", (23 MINUTE), (24 MINUTE) }             /*  1 мин */
+//        , { "timelapse.flv", TML(24 MINUTE), TO_END }           /*  ? сек */
                                                         /* Итого: 3 мин 21 сек + */
     });
 
@@ -213,7 +203,7 @@ void route_simplify_debug() {
         static_log_error("main", "Pipeline simplify routes failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    progress_bar(60);
+    progress_bar(60 * 31);
 }
 
 void memory_leak_test() {
@@ -246,24 +236,24 @@ void memory_leak_test() {
 void write_video_from_camera() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-    ProcessorPointer source = std::make_shared<MediaSource>("video=HP Wide Vision FHD Camera");
+    ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554");
 
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOType::Event);
-    if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
-        static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
-    }
+//    ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOType::Event);
+//    if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
+//        static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
+//    }
 
     ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("debug_files/timelapse.flv", IOType::Timelapse);
     if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    utils::sleep_for_sec(15);
-//    progress_bar(15);
+    utils::sleep_for_sec(60);
+//    progress_bar(10);
 }
 
 #include "core/time/Timer.hpp"
@@ -300,11 +290,11 @@ int main() {
 //        return 0;
 //    }
 
-    {
-        set_log_level(LogLevel::Debug);
-        concatenator_debug_simple();
-        return 0;
-    }
+//    {
+//        set_log_level(LogLevel::Debug);
+//        concatenator_debug_simple();
+//        return 0;
+//    }
 
 //    {
 //        set_log_level(LogLevel::Debug);
@@ -317,12 +307,12 @@ int main() {
 //        return 0;
 //    }
 
-//    {
-////        set_log_level(LogLevel::Debug);
-//        set_ffmpeg_log_level(LogLevel::Quiet);
-//        write_video_from_camera();
-//        return 0;
-//    }
+    {
+        set_log_level(LogLevel::Debug);
+        set_ffmpeg_log_level(LogLevel::Quiet);
+        write_video_from_camera();
+        return 0;
+    }
 
 //    {
 //        set_log_level(LogLevel::Debug);

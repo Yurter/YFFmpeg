@@ -122,13 +122,13 @@ namespace fpp {
         switch (write_mode) {
         case ReadWriteMode::Instant:
             if (av_write_frame(mediaFormatContext(), &packet.raw()) < 0) {
-                log_error("Error muxing packet");
+                log_error("Error muxing: " << packet);
                 return Code::FFMPEG_ERROR;
             }
             break;
         case ReadWriteMode::Interleaved:
             if (av_interleaved_write_frame(mediaFormatContext(), &packet.raw()) < 0) {
-                log_error("Error muxing packet");
+                log_error("Error muxing: " << packet);
                 return Code::FFMPEG_ERROR;
             }
             break;

@@ -128,34 +128,28 @@ namespace fpp {
             _prev_pts = new_pts;
             break;
         }
-//        case StampType::Append: {
-//            auto new_pts = packet.pts() + _pts_offset;
-//            auto new_dts = packet.dts() + _dts_offset;
-
-//            if (new_pts <= _prev_pts) {
-//                _pts_offset = params->duration();
-//                _dts_offset = params->duration();
-//                new_pts = packet.pts() + _pts_offset;
-//                new_dts = packet.dts() + _dts_offset;
-//            }
-
-//            _packet_duration = new_pts - _prev_pts;
-
-//            _packet_dts_delta = _packet_duration;
-//            _packet_pts_delta = _packet_duration;
-
-//            packet.setDts(new_dts);
-//            packet.setPts(new_pts);
-//            packet.setDuration(_packet_duration);
-
-//            _prev_dts = new_dts;
-//            _prev_pts = new_pts;
-//            break;
-//        }
+        case StampType::Offset: {
+            if (packetIndex() == 0) {
+                log_error("!!!!!!!! " << packet);
+                _pts_offset = -packet.pts();
+                _dts_offset = -packet.dts();
+            }
+            auto new_pts = packet.pts() + _pts_offset;
+            auto new_dts = packet.dts() + _dts_offset;
+            _packet_duration = new_pts - _prev_pts;
+            _packet_dts_delta = _packet_duration;
+            _packet_pts_delta = _packet_duration;
+            packet.setDts(new_dts);
+            packet.setPts(new_pts);
+            packet.setDuration(_packet_duration);
+            packet.setTimeBase(params->timeBase());
+            break;
+        }
         default:
             return Code::NOT_IMPLEMENTED;
         }
 
+        packet.setTimeBase(params->timeBase());
         params->increaseDuration(_packet_duration);
         _packet_index++;
         return Code::OK;
@@ -264,6 +258,13 @@ namespace fpp {
 
     void Stream::setUsed(bool value) {
         _used = value;
+    }
+
+    void Stream::setStampType(StampType value) {
+        if (value == StampType::Rescale) {
+            setName(name());
+        }
+        _stamp_type = value;
     }
 
     int64_t Stream::index() const {

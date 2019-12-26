@@ -36,7 +36,7 @@ namespace fpp {
         Code                stampPacket(Packet& packet);
 
         void                setUsed(bool value);
-        void                setStampType(StampType value) { _stamp_type = value; }
+        void                setStampType(StampType value);
 
         int64_t             index()         const;
         bool                used()          const;

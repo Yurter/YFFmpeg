@@ -97,6 +97,7 @@ namespace fpp {
         }
 
         Code sendEof() {
+            log_error("Sending EOF");
             log_debug("Sending EOF");
             outType eof;
             eof.setType(MediaType::MEDIA_TYPE_EOF);
@@ -135,8 +136,10 @@ namespace fpp {
             return_if(discardType(input_data.type()), Code::AGAIN);
 
             if (input_data.typeIs(MediaType::MEDIA_TYPE_EOF)) {
+                log_error("Got EOF " << input_data.name());
                 log_debug("Got EOF " << input_data.name());
-                try_to(sendOutputData(outType()));
+                try_to(sendEof());
+//                try_to(sendOutputData(outType()));
                 return Code::END_OF_FILE;
             }
 
