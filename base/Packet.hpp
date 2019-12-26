@@ -3,7 +3,7 @@
 
 namespace fpp {
 
-    class Packet : public Data<AVPacket> {
+    class Packet : public Data<AVPacket> { //TODO вынести общее от пакета и фрейса в отдельный класс (птс, time_base, стрим_айди и тд)
 
     public:
 
@@ -21,6 +21,7 @@ namespace fpp {
         void                setPts(int64_t pts);
         void                setDts(int64_t dts);
         void                setDuration(int64_t duration);
+        void                setTimeBase(AVRational time_base);
         void                setPos(int64_t pos);
         void                setStreamIndex(int64_t stream_index);
         void                setStreamUid(int64_t source_stream_uid);
@@ -28,6 +29,7 @@ namespace fpp {
         int64_t             pts()           const;
         int64_t             dts()           const;
         int64_t             duration()      const;
+        AVRational          timeBase()      const;
         int64_t             pos()           const;
         int64_t             streamIndex()   const;
         int64_t             streamUid()     const;
@@ -43,6 +45,7 @@ namespace fpp {
     private:
 
         int64_t             _stream_uid;
+        AVRational          _time_base;
 
     };
 

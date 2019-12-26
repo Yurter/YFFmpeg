@@ -109,13 +109,15 @@ namespace fpp {
             _prev_dts = packet.dts();
             _prev_pts = packet.pts();
 
-            packet.setDts(av_rescale_q(packet.dts(), params->timeBase(), DEFAULT_TIME_BASE));
-            packet.setPts(av_rescale_q(packet.pts(), params->timeBase(), DEFAULT_TIME_BASE));
+            packet.setDts(av_rescale_q(packet.dts(), packet.timeBase(), params->timeBase()));
+            packet.setPts(av_rescale_q(packet.pts(), packet.timeBase(), params->timeBase()));
             log_warning(packet);
             break;
         default:
             return Code::NOT_IMPLEMENTED;
         }
+
+        packet.setTimeBase(params->timeBase());
 
         _packet_index++;
         return Code::OK;

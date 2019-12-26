@@ -16,14 +16,8 @@ namespace fpp {
     Code EncoderContext::encode(Frame input_frame, Packet& output_packet) {
         try_to(output_packet.init());
         output_packet.setType(params.out->type());
-        auto debug_value = this;
-        auto op = opened();
+        output_packet.setTimeBase(params.in->timeBase());
         log_trace("Frame for encoding: " << input_frame);
-//        std::cout << "Frame for encoding: " << input_frame << std::endl;
-//        std::cout << "EncoderContext: " << this->toString() << std::endl;
-//        if (AVPixelFormat(input_frame.raw().format) == AVPixelFormat::AV_PIX_FMT_YUV420P) {
-//            utils::SaveAvFrame(&input_frame.raw());
-//        }
         int ret;
         if ((ret = avcodec_send_frame(_codec_context, &input_frame.raw())) != 0) {
             log_error(input_frame);

@@ -5,23 +5,24 @@ namespace fpp {
 
     Frame::Frame() :
         Data<AVFrame>()
+      , _time_base(DEFAULT_RATIONAL)
     {
         setName("Frame");
     }
 
     Frame::Frame(const Frame& other) {
-        setName("Frame");
+        setName("Frame"); //TODO вызов базового конструктора
         copyOther(other);
     }
 
     Frame::Frame(const Frame&& other) {
-        setName("Frame");
+        setName("Frame"); //TODO вызов базового конструктора
         copyOther(other);
     }
 
-    Frame::Frame(const AVFrame& frame, const MediaType type) {
-        setName("Frame");
-        copyOther(frame, type);
+    Frame::Frame(const AVFrame& frame, MediaType type, AVRational time_base) {
+        setName("Frame"); //TODO вызов базового конструктора
+        copyOther(frame, type, time_base);
     }
 
     Frame::~Frame() {
@@ -42,8 +43,16 @@ namespace fpp {
         return _data.pts;
     }
 
+    AVRational Frame::timeBase() const {
+        return _time_base;
+    }
+
     void Frame::setPts(int64_t value) {
         _data.pts = value;
+    }
+
+    void Frame::setTimeBase(AVRational time_base) {
+        _time_base = time_base;
     }
 
     uint64_t Frame::size() const {
@@ -93,12 +102,14 @@ namespace fpp {
     void Frame::copyOther(const Frame& other) {
         av_frame_ref(&_data, &other._data);
         setType(other.type());
+        setTimeBase(other.timeBase());
         setInited(true);
     }
 
-    void Frame::copyOther(const AVFrame& other, const MediaType type) {
+    void Frame::copyOther(const AVFrame& other, MediaType type, AVRational time_base) {
         av_frame_ref(&_data, &other);
         setType(type);
+        setTimeBase(time_base);
         setInited(true);
     }
 

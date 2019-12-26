@@ -4,8 +4,9 @@
 namespace fpp {
 
     Packet::Packet() :
-        Data<AVPacket>(),
-        _stream_uid(INVALID_INT)
+        Data<AVPacket>()
+      , _stream_uid(INVALID_INT)
+      , _time_base(DEFAULT_RATIONAL)
     {
         setName("Packet");
     }
@@ -68,6 +69,10 @@ namespace fpp {
         _data.duration = duration;
     }
 
+    void Packet::setTimeBase(AVRational time_base) {
+        _time_base = time_base;
+    }
+
     void Packet::setPos(int64_t pos) {
         _data.pos = pos;
     }
@@ -90,6 +95,10 @@ namespace fpp {
 
     int64_t Packet::duration() const {
         return _data.duration;
+    }
+
+    AVRational Packet::timeBase() const {
+        return _time_base;
     }
 
     int64_t Packet::pos() const {
@@ -120,6 +129,7 @@ namespace fpp {
                 + "dts " + utils::pts_to_string(_data.dts) + ", "
                 + "pts " + utils::pts_to_string(_data.pts) + ", "
                 + "duration " + std::to_string(_data.duration) + ", "
+                + "time_base " + utils::rational_to_string(_time_base) + ", "
                 + "stream index " + std::to_string(_data.stream_index) + ", "
                 + "stream uid " + std::to_string(_stream_uid);
         return str;
@@ -130,6 +140,7 @@ namespace fpp {
         setPts(other.pts());
         setDts(other.dts());
         setDuration(other.duration());
+        setTimeBase(other.timeBase());
         setPos(other.pos());
         setStreamIndex(other.streamIndex());
         setStreamUid(other.streamUid());
