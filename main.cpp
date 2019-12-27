@@ -247,7 +247,7 @@ void memory_leak_test() {
 void write_video_from_camera() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-    ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554");
+    ProcessorPointer source = std::make_shared<MediaSource>("video=HP Wide Vision FHD Camera");
 
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
