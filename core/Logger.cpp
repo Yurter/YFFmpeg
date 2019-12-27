@@ -51,8 +51,10 @@ namespace fpp {
             break;
         }
 
-        _file << log_text << std::endl;
-        std::cout << log_text << std::endl;
+//        _file << log_text << std::endl;
+//        std::cout << log_text << std::endl;
+        _file << log_text << '\n';
+        std::cout << log_text << '\n';
         SetConsoleTextAttribute(hStdout, FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
         return Code::OK;
     }

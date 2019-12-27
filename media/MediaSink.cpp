@@ -44,9 +44,9 @@ namespace fpp {
 //        }
         try_to(_output_format_context.close());
         log_info("Destination \"" << _output_format_context.mediaResourceLocator() << "\" closed, " //TODO метод отрабатывает дважды: из деструктора и из онСтоп
-                 << utils::msec_to_time(stream(0)->params->duration()));
+                 << utils::msec_to_time(stream(0)->params->duration(DEFAULT_TIME_BASE)));
 //        if (outputDataCount() == 0) {
-        if (stream(0)->params->duration() == 0) {
+        if (stream(0)->params->duration(DEFAULT_TIME_BASE) == 0) {
             log_warning('"' << _output_format_context.mediaResourceLocator() << "\" closed empty!");
         }
         setOpened(false);
@@ -89,6 +89,10 @@ namespace fpp {
     }
 
     Code MediaSink::writeOutputData(Packet output_data) {
+//        log_warning("OUT: " << output_data);
+        if (stream(output_data.streamIndex())->packetIndex() == 1) {
+            log_warning("OUT : " << output_data);
+        }
         try_to(_output_format_context.write(output_data));
         return Code::OK;
     }

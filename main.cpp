@@ -29,19 +29,29 @@ void concatenator_debug_simple() {
 }
 
 void concatenator_debug_timlapse_event() {
-    #define TML(x) (x) / 60
+    #define TML(x) (x) / 4
     #define MINUTE * 60'000
 
     Concatenator concatenator("debug_files/concatenator_debug_timlapse_event.flv", {
-        { "timelapse.flv", FROM_START, TML(10 MINUTE) }         /* 10 сек */
+        { "timelapse.flv", FROM_START, TML(8 MINUTE) }          /* 2 мин */
 //        , { "event.flv", (10 MINUTE), (11 MINUTE) }             /*  1 мин */
 //        , { "timelapse.flv", TML(11 MINUTE), TML(15 MINUTE) }   /*  4 сек */
 //        , { "event.flv", (15 MINUTE), (16 MINUTE) }             /*  1 мин */
 //        , { "timelapse.flv", TML(16 MINUTE), TML(23 MINUTE) }   /*  7 сек */
 //        , { "event.flv", (23 MINUTE), (24 MINUTE) }             /*  1 мин */
 //        , { "timelapse.flv", TML(24 MINUTE), TO_END }           /*  ? сек */
-                                                        /* Итого: 3 мин 21 сек + */
+                                                        /* Итого: ? мин ? сек + */
     });
+//    Concatenator concatenator("debug_files/concatenator_debug_timlapse_event.flv", {
+//        { "timelapse.flv", FROM_START, TML(10 MINUTE) }         /* 10 сек */
+//        , { "event.flv", (10 MINUTE), (11 MINUTE) }             /*  1 мин */
+//        , { "timelapse.flv", TML(11 MINUTE), TML(15 MINUTE) }   /*  4 сек */
+//        , { "event.flv", (15 MINUTE), (16 MINUTE) }             /*  1 мин */
+//        , { "timelapse.flv", TML(16 MINUTE), TML(23 MINUTE) }   /*  7 сек */
+//        , { "event.flv", (23 MINUTE), (24 MINUTE) }             /*  1 мин */
+//        , { "timelapse.flv", TML(24 MINUTE), TO_END }           /*  ? сек */
+//                                                        /* Итого: 3 мин 21 сек + */
+//    });
 
     if (auto ret = concatenator.start(); ret != Code::OK) {
         static_log_error("main", "Concatenator start failed: " << ret << " - " << utils::code_to_string(ret));
@@ -242,18 +252,21 @@ void write_video_from_camera() {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-//    ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOType::Event);
-//    if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
-//        static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
-//    }
+    ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOType::Event);
+    if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
+        static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
+    }
 
     ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("debug_files/timelapse.flv", IOType::Timelapse);
     if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    utils::sleep_for_sec(60);
-//    progress_bar(10);
+//    utils::sleep_for_sec(60);
+//    progress_bar(35 * 60);
+//    utils::sleep_for_sec(10);
+    utils::sleep_for_sec(5);
+    progress_bar(2 * 60);
 }
 
 #include "core/time/Timer.hpp"

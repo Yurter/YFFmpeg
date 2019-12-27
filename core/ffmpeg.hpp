@@ -125,8 +125,8 @@ namespace fpp {
 #define DEFAULT_CHANEL_LAYOUT   0
 #define DEFAULT_TIME_BASE       AVRational({ 1, 1000 })
 
-#define FROM_START              INVALID_INT
-#define TO_END                  INVALID_INT
+#define FROM_START              0
+#define TO_END                  LONG_MAX
 
 #define invalid_int(x)          ((x) == INVALID_INT)
 #define invalid_rational(x)     ((x.den) == 0)

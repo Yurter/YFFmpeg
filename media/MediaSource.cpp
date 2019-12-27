@@ -4,8 +4,6 @@ namespace fpp {
 
     MediaSource::MediaSource(const std::string mrl, IOType preset) :
         _input_format_context(mrl, preset)
-      , _start_time_point(FROM_START)
-      , _end_time_point(TO_END)
     {
         setName("MediaSource");
         setDiscardType(MediaType::MEDIA_TYPE_AUDIO); //TODO
@@ -34,11 +32,11 @@ namespace fpp {
             for (auto&& avstream : streams()) { //TODO
                 try_to(avstream->init());
             }
-            if (_start_time_point != FROM_START) {
-                for (auto& stream : streams()) {
-                    try_to(_input_format_context.seek(stream->index(), _start_time_point));
-                }
-            }
+//            if (_start_time_point != FROM_START) {
+//                for (auto& stream : streams()) {
+//                    try_to(_input_format_context.seek(stream->index(), _start_time_point));
+//                }
+//            }
         }
         setOpened(true);
         return Code::OK;
@@ -52,7 +50,7 @@ namespace fpp {
         stopWait(); //TODO костыль?
         try_to(_input_format_context.close());
         log_info("Source \"" << _input_format_context.mediaResourceLocator() << "\" closed, "
-                 << utils::msec_to_time(stream(0)->params->duration()));
+                 << utils::msec_to_time(stream(0)->params->duration(DEFAULT_TIME_BASE)));
         setOpened(false);
         return Code::OK;
     }
@@ -76,63 +74,39 @@ namespace fpp {
         return false;
     }
 
-    void MediaSource::setStartPoint(int64_t value) {
-        return_if(_start_time_point == value, void());
-        if ((value != FROM_START) && (value < 0)) {
-            log_warning("Cannot set start time point less then zero: " << value << ", ignored");
-            return;
-        }
-        if ((_end_time_point != TO_END) && (value > _end_time_point)) {
-            log_warning("Cannot set start time point more then end time point "
-                        << _end_time_point <<  ": " << value << ", ignored");
-            return;
-        }
-        _start_time_point = value;
-    }
-
-    void MediaSource::setEndPoint(int64_t value) {
-        return_if(_end_time_point == value, void());
-        if ((value != TO_END) && (value < 0)) {
-            log_warning("Cannot set end time point less then zero: " << value << ", ignored");
-            return;
-        }
-        if ((_start_time_point != FROM_START) && (value < _start_time_point)) {
-            log_warning("Cannot set end time point less then start time point "
-                        << _start_time_point <<  ": " << value << ", ignored");
-            return;
-        }
-        _end_time_point = value;
-    }
-
-    const InputFormatContext * MediaSource::inputFormatContext() const {
+    const InputFormatContext* MediaSource::inputFormatContext() const {
         return &_input_format_context;
     }
 
     Code MediaSource::readInputData(Packet& input_data) {
-        if (_end_time_point != TO_END) { //TODO
-            const auto planned_duration = _end_time_point - _start_time_point;
-            const auto actual_duration = stream(input_data.streamIndex())->params->duration();
-            return_if(actual_duration >= planned_duration, Code::END_OF_FILE);
+        if (inputDataCount() == 0) { //TODO кривой костыль
+            for (auto& stream : streams()) {
+                try_to(_input_format_context.seek(stream->index(), stream->startTimePoint()));
+            }
         }
-
         try_to(_input_format_context.read(input_data));
+        return_if(stream(input_data.streamIndex())->timeIsOver(), Code::END_OF_FILE);
         return Code::OK;
     }
 
     Code MediaSource::processInputData(Packet input_data) {
         if (stream(input_data.streamIndex())->packetIndex() == 0) { //TODO костыль? каждый раз проверяет.. -> перенести в онСтарт - раз прочитать пакеты из каждого потока
-            determineStampType(input_data);
+            stream(input_data.streamIndex())->determineStampType(input_data);
         }
 
         try_to(stream(input_data.streamIndex())->stampPacket(input_data));
 
         if (inputDataCount() == 0) { //TODO нуженл ли этот лог?
             log_debug("Read from "
-                      << (_start_time_point == FROM_START ? "start" : utils::msec_to_time(_start_time_point))
+                      << (stream(input_data.streamIndex())->startTimePoint() == FROM_START
+                          ? "start"
+                          : utils::msec_to_time(stream(input_data.streamIndex())->startTimePoint()))
                       << ", first packet: " << input_data);
         }
 
-//        log_warning("IN : " << input_data);
+        if (stream(input_data.streamIndex())->packetIndex() == 1) {
+            log_warning("IN : " << input_data);
+        }
 
         return sendOutputData(input_data);
     }
@@ -143,21 +117,22 @@ namespace fpp {
         return Code::OK;
     }
 
-    void MediaSource::determineStampType(const Packet& packet) {
-        if (packet.pts() != 0) { /* Требуется перештамповывать пакеты */
-            if (_start_time_point == FROM_START) { /* Чтение из источника, передающего пакеты не с начала */
-                stream(packet.streamIndex())->setStampType(StampType::Realtime);
-            } else {
-                stream(packet.streamIndex())->setStampType(StampType::Offset); /* Происходит чтение не с начала файла */
-            }
-        } else {
-//            if (stream(packet.streamIndex())->params->timeBase() != DEFAULT_TIME_BASE) { /* Требуется рескейлить в миллисекунды */
-//                stream(packet.streamIndex())->setStampType(StampType::Rescale);
+//    void MediaSource::determineStampType(const Packet& packet) {
+//        if (packet.pts() != 0) { /* Требуется перештамповывать пакеты */
+//            if (_start_time_point == FROM_START) { /* Чтение из источника, передающего пакеты не с начала */
+//                stream(packet.streamIndex())->setStampType(StampType::Realtime);
 //            } else {
-//                stream(packet.streamIndex())->setStampType(StampType::Copy);
+//                stream(packet.streamIndex())->setStampType(StampType::Offset); /* Происходит чтение не с начала файла */
 //            }
-            stream(packet.streamIndex())->setStampType(StampType::Copy);
-        }
-    }
+//        } else {
+////            if (stream(packet.streamIndex())->params->timeBase() != DEFAULT_TIME_BASE) { /* Требуется рескейлить в миллисекунды */
+////                stream(packet.streamIndex())->setStampType(StampType::Rescale);
+////            } else {
+////                stream(packet.streamIndex())->setStampType(StampType::Copy);
+////            }
+//            stream(packet.streamIndex())->setStampType(StampType::Copy);
+//        }
+//        log_error(">> stamptype: " << int(stream(packet.streamIndex())->stampType()));
+//    }
 
 } // namespace fpp

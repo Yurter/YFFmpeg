@@ -36,6 +36,7 @@ namespace fpp {
     }
 
     Code InputFormatContext::seek(int64_t stream_index, int64_t timestamp, SeekPrecision seek_precision) {
+        return_if(timestamp == stream(stream_index)->params->duration(DEFAULT_TIME_BASE), Code::OK);
         int flags = 0;
         switch (seek_precision) {
         case SeekPrecision::Forward:
@@ -54,6 +55,7 @@ namespace fpp {
         return_error_if(ret != 0
                         , "Failed to seek timestamp " << utils::msec_to_time(timestamp) << " in stream " << stream_index
                         , Code::FFMPEG_ERROR);
+        log_info("Success seek to " << utils::msec_to_time(timestamp));
         return Code::OK;
     }
 

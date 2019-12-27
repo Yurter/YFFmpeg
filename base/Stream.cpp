@@ -22,6 +22,8 @@ namespace fpp {
         , _packet_duration(INVALID_INT)
         , _pts_offset(DEFAULT_INT)
         , _dts_offset(DEFAULT_INT)
+        , _start_time_point(FROM_START)
+        , _end_time_point(TO_END)
     {
         setName("Stream");
     }
@@ -52,6 +54,19 @@ namespace fpp {
         return str;
     }
 
+    void Stream::determineStampType(const Packet& packet) {
+        if (packet.pts() != 0) { /* Требуется перештамповывать пакеты */
+            if (_start_time_point == FROM_START) { /* Чтение из источника, передающего пакеты не с начала */
+                setStampType(StampType::Realtime);
+            } else {
+                setStampType(StampType::Offset); /* Происходит чтение не с начала файла */
+            }
+        } else {
+            setStampType(StampType::Copy);
+        }
+        log_error(">> stamptype: " << int(stampType()));
+    }
+
     Code Stream::stampPacket(Packet& packet) {
         switch (_stamp_type) {
         case StampType::Copy:
@@ -63,33 +78,38 @@ namespace fpp {
             packet.setPos(-1);
             break;
         case StampType::Realtime: {
-            { //TODO костыль сброса таймера на получении первого пакета
-                if (_packet_index == 0) {
-                    _chronometer.reset_timepoint();
-                    _packet_duration = 40;
-                } else {
-                    _packet_duration = _chronometer.elapsed_milliseconds();
-                }
+//            log_error("IN. PTS: " << packet.pts() << ", DTS: " << packet.dts());
+            if (_packet_index == 0) { //TODO костыль сброса таймера на получении первого пакета, перенести в открытие?
+                _chronometer.reset_timepoint();
+            }
+
+            const AVRational chronometer_timebase = DEFAULT_TIME_BASE;
+            _packet_duration = av_rescale_q(_chronometer.elapsed_milliseconds(), chronometer_timebase, params->timeBase());
+
+            _chronometer.reset_timepoint();
+
+            if (_packet_duration < 16) { //TODO костыль: ффмпег отдает первый кадров 10 мгновенно
+                const int64_t duration_ms = int64_t(1000 / av_q2d(static_cast<VideoParameters*>(params)->frameRate()));
+                _packet_duration = av_rescale_q(duration_ms, DEFAULT_TIME_BASE, params->timeBase());
+//                log_warning("CRUCTH dur " << duration_ms << ", " << _packet_duration);
             }
 
             _packet_dts_delta = _packet_duration;
             _packet_pts_delta = _packet_duration;
-            _chronometer.reset_timepoint();
 
-            const auto new_dts = _prev_dts + _packet_dts_delta;
-            const auto new_pts = _prev_pts + _packet_pts_delta;
-
-            packet.setDts(av_rescale_q(new_dts, DEFAULT_TIME_BASE, params->timeBase()));
-            packet.setPts(av_rescale_q(new_pts, DEFAULT_TIME_BASE, params->timeBase()));
-
-            packet.setDuration(av_rescale_q(_packet_duration, DEFAULT_TIME_BASE, params->timeBase()));
+            packet.setDts(_prev_dts);
+            packet.setPts(_prev_pts);
+            packet.setDuration(_packet_duration);
             packet.setPos(-1);
 
-            _prev_dts = new_dts;
-            _prev_pts = new_pts;
+            _prev_dts += _packet_dts_delta;
+            _prev_pts += _packet_pts_delta;
+//            log_error("OU. PTS: " << packet.pts() << ", DTS: " << packet.dts());
+//            log_error("");
             break;
         }
         case StampType::Rescale:
+//            log_error("Rescale in. PTS: " << packet.pts() << ", DTS: " << packet.dts());
             _packet_duration = av_rescale_q(packet.pts() - _prev_pts, packet.timeBase(), params->timeBase());
 
             _prev_dts = packet.dts();
@@ -154,107 +174,16 @@ namespace fpp {
         _packet_index++;
         return Code::OK;
     }
-//    Code Stream::stampPacket(Packet& packet) {
-//        switch (_stamp_type) {
-//        case StampType::ConstantFramerate: /* Константный фреймрейт */
-//            packet.setDts(_prev_dts + _packet_duration);
-//            packet.setPts(_prev_pts + _packet_duration);
-//            break;
-//        case StampType::VariableFramerate: { /* Переменный фреймрейт  */
-//            break;
-//        }
-//        case StampType::Offset: {
-//            if (packetIndex() == 0) {
-//                _pts_offset = -packet.pts();
-//            }
-//            auto new_pts = packet.pts() + _pts_offset;
-//            auto new_dts = packet.dts() + _pts_offset;
-////            if (new_pts <= _prev_pts) {
-////                _pts_offset = params->duration();
-////                new_pts = packet.pts() + _pts_offset;
-////            }
-//            _packet_duration = new_pts - _prev_pts;
-//            _packet_dts_delta = _packet_duration;
-//            _packet_pts_delta = _packet_duration;
-//            packet.setDts(new_dts);
-//            packet.setPts(new_pts);
-//            break;
-//        }
-//        case StampType::Copy: /* Не менять параметры пакета */ //TODO
-//            params->increaseDuration(_packet_duration);
-//            _packet_index++;
-//            return Code::OK;
-//        case StampType::Append: { /* Используется при склейки файлов */
-////            log_debug("PACKET PTS: " << packet.pts());
-//            auto new_pts = packet.pts() + _pts_offset;
-//            auto new_dts = packet.dts() + _pts_offset;
-//            if (new_pts <= _prev_pts) {
-////                log_error("OP");
-//                _pts_offset = params->duration();
-//                new_pts = packet.pts() + _pts_offset;
-//                new_dts = packet.dts() + _pts_offset;
-//            }
-//            _packet_duration = new_pts - _prev_pts;
-//            if (_packet_duration == 0) { _packet_duration = 40; }
-//            _packet_dts_delta = _packet_duration;
-//            _packet_pts_delta = _packet_duration;
-//            packet.setDts(new_dts);
-//            packet.setPts(new_pts);
-//            break;
-//        }
-//        case StampType::Rescale: {
-////            _prev_pts = av_rescale_q(packet.pts(), DEFAULT_TIME_BASE, params->timeBase());
-////            _prev_dts = av_rescale_q(packet.dts(), DEFAULT_TIME_BASE, params->timeBase());
-//            _packet_duration = packet.pts() - _prev_pts;
-//            _packet_dts_delta = _packet_duration;
-//            _packet_pts_delta = _packet_duration;
-////            log_debug(_packet_duration);
-//            break;
-//        }
-//        case StampType::Realtime: { /* Временные штампы реального времени */
-//            if (_packet_index == 0) { //TODO
-//                _chronometer.reset_timepoint();
-//                _packet_duration = 40;
-//            } else {
-//                _packet_duration = _chronometer.elapsed_milliseconds();
-//            }
 
-//            if (_packet_duration < 10) { _packet_duration = 40; }
-
-//            _packet_dts_delta = _packet_duration;
-//            _packet_pts_delta = _packet_duration;
-//            _chronometer.reset_timepoint();
-
-//            auto new_dts = _prev_dts + _packet_dts_delta;
-//            auto new_pts = _prev_pts + _packet_pts_delta;
-
-//            if (_packet_index == 0) {
-//                new_dts = new_pts = 0;
-//            }
-
-//            packet.setDts(new_dts);
-//            packet.setPts(new_pts);
-//            break;
-//        }
-//        }
-
-////        packet.setDts(_prev_dts);
-////        packet.setPts(_prev_pts);
-//        packet.setDuration(_packet_duration);
-//        packet.setPos(-1);
-//        params->increaseDuration(_packet_duration);
-//        if (_stamp_type == StampType::Append) {
-////            log_debug("PACKET PTS: " << packet.pts() << " " << packet.dts());
-//        }
-
-////        _prev_dts += _packet_dts_delta;
-////        _prev_pts += _packet_pts_delta;
-//        _prev_dts = packet.dts();
-//        _prev_pts = packet.pts();
-//        _packet_index++;
-
-//        return Code::OK;
-//    }
+    bool Stream::timeIsOver() const {
+        const auto planned_duration = _end_time_point - _start_time_point;
+        const auto actual_duration = params->duration(DEFAULT_TIME_BASE);
+        if (actual_duration >= planned_duration) {
+            log_debug("Time is over: " << utils::msec_to_time(actual_duration));
+            return true;
+        }
+        return false;
+    }
 
     void Stream::setUsed(bool value) {
         _used = value;
@@ -267,12 +196,52 @@ namespace fpp {
         _stamp_type = value;
     }
 
+    void Stream::setStartTimePoint(int64_t value) {
+        return_if(_start_time_point == value, void());
+        if ((value != FROM_START) && (value < 0)) {
+            log_warning("Cannot set start time point less then zero: " << value << ", ignored");
+            return;
+        }
+        if ((_end_time_point != TO_END) && (value > _end_time_point)) {
+            log_warning("Cannot set start time point more then end time point "
+                        << _end_time_point <<  ": " << value << ", ignored");
+            return;
+        }
+        _start_time_point = value;
+    }
+
+    void Stream::setEndTimePoint(int64_t value) {
+        return_if(_end_time_point == value, void());
+        if ((value != TO_END) && (value < 0)) {
+            log_warning("Cannot set end time point less then zero: " << value << ", ignored");
+            return;
+        }
+        if ((_start_time_point != FROM_START) && (value < _start_time_point)) {
+            log_warning("Cannot set end time point less then start time point "
+                        << _start_time_point <<  ": " << value << ", ignored");
+            return;
+        }
+        _end_time_point = value;
+    }
+
     int64_t Stream::index() const {
         return _data->index;
     }
 
     bool Stream::used() const {
         return _used;
+    }
+
+    StampType Stream::stampType() const {
+        return _stamp_type;
+    }
+
+    int64_t Stream::startTimePoint() const {
+        return _start_time_point;
+    }
+
+    int64_t Stream::endTimePoint() const {
+        return _end_time_point;
     }
 
     int64_t Stream::packetIndex() const {

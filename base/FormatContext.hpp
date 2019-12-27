@@ -37,7 +37,7 @@ namespace fpp {
         int64_t             uid() const;                                ///< Функция возвращает uid.
         std::string         mediaResourceLocator() const;               ///< Функция возвращает mrl.
         AVFormatContext*    mediaFormatContext() const;                 ///< Функция возвращает ffmpeg медиа-контекст.
-        int64_t             duration() const;							///< Функция возвращает длительность медиа-файла в секундах.
+//        int64_t             duration() const;							///< Функция возвращает длительность медиа-файла в секундах.
         Stream*             stream(int64_t index);                      ///< Функция возвращает указатель на поток с заданным индексом; nullptr, если невалидный индекс.
         int64_t             numberStream() const;                       ///< Функция возвращает количество потоков в текущем котексте.
 

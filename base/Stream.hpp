@@ -33,13 +33,21 @@ namespace fpp {
 
         virtual Code        init() override;
         virtual std::string toString() const override final;
+
+        void                determineStampType(const Packet& packet);
         Code                stampPacket(Packet& packet);
+        bool                timeIsOver() const;
 
         void                setUsed(bool value);
         void                setStampType(StampType value);
+        void                setStartTimePoint(int64_t value);
+        void                setEndTimePoint(int64_t value);
 
         int64_t             index()         const;
         bool                used()          const;
+        StampType           stampType()     const;
+        int64_t             startTimePoint() const;
+        int64_t             endTimePoint()   const;
         int64_t             packetIndex()   const;
 
         AVCodecParameters*  codecParameters();
@@ -70,6 +78,9 @@ namespace fpp {
 
         int64_t             _pts_offset = 0;
         int64_t             _dts_offset = 0;
+
+        int64_t             _start_time_point;
+        int64_t             _end_time_point;
 
     };
 

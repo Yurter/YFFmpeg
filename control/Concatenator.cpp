@@ -66,19 +66,18 @@ namespace fpp {
                          << "to " << (end_point == FROM_START ? "end" : std::to_string(end_point) + " ms ") << std::endl;
 
             MediaSource input_file(input_file_name);
-            input_file.setStartPoint(start_point);
-            input_file.setEndPoint(end_point);
-//            input_file.doNotSendEOF(); /* crutch */
             try_to(input_file.init());
             try_to(input_file.open());
             input_file.stream(0)->setUsed(true); /* crutch */
+            input_file.stream(0)->setStartTimePoint(start_point);
+            input_file.stream(0)->setEndTimePoint(end_point);
 
             try_to(input_file.connectTo(output_file));
             try_to(input_file.start());
             input_file.join();
             try_to(input_file.disconnectFrom(output_file));
 
-            out_duration = output_file->stream(0)->params->duration();
+            out_duration = output_file->stream(0)->params->duration(DEFAULT_TIME_BASE);
 
             file_crutch << input_file_name << '\t'
                         << old_out_duration << '\t'

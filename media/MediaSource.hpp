@@ -17,9 +17,6 @@ namespace fpp {
         virtual std::string toString() const override;
         virtual bool        equalTo(const ProcessorPointer other) const override;
 
-        void                setStartPoint(int64_t value);
-        void                setEndPoint(int64_t value);
-
         const InputFormatContext* inputFormatContext() const;
 
     private:
@@ -28,14 +25,11 @@ namespace fpp {
         virtual Code        processInputData(Packet input_data) override;
         virtual Code        onStop() override;
 
-        void                determineStampType(const Packet& packet);
+//        void                determineStampType(const Packet& packet);
 
     private:
 
         InputFormatContext  _input_format_context;
-
-        int64_t             _start_time_point;
-        int64_t             _end_time_point;
 
     };
 

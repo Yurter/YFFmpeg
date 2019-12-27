@@ -41,6 +41,7 @@ namespace fpp {
         Code ret = _encoder_context.encode(input_data, encoded_packet);
         return_if(utils::exit_code(ret), ret);
         if (ret == Code::OK) {
+            encoded_packet.setDts(encoded_packet.pts()); //TODO костыль, разобраться, почему смещение во времени (0, -45)
             try_to(sendOutputData(encoded_packet));
         }
         return ret;
