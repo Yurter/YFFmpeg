@@ -62,29 +62,12 @@ namespace fpp {
             log_error("Cannot set pixel format before codec");
             return;
         }
-        AVPixelFormat h264_pxl_fmts[] = {
-            AV_PIX_FMT_YUV420P
-            , AV_PIX_FMT_YUVJ420P
-            , AV_PIX_FMT_YUV422P
-            , AV_PIX_FMT_YUVJ422P
-            , AV_PIX_FMT_YUV444P
-            , AV_PIX_FMT_YUVJ444P
-            , AV_PIX_FMT_NV12
-            , AV_PIX_FMT_NV16
-            , AV_PIX_FMT_NV21
-            , AV_PIX_FMT_YUV420P10LE
-            , AV_PIX_FMT_YUV422P10LE
-            , AV_PIX_FMT_YUV444P10LE
-            , AV_PIX_FMT_NV20LE
-            , AV_PIX_FMT_GRAY8
-            , AV_PIX_FMT_GRAY10LE
-        };
         if_not(utils::compatible_with_pixel_format(_codec, pixel_format)) {
-//            log_warning("Cannot set pixel format: " << av_get_pix_fmt_name(pixel_format)
-//                        << " - " << _codec->name << " doesn't compatible with it, "
-//                        << "setting default: " << av_get_pix_fmt_name(_codec->pix_fmts[0]));
-//            _pixel_format = _codec->pix_fmts[0];
-            _pixel_format = AV_PIX_FMT_YUV420P; //TODO
+            const auto defailt_h264_pixel_format = AV_PIX_FMT_YUV420P;
+            log_warning("Cannot set pixel format: " << av_get_pix_fmt_name(pixel_format)
+                        << " - " << _codec->name << " doesn't compatible with it, "
+                        << "setting default: " << av_get_pix_fmt_name(defailt_h264_pixel_format));
+            _pixel_format = defailt_h264_pixel_format;
             return;
         }
         _pixel_format = pixel_format;

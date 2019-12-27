@@ -92,6 +92,7 @@ namespace fpp {
     Code MediaSource::processInputData(Packet input_data) {
         if (stream(input_data.streamIndex())->packetIndex() == 0) { //TODO костыль? каждый раз проверяет.. -> перенести в онСтарт - раз прочитать пакеты из каждого потока
             stream(input_data.streamIndex())->determineStampType(input_data);
+            utils::sleep_for_ms(500); //debug пауза рассинхронного старта
         }
 
 //        log_warning("1] " << input_data);

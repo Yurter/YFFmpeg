@@ -25,7 +25,6 @@ namespace fpp {
             /* Video */
             auto video_parameters = new VideoParameters;
             video_parameters->setCodec("libx264", CodecType::Encoder);
-            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
             video_parameters->setGopSize(2);
             video_parameters->setTimeBase(DEFAULT_TIME_BASE);
             try_to(createStream(video_parameters));

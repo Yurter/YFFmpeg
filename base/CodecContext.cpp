@@ -58,7 +58,6 @@ namespace fpp {
         default:
             codec = nullptr;
         }
-//        auto codec = params->codec();
         if (int ret = avcodec_open2(_codec_context, codec, nullptr); ret != 0) {
             std::string codec_type = av_codec_is_decoder(codec) ? "decoder" : "encoder";
             log_error("Cannot open codec: " << ret << ", "<< codec->name << ", " << codec_type);

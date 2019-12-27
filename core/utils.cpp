@@ -109,7 +109,11 @@ namespace fpp {
         return str;
     }
 
-    bool utils::compatible_with_pixel_format(AVCodec* codec, AVPixelFormat pixel_format) {
+    bool utils::compatible_with_pixel_format(AVCodec* codec, AVPixelFormat pixel_format) { //TODO не работает на неоткрытом кодеке (открывать и закрывать сразу?)
+        if (codec->id != AV_CODEC_ID_H264) {
+            static_log_warning("utils", "compatible_with_pixel_format doesn't work with " << avcodec_get_name(codec->id));
+            return true;
+        }
         AVPixelFormat h264_pxl_fmts[] = {
             AV_PIX_FMT_YUV420P
             , AV_PIX_FMT_YUVJ420P
@@ -126,21 +130,11 @@ namespace fpp {
             , AV_PIX_FMT_NV20LE
             , AV_PIX_FMT_GRAY8
             , AV_PIX_FMT_GRAY10LE
+            , AV_PIX_FMT_NONE
         };
 
-        auto pix_fmt = codec->pix_fmts;
+        auto pix_fmt = h264_pxl_fmts;
 
-        if (not_inited_ptr(pix_fmt)) {
-            static_log_error("utils", codec->name << " doesn't contain any default pixel format");
-
-            if (codec->id == AV_CODEC_ID_H264) {
-                static_log_error("utils", "Using hardcoded pix_fmts");
-                pix_fmt = h264_pxl_fmts;
-            } else {
-                static_log_error("utils", "Don't know what to do :(");
-                return true;
-            }
-        }
         while (pix_fmt[0] != AV_PIX_FMT_NONE) {
             if (pix_fmt[0] == pixel_format) { return true; }
             pix_fmt++;
@@ -157,7 +151,7 @@ namespace fpp {
         return false;
     }
 
-    AVMediaType utils::ymedia_type_to_avmedia_type(MediaType media_type) {
+    AVMediaType utils::mediatype_to_avmediatype(MediaType media_type) {
         switch (media_type) {
         case MediaType::MEDIA_TYPE_UNKNOWN:
             return AVMEDIA_TYPE_UNKNOWN;
@@ -165,8 +159,10 @@ namespace fpp {
             return AVMEDIA_TYPE_VIDEO;
         case MediaType::MEDIA_TYPE_AUDIO:
             return AVMEDIA_TYPE_AUDIO;
+        case MediaType::MEDIA_TYPE_EOF:
+            return AVMEDIA_TYPE_DATA;
         }
-        throw Exception("");
+        throw Exception("1646");
     }
 
     int64_t utils::gen_uid() {
