@@ -60,10 +60,10 @@ namespace fpp {
         for (auto& [input_file_name, start_point, end_point] : _concat_list) {
             log_debug("File: " << input_file_name << ", "
                       << "from " << (start_point == FROM_START ? "start " : std::to_string(start_point) + " ms ")
-                      << "to " << (end_point == FROM_START ? "end" : std::to_string(end_point) + " ms "));
+                      << "to " << (end_point == TO_END ? "end" : std::to_string(end_point) + " ms "));
             file_crutch3 << "File: " << input_file_name << ", "
-                         << "from " << (start_point == FROM_START ? "start " : std::to_string(start_point) + " ms ")
-                         << "to " << (end_point == FROM_START ? "end" : std::to_string(end_point) + " ms ") << std::endl;
+                         << "from " << (start_point == FROM_START ? "start " : utils::time_to_string(start_point, DEFAULT_TIME_BASE) + " ms ")
+                         << "to " << (end_point == TO_END ? "end" : utils::time_to_string(end_point, DEFAULT_TIME_BASE) + " ms ") << std::endl;
 
             MediaSource input_file(input_file_name);
             try_to(input_file.init());
@@ -85,7 +85,7 @@ namespace fpp {
 
             old_out_duration = out_duration;
 
-            file_crutch2 << "out_duration = " << out_duration << '\n';
+            file_crutch2 << "out_duration = " << utils::time_to_string(out_duration, DEFAULT_TIME_BASE) << '\n';
 
             log_error(i++ << " ===========================================================");
         }

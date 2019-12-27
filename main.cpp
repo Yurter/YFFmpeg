@@ -34,14 +34,14 @@ void concatenator_debug_timlapse_event() {
     #define MINUTE * 60 SECOND
 
     Concatenator concatenator("debug_files/concatenator_debug_timlapse_event.flv", {
-//        { "timelapse.flv", FROM_START, TML(40 SECOND) }         /* 10 сек */
-         { "event.flv", (40 SECOND), (50 SECOND) }             /* 10 сек */
-//        , { "timelapse.flv", TML(11 MINUTE), TML(15 MINUTE) }   /*  4 сек */
-//        , { "event.flv", (15 MINUTE), (16 MINUTE) }             /*  1 мин */
-//        , { "timelapse.flv", TML(16 MINUTE), TML(23 MINUTE) }   /*  7 сек */
-//        , { "event.flv", (23 MINUTE), (24 MINUTE) }             /*  1 мин */
-//        , { "timelapse.flv", TML(24 MINUTE), TO_END }           /*  ? сек */
-                                                        /* Итого: ? мин ? сек + */
+        { "timelapse.flv", FROM_START, TML(40 SECOND) }         /* 10 сек */
+        , { "event.flv", (40 SECOND), (45 SECOND) }             /*  5 сек */
+        , { "timelapse.flv", TML(45 SECOND), TML(85 SECOND) }   /* 10 сек */
+        , { "event.flv", (85 SECOND), (90 SECOND) }             /*  5 мин */
+        , { "timelapse.flv", TML(90 SECOND), TML(110 SECOND) }  /*  5 сек */
+        , { "event.flv", (110 SECOND), (115 SECOND) }           /*  5 мин */
+        , { "timelapse.flv", TML(115 SECOND), TO_END }          /*  2 сек */
+                                                        /* Итого: 0 мин 42 сек + */
     });
 //    Concatenator concatenator("debug_files/concatenator_debug_timlapse_event.flv", {
 //        { "timelapse.flv", FROM_START, TML(10 MINUTE) }         /* 10 сек */

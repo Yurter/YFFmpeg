@@ -67,7 +67,7 @@ namespace fpp {
 //        log_error(">> stamptype: " << int(stampType()));
     }
 
-    Code Stream::stampPacket(Packet& packet) {
+    Code Stream::stampPacket(Packet& packet) { //TODO разобраться с _prev_dts/_prev_pts использовать _cur_dts ?
         switch (_stamp_type) {
         case StampType::Copy:
             packet.setDuration(packet.pts() - _prev_pts);
@@ -157,7 +157,6 @@ namespace fpp {
             auto new_pts = packet.pts() + _pts_offset;
             auto new_dts = packet.dts() + _dts_offset;
             _packet_duration = new_pts - _prev_pts;
-            log_warning(_packet_duration);
             _packet_dts_delta = _packet_duration;
             _packet_pts_delta = _packet_duration;
             packet.setDts(new_dts);
