@@ -30,11 +30,12 @@ void concatenator_debug_simple() {
 
 void concatenator_debug_timlapse_event() {
     #define TML(x) (x) / 4
-    #define MINUTE * 60'000
+    #define SECOND * 1'000
+    #define MINUTE * 60 SECOND
 
     Concatenator concatenator("debug_files/concatenator_debug_timlapse_event.flv", {
-        { "timelapse.flv", FROM_START, TML(8 MINUTE) }          /* 2 мин */
-//        , { "event.flv", (10 MINUTE), (11 MINUTE) }             /*  1 мин */
+//        { "timelapse.flv", FROM_START, TML(40 SECOND) }         /* 10 сек */
+         { "event.flv", (40 SECOND), (50 SECOND) }             /* 10 сек */
 //        , { "timelapse.flv", TML(11 MINUTE), TML(15 MINUTE) }   /*  4 сек */
 //        , { "event.flv", (15 MINUTE), (16 MINUTE) }             /*  1 мин */
 //        , { "timelapse.flv", TML(16 MINUTE), TML(23 MINUTE) }   /*  7 сек */
@@ -309,23 +310,23 @@ int main() {
 //        return 0;
 //    }
 
-//    {
-//        set_log_level(LogLevel::Debug);
-//        concatenator_debug_timlapse_event();
-//        return 0;
-//    }
+    {
+        set_log_level(LogLevel::Debug);
+        concatenator_debug_timlapse_event();
+        return 0;
+    }
 
 //    {
 //        timer_debug();
 //        return 0;
 //    }
 
-    {
-        set_log_level(LogLevel::Debug);
-        set_ffmpeg_log_level(LogLevel::Quiet);
-        write_video_from_camera();
-        return 0;
-    }
+//    {
+//        set_log_level(LogLevel::Debug);
+//        set_ffmpeg_log_level(LogLevel::Quiet);
+//        write_video_from_camera();
+//        return 0;
+//    }
 
 //    {
 //        set_log_level(LogLevel::Debug);

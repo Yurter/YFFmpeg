@@ -139,3 +139,5 @@ namespace fpp {
 /* ? */
 #define code_pos std::string(__FUNCTION__) + ", line: " + std::to_string(__LINE__)
 //#define current_time
+
+#define WATCH(x) #x": " << x

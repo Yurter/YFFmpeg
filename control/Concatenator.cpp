@@ -77,7 +77,7 @@ namespace fpp {
             input_file.join();
             try_to(input_file.disconnectFrom(output_file));
 
-            out_duration = output_file->stream(0)->params->duration(DEFAULT_TIME_BASE);
+            out_duration = av_rescale_q(output_file->stream(0)->params->duration(), output_file->stream(0)->params->timeBase(), DEFAULT_TIME_BASE);
 
             file_crutch << input_file_name << '\t'
                         << old_out_duration << '\t'

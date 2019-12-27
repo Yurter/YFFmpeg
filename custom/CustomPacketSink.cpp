@@ -43,8 +43,8 @@ namespace fpp {
         stopWait();
         try_to(stop());
         log_info("Destination \"" << _sink_name << "\" closed, " //TODO метод отрабатывает дважды: из деструктора и из онСтоп
-                 << utils::msec_to_time(stream(0)->params->duration(DEFAULT_TIME_BASE)));
-        if (stream(0)->params->duration(DEFAULT_TIME_BASE) == 0) {
+                 << utils::time_to_string(stream(0)->params->duration(), stream(0)->params->timeBase()));
+        if (stream(0)->params->duration() == 0) {
             log_warning('"' << _sink_name << "\" closed empty!");
         }
         setOpened(false);

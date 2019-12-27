@@ -45,7 +45,7 @@ namespace fpp {
     }
 
     Code CodecContext::open() {
-        return_if(opened(), Code::INVALID_CALL_ORDER);
+        return_if(opened(), Code::OK);
         log_debug("Opening");
         AVCodec* codec = nullptr;
         switch (_type) { //TODO ref

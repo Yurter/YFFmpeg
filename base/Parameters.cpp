@@ -120,7 +120,7 @@ namespace fpp {
     }
 
     int64_t Parameters::duration() const {
-         return av_rescale_q(_duration, timeBase(), time_base);
+         return _duration;
     }
 
     int64_t Parameters::streamIndex() const {
@@ -148,7 +148,7 @@ namespace fpp {
         str += codecName() + ", ";
         str += utils::codec_type_to_string(codecType()) + ", ";
         str += "bit/s " + std::to_string(bitrate()) + ", ";
-        str += "dur " + std::to_string(duration(DEFAULT_TIME_BASE)) + ", ";
+        str += "dur " + std::to_string(duration()) + ", ";
         str += "tb " + utils::rational_to_string(timeBase());
         return str;
     }

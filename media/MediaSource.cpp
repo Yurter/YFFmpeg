@@ -50,7 +50,7 @@ namespace fpp {
         stopWait(); //TODO костыль?
         try_to(_input_format_context.close());
         log_info("Source \"" << _input_format_context.mediaResourceLocator() << "\" closed, "
-                 << utils::msec_to_time(stream(0)->params->duration(DEFAULT_TIME_BASE)));
+                 << utils::time_to_string(stream(0)->params->duration(), stream(0)->params->timeBase()));
         setOpened(false);
         return Code::OK;
     }
@@ -94,19 +94,21 @@ namespace fpp {
             stream(input_data.streamIndex())->determineStampType(input_data);
         }
 
+//        log_warning("1] " << input_data);
         try_to(stream(input_data.streamIndex())->stampPacket(input_data));
 
         if (inputDataCount() == 0) { //TODO нуженл ли этот лог?
             log_debug("Read from "
                       << (stream(input_data.streamIndex())->startTimePoint() == FROM_START
                           ? "start"
-                          : utils::msec_to_time(stream(input_data.streamIndex())->startTimePoint()))
+                          : utils::time_to_string(stream(input_data.streamIndex())->startTimePoint(), stream(input_data.streamIndex())->params->timeBase())) //TODO кривой код
                       << ", first packet: " << input_data);
         }
 
         if (stream(input_data.streamIndex())->packetIndex() == 1) {
             log_warning("IN : " << input_data);
         }
+//        log_warning("2] " << input_data << "\n");
 
         return sendOutputData(input_data);
     }

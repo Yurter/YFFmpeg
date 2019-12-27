@@ -36,7 +36,7 @@ namespace fpp {
     }
 
     Code InputFormatContext::seek(int64_t stream_index, int64_t timestamp, SeekPrecision seek_precision) {
-        return_if(timestamp == stream(stream_index)->params->duration(DEFAULT_TIME_BASE), Code::OK);
+        return_if(timestamp == av_rescale_q(stream(stream_index)->params->duration(), stream(stream_index)->params->timeBase(), DEFAULT_TIME_BASE), Code::OK); //TODO кривой код
         int flags = 0;
         switch (seek_precision) {
         case SeekPrecision::Forward:
@@ -53,9 +53,9 @@ namespace fpp {
         }
         auto ret = av_seek_frame(_format_context, int(stream_index), timestamp, flags);
         return_error_if(ret != 0
-                        , "Failed to seek timestamp " << utils::msec_to_time(timestamp) << " in stream " << stream_index
+                        , "Failed to seek timestamp " << utils::time_to_string(timestamp, DEFAULT_TIME_BASE) << " in stream " << stream_index
                         , Code::FFMPEG_ERROR);
-        log_info("Success seek to " << utils::msec_to_time(timestamp));
+        log_info("Success seek to " << utils::time_to_string(timestamp, DEFAULT_TIME_BASE));
         return Code::OK;
     }
 

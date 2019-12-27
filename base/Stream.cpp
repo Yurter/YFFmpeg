@@ -64,7 +64,7 @@ namespace fpp {
         } else {
             setStampType(StampType::Copy);
         }
-        log_error(">> stamptype: " << int(stampType()));
+//        log_error(">> stamptype: " << int(stampType()));
     }
 
     Code Stream::stampPacket(Packet& packet) {
@@ -157,12 +157,15 @@ namespace fpp {
             auto new_pts = packet.pts() + _pts_offset;
             auto new_dts = packet.dts() + _dts_offset;
             _packet_duration = new_pts - _prev_pts;
+            log_warning(_packet_duration);
             _packet_dts_delta = _packet_duration;
             _packet_pts_delta = _packet_duration;
             packet.setDts(new_dts);
             packet.setPts(new_pts);
             packet.setDuration(_packet_duration);
             packet.setTimeBase(params->timeBase());
+            _prev_dts = new_dts;
+            _prev_pts = new_pts;
             break;
         }
         default:
@@ -177,11 +180,12 @@ namespace fpp {
 
     bool Stream::timeIsOver() const {
         const auto planned_duration = _end_time_point - _start_time_point;
-        const auto actual_duration = params->duration(DEFAULT_TIME_BASE);
+        const auto actual_duration = av_rescale_q(params->duration(), params->timeBase(), DEFAULT_TIME_BASE);
         if (actual_duration >= planned_duration) {
-            log_debug("Time is over: " << utils::msec_to_time(actual_duration));
+            log_debug("Time is over: " << utils::time_to_string(actual_duration, DEFAULT_TIME_BASE));
             return true;
         }
+//        log_warning(planned_duration << " " << actual_duration << " " << params->duration());
         return false;
     }
 
