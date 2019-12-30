@@ -7,20 +7,6 @@
 
 namespace fpp {
 
-struct StampContext {
-    int64_t             _prev_dts;
-    int64_t             _prev_pts;
-    int64_t             _packet_index;
-
-    int64_t             _packet_dts_delta;
-    int64_t             _packet_pts_delta;
-    int64_t             _packet_duration;
-
-    int64_t             _pts_offset = 0;
-    int64_t             _dts_offset = 0;
-    вот сюда все перенести и передавать в методе штампа для ? или нет.. если произойдет склеивание цепочек - это не сработает..
-};
-
     //TODO
     class Processor;
     using ProcessorPointer = std::shared_ptr<Processor>;
