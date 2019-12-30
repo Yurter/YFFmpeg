@@ -89,9 +89,9 @@ namespace fpp {
     }
 
     Code MediaSink::writeOutputData(Packet output_data) {
-//        log_warning("OUT: " << output_data);
+        log_warning(uid() << " OUT: " << output_data);
         if (stream(output_data.streamIndex())->packetIndex() == 1) {
-            log_warning("OUT : " << output_data);
+//            log_warning("OUT : " << output_data);
         }
         try_to(_output_format_context.write(output_data));
         return Code::OK;

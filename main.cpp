@@ -259,6 +259,7 @@ void write_video_from_camera() {
     }
 
     utils::sleep_for_sec(5);
+    static_log_error("", "--------------------------------------------------------------------------");
 
     ProcessorPointer sink_event_2 = std::make_shared<MediaSink>("debug_files/event_2.flv", IOType::Event);
     if (auto ret = pipeline->addElement(sink_event_2); ret != fpp::Code::OK) {

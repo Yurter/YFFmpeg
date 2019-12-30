@@ -107,7 +107,7 @@ namespace fpp {
         }
 
         if (stream(input_data.streamIndex())->packetIndex() == 1) {
-            log_warning("IN : " << input_data);
+//            log_warning("IN : " << input_data);
         }
 //        log_warning("2] " << input_data << "\n");
 

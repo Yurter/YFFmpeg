@@ -115,7 +115,6 @@ namespace fpp {
 /* Значения по умолчанию для видео- и аудиопараметров */ //TODO по умолчанию невалидные, добавить по умолчанию валидные
 #define INVALID_INT             -1
 #define DEFAULT_INT             0
-//#define DEFAULT_UINT            0 //TODO ?
 #define DEFAULT_FLOAT           0.f
 #define DEFAULT_STRING          "none"
 #define DEFAULT_RATIONAL        AVRational({ 0, 1 })

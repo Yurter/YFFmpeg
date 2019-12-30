@@ -54,7 +54,7 @@ namespace fpp {
         return str;
     }
 
-    void Stream::determineStampType(const Packet& packet) {
+    void Stream::determineStampType(const Packet& packet) { //TODO: перенести в сорс, т.к. только в нем изменяется дефолтный тип штампа
         if (packet.pts() != 0) { /* Требуется перештамповывать пакеты */
             if (_start_time_point == FROM_START) { /* Чтение из источника, передающего пакеты не с начала */
                 setStampType(StampType::Realtime);
@@ -67,6 +67,9 @@ namespace fpp {
     }
 
     Code Stream::stampPacket(Packet& packet) {
+//        if (params->streamUid() == 500) {
+//            setName(name());
+//        }
         switch (_stamp_type) {
         case StampType::Copy:
             _packet_duration = packet.pts() - _prev_pts;
@@ -86,6 +89,12 @@ namespace fpp {
                 _packet_duration = av_rescale_q(duration_ms, DEFAULT_TIME_BASE, params->timeBase());
             }
 
+            if (_packet_index == 0) { //TODO костыль
+                packet.setDts(0);
+                packet.setPts(0);
+                break;
+            }
+
             _packet_dts_delta = _packet_duration;
             _packet_pts_delta = _packet_duration;
 
@@ -98,17 +107,25 @@ namespace fpp {
             packet.setDts(av_rescale_q(packet.dts(), packet.timeBase(), params->timeBase()));
             packet.setPts(av_rescale_q(packet.pts(), packet.timeBase(), params->timeBase()));
 
+            if (packetIndex() == 0) {
+                _pts_offset = -packet.pts();
+                _dts_offset = -packet.dts();
+                log_error("OFFSET: " << _pts_offset);
+            }
+
             /* Пересчет с учетом смещения */
             auto new_pts = packet.pts() + _pts_offset;
             auto new_dts = packet.dts() + _dts_offset;
 
             /* Проверка на начало новой последовательности пакетов */
-            if (new_pts <= _prev_pts) {
-                auto offset = av_rescale_q(params->duration(), params->timeBase(), packet.timeBase());
+            if (new_pts < _prev_pts) {
+//                auto offset = av_rescale_q(params->duration(), params->timeBase(), packet.timeBase());
+                auto offset = params->duration();
                 _pts_offset = offset;
                 _dts_offset = offset;
                 new_pts = packet.pts() + _pts_offset;
                 new_dts = packet.dts() + _dts_offset;
+                log_error("new_pts < _prev_pts: " << new_pts << " " << offset);
             }
 
             /* Расчет длительности пакета */
@@ -141,6 +158,7 @@ namespace fpp {
         packet.setPos(-1);
         packet.setDuration(_packet_duration);
         packet.setTimeBase(params->timeBase());
+        packet.setStreamUid(params->streamUid());
         params->increaseDuration(packet.duration());
         _prev_dts = packet.dts();
         _prev_pts = packet.pts();

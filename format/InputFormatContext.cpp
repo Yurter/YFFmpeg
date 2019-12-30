@@ -137,11 +137,8 @@ namespace fpp {
 
     void InputFormatContext::initPacket(Packet& packet) {
         auto packet_stream = stream(packet.streamIndex());
-//        return_if(not_inited_ptr(packet_stream), Code::AGAIN);
-//        return_if_not(packet_stream->used(), Code::AGAIN);
         packet.setType(packet_stream->type());
         packet.setStreamUid(packet_stream->params->streamUid());
-//        return Code::OK;
     }
 
 } // namespace fpp
