@@ -127,6 +127,7 @@ namespace fpp {
         }
 
         void stop_wait() {
+            std::lock_guard<std::mutex> lock(this->_mutex);
             _stop_wait = true;
             _condition_variable_pushed.notify_one();
             _condition_variable_popped.notify_one();
