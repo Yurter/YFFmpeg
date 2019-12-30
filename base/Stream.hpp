@@ -12,14 +12,21 @@ namespace fpp {
     using ProcessorPointer = std::shared_ptr<Processor>;
 
     enum class StampType {
-        ConstantFramerate,
-        VariableFramerate,
+        /* Штампы сорса */
         Copy,
-        Append,
-        Rescale,
         Realtime,
-        Offset,
+        /* Штампы синка */
+        Rescale,
     };
+//    enum class StampType {
+////        ConstantFramerate,
+////        VariableFramerate,
+//        Copy,
+////        Append,
+//        Rescale,
+//        Realtime,
+////        Offset,
+//    };
 
     class Stream : public Data<AVStream*> {
 
