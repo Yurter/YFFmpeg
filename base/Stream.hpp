@@ -15,17 +15,18 @@ namespace fpp {
         /* Штампы сорса */
         Copy,
         Realtime,
+        Offset,
         /* Штампы синка */
         Rescale,
     };
 //    enum class StampType {
-////        ConstantFramerate,
-////        VariableFramerate,
+//        ConstantFramerate,
+//        VariableFramerate,
 //        Copy,
-////        Append,
+//        Append,
 //        Rescale,
 //        Realtime,
-////        Offset,
+//        Offset,
 //    };
 
     class Stream : public Data<AVStream*> {

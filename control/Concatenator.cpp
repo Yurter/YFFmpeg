@@ -25,7 +25,7 @@ namespace fpp {
         ProcessorPointer output_file = std::make_shared<MediaSink>(_output_file_name, IOType::Event); /* crutch: preset */
         try_to(output_file->init());
 
-        output_file->stream(0)->setStampType(StampType::Append);
+//        output_file->stream(0)->setStampType(StampType::Append);
         output_file->setDiscardType(MediaType::MEDIA_TYPE_EOF);
 
 //        log_debug("OUT UID: " << output_file->stream(0)->params->streamUid());

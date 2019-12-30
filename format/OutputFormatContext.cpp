@@ -28,7 +28,7 @@ namespace fpp {
             video_parameters->setGopSize(2);
             video_parameters->setTimeBase(DEFAULT_TIME_BASE);
             try_to(createStream(video_parameters));
-            stream(0)->setStampType(StampType::Rescale);
+//            stream(0)->setStampType(StampType::Rescale);
             /* Audio */
             // Временно без звука
             break;
@@ -79,7 +79,7 @@ namespace fpp {
 //            video_parameters->setContextUid(uid());
 			video_parameters->setGopSize(2);
             try_to(createStream(video_parameters));
-            stream(0)->setStampType(StampType::Rescale);
+//            stream(0)->setStampType(StampType::Rescale);
 //            stream(0)->setStampType(StampType::Convert);
 //            stream(0)->setStampType(StampType::ConstantFramerate);
             break;
