@@ -122,11 +122,17 @@ namespace fpp {
 
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
-            return_if(discardType(input_data.type()), Code::AGAIN);
+//            return_if(discardType(input_data.type()), Code::AGAIN);
+            if (discardType(input_data.type())) {
+                increaseDiscardedDataCount();
+                return Code::AGAIN;
+            }
 
             if (_start_data_pred) {
-                Code ret = _start_data_pred(input_data);
-                return_if(ret == Code::AGAIN, ret);
+                if (Code ret = _start_data_pred(input_data); ret == Code::AGAIN) {
+                    increaseDiscardedDataCount();
+                    return ret;
+                }
                 _start_data_pred = nullptr;
             }
 

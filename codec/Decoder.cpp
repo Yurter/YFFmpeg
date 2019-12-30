@@ -4,9 +4,12 @@ namespace fpp {
 
     Decoder::Decoder(const IOParams params) :
         _decoder_context(params)
-      , _got_first_key_frame(false)
     {
         setName("Decoder");
+        try_throw(setStartDataPred([](const Packet& packet){
+            return_if_not(packet.keyFrame(), Code::AGAIN);
+            return Code::OK;
+        }));
     }
 
     Decoder::~Decoder() {
@@ -35,14 +38,6 @@ namespace fpp {
     }
 
     Code Decoder::processInputData(Packet input_data) {
-        if_not(_got_first_key_frame) { //TODO костыль?
-            if_not(input_data.keyFrame()) {
-                increaseDiscardedDataCount();
-                return Code::AGAIN;
-            } else {
-                _got_first_key_frame = true;
-            }
-        }
         Frame decoded_frame;
         Code ret = _decoder_context.decode(input_data, decoded_frame);
         return_if(utils::exit_code(ret), ret);
