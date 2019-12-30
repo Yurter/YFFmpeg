@@ -14,6 +14,7 @@ namespace fpp {
         virtual std::string toString() const override;
 
         Code                write(Packet packet, ReadWriteMode write_mode = ReadWriteMode::Instant);
+        Code                flush();
 
     private:
 

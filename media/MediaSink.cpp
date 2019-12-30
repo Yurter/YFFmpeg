@@ -5,7 +5,6 @@ namespace fpp {
 
     MediaSink::MediaSink(const std::string mrl, IOType preset) :
         _output_format_context(mrl, preset)
-      , _flush_timeout_ms(INVALID_INT)
     {
         setName("MediaSink");
     }
@@ -30,6 +29,13 @@ namespace fpp {
         log_info(_output_format_context.mediaResourceLocator() << "\" is opening...");
         try_to(_output_format_context.open());
         log_info(_output_format_context.mediaResourceLocator() << "\" opened");
+//        _flush_timer.setInterval([&](){ //НЕ УДАЛЯТЬ
+//            Code ret = _output_format_context.flush();
+//            if (utils::exit_code(ret)) {
+//                return;
+//            }
+//            log_debug("Flushed");
+//        }, 5 * 60'000);
         setOpened(true);
         return Code::OK;
     }
@@ -71,14 +77,6 @@ namespace fpp {
         return &_output_format_context;
     }
 
-    void MediaSink::setFlushTimeout(int64_t msec) {
-        if (msec < 0) {
-            log_warning("Cannot set flush timeout less then zero: " << msec << ", ignored");
-            return;
-        }
-        _flush_timeout_ms = msec;
-    }
-
     Code MediaSink::processInputData(Packet input_data) {
         if (input_data.isVideo()) { //Debug if
             try_to(_output_format_context.stream(input_data.streamIndex())->stampPacket(input_data));
@@ -89,7 +87,6 @@ namespace fpp {
     }
 
     Code MediaSink::writeOutputData(Packet output_data) {
-        if (uid() == 4) log_warning(uid() << " OUT: " << output_data);
         if (stream(output_data.streamIndex())->packetIndex() == 1) {
 //            log_warning("OUT : " << output_data);
         }

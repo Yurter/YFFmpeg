@@ -133,6 +133,16 @@ namespace fpp {
         return Code::OK;
     }
 
+    Code OutputFormatContext::flush() { //TODO не потокобезопасный метод - заменить на добавление пустого пакета? тип пакета FLUSH ? для кодеков и фильтров тоже
+        return_error_if(closed()
+                        , "Failed to flush closed output context"
+                        , Code::INVALID_CALL_ORDER);
+        return_error_if(av_write_frame(mediaFormatContext(), nullptr) < 0
+                        , "Flush failed"
+                        , Code::FFMPEG_ERROR);
+        return Code::OK;
+    }
+
     Code OutputFormatContext::createContext() {
         return_error_if(inited_ptr(_format_context)
                         , "Context already created!"
@@ -149,23 +159,15 @@ namespace fpp {
 
     Code OutputFormatContext::openContext() {
         return_if_not(inited(), Code::NOT_INITED);
-        /*log_info("Destination: \"" << _media_resource_locator << "\" is opening...");*/ //перенесено в медиасинк
         if (_streams.empty()) {
             log_error("No streams to mux were specified: " << _media_resource_locator);
             return Code::NOT_INITED;
         } else {
-//            for (int64_t i = 0; i < _format_context->nb_streams; i++) {
-//                AVStream* avstream = _format_context->streams[i];
-//                if (not_inited_codec_id(avstream->codecpar->codec_id)) {
-//                    utils::parameters_to_avcodecpar(stream(avstream->id)->parameters, avstream->codecpar);
-//                }
-//            }
             for (auto&& avstream : streams()) {
                 if (not_inited_codec_id(avstream->raw()->codecpar->codec_id)) {
                     utils::parameters_to_avcodecpar(avstream->params, avstream->raw()->codecpar);
                 }
                 try_to(avstream->init());
-//                log_error("!!!! > " << avstream->raw()->time_base << " : " << avstream->params->timeBase());
             }
         }
         if (!(_format_context->flags & AVFMT_NOFILE)) {
