@@ -6,6 +6,10 @@ namespace fpp {
     {
         setName("PacketSink");
         setType(ProcessorType::Output);
+        try_throw(setStartDataPred([](const Packet& packet) {
+            return_if_not(packet.keyFrame(), Code::AGAIN);
+            return Code::OK;
+        }));
         try_throw(setPostFunction(std::bind(&PacketSink::writePacket, this)));
     }
 

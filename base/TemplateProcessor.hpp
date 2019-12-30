@@ -14,6 +14,7 @@ namespace fpp {
         using IOFunction = std::function<Code(void)>;
         using WriteFunction = std::function<Code(outType&)>;
         using ProcessFunction = std::function<Code(outType&)>;
+        using DataVerification = std::function<Code(const inType&)>;
         using InputQueue = AsyncQueue<inType>;
         using OutputQueue = AsyncQueue<outType>;
 
@@ -54,6 +55,12 @@ namespace fpp {
         virtual Code processInputData(inType input_data) = 0;
         virtual Code readInputData(inType& input_data) { UNUSED(input_data); return Code::NOT_IMPLEMENTED; }
         virtual Code writeOutputData(outType output_data) { UNUSED(output_data); return Code::NOT_IMPLEMENTED; }
+
+        Code setStartDataPred(const DataVerification&& pred) {
+            return_if_not(pred, Code::ERR);
+            _start_data_pred = pred;
+            return Code::OK;
+        }
 
         Code setPreFunction(const IOFunction pre_function) {
             return_if_not(pre_function, Code::ERR);
@@ -97,26 +104,13 @@ namespace fpp {
         }
 
         Code sendEof() {
-            log_error("Sending EOF");
+            log_error("Sending EOF"); //TODO удалить отладночный лог
             log_debug("Sending EOF");
             outType eof;
             eof.setType(MediaType::MEDIA_TYPE_EOF);
             try_to(sendOutputData(eof));
             return Code::OK;
         }
-//        Code sendEof() {
-//            log_debug("Sending EOF");
-//            outType eof;
-//            for (auto& stream : streams()) {
-//                if (stream->used()) {
-//                    eof.setType(stream->type());
-//                    eof.setStreamUid(stream->params->streamUid());
-//                    try_to(sendOutputData(eof));
-//                    stream->setUsed(false);
-//                }
-//            }
-//            return Code::OK;
-//        }
 
     private:
 
@@ -128,18 +122,18 @@ namespace fpp {
 
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
-
-//            if (this->is("MediaSource")) {
-//                log_error("input_data " << input_data.type() << " " << input_data);
-//            }
-
             return_if(discardType(input_data.type()), Code::AGAIN);
 
+            if (_start_data_pred) {
+                Code ret = _start_data_pred(input_data);
+                return_if(ret == Code::AGAIN, ret);
+                _start_data_pred = nullptr;
+            }
+
             if (input_data.typeIs(MediaType::MEDIA_TYPE_EOF)) {
-                log_error("Got EOF " << input_data.name());
+                log_error("Got EOF " << input_data.name()); //TODO удалить отладночный лог
                 log_debug("Got EOF " << input_data.name());
                 try_to(sendEof());
-//                try_to(sendOutputData(outType()));
                 return Code::END_OF_FILE;
             }
 
@@ -156,6 +150,8 @@ namespace fpp {
         }
 
     private:
+
+        DataVerification    _start_data_pred;
 
         IOFunction          _pre_function;
         IOFunction          _post_function;
