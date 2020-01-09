@@ -176,8 +176,11 @@ namespace fpp {
                 return Code::INVALID_INPUT;
             }
         }
-        if (avformat_write_header(_format_context, nullptr) < 0) {
-            log_error("Error occurred when opening output: " << _media_resource_locator);
+//        auto debug_valu1 = _format_context->streams[0]->codecpar;
+//        auto debug_value = _format_context->streams[1]->codecpar;
+//        log_warning("---> OUT " << streams()[1]->params->toString());
+        if (auto ret = avformat_write_header(_format_context, nullptr); ret < 0) {
+            log_error("Error occurred when opening output: " << _media_resource_locator << ", " << ret);
             return Code::ERR;
         }
         {

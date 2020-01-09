@@ -60,7 +60,7 @@ namespace fpp {
     std::string AudioParameters::toString() const {
         std::string str = Parameters::toString() + "; ";
         str += "smplr: " + std::to_string(sampleRate()) + ", ";
-        str += std::string(av_get_sample_fmt_name(sampleFormat())) + ", ";
+        str += utils::sample_format_to_string(sampleFormat()) + ", ";
         str += "chlt: " + std::to_string(channelLayout()) + ", ";
         str += "ch: " + std::to_string(channels());
         return str;

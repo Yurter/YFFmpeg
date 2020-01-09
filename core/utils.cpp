@@ -27,6 +27,20 @@ namespace fpp {
         return value ? "true" : "false";
     }
 
+    std::string utils::pixel_format_to_string(const AVPixelFormat value) {
+        const char* ret = av_get_pix_fmt_name(value);
+        return_if(not_inited_ptr(ret)
+                  , "NONE");
+        return std::string(ret);
+    }
+
+    std::string utils::sample_format_to_string(const AVSampleFormat value) {
+        const char* ret = av_get_sample_fmt_name(value);
+        return_if(not_inited_ptr(ret)
+                  , "NONE");
+        return std::string(ret);
+    }
+
     void utils::sleep_for(int64_t milliseconds) {
         std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
     }

@@ -12,7 +12,7 @@ namespace fpp {
         AudioStream(AVStream* stream, AudioParameters* param);
         virtual ~AudioStream() override = default;
 
-        Code               init() override;
+        Code                init() override;
 
         bool                operator>(const Stream& other) const override;
 

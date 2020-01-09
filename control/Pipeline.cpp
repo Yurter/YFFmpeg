@@ -140,7 +140,9 @@ namespace fpp {
 
         const IOParams params { input_stream->params, output_stream->params };
 
+        log_warning("11>> " << output_stream->params->toString());
         try_to(output_stream->params->completeFrom(input_stream->params));
+        log_warning("22>> " << output_stream->params->toString());
 
         input_stream->setUsed(true);
         output_stream->setUsed(true);
@@ -370,12 +372,13 @@ namespace fpp {
         return nullptr;
     }
 
-    Code Pipeline::determineSequence(const ProcessorPointer output_processor) {
+    Code Pipeline::determineSequence(const ProcessorPointer output_processor) { //TODO говнокод
         const auto& output_streams = output_processor->streams();
         if (output_streams.empty()) {
             log_error(output_processor->name() << " doesn't has any stream.");
             return Code::NOT_INITED;
         }
+        std::vector<Route> route_list;
         for (auto out_stream : output_streams) {
             Stream* in_stream = findBestInputStream(out_stream->type());
             if (not_inited_ptr(in_stream)) {
@@ -390,6 +393,10 @@ namespace fpp {
             try_to(route.setMetaRoute(in_stream->params->streamUid()
                                       , out_stream->params->streamUid()));
             try_to(createSequence(route));
+//            route.startAll();
+            route_list.push_back(route);
+        }
+        for (auto& route : route_list) { //Нельзя старттовать процессоры в папйлане, пока все потоки не образуют маршруты
             route.startAll();
         }
         return Code::OK;

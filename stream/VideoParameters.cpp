@@ -42,7 +42,7 @@ namespace fpp {
         _aspect_ratio = aspect_ratio;
     }
 
-//    void VideoParameters::setFrameRate(float frame_rate) {
+//    void VideoParameters::setFrameRate(float frame_rate) { //TODO сделать AVRational { frame_rate, 1 }, удалить?
 //        _frame_rate = frame_rate;
 //    }
 
@@ -106,7 +106,7 @@ namespace fpp {
         str += std::to_string(width()) + "x" + std::to_string(height()) + ", ";
         str += utils::rational_to_string(aspectRatio()) + ", ";
         str += utils::rational_to_string(frameRate()) + " fps" + ", ";
-        str += av_get_pix_fmt_name(pixelFormat());
+        str += utils::pixel_format_to_string(pixelFormat());
         return str;
     }
 

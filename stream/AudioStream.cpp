@@ -18,12 +18,10 @@ namespace fpp {
     Code AudioStream::init() //TODO
     {
         try_to(Stream::init());
-    //    int64_t duration = av_rescale_q(int64_t(1000 / parameters.frameRate())
-    //                        , {1, 1000}, timeBase());
-        int64_t duration = 23; //TODO
-        _packet_dts_delta = duration;
-        _packet_pts_delta = duration;
-        _packet_duration = duration;
+        auto video_parameers = dynamic_cast<AudioParameters*>(params);
+
+        return_if(not_inited_q(video_parameers->timeBase()),  Code::INVALID_INPUT);
+
         setInited(true);
         return Code::OK;
     }

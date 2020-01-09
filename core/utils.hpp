@@ -28,6 +28,9 @@ namespace fpp {
         static std::string  pts_to_string(int64_t pts);
         static std::string  bool_to_string(bool value);
 
+        static std::string  pixel_format_to_string(const AVPixelFormat value);
+        static std::string  sample_format_to_string(const AVSampleFormat value);
+
         static void         sleep_for(int64_t milliseconds);
         static void         sleep_for_ms(int64_t milliseconds);
         static void         sleep_for_sec(int64_t seconds);

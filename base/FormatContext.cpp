@@ -119,7 +119,7 @@ namespace fpp {
         case InterruptedProcess::None:
             return 0;
         case InterruptedProcess::Opening: {
-            int opening_timeout_ms = 5000;
+            int opening_timeout_ms = 5000; //TODO вынести константу
             if (interrupter->chronometer.elapsed_milliseconds() > opening_timeout_ms) {
                 static_log_error("interrupt_callback", "Opening timed out: " << opening_timeout_ms);
                 return 1;
@@ -189,6 +189,7 @@ namespace fpp {
                 audio_parameters->setStreamIndex(i);
                 audio_parameters->setTimeBase(avstream->time_base);
 //                audio_parameters->setContextUid(uid());
+                log_warning("---> IN " << audio_parameters->toString());
                 try_to(createStream(new AudioStream(avstream, audio_parameters)));
                 break;
             }
