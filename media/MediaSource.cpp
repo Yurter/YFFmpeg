@@ -6,7 +6,6 @@ namespace fpp {
         _input_format_context(mrl, preset)
     {
         setName("MediaSource");
-        setDiscardType(MediaType::MEDIA_TYPE_AUDIO); //TODO
     }
 
     MediaSource::~MediaSource() {
@@ -32,11 +31,6 @@ namespace fpp {
             for (auto&& avstream : streams()) { //TODO
                 try_to(avstream->init());
             }
-//            if (_start_time_point != FROM_START) {
-//                for (auto& stream : streams()) {
-//                    try_to(_input_format_context.seek(stream->index(), _start_time_point));
-//                }
-//            }
         }
         setOpened(true);
         return Code::OK;
@@ -91,11 +85,12 @@ namespace fpp {
 
     Code MediaSource::processInputData(Packet input_data) {
         if (stream(input_data.streamIndex())->packetIndex() == 0) { //TODO костыль? каждый раз проверяет.. -> перенести в онСтарт - раз прочитать пакеты из каждого потока
+            if (input_data.isAudio()) {
+                log_warning("AUDIO: " << input_data);
+            }
             stream(input_data.streamIndex())->determineStampType(input_data);
-            utils::sleep_for_ms(500); //debug пауза рассинхронного старта
         }
 
-//        log_warning("1] " << input_data);
         try_to(stream(input_data.streamIndex())->stampPacket(input_data));
 
         if (inputDataCount() == 0) { //TODO нуженл ли этот лог?
@@ -105,11 +100,6 @@ namespace fpp {
                           : utils::time_to_string(stream(input_data.streamIndex())->startTimePoint(), stream(input_data.streamIndex())->params->timeBase())) //TODO кривой код
                       << ", first packet: " << input_data);
         }
-
-        if (stream(input_data.streamIndex())->packetIndex() == 1) {
-//            log_warning("IN : " << input_data);
-        }
-//        log_warning("2] " << input_data << "\n");
 
         return sendOutputData(input_data);
     }

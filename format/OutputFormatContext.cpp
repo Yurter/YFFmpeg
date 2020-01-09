@@ -30,8 +30,9 @@ namespace fpp {
             try_to(createStream(video_params));
             /* Audio */
             auto audio_params = new AudioParameters(); //TODO memory leak
-//            audio_params->setCodec("libx264", CodecType::Encoder);
+            audio_params->setCodec("mp3", CodecType::Encoder);
             audio_params->setTimeBase(DEFAULT_TIME_BASE);
+            audio_params->setSampleRate(44'100);
             try_to(createStream(audio_params));
             break;
         }

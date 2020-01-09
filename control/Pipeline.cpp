@@ -140,9 +140,7 @@ namespace fpp {
 
         const IOParams params { input_stream->params, output_stream->params };
 
-        log_warning("11>> " << output_stream->params->toString());
         try_to(output_stream->params->completeFrom(input_stream->params));
-        log_warning("22>> " << output_stream->params->toString());
 
         input_stream->setUsed(true);
         output_stream->setUsed(true);

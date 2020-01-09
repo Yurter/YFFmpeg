@@ -79,13 +79,31 @@ namespace fpp {
     }
 
     Code MediaSink::processInputData(Packet input_data) {
-        if (input_data.isVideo()) { //Debug if
-            try_to(_output_format_context.stream(input_data.streamIndex())->stampPacket(input_data));
-        }
-//        log_warning(input_data);
+//        if (input_data.isAudio()) {
+//            log_warning("stamp 1: " << input_data);
+//        }
+        try_to(_output_format_context.stream(input_data.streamIndex())->stampPacket(input_data));
+
+//        if (input_data.isAudio()) {
+//            log_warning("stamp 2: " << input_data);
+//        }
         try_to(storeOutputData(input_data));
         return Code::OK;
     }
+//    Code MediaSink::processInputData(Packet input_data) {
+//        if (input_data.isAudio()) {
+//            log_warning("stamp 1: " << input_data);
+//        }
+//        if (input_data.isVideo()) { //Debug if
+//            try_to(_output_format_context.stream(input_data.streamIndex())->stampPacket(input_data));
+//        }
+
+//        if (input_data.isAudio()) {
+//            log_warning("stamp 2: " << input_data);
+//        }
+//        try_to(storeOutputData(input_data));
+//        return Code::OK;
+//    }
 
     Code MediaSink::writeOutputData(Packet output_data) {
         if (stream(output_data.streamIndex())->packetIndex() == 1) {

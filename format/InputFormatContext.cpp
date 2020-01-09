@@ -70,6 +70,11 @@ namespace fpp {
                             , "Cannot read source: \"" << mediaResourceLocator() << "\". "
                             , Code::FFMPEG_ERROR);
             initPacket(packet);
+//            if (packet.isAudio()) {
+//                log_warning("packet: " << packet);
+//                log_warning("params: " << stream(packet.streamIndex())->params->toString());
+//                log_warning("");
+//            }
             return Code::OK;
         }
         case ReadWriteMode::Interleaved:
@@ -139,6 +144,7 @@ namespace fpp {
         auto packet_stream = stream(packet.streamIndex());
         packet.setType(packet_stream->type());
         packet.setStreamUid(packet_stream->params->streamUid());
+        packet.setTimeBase(packet_stream->params->timeBase());
     }
 
 } // namespace fpp

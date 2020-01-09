@@ -414,10 +414,26 @@ namespace fpp {
         auto in = static_cast<const AudioParameters * const>(params.in);
         auto out = static_cast<const AudioParameters * const>(params.out);
 
-        return_if(in->sampleRate()      != out->sampleRate(),       true);
-        return_if(in->sampleFormat()    != out->sampleFormat(),     true);
-        return_if(in->channels()        != out->channels(),         true);
-        return_if(in->channelLayout()   != out->channelLayout(),    true);
+        if (in->sampleRate() != out->sampleRate()) {
+            static_log_warning("utils", "Rescaling required: sample rate mismatch "
+                               << in->sampleRate() << " != " << out->sampleRate());
+            return true;
+        }
+        if (in->sampleFormat() != out->sampleFormat()) {
+            static_log_warning("utils", "Rescaling required: sample format mismatch "
+                               << in->sampleFormat() << " != " << out->sampleFormat());
+            return true;
+        }
+        if (in->channels() != out->channels()) {
+            static_log_warning("utils", "Rescaling required: channels mismatch "
+                               << in->channels() << " != " << out->channels());
+            return true;
+        }
+        if (in->channelLayout() != out->channelLayout()) {
+            static_log_warning("utils", "Rescaling required: channel layout mismatch "
+                               << in->channelLayout() << " != " << out->channelLayout());
+            return true;
+        }
 
         return false;
     }

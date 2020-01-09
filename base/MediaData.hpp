@@ -16,7 +16,7 @@ namespace fpp {
         bool                isVideo() const { return _type == MediaType::MEDIA_TYPE_VIDEO; }
         bool                isAudio() const { return _type == MediaType::MEDIA_TYPE_AUDIO; }
 
-        bool                typeIs(MediaType media_type) { return _type == media_type; }
+        bool                typeIs(MediaType media_type) const { return _type == media_type; }
 
     private:
 

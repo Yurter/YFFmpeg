@@ -35,12 +35,17 @@ namespace fpp {
             }
         }
 
+        //TODO функции с буфером кривокод
         bool buferIsEmpty() {
             return _input_queue.empty();
         }
 
         int64_t bufferSize() {
             return _input_queue.size();
+        }
+
+        int64_t bufferLength() {
+            return _input_queue.length();
         }
 
         virtual Code push(const Object* input_data) override final {
@@ -100,6 +105,9 @@ namespace fpp {
             _next_processor_list.for_each([&output_data,this](auto& next_processor) {
                 static_log_trace("Sender", "Sending data to " << next_processor->name());
                 try_throw_static(next_processor->push(&output_data));
+                if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) {
+                    static_log_error("Debug", "Send EOF to " << next_processor->name());
+                }
             });
             return Code::OK;
         }

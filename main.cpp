@@ -259,7 +259,8 @@ void write_video_from_camera() {
     }
 
 //    progress_bar(35 * 60);
-    utils::sleep_for_sec(10);
+//    utils::sleep_for_sec(10);
+    utils::sleep_for_sec(3);
 }
 
 #include "core/time/Timer.hpp"

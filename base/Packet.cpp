@@ -114,6 +114,7 @@ namespace fpp {
     }
 
     bool Packet::keyFrame() const {
+//        return_if(isAudio(), false); ломает логику предиката первого пакета в декодоре
         return _data.flags & AV_PKT_FLAG_KEY;
     }
 
@@ -122,18 +123,31 @@ namespace fpp {
     }
 
     std::string Packet::toString() const {
-        /* Video packet: 33123 bytes, dts 460, pts 460, duration 33 */
+        /* Video packet: 33123 bytes, dts 460, pts 460, dur 33, tb 1/1000, sid 1, suid 101 */
         std::string str = utils::media_type_to_string(type()) + " packet: "
                 + (keyFrame() ? "[I]" : "[_]") + ", "
                 + std::to_string(_data.size) + " bytes, "
                 + "dts " + utils::pts_to_string(_data.dts) + ", "
                 + "pts " + utils::pts_to_string(_data.pts) + ", "
-                + "duration " + std::to_string(_data.duration) + ", "
-                + "time_base " + utils::rational_to_string(_time_base) + ", "
-                + "stream index " + std::to_string(_data.stream_index) + ", "
-                + "stream uid " + std::to_string(_stream_uid);
+                + "dur " + std::to_string(_data.duration) + ", "
+                + "tb " + utils::rational_to_string(_time_base) + ", "
+                + "sid " + std::to_string(_data.stream_index) + ", "
+                + "suid " + std::to_string(_stream_uid);
         return str;
     }
+//    std::string Packet::toString() const {
+//        /* Video packet: 33123 bytes, dts 460, pts 460, duration 33 */
+//        std::string str = utils::media_type_to_string(type()) + " packet: "
+//                + (keyFrame() ? "[I]" : "[_]") + ", "
+//                + std::to_string(_data.size) + " bytes, "
+//                + "dts " + utils::pts_to_string(_data.dts) + ", "
+//                + "pts " + utils::pts_to_string(_data.pts) + ", "
+//                + "duration " + std::to_string(_data.duration) + ", "
+//                + "time_base " + utils::rational_to_string(_time_base) + ", "
+//                + "stream index " + std::to_string(_data.stream_index) + ", "
+//                + "stream uid " + std::to_string(_stream_uid);
+//        return str;
+//    }
 
     void Packet::copyOther(const Packet& other) {
         setType(other.type());
