@@ -9,7 +9,7 @@ namespace fpp {
         EMPTY_CONSTRUCTOR
     }
 
-    void Object::setName(std::string name) {
+    void Object::setName(const std::string& name) {
         _name = name;
     }
 

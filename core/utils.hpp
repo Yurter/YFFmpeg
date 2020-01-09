@@ -62,6 +62,8 @@ namespace fpp {
 
         static Code         find_encoder_for(const Parameters * const src_prm, Parameters * const dst_prm);
 
+        static MediaType    antitype(const MediaType value);
+
         static bool         rescaling_required(const IOParams params);
         static bool         resampling_required(const IOParams params);
         static bool         video_filter_required(const IOParams params);

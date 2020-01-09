@@ -83,8 +83,11 @@ namespace fpp {
         return exist;
     }
 
-    Code Route::startAll() {
-        _sequence.for_each([](auto& item) {
+    Code Route::startAll() { //TODO кривой код
+        _sequence.for_each([this](auto& item) {
+//            try_to(item->init());
+//            try_to(item->open());
+//            try_to(item->start());
             item->init();
             item->open();
             item->start();

@@ -29,13 +29,15 @@ namespace fpp {
         log_info(_output_format_context.mediaResourceLocator() << "\" is opening...");
         try_to(_output_format_context.open());
         log_info(_output_format_context.mediaResourceLocator() << "\" opened");
-//        _flush_timer.setInterval([&](){ //НЕ УДАЛЯТЬ
+        // НЕ УДАЛЯТЬ
+//        _flush_timer.setInterval([&](){
 //            Code ret = _output_format_context.flush();
 //            if (utils::exit_code(ret)) {
 //                return;
 //            }
 //            log_debug("Flushed");
 //        }, 5 * 60'000);
+        // ~ НЕ УДАЛЯТЬ
         setOpened(true);
         return Code::OK;
     }
@@ -51,7 +53,6 @@ namespace fpp {
         try_to(_output_format_context.close());
         log_info("Destination \"" << _output_format_context.mediaResourceLocator() << "\" closed, " //TODO метод отрабатывает дважды: из деструктора и из онСтоп
                  << utils::time_to_string(stream(0)->params->duration(), stream(0)->params->timeBase()));
-//        if (outputDataCount() == 0) {
         if (stream(0)->params->duration() == 0) {
             log_warning('"' << _output_format_context.mediaResourceLocator() << "\" closed empty!");
         }

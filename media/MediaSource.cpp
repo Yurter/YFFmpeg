@@ -120,22 +120,4 @@ namespace fpp {
         return Code::OK;
     }
 
-//    void MediaSource::determineStampType(const Packet& packet) {
-//        if (packet.pts() != 0) { /* Требуется перештамповывать пакеты */
-//            if (_start_time_point == FROM_START) { /* Чтение из источника, передающего пакеты не с начала */
-//                stream(packet.streamIndex())->setStampType(StampType::Realtime);
-//            } else {
-//                stream(packet.streamIndex())->setStampType(StampType::Offset); /* Происходит чтение не с начала файла */
-//            }
-//        } else {
-////            if (stream(packet.streamIndex())->params->timeBase() != DEFAULT_TIME_BASE) { /* Требуется рескейлить в миллисекунды */
-////                stream(packet.streamIndex())->setStampType(StampType::Rescale);
-////            } else {
-////                stream(packet.streamIndex())->setStampType(StampType::Copy);
-////            }
-//            stream(packet.streamIndex())->setStampType(StampType::Copy);
-//        }
-//        log_error(">> stamptype: " << int(stream(packet.streamIndex())->stampType()));
-//    }
-
 } // namespace fpp

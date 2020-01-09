@@ -354,6 +354,17 @@ namespace fpp {
         }
     }
 
+    MediaType utils::antitype(const MediaType value) {
+        switch (value) {
+        case MediaType::MEDIA_TYPE_VIDEO:
+            return MediaType::MEDIA_TYPE_AUDIO;
+        case MediaType::MEDIA_TYPE_AUDIO:
+            return MediaType::MEDIA_TYPE_VIDEO;
+        default:
+            throw std::exception("Bad media type - antitype()");
+        }
+    }
+
     bool utils::rescaling_required(const IOParams params) {
         return_if(params.in->isAudio(),  false);
         return_if(params.out->isAudio(), false);

@@ -215,11 +215,11 @@ namespace fpp {
         try_to(route.append(findProcessorByUid(output_stream->params->contextUid())));
 
         _route_list.push_back(route);
-//        try_to(simplifyRoutes());
+//        try_to(simplifyRoutes()); //TODO вернуть вызов метода
         try_to(route.init());
-        try_to(route.startAll());
+//        try_to(route.startAll()); // BUG зпускает синк после создания первого потока
 
-        log_info("route: " << route);
+        log_info("route created: " << route);
 
         return Code::OK;
     }
@@ -383,10 +383,14 @@ namespace fpp {
                           << utils::media_type_to_string(out_stream->type()));
                 return Code::INVALID_INPUT;
             }
+            if (out_stream->typeIs(MediaType::MEDIA_TYPE_AUDIO)) {
+                setName(name());
+            }
             Route route;
             try_to(route.setMetaRoute(in_stream->params->streamUid()
                                       , out_stream->params->streamUid()));
             try_to(createSequence(route));
+            route.startAll();
         }
         return Code::OK;
     }
@@ -462,27 +466,34 @@ namespace fpp {
     }
 
     Stream* Pipeline::findBestInputStream(MediaType media_type) { //TODO
-        switch (media_type) {
-        case MediaType::MEDIA_TYPE_VIDEO: {
-            StreamVector all_video_streams;
-            _data_sources.for_each([media_type,&all_video_streams](const auto& source) {
-                UNUSED(media_type); //TODO
-                all_video_streams.push_back(source->stream(0));
-            });
-            return static_cast<VideoStream*>(utils::find_best_stream(all_video_streams));
-        }
-        case MediaType::MEDIA_TYPE_AUDIO: {
+        StreamVector all_streams;
+        _data_sources.for_each([media_type,&all_streams](const auto& source) {
+            Stream* stream = source->bestStream(media_type);
+            if (not_inited_ptr(stream)) { return; }
+            all_streams.push_back(stream);
+        });
+        return utils::find_best_stream(all_streams);
+    }
+//    Stream* Pipeline::findBestInputStream(MediaType media_type) { //TODO
+//        switch (media_type) {
+//        case MediaType::MEDIA_TYPE_VIDEO: {
+//            StreamVector all_video_streams;
+//            _data_sources.for_each([media_type,&all_video_streams](const auto& source) {
+//                all_video_streams.push_back(source->stream(0));
+//            });
+//            return static_cast<VideoStream*>(utils::find_best_stream(all_video_streams));
+//        }
+//        case MediaType::MEDIA_TYPE_AUDIO: {
 //            StreamVector all_audio_streams;
 //            for (auto&& source : mediaSinks()) {
 //                all_audio_streams.push_back(source->outputFormatContext().bestStream(MediaType::MEDIA_TYPE_AUDIO));
 //            }
 //            return static_cast<AudioStream*>(utils::find_best_stream(all_audio_streams));
-            return nullptr;
-        }
-        default:
-            return nullptr;
-        }
-    }
+//        }
+//        default:
+//            return nullptr;
+//        }
+//    }
 
     Route *Pipeline::findRoute(const int64_t uid) { //TODO
         for (auto&& route : _route_list) {

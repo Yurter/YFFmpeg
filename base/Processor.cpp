@@ -42,6 +42,16 @@ namespace fpp {
         return _streams;
     }
 
+    Stream* Processor::bestStream(MediaType type) const { //TODO refactoring методы работы с потоками в процессоре и формат контексте
+        StreamVector all_type_streams;
+        for (auto& str : streams()) {
+            if (str->typeIs(type)) {
+                all_type_streams.push_back(str);
+            }
+        }
+        return utils::find_best_stream(all_type_streams);
+    }
+
     Stream* Processor::stream(int64_t index) const {
         if (size_t(index) < _streams.size()) {
             return _streams[size_t(index)];

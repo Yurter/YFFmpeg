@@ -13,7 +13,7 @@ namespace fpp {
         Object();
         virtual ~Object() = default;
 
-        void                setName(std::string name);
+        /*constexpr*/ void      setName(const std::string& name);
         std::string         name() const;
         bool                is(std::string name) const;
 
@@ -31,7 +31,7 @@ namespace fpp {
 
     private:
 
-        std::string         _name;
+        /*const*/ std::string   _name;
         bool                _inited;
 
     };

@@ -43,7 +43,6 @@ namespace fpp {
 
         Code                checkFormatContexts();
 
-//        Code                stopProcesors();
         Code                joinProcesors();
 
         Code                createSequence(Route& route);

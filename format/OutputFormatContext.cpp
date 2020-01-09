@@ -23,14 +23,16 @@ namespace fpp {
         }
         case Event: { /* Евент должен писаться копипастой */
             /* Video */
-            auto video_parameters = new VideoParameters;
-            video_parameters->setCodec("libx264", CodecType::Encoder);
-            video_parameters->setGopSize(2);
-            video_parameters->setTimeBase(DEFAULT_TIME_BASE);
-            try_to(createStream(video_parameters));
-//            stream(0)->setStampType(StampType::Rescale);
+            auto video_params = new VideoParameters(); //TODO memory leak
+            video_params->setCodec("libx264", CodecType::Encoder);
+            video_params->setGopSize(2);
+            video_params->setTimeBase(DEFAULT_TIME_BASE);
+            try_to(createStream(video_params));
             /* Audio */
-            // Временно без звука
+            auto audio_params = new AudioParameters(); //TODO memory leak
+//            audio_params->setCodec("libx264", CodecType::Encoder);
+            audio_params->setTimeBase(DEFAULT_TIME_BASE);
+            try_to(createStream(audio_params));
             break;
         }
         case YouTube: {
@@ -159,16 +161,14 @@ namespace fpp {
 
     Code OutputFormatContext::openContext() {
         return_if_not(inited(), Code::NOT_INITED);
-        if (_streams.empty()) {
-            log_error("No streams to mux were specified: " << _media_resource_locator);
-            return Code::NOT_INITED;
-        } else {
-            for (auto&& avstream : streams()) {
-                if (not_inited_codec_id(avstream->raw()->codecpar->codec_id)) {
-                    utils::parameters_to_avcodecpar(avstream->params, avstream->raw()->codecpar);
-                }
-                try_to(avstream->init());
+        return_error_if(_streams.empty()
+                        , "No streams to mux were specified: " << _media_resource_locator
+                        , Code::NOT_INITED);
+        for (auto&& avstream : streams()) { //TODO refactoring
+            if (not_inited_codec_id(avstream->raw()->codecpar->codec_id)) {
+                utils::parameters_to_avcodecpar(avstream->params, avstream->raw()->codecpar);
             }
+            try_to(avstream->init());
         }
         if (!(_format_context->flags & AVFMT_NOFILE)) {
             if (avio_open(&_format_context->pb, _media_resource_locator.c_str(), AVIO_FLAG_WRITE) < 0) {
