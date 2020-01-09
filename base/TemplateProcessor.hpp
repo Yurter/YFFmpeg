@@ -27,6 +27,12 @@ namespace fpp {
 
         virtual ~TemplateProcessor() {
             stopWait();
+            if_not(_input_queue.empty()) {
+                log_warning("Input queue is not empty: " << _input_queue.length());
+            }
+            if_not(_output_queue.empty()) {
+                log_warning("Output queue is not empty: " << _output_queue.length());
+            }
         }
 
         bool buferIsEmpty() {
@@ -115,14 +121,13 @@ namespace fpp {
     private:
 
         virtual Code run() override final {
-            if (_pre_function) {
+            if /*constexpr*/ (_pre_function) {
                 log_trace("Running _pre_function");
                 try_to(_pre_function());
             }
 
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
-//            return_if(discardType(input_data.type()), Code::AGAIN);
             if (discardType(input_data.type())) {
                 increaseDiscardedDataCount();
                 return Code::AGAIN;
@@ -147,7 +152,7 @@ namespace fpp {
             try_to(processInputData(input_data));
             increaseProcessingIterationCount();
 
-            if (_post_function) {
+            if /*constexpr*/ (_post_function) {
                 log_trace("Running _post_function");
                 try_to(_post_function());
             }

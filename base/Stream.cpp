@@ -67,9 +67,6 @@ namespace fpp {
     }
 
     Code Stream::stampPacket(Packet& packet) {
-//        if (params->streamUid() == 500) {
-//            setName(name());
-//        }
         switch (_stamp_type) {
         case StampType::Copy:
             _packet_duration = packet.pts() - _prev_pts;
@@ -119,7 +116,6 @@ namespace fpp {
 
             /* Проверка на начало новой последовательности пакетов */
             if (new_pts < _prev_pts) {
-//                auto offset = av_rescale_q(params->duration(), params->timeBase(), packet.timeBase());
                 auto offset = params->duration();
                 _pts_offset = offset;
                 _dts_offset = offset;
@@ -165,115 +161,6 @@ namespace fpp {
         _packet_index++;
         return Code::OK;
     }
-//    Code Stream::stampPacket(Packet& packet) { //TODO разобраться с _prev_dts/_prev_pts использовать _cur_dts ?
-//        switch (_stamp_type) {
-//        case StampType::Copy:
-//            packet.setDuration(packet.pts() - _prev_pts);
-//            packet.setTimeBase(params->timeBase());
-//            _packet_duration = av_rescale_q(packet.duration(), packet.timeBase(), params->timeBase());
-//            _prev_dts = packet.dts();
-//            _prev_pts = packet.pts();
-//            packet.setPos(-1);
-//            break;
-//        case StampType::Realtime: {
-////            log_error("IN. PTS: " << packet.pts() << ", DTS: " << packet.dts());
-//            if (_packet_index == 0) { //TODO костыль сброса таймера на получении первого пакета, перенести в открытие?
-//                _chronometer.reset_timepoint();
-//            }
-
-//            const AVRational chronometer_timebase = DEFAULT_TIME_BASE;
-//            _packet_duration = av_rescale_q(_chronometer.elapsed_milliseconds(), chronometer_timebase, params->timeBase());
-
-//            _chronometer.reset_timepoint();
-
-//            if (_packet_duration < 16) { //TODO костыль: ффмпег отдает первый кадров 10 мгновенно
-//                const int64_t duration_ms = int64_t(1000 / av_q2d(static_cast<VideoParameters*>(params)->frameRate()));
-//                _packet_duration = av_rescale_q(duration_ms, DEFAULT_TIME_BASE, params->timeBase());
-////                log_warning("CRUCTH dur " << duration_ms << ", " << _packet_duration);
-//            }
-
-//            _packet_dts_delta = _packet_duration;
-//            _packet_pts_delta = _packet_duration;
-
-//            packet.setDts(_prev_dts);
-//            packet.setPts(_prev_pts);
-//            packet.setDuration(_packet_duration);
-//            packet.setPos(-1);
-
-//            _prev_dts += _packet_dts_delta;
-//            _prev_pts += _packet_pts_delta;
-////            log_error("OU. PTS: " << packet.pts() << ", DTS: " << packet.dts());
-////            log_error("");
-//            break;
-//        }
-//        case StampType::Rescale:
-////            log_error("Rescale in. PTS: " << packet.pts() << ", DTS: " << packet.dts());
-//            _packet_duration = av_rescale_q(packet.pts() - _prev_pts, packet.timeBase(), params->timeBase());
-
-//            _prev_dts = packet.dts();
-//            _prev_pts = packet.pts();
-
-//            packet.setDts(av_rescale_q(packet.dts(), packet.timeBase(), params->timeBase()));
-//            packet.setPts(av_rescale_q(packet.pts(), packet.timeBase(), params->timeBase()));
-
-//            packet.setDuration(_packet_duration);
-//            packet.setTimeBase(params->timeBase());
-//            packet.setPos(-1);
-//            break;
-//        case StampType::Append: {
-//            auto new_pts = packet.pts() + _pts_offset;
-//            auto new_dts = packet.dts() + _dts_offset;
-
-//            if (new_pts <= _prev_pts) {
-//                auto offset = av_rescale_q(params->duration(), params->timeBase(), packet.timeBase());
-//                _pts_offset = offset;
-//                _dts_offset = offset;
-//                new_pts = packet.pts() + _pts_offset;
-//                new_dts = packet.dts() + _dts_offset;
-//            }
-
-//            _packet_duration = new_pts - _prev_pts;
-
-//            _packet_dts_delta = _packet_duration;
-//            _packet_pts_delta = _packet_duration;
-
-//            packet.setDts(new_dts);
-//            packet.setPts(new_pts);
-//            packet.setDuration(_packet_duration);
-
-//            _packet_duration = av_rescale_q(_packet_duration, packet.timeBase(), params->timeBase());
-//            _prev_dts = new_dts;
-//            _prev_pts = new_pts;
-//            break;
-//        }
-//        case StampType::Offset: {
-//            if (packetIndex() == 0) {
-//                log_error("!!!!!!!! " << packet);
-//                _pts_offset = -packet.pts();
-//                _dts_offset = -packet.dts();
-//            }
-//            auto new_pts = packet.pts() + _pts_offset;
-//            auto new_dts = packet.dts() + _dts_offset;
-//            _packet_duration = new_pts - _prev_pts;
-//            _packet_dts_delta = _packet_duration;
-//            _packet_pts_delta = _packet_duration;
-//            packet.setDts(new_dts);
-//            packet.setPts(new_pts);
-//            packet.setDuration(_packet_duration);
-//            packet.setTimeBase(params->timeBase());
-//            _prev_dts = new_dts;
-//            _prev_pts = new_pts;
-//            break;
-//        }
-//        default:
-//            return Code::NOT_IMPLEMENTED;
-//        }
-
-//        packet.setTimeBase(params->timeBase());
-//        params->increaseDuration(_packet_duration);
-//        _packet_index++;
-//        return Code::OK;
-//    }
 
     bool Stream::timeIsOver() const {
         const auto planned_duration = _end_time_point - _start_time_point;
@@ -282,7 +169,6 @@ namespace fpp {
             log_debug("Time is over: " << utils::time_to_string(actual_duration, DEFAULT_TIME_BASE));
             return true;
         }
-//        log_warning(planned_duration << " " << actual_duration << " " << params->duration());
         return false;
     }
 
