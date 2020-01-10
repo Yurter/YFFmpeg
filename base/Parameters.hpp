@@ -56,6 +56,7 @@ namespace fpp {
 
     };
 
-    using IOParams = struct { const Parameters * const in; const Parameters * const out; };
+//    using IOParams = struct { const Parameters * const in; const Parameters * const out; }; константа убрана из-за необходимости устанваливать фрейм сайз из энкодера
+    using IOParams = struct { Parameters * const in; Parameters * const out; };
 
 } // namespace fpp

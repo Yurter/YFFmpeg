@@ -11,15 +11,18 @@ namespace fpp {
         Resampler(IOParams params);
         virtual ~Resampler() override;
 
-        virtual Code       init() override;
+        virtual Code        init() override;
+        virtual Code        open() override;
+        virtual Code        close() override;
 
         const IOParams      params;
 
     private:
 
         virtual Code        processInputData(Frame input_data) override;
-        bool                initOutputFrame(AVFrame** frame, int frame_size);
-        bool                configChanged(AVFrame* in, AVFrame* out);
+//        bool                initOutputFrame(AVFrame** frame, int frame_size);
+        bool                initOutputFrame(Frame& frame, int64_t frame_size);
+        bool                configChanged(AVFrame* in, AVFrame* out); //TODO убрать постоянную проверку?
 
     protected:
 

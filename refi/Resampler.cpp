@@ -48,58 +48,89 @@ namespace fpp {
         return Code::OK;
     }
 
+    Code Resampler::open() { //TODO перенести пустую реализацию в базовое определение метода
+        setOpened(true);
+        return Code::OK;
+    }
+
+    Code Resampler::close() { //TODO перенести пустую реализацию в базовое определение метода
+        setOpened(false);
+        return Code::OK;
+    }
+
     Code Resampler::processInputData(Frame input_data) {
         if (swr_convert_frame(_resampler_context, nullptr, &input_data.raw()) != 0) {
-            log_error("swr_convert_frame failed"); //TODO формулировка
+            log_error("swr_convert_frame failed");
             return Code::ERR;
         }
-        return Code::NOT_IMPLEMENTED;
-//        do {
-//            Frame output_data;
-//            AVFrame* output_data_frame = &output_data.raw();
-//            if (!initOutputFrame(&output_data_frame, params.out->frameSize() _io_streams.second->codecParameters()->frame_size)) {
-//                log_error("initOutputFrame failed"); //TODO формулировка
-//                return Code::ERR;
-//            }
-//            if (configChanged(&input_data.raw(), &output_data.raw())) {
-//                log_error("configChanged"); //TODO формулировка
-//                return Code::ERR;
-//            }
-//            if (swr_convert_frame(_resampler_context, &output_data.raw(), nullptr) != 0) {
-//                log_error("swr_convert_frame failed"); //TODO формулировка
-//                return Code::ERR;
-//            }
-//            output_data.setType(MEDIA_TYPE_AUDIO);
+        auto audio_params = static_cast<const AudioParameters * const>(params.out);
+        do {
+            Frame output_data; // TODO frameSize брать из контекста энкодера
+            if (!initOutputFrame(output_data, audio_params->frameSize())) {
+                log_error("initOutputFrame failed");
+                return Code::ERR;
+            }
+            if (configChanged(&input_data.raw(), &output_data.raw())) {
+                log_error("configChanged failed");
+                return Code::ERR;
+            }
+            if (swr_convert_frame(_resampler_context, &output_data.raw(), nullptr) != 0) {
+                log_error("swr_convert_frame failed");
+                return Code::ERR;
+            }
+            output_data.setType(MEDIA_TYPE_AUDIO);
 
-//            try_to(sendOutputData(output_data));
-//        } while (swr_get_out_samples(_resampler_context, 0) >= _io_streams.second->codecParameters()->frame_size);
+            try_to(sendOutputData(output_data));
+        } while (swr_get_out_samples(_resampler_context, 0) >= audio_params->frameSize());
 
         return Code::OK;
     }
 
-    bool Resampler::initOutputFrame(AVFrame** frame, int frame_size) {
+//    bool Resampler::initOutputFrame(AVFrame** frame, int frame_size) {
+//        frame_size = 1024; //TODO critical!
+//        auto in_param = dynamic_cast<const AudioParameters * const>(params.in);
+//        auto out_param = dynamic_cast<const AudioParameters * const>(params.out);
+//        /* Create a new frame to store the audio samples. */
+//        if (!(*frame = av_frame_alloc())) {
+//            log_error("Could not allocate output frame");
+//            return false;
+//        }
+//        /* Set the frame's parameters, especially its size and format.
+//         * av_frame_get_buffer needs this to allocate memory for the
+//         * audio samples of the frame.
+//         * Default channel layouts based on the number of channels
+//         * are assumed for simplicity. */
+//        (*frame)->nb_samples     = frame_size;
+//        (*frame)->channel_layout = out_param->channelLayout();
+//        (*frame)->format         = out_param->sampleFormat();
+//        (*frame)->sample_rate    = int(out_param->sampleRate());
+//        /* Allocate the samples of the created frame. This call will make
+//         * sure that the audio frame can hold as many samples as specified. */
+//        if (av_frame_get_buffer(*frame, 0) < 0) {
+//            log_error("Could not allocate output frame samples");
+//            av_frame_free(frame);
+//            return false;
+//        }
+//        return true;
+//    }
+    // ПЕРЕДЕЛКИ С УКАЗАТЕЛЯ
+    bool Resampler::initOutputFrame(Frame& frame, int64_t frame_size) {
         frame_size = 1024; //TODO critical!
         auto in_param = dynamic_cast<const AudioParameters * const>(params.in);
         auto out_param = dynamic_cast<const AudioParameters * const>(params.out);
-        /* Create a new frame to store the audio samples. */
-        if (!(*frame = av_frame_alloc())) {
-            log_error("Could not allocate output frame");
-            return false;
-        }
         /* Set the frame's parameters, especially its size and format.
          * av_frame_get_buffer needs this to allocate memory for the
          * audio samples of the frame.
          * Default channel layouts based on the number of channels
          * are assumed for simplicity. */
-        (*frame)->nb_samples     = frame_size;
-        (*frame)->channel_layout = out_param->channelLayout();
-        (*frame)->format         = out_param->sampleFormat();
-        (*frame)->sample_rate    = int(out_param->sampleRate());
+        frame.raw().nb_samples     = int(frame_size);
+        frame.raw().channel_layout = out_param->channelLayout();
+        frame.raw().format         = out_param->sampleFormat();
+        frame.raw().sample_rate    = int(out_param->sampleRate());
         /* Allocate the samples of the created frame. This call will make
          * sure that the audio frame can hold as many samples as specified. */
-        if (av_frame_get_buffer(*frame, 0) < 0) {
+        if (av_frame_get_buffer(&frame.raw(), 0) < 0) {
             log_error("Could not allocate output frame samples");
-            av_frame_free(frame);
             return false;
         }
         return true;

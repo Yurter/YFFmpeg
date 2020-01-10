@@ -18,9 +18,9 @@ namespace fpp {
     Code AudioStream::init() //TODO
     {
         try_to(Stream::init());
-        auto video_parameers = dynamic_cast<AudioParameters*>(params);
+//        auto video_parameers = dynamic_cast<AudioParameters*>(params);
 
-        return_if(not_inited_q(video_parameers->timeBase()),  Code::INVALID_INPUT);
+//        return_if(not_inited_q(video_parameers->timeBase()),  Code::INVALID_INPUT);
 
         setInited(true);
         return Code::OK;

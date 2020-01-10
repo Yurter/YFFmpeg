@@ -53,7 +53,10 @@ namespace fpp {
         try_to(_output_format_context.close());
         log_info("Destination \"" << _output_format_context.mediaResourceLocator() << "\" closed, " //TODO метод отрабатывает дважды: из деструктора и из онСтоп
                  << utils::time_to_string(stream(0)->params->duration(), stream(0)->params->timeBase()));
-        if (stream(0)->params->duration() == 0) {
+        for (auto stream : streams()) { //Debug log
+            log_warning("stream suration: " << utils::time_to_string(stream->params->duration(), stream->params->timeBase()));
+        }
+        if (stream(0)->params->duration() == 0) { //TODO кривой код
             log_warning('"' << _output_format_context.mediaResourceLocator() << "\" closed empty!");
         }
         setOpened(false);
@@ -82,8 +85,13 @@ namespace fpp {
 //        if (input_data.isAudio()) {
 //            log_warning("stamp 1: " << input_data);
 //        }
+
+//        if (input_data.isAudio()) log_warning("1 Write audio: " << input_data);
+
+//        if (input_data.isVideo())
         try_to(_output_format_context.stream(input_data.streamIndex())->stampPacket(input_data));
 
+//        if (input_data.isAudio()) log_warning("/*2*/ Write audio: " << input_data << "\n");
 //        if (input_data.isAudio()) {
 //            log_warning("stamp 2: " << input_data);
 //        }

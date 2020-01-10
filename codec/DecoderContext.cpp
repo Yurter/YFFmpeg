@@ -5,7 +5,7 @@ namespace fpp {
     DecoderContext::DecoderContext(const IOParams params) :
         CodecContext(params, CodecType::Decoder)
     {
-        setName("DecoderContext");EMPTY_CONSTRUCTOR
+        setName("DecoderContext");
     }
 
     DecoderContext::~DecoderContext() {
@@ -31,7 +31,7 @@ namespace fpp {
             return Code::FFMPEG_ERROR;
         }
         int ret = avcodec_receive_frame(_codec_context, &output_frame.raw()); //TODO брать тип из типа потока (добавить потоку тип)
-        switch (ret) { //TODO убрать свич
+        switch (ret) { //TODO убрать свич ?
         case 0:
             output_frame.setType(input_packet.type());
             if (output_frame.empty()) {
@@ -45,7 +45,7 @@ namespace fpp {
         case AVERROR(EINVAL):
             return Code::INVALID_INPUT;
         default:
-            return Code::ERR;
+            return Code::FFMPEG_ERROR;
         }
     }
 
@@ -59,7 +59,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code DecoderContext::flush(Object* data) {
+    Code DecoderContext::flush(Object* data) { //TODO
         return Code::OK;
         log_error("FLUSH");
         while (avcodec_send_packet(_codec_context, nullptr) != 0) {

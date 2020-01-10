@@ -12,13 +12,15 @@ namespace fpp {
 
         void                setSampleRate(int64_t sample_rate);
         void                setSampleFormat(AVSampleFormat sample_format);
-        void                setChannelLayout(uint64_t channels_layout); // TODO скрыть в прайват? устанваливать дефолтное значение при установке числа каналов?
+        void                setChannelLayout(uint64_t channels_layout);
         void                setChannels(int64_t channels);
+        void                setFrameSize(int64_t value);
 
         int64_t             sampleRate()    const;
         AVSampleFormat      sampleFormat()  const;
         uint64_t            channelLayout() const;
         int64_t             channels()      const;
+        int64_t             frameSize()     const;
 
         std::string         toString() const override;
 
@@ -30,6 +32,7 @@ namespace fpp {
         AVSampleFormat      _sample_format;
         uint64_t            _channel_layout;
         int64_t             _channels;
+        int64_t             _frame_size;
 
     };
 

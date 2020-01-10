@@ -57,7 +57,7 @@ namespace fpp {
             _codec_id = codec->id;
             _codec_name = codec->name;
         } else {
-            log_error("Failed codec search");
+            log_error("Cannot set nullptr as a codec");
         }
     }
 

@@ -13,7 +13,8 @@ namespace fpp {
         virtual ~EncoderContext() override;
 
         Code                encode(Frame input_frame, Packet& output_packet);
-        virtual Code        flush(Object* data)         override;
+        virtual Code        flush(Object* data) override;
+        virtual Code        onOpen()            override;
 
     private:
 

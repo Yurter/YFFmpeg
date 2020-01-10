@@ -4,7 +4,7 @@
 
 namespace fpp {
 
-    class VideoStream : public Stream {
+    class VideoStream : public Stream { //TODO свернуть наследование ?
 
     public:
 

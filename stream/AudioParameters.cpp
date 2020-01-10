@@ -4,11 +4,12 @@
 namespace fpp {
 
     AudioParameters::AudioParameters() :
-        Parameters(MediaType::MEDIA_TYPE_AUDIO),
-        _sample_rate(DEFAULT_INT),
-        _sample_format(DEFAULT_SAMPLE_FORMAT),
-        _channel_layout(DEFAULT_CHANEL_LAYOUT),
-        _channels(DEFAULT_INT)
+        Parameters(MediaType::MEDIA_TYPE_AUDIO)
+      , _sample_rate(DEFAULT_INT)
+      , _sample_format(DEFAULT_SAMPLE_FORMAT)
+      , _channel_layout(DEFAULT_CHANEL_LAYOUT)
+      , _channels(DEFAULT_INT)
+      , _frame_size(DEFAULT_INT)
     {
         setName("AudioParameters");
     }
@@ -41,6 +42,14 @@ namespace fpp {
         _channels = channels;
     }
 
+    void AudioParameters::setFrameSize(int64_t value) {
+        if (value < 1) {
+            log_warning("Frame size cannot be less than one: " << value << ", ignored");
+            return;
+        }
+        _frame_size = value;
+    }
+
     int64_t AudioParameters::sampleRate() const {
         return _sample_rate;
     }
@@ -57,6 +66,10 @@ namespace fpp {
         return _channels;
     }
 
+    int64_t AudioParameters::frameSize() const {
+        return _frame_size;
+    }
+
     std::string AudioParameters::toString() const {
         std::string str = Parameters::toString() + "; ";
         str += "smplr: " + std::to_string(sampleRate()) + ", ";
@@ -66,16 +79,7 @@ namespace fpp {
         return str;
     }
 
-//    Code AudioParameters::completeFrom(const Parameters* other_parametrs) { //TODO заменить все присваивания на сеттеры
-//        auto other_audio_parameters = static_cast<const AudioParameters*>(other_parametrs);
-//        if (not_inited_int(_sample_rate))           { _sample_rate      = other_audio_parameters->sampleRate();     }
-//        if (not_inited_smp_fmt(_sample_format))     { _sample_format    = other_audio_parameters->sampleFormat();   }
-//        if (not_inited_ch_layout(_channel_layout))  { _channel_layout   = other_audio_parameters->channelLayout();  }
-//        if (not_inited_int(_channels))              { _channels         = other_audio_parameters->channels();       }
-//        try_to(Parameters::completeFrom(other_parametrs));
-//        return Code::OK;
-//    }
-    Code AudioParameters::completeFrom(const Parameters* other_parametrs) { //TODO заменить все присваивания на сеттеры
+    Code AudioParameters::completeFrom(const Parameters* other_parametrs) {
         auto other_audio_parameters = static_cast<const AudioParameters*>(other_parametrs);
         if (not_inited_int(_sample_rate))           { setSampleRate(other_audio_parameters->sampleRate());          }
         if (not_inited_smp_fmt(_sample_format))     { setSampleFormat(other_audio_parameters->sampleFormat());      }

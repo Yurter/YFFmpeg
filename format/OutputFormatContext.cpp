@@ -21,6 +21,7 @@ namespace fpp {
             try_to(guessOutputFromat());
             break;
         }
+            //(decoders: mp3float mp3 ) (encoders: libmp3lame libshine )
         case Event: { /* Евент должен писаться копипастой */
             /* Video */
             auto video_params = new VideoParameters(); //TODO memory leak
@@ -30,8 +31,10 @@ namespace fpp {
             try_to(createStream(video_params));
             /* Audio */
             auto audio_params = new AudioParameters(); //TODO memory leak
-            audio_params->setCodec("mp3", CodecType::Encoder);
+//            audio_params->setCodec("mp3", CodecType::Encoder);
+            audio_params->setCodec("libmp3lame", CodecType::Encoder);
             audio_params->setTimeBase(DEFAULT_TIME_BASE);
+//            audio_params->setTimeBase({ 1, 16000 });
             audio_params->setSampleRate(44'100);
             try_to(createStream(audio_params));
             break;

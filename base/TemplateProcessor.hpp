@@ -28,10 +28,10 @@ namespace fpp {
         virtual ~TemplateProcessor() {
             stopWait();
             if_not(_input_queue.empty()) {
-                log_warning("Input queue is not empty: " << _input_queue.length());
+                log_warning("Closed but input queue is not empty: " << _input_queue.length());
             }
             if_not(_output_queue.empty()) {
-                log_warning("Output queue is not empty: " << _output_queue.length());
+                log_warning("Closed but output queue is not empty: " << _output_queue.length());
             }
         }
 

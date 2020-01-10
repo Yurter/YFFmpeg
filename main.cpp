@@ -260,7 +260,7 @@ void write_video_from_camera() {
 
 //    progress_bar(35 * 60);
 //    utils::sleep_for_sec(10);
-    utils::sleep_for_sec(3);
+    utils::sleep_for_sec(10);
 }
 
 #include "core/time/Timer.hpp"
@@ -316,7 +316,7 @@ int main() {
 
     {
 //        set_log_level(LogLevel::Debug);
-        set_ffmpeg_log_level(LogLevel::Quiet);
+//        set_ffmpeg_log_level(LogLevel::Quiet);
         write_video_from_camera();
         return 0;
     }

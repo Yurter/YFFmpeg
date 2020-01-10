@@ -85,13 +85,17 @@ namespace fpp {
 
     Code MediaSource::processInputData(Packet input_data) {
         if (stream(input_data.streamIndex())->packetIndex() == 0) { //TODO костыль? каждый раз проверяет.. -> перенести в онСтарт - раз прочитать пакеты из каждого потока
-            if (input_data.isAudio()) {
-                log_warning("AUDIO: " << input_data);
-            }
             stream(input_data.streamIndex())->determineStampType(input_data);
+        }
+        if (input_data.isAudio()) {
+            log_warning("RAW AUDIO: " << input_data);
         }
 
         try_to(stream(input_data.streamIndex())->stampPacket(input_data));
+
+        if (input_data.isAudio()) {
+            log_warning("Stamped AUDIO: " << input_data);
+        }
 
         if (inputDataCount() == 0) { //TODO нуженл ли этот лог?
             log_debug("Read from "

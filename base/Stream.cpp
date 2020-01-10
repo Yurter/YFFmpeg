@@ -140,7 +140,7 @@ namespace fpp {
                 _dts_offset = offset;
                 new_pts = packet.pts() + _pts_offset;
                 new_dts = packet.dts() + _dts_offset;
-                log_error("new_pts < _prev_pts: " << new_pts << " " << offset);
+//                log_error("new_pts < _prev_pts: " << new_pts << " " << offset);
             }
 
             /* Расчет длительности пакета */
@@ -155,7 +155,7 @@ namespace fpp {
             packet.setPts(new_pts);
             break;
         }
-        case StampType::Offset:
+        case StampType::Offset: {
             if (packetIndex() == 0) {
                 _pts_offset = -packet.pts();
                 _dts_offset = -packet.dts();
@@ -167,6 +167,11 @@ namespace fpp {
             _packet_pts_delta = _packet_duration;
             packet.setDts(new_dts);
             packet.setPts(new_pts);
+            break;
+        }
+        case StampType::AudioNOPTS:
+            packet.setDts(AV_NOPTS_VALUE);
+            packet.setPts(AV_NOPTS_VALUE);
             break;
         }
 
@@ -182,7 +187,7 @@ namespace fpp {
             packet.setDts(AV_NOPTS_VALUE);
             packet.setPts(AV_NOPTS_VALUE);
             packet.setTimeBase({ 1, 16000 });
-            packet.setDuration(0);
+//            packet.setDuration(0);
         }
         return Code::OK;
     }

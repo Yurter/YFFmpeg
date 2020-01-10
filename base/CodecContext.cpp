@@ -44,6 +44,10 @@ namespace fpp {
         return Code::OK;
     }
 
+    Code CodecContext::onOpen() {
+        return Code::OK;
+    }
+
     Code CodecContext::open() {
         return_if(opened(), Code::OK);
         log_debug("Opening");
@@ -63,19 +67,13 @@ namespace fpp {
             log_error("Cannot open codec: " << ret << ", "<< codec->name << ", " << codec_type);
             return Code::ERR;
         }
-        { /* Crutch */ //TODO
-//            if (params->isAudio()) {
-//                _codec_context->channel_layout = static_cast<uint64_t>(
-//                            av_get_default_channel_layout(_codec_context->channels)
-//                            );
-//            }
-        }
+        try_to(onOpen());
         setOpened(true);
         return Code::OK;
     }
 
     Code CodecContext::close() {
-        return_if(closed(), Code::INVALID_CALL_ORDER);
+        return_if(closed(), Code::OK);
         log_debug("Closing");
         if (inited_ptr(_codec_context)) {
             // использовать ? avcodec_free_context(_codec_context)

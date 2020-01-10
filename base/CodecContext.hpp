@@ -8,12 +8,14 @@ namespace fpp {
 
     public:
 
+//        CodecContext(const IOParams params, CodecType type);
         CodecContext(const IOParams params, CodecType type);
         virtual ~CodecContext() override;
 
         virtual Code        initParams() = 0;
         virtual Code        flush(Object* data) = 0; //TODO (отправлять кодеку NULL)
         virtual Code        init() override;
+        virtual Code        onOpen();
 
         Code                open();
         Code                close();

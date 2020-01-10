@@ -17,6 +17,7 @@ namespace fpp {
         try_to(output_packet.init());
         output_packet.setType(params.out->type());
         output_packet.setTimeBase(params.in->timeBase());
+//        log_error("$$ input_frame: " << input_frame);
         log_trace("Frame for encoding: " << input_frame);
         int ret;
         if ((ret = avcodec_send_frame(_codec_context, &input_frame.raw())) != 0) {
@@ -32,6 +33,7 @@ namespace fpp {
         }
         output_packet.setStreamIndex(params.out->streamIndex());
         output_packet.setStreamUid(params.out->streamUid());
+//        log_error("$$ output_packet: " << output_packet);
         return Code::OK;
     }
 
@@ -71,6 +73,13 @@ namespace fpp {
         log_error("Flushed success");
         output_packet.setStreamIndex(params.out->streamIndex());
         output_packet.setStreamUid(params.out->streamUid());
+        return Code::OK;
+    }
+
+    Code EncoderContext::onOpen() {
+        if (params.out->typeIs(MediaType::MEDIA_TYPE_AUDIO)) {
+            static_cast<AudioParameters * const>(params.out)->setFrameSize(_codec_context->frame_size); //TODO не надежно: нет гарантий, что кодек откроется раньше, чем рескейлер начнет работу
+        }
         return Code::OK;
     }
 

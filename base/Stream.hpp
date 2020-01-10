@@ -18,6 +18,7 @@ namespace fpp {
         Offset,
         /* Штампы синка */
         Rescale,
+        AudioNOPTS, //TODO костыль? 10.01
     };
 //    enum class StampType {
 //        ConstantFramerate,
