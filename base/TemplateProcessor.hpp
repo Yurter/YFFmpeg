@@ -102,7 +102,18 @@ namespace fpp {
 
         Code sendOutputData(const outType& output_data) {
             increaseOutputDataCount();
-            _next_processor_list.for_each([&output_data,this](auto& next_processor) {
+//            for (auto [stream_id, proc_list] : _stream_map) {
+//                if (stream_id == output_data.streamUid()) {
+//                    proc_list.for_each([&output_data,this](auto& next_processor){
+//                        static_log_trace("Sender", "Sending data to " << next_processor->name());
+//                        try_throw_static(next_processor->push(&output_data));
+//                        if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) {
+//                            static_log_error("Debug", "Send EOF to " << next_processor->name());
+//                        }
+//                    });
+//                }
+//            }
+            _stream_map[output_data.streamUid()].for_each([&output_data,this](auto& next_processor) {
                 static_log_trace("Sender", "Sending data to " << next_processor->name());
                 try_throw_static(next_processor->push(&output_data));
                 if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) {

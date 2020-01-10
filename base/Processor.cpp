@@ -99,27 +99,29 @@ namespace fpp {
         _meta_data = value;
     }
 
-    Code fpp::Processor::connectTo(const ProcessorPointer other) {
+    Code fpp::Processor::connectTo(StreamId_t stream_id, ProcessorPointer other) {
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
-        _next_processor_list.push_back(other);
-        log_debug("Connected to " << other->name());
+        _stream_map[stream_id].push_back(other);
+        log_debug("Connected " << stream_id << " stream to " << other->name());
         return Code::OK;
     }
 
-    Code Processor::disconnectFrom(const ProcessorPointer other) {
+    Code Processor::disconnectFrom(const ProcessorPointer other) { //TODO нет проверок на ошибки 10.01
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
-        _next_processor_list.remove_if([&other](const auto& sink) {
-            return sink->uid() == other->uid();
-        });
-        log_debug("Disconnected from " << other->name());
-        if (_next_processor_list.empty()) {
-            if (_close_on_disconnect) {
-                log_info("TODO self destroy"); //TODO заменить return type на void?
-                try_to(stop());
-            } else {
-                log_warning("Connection list is empty");
-            }
+        for (auto [stream_id, proc_list] : _stream_map) {
+            proc_list.remove_if([&other](const auto& proc) {
+                return proc->uid() == other->uid();
+            });
         }
+        log_debug("Disconnected from " << other->name());
+//        if (_next_processor_list.empty()) {
+//            if (_close_on_disconnect) {
+//                log_info("TODO self destroy"); //TODO заменить return type на void?
+//                try_to(stop());
+//            } else {
+//                log_warning("Connection list is empty");
+//            }
+//        }
         return Code::OK;
     }
 

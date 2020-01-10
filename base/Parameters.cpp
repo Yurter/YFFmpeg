@@ -77,12 +77,12 @@ namespace fpp {
         _duration = duration;
     }
 
-    void Parameters::setStreamIndex(int64_t stream_index) {
+    void Parameters::setStreamIndex(StreamId_t stream_index) {
         _stream_index = stream_index;
         setStreamUid(fpp::utils::gen_stream_uid(_context_uid, _stream_index));//TODO
     }
 
-    void Parameters::setStreamUid(int64_t value) {
+    void Parameters::setStreamUid(StreamId_t value) {
         _stream_uid = value;
     }
 
@@ -123,11 +123,11 @@ namespace fpp {
          return _duration;
     }
 
-    int64_t Parameters::streamIndex() const {
+    StreamId_t Parameters::streamIndex() const {
         return _stream_index;
     }
 
-    int64_t Parameters::streamUid() const {
+    StreamId_t Parameters::streamUid() const {
         return _stream_uid;
     }
 

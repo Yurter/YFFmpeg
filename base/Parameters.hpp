@@ -3,6 +3,8 @@
 
 namespace fpp {
 
+    using StreamId_t = int64_t;
+
     class Parameters : public MediaData {
 
     public:
@@ -15,7 +17,7 @@ namespace fpp {
         void                setCodec(AVCodec* codec);
         void                setBitrate(int64_t bitrate);
         void                setDuration(int64_t duration);
-        void                setStreamIndex(int64_t stream_index);
+        void                setStreamIndex(StreamId_t stream_index);
         void                setTimeBase(AVRational time_base);
         void                setContextUid(int64_t context_uid);
 
@@ -25,15 +27,14 @@ namespace fpp {
         CodecType           codecType()     const;
         int64_t             bitrate()       const;
         int64_t             duration()      const;
-        int64_t             streamIndex()   const;
-        int64_t             streamUid()     const;
+        StreamId_t          streamIndex()   const;
+        StreamId_t          streamUid()     const;
         AVRational          timeBase()      const;
         int64_t             contextUid()    const;
 
         void                increaseDuration(const int64_t value);
 
         virtual std::string toString() const override;
-
         virtual Code        completeFrom(const Parameters* other_parametrs);
 
     private:
@@ -49,8 +50,8 @@ namespace fpp {
         CodecType           _codec_type;
         int64_t             _bitrate;
         int64_t             _duration;
-        int64_t             _stream_index;
-        int64_t             _stream_uid;
+        StreamId_t          _stream_index;
+        StreamId_t          _stream_uid;
         AVRational          _time_base;
         int64_t             _context_uid;
 
