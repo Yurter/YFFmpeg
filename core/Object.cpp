@@ -24,7 +24,7 @@ namespace fpp {
         return _name;
     }
 
-    bool Object::is(std::string name) const {
+    bool Object::is(const std::string& name) const {
         return _name == name;
     }
 

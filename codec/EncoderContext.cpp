@@ -5,7 +5,12 @@ namespace fpp {
     EncoderContext::EncoderContext(const IOParams params) :
         CodecContext(params, CodecType::Encoder)
     {
-        setName("EncoderContext");
+//        setName("EncoderContext");
+        setName("EnContext");
+    //[warn][14:54:00][EncoderContext libmp]
+    //[warn][14:54:30][Enc libmp3lame      ]
+        //            [EncCtx libmp3lame   ]
+        //            [EContext libmp3lame ]
     }
 
     EncoderContext::~EncoderContext() {
@@ -34,7 +39,7 @@ namespace fpp {
         output_packet.setTimeBase(_codec_context->time_base);
         output_packet.setStreamIndex(params.out->streamIndex());
         output_packet.setStreamUid(params.out->streamUid());
-        log_warning("ENCODED: " << output_packet.pts() << " : " << _codec_context->time_base);
+        if (output_packet.isAudio()) log_warning("-] ENCODED: " << output_packet);
 //        log_warning("ENCODED: " << output_packet << " : " << _codec_context->time_base);
         return Code::OK;
     }

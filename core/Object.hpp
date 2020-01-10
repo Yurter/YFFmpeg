@@ -14,8 +14,8 @@ namespace fpp {
         virtual ~Object() = default;
 
         /*constexpr*/ void      setName(const std::string& name);
-        std::string         name() const;
-        bool                is(std::string name) const;
+        std::string         name()          const;
+        bool                is(const std::string& name) const;
 
         virtual Code        init();
         void                setInited(bool inited);

@@ -5,7 +5,8 @@ namespace fpp {
     DecoderContext::DecoderContext(const IOParams params) :
         CodecContext(params, CodecType::Decoder)
     {
-        setName("DecoderContext");
+//        setName("DecoderContext");
+        setName("DeContext");
     }
 
     DecoderContext::~DecoderContext() {

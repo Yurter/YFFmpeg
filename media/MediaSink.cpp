@@ -85,6 +85,7 @@ namespace fpp {
 //        if (input_data.isAudio()) {
 //            log_warning("stamp 1: " << input_data);
 //        }
+        if (input_data.isAudio()) log_warning("2] WRITE: " << input_data);
 
         auto debug_pts_0 = input_data.pts();
 //        if (input_data.isAudio()) log_warning("1 Write audio: " << input_data << " : " << int(_output_format_context.stream(input_data.streamIndex())->stampType()));
@@ -95,7 +96,7 @@ namespace fpp {
         auto debug_pts_1 = input_data.pts();
 
 //        if (input_data.isAudio()) log_warning("2 Write audio: " << input_data << "\n");
-        if (input_data.isAudio()) log_warning("Rescaled from " << debug_pts_0 << " to " << debug_pts_1);
+//        if (input_data.isAudio()) log_warning(utils::media_type_to_string(input_data.type()) << " Rescaled from " << debug_pts_0 << " to " << debug_pts_1);
 //        if (input_data.isAudio()) {
 //            log_warning("stamp 2: " << input_data);
 //        }
@@ -121,7 +122,7 @@ namespace fpp {
         if (stream(output_data.streamIndex())->packetIndex() == 1) {
 //            log_warning("OUT : " << output_data);
         }
-        try_to(_output_format_context.write(output_data));
+        try_to(_output_format_context.write(output_data/*, ReadWriteMode::Interleaved*/));
         return Code::OK;
     }
 

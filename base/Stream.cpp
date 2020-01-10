@@ -121,7 +121,7 @@ namespace fpp {
         }
         case StampType::Rescale: {
             auto debug_value_00 = packet.pts();
-            log_warning("res from " << packet.timeBase() << " to " << params->timeBase());
+//            if (packet.isAudio()) log_warning("res from " << packet.timeBase() << " to " << params->timeBase());
             /* Рескеил в таймбейс потока без изменений */
             packet.setDts(av_rescale_q(packet.dts(), packet.timeBase(), params->timeBase()));
             packet.setPts(av_rescale_q(packet.pts(), packet.timeBase(), params->timeBase()));
