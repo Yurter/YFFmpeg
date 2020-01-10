@@ -127,19 +127,11 @@ namespace fpp {
         return _sequence;
     }
 
-//    ProcessorSequence Route::processorSequence() {
-//        return _sequence;
-//    }
-
     Code Route::changePartTo(ProcessorVector other) { //TODO
         log_warning("From: " << this->toString());
-        //for (auto& proc : other) {
         for (size_t i = 0; i < other.size(); ++i) {
             return_if(not_inited_ptr(other[i]), Code::INVALID_INPUT);
             try_to(_sequence[i]->disconnectFrom(_sequence[i + 1]));
-//            if ((i + 1) < other.size()) {
-//                try_to(_sequence[i]->disconnectFrom(other[i + 1]));
-//            }
             _sequence[i] = other[i];
         }
         auto debug_value_0 = other[other.size() - 1];

@@ -5,8 +5,8 @@ namespace fpp {
 
     Packet::Packet() :
         Data<AVPacket>()
-      , _stream_uid(INVALID_INT)
-      , _time_base(DEFAULT_RATIONAL)
+//      , _stream_uid(INVALID_INT)
+//      , _time_base(DEFAULT_RATIONAL)
     {
         setName("Packet");
     }
@@ -69,9 +69,9 @@ namespace fpp {
         _data.duration = duration;
     }
 
-    void Packet::setTimeBase(AVRational time_base) {
-        _time_base = time_base;
-    }
+//    void Packet::setTimeBase(AVRational time_base) {
+//        _time_base = time_base;
+//    }
 
     void Packet::setPos(int64_t pos) {
         _data.pos = pos;
@@ -81,9 +81,9 @@ namespace fpp {
         _data.stream_index = static_cast<int>(stream_index);
     }
 
-    void Packet::setStreamUid(int64_t stream_uid) {
-        _stream_uid = stream_uid;
-    }
+//    void Packet::setStreamUid(int64_t stream_uid) {
+//        _stream_uid = stream_uid;
+//    }
 
     int64_t Packet::pts() const {
         return _data.pts;
@@ -97,9 +97,9 @@ namespace fpp {
         return _data.duration;
     }
 
-    AVRational Packet::timeBase() const {
-        return _time_base;
-    }
+//    AVRational Packet::timeBase() const {
+//        return _time_base;
+//    }
 
     int64_t Packet::pos() const {
         return _data.pos;
@@ -109,9 +109,9 @@ namespace fpp {
         return static_cast<int64_t>(_data.stream_index);
     }
 
-    int64_t Packet::streamUid() const {
-        return _stream_uid;
-    }
+//    int64_t Packet::streamUid() const {
+//        return _stream_uid;
+//    }
 
     bool Packet::keyFrame() const {
 //        return_if(isAudio(), false); ломает логику предиката первого пакета в декодоре
@@ -130,12 +130,12 @@ namespace fpp {
                 + "dts " + utils::pts_to_string(_data.dts) + ", "
                 + "pts " + utils::pts_to_string(_data.pts) + ", "
                 + "dur " + std::to_string(_data.duration) + ", "
-                + "tb " + utils::rational_to_string(_time_base) + ", "
-                + "sid " + std::to_string(_data.stream_index) + ", "
-                + "suid " + std::to_string(_stream_uid);
+//                + "tb " + utils::rational_to_string(_time_base) + ", "
+                + "sid " + std::to_string(_data.stream_index) + ", ";
+//                + "suid " + std::to_string(_stream_uid);
         return str;
     }
-//    std::string Packet::toString() const {
+//    std::string Packet::toString() const { //TODO мб вернуть полные названия полей в лог ? 10.01
 //        /* Video packet: 33123 bytes, dts 460, pts 460, duration 33 */
 //        std::string str = utils::media_type_to_string(type()) + " packet: "
 //                + (keyFrame() ? "[I]" : "[_]") + ", "
@@ -154,10 +154,10 @@ namespace fpp {
         setPts(other.pts());
         setDts(other.dts());
         setDuration(other.duration());
-        setTimeBase(other.timeBase());
+//        setTimeBase(other.timeBase());
         setPos(other.pos());
         setStreamIndex(other.streamIndex());
-        setStreamUid(other.streamUid());
+//        setStreamUid(other.streamUid());
         if (av_packet_ref(&_data, &other._data) != 0) {
             log_error("av_packet_ref failed, " << other);
         }

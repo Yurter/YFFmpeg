@@ -62,31 +62,17 @@ namespace fpp {
                 setStampType(StampType::Offset); /* Происходит чтение не с начала файла */
             }
         } else {
-            /* Валидные штампы, проверка на необходимость рескейла */
-            if (utils::equal_rational(packet.timeBase(), params->timeBase())) {
-                setStampType(StampType::Copy);
-            } else {
-                setStampType(StampType::Rescale); //мысля не работает как надо, потому что этот метод вызывается только на входе
-            }
+            setStampType(StampType::Copy); // (нет смысла рескейлить, т.к. этот метод вызывается отлько на входе)
+//            /* Валидные штампы, проверка на необходимость рескейла */
+//            if (utils::equal_rational(packet.timeBase(), params->timeBase())) {
+//                setStampType(StampType::Copy);
+//            } else {
+//                setStampType(StampType::Rescale); //мысля не работает как надо, потому что этот метод вызывается только на входе
+//            }
         }
     }
-//    void Stream::determineStampType(const Packet& packet) { //TODO: перенести в сорс, т.к. только в нем изменяется дефолтный тип штампа
-//        if (packet.isAudio()) {
-//            setName(name());
-//        }
-//        if (packet.pts() != 0) { /* Требуется перештамповывать пакеты */
-//            if (_start_time_point == FROM_START) { /* Чтение из источника, передающего пакеты не с начала */
-//                setStampType(StampType::Realtime);
-//            } else {
-//                setStampType(StampType::Offset); /* Происходит чтение не с начала файла */
-//            }
-//        } else {
-//            setStampType(StampType::Copy);
-//        }
-//    }
 
-    Code Stream::stampPacket(Packet& packet) {
-//        if (packet.isAudio()) log_warning("STAMP: " << int(_stamp_type));
+    Code Stream::stampPacket(Packet& packet, AVRational packet_time_base) {
         switch (_stamp_type) {
         case StampType::Copy:
             _packet_duration = packet.pts() - _prev_pts;
@@ -123,8 +109,10 @@ namespace fpp {
             auto debug_value_00 = packet.pts();
 //            if (packet.isAudio()) log_warning("res from " << packet.timeBase() << " to " << params->timeBase());
             /* Рескеил в таймбейс потока без изменений */
-            packet.setDts(av_rescale_q(packet.dts(), packet.timeBase(), params->timeBase()));
-            packet.setPts(av_rescale_q(packet.pts(), packet.timeBase(), params->timeBase()));
+//            packet.setDts(av_rescale_q(packet.dts(), packet.timeBase(), params->timeBase()));
+//            packet.setPts(av_rescale_q(packet.pts(), packet.timeBase(), params->timeBase()));
+            packet.setDts(av_rescale_q(packet.dts(), packet_time_base, params->timeBase()));
+            packet.setPts(av_rescale_q(packet.pts(), packet_time_base, params->timeBase()));
             auto debug_value_01 = packet.pts();
 
             if (packetIndex() == 0) {
@@ -176,26 +164,16 @@ namespace fpp {
             packet.setPts(new_pts);
             break;
         }
-        case StampType::AudioNOPTS:
-            packet.setDts(AV_NOPTS_VALUE);
-            packet.setPts(AV_NOPTS_VALUE);
-            break;
         }
 
         packet.setPos(-1);
         packet.setDuration(_packet_duration);
-        packet.setTimeBase(params->timeBase());
-        packet.setStreamUid(params->streamUid());
+//        packet.setTimeBase(params->timeBase());
+//        packet.setStreamUid(params->streamUid());
         params->increaseDuration(packet.duration());
         _prev_dts = packet.dts();
         _prev_pts = packet.pts();
         _packet_index++;
-//        if (packet.isAudio()) {
-//            packet.setDts(AV_NOPTS_VALUE);
-//            packet.setPts(AV_NOPTS_VALUE);
-//            packet.setTimeBase({ 1, 16000 });
-////            packet.setDuration(0);
-//        }
         return Code::OK;
     }
 

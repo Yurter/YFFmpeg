@@ -143,8 +143,9 @@ namespace fpp {
     void InputFormatContext::initPacket(Packet& packet) {
         auto packet_stream = stream(packet.streamIndex());
         packet.setType(packet_stream->type());
-        packet.setStreamUid(packet_stream->params->streamUid());
-        packet.setTimeBase(packet_stream->params->timeBase());
+//        packet.setStreamIndex(packet_stream->index()); //TODO надо ли ставить тут? 10.01
+//        packet.setStreamUid(packet_stream->params->streamUid());
+//        packet.setTimeBase(packet_stream->params->timeBase());
     }
 
 } // namespace fpp

@@ -35,7 +35,8 @@ namespace fpp {
         switch (ret) { //TODO убрать свич ?
         case 0:
             output_frame.setType(params.in->type());
-            output_frame.setTimeBase(params.in->timeBase());
+//            output_frame.setTimeBase(params.in->timeBase());
+//            output_frame.se
 //            log_warning("DECODED: " << output_frame);
             if (output_frame.empty()) {
                 log_error("Sending empty frame: " << output_frame);

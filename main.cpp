@@ -315,7 +315,7 @@ int main() {
 //    }
 
     {
-//        set_log_level(LogLevel::Debug);
+        set_log_level(LogLevel::Debug);
 //        set_ffmpeg_log_level(LogLevel::Quiet);
         write_video_from_camera();
         return 0;

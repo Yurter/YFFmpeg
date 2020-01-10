@@ -17,10 +17,10 @@ namespace fpp {
         Frame& operator=(const Frame&& other);
 
         int64_t             pts()       const;
-        AVRational          timeBase()  const;
+//        AVRational          timeBase()  const;
 
         void                setPts(int64_t value);
-        void                setTimeBase(AVRational time_base);
+//        void                setTimeBase(AVRational time_base);
 
         virtual uint64_t    size()      const override;
         virtual std::string toString()  const override;
@@ -32,7 +32,7 @@ namespace fpp {
 
     private:
 
-        AVRational          _time_base;
+//        AVRational          _time_base;
 
     };
 

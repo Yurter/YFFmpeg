@@ -29,7 +29,7 @@ namespace fpp {
         virtual Code        push(const Object* input_data) = 0;
 
         int64_t             uid()                       const;
-        const StreamVector& streams()                   const;
+        const StreamVector& streams()                   const; //TODO копируется функционал с контекстами 10.01
         Stream*             bestStream(MediaType type)  const;
         Stream*             stream(int64_t index)       const;
         Code                addStream(Stream* stream);

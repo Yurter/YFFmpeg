@@ -36,9 +36,9 @@ namespace fpp {
         }
         output_packet.setType(params.in->type());
 //        output_packet.setTimeBase(params.in->timeBase());
-        output_packet.setTimeBase(_codec_context->time_base);
+//        output_packet.setTimeBase(_codec_context->time_base);
         output_packet.setStreamIndex(params.out->streamIndex());
-        output_packet.setStreamUid(params.out->streamUid());
+//        output_packet.setStreamUid(params.out->streamUid());
         if (output_packet.isAudio()) log_warning("-] ENCODED: " << output_packet);
 //        log_warning("ENCODED: " << output_packet << " : " << _codec_context->time_base);
         return Code::OK;
@@ -80,7 +80,7 @@ namespace fpp {
         }
         log_error("Flushed success");
         output_packet.setStreamIndex(params.out->streamIndex());
-        output_packet.setStreamUid(params.out->streamUid());
+//        output_packet.setStreamUid(params.out->streamUid());
         return Code::OK;
     }
 

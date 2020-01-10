@@ -5,7 +5,7 @@ namespace fpp {
 
     Frame::Frame() :
         Data<AVFrame>()
-      , _time_base(DEFAULT_RATIONAL)
+//      , _time_base(DEFAULT_RATIONAL)
     {
         setName("Frame");
     }
@@ -43,17 +43,17 @@ namespace fpp {
         return _data.pts;
     }
 
-    AVRational Frame::timeBase() const {
-        return _time_base;
-    }
+//    AVRational Frame::timeBase() const {
+//        return _time_base;
+//    }
 
     void Frame::setPts(int64_t value) {
         _data.pts = value;
     }
 
-    void Frame::setTimeBase(AVRational time_base) {
-        _time_base = time_base;
-    }
+//    void Frame::setTimeBase(AVRational time_base) {
+//        _time_base = time_base;
+//    }
 
     uint64_t Frame::size() const {
         if (isVideo()) {
@@ -77,7 +77,7 @@ namespace fpp {
         if (isVideo()) {
             str += std::to_string(size()) + " bytes, "
                     + "pts " + utils::pts_to_string(_data.pts) + ", "
-                    + "tb " + utils::rational_to_string(_time_base) + ", "
+//                    + "tb " + utils::rational_to_string(_time_base) + ", "
                     + "key_frame " + utils::bool_to_string(_data.key_frame) + ", "
                     + "width " + std::to_string(_data.width) + ", "
                     + "height " + std::to_string(_data.height) + ", "
@@ -88,7 +88,7 @@ namespace fpp {
         if (isAudio()) {
             str += std::to_string(size()) + " bytes, "
                     + "pts " + utils::pts_to_string(_data.pts) + ", "
-                    + "tb " + utils::rational_to_string(_time_base) + ", "
+//                    + "tb " + utils::rational_to_string(_time_base) + ", "
                     + "nb_samples " + std::to_string(_data.nb_samples) + ", "
                     + "channel_layout " + std::to_string(_data.channel_layout) + ", "
                     + "sample_rate " + std::to_string(_data.sample_rate);
@@ -104,14 +104,14 @@ namespace fpp {
     void Frame::copyOther(const Frame& other) {
         av_frame_ref(&_data, &other._data);
         setType(other.type());
-        setTimeBase(other.timeBase());
+//        setTimeBase(other.timeBase());
         setInited(true);
     }
 
     void Frame::copyOther(const AVFrame& other, MediaType type, AVRational time_base) {
         av_frame_ref(&_data, &other);
         setType(type);
-        setTimeBase(time_base);
+//        setTimeBase(time_base);
         setInited(true);
     }
 

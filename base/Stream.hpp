@@ -18,18 +18,7 @@ namespace fpp {
         Offset,
         /* Штампы синка */
         Rescale,
-        AudioNOPTS, //TODO костыль? 10.01
     };
-//    enum class StampType {
-//        ConstantFramerate,
-//        VariableFramerate,
-//        Copy,
-//        Append,
-//        Rescale,
-//        Realtime,
-//        Offset,
-//    };
-
 
     class Stream : public Data<AVStream*> {
 
@@ -45,7 +34,7 @@ namespace fpp {
         virtual std::string toString() const override final;
 
         void                determineStampType(const Packet& packet);
-        Code                stampPacket(Packet& packet);
+        Code                stampPacket(Packet& packet, AVRational packet_time_base);
         bool                timeIsOver() const;
 
         void                setUsed(bool value);
@@ -53,12 +42,12 @@ namespace fpp {
         void                setStartTimePoint(int64_t value);
         void                setEndTimePoint(int64_t value);
 
-        int64_t             index()         const;
-        bool                used()          const;
-        StampType           stampType()     const;
-        int64_t             startTimePoint() const;
-        int64_t             endTimePoint()   const;
-        int64_t             packetIndex()   const;
+        int64_t             index()             const;
+        bool                used()              const;
+        StampType           stampType()         const;
+        int64_t             startTimePoint()    const;
+        int64_t             endTimePoint()      const;
+        int64_t             packetIndex()       const;
 
         AVCodecParameters*  codecParameters();
 

@@ -8,6 +8,7 @@
 #include <ctime>
 #include <filesystem>
 #include <regex>
+#include <chrono>
 
 namespace fpp {
 
@@ -90,7 +91,8 @@ namespace fpp {
 
         header += "[" + encodeLogLevel(log_level) + "]";
         const int64_t t = std::time(nullptr);
-        header += "[" + (std::stringstream() << std::put_time(std::localtime(&t), "%H:%M:%S")).str() + "]"; //TODO if Debug выводить мс через хроно, вынести формирование временной метки в метод
+//        header += "[" + (std::stringstream() << std::put_time(std::localtime(&t), "%H:%M:%S")).str() + "]"; //TODO if Debug выводить мс через хроно, вынести формирование временной метки в метод
+        header += "[" + getTimeStamp(log_level) + "]";
         header += "[" + caller_name + "]";
 
         if (log_level >= LogLevel::Debug) {
@@ -108,6 +110,20 @@ namespace fpp {
         std::stringstream ss;
         ss << header << " " << message;
 
+        return ss.str();
+    }
+
+    std::string Logger::getTimeStamp(LogLevel log_level) const {
+        const auto now = std::chrono::system_clock::now();
+        const auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+        std::stringstream ss;
+        ss << std::put_time(std::localtime(&in_time_t), "%H:%M:%S");
+        if (log_level >= LogLevel::Debug) {
+            ss << std::chrono::duration_cast<std::chrono::milliseconds>(
+                        now.time_since_epoch()
+                  ).count();
+        }
         return ss.str();
     }
 
@@ -154,20 +170,6 @@ namespace fpp {
     }
 
     std::string Logger::encodeLogLevel(LogLevel value) {
-//        switch (value) {
-//        case LogLevel::Info:
-//            return "I";
-//        case LogLevel::Warning:
-//            return "W";
-//        case LogLevel::Error:
-//            return "E";
-//        case LogLevel::Debug:
-//            return "D";
-//        case LogLevel::Trace:
-//            return "T";
-//        case LogLevel::Quiet:
-//            return "Q";
-//        }
         switch (value) {
         case LogLevel::Info:
             return "info";

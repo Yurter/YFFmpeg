@@ -72,6 +72,7 @@ SOURCES += \
 HEADERS += \
     base/CodecContext.hpp \
     base/Route.hpp \
+    base/datax.hpp \
     codec/Decoder.hpp \
     codec/DecoderContext.hpp \
     codec/Encoder.hpp \

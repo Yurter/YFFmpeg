@@ -79,7 +79,7 @@ namespace fpp {
                 return Code::ERR;
             }
             resampled_frame.setType(params.in->type());
-            resampled_frame.setTimeBase(params.in->timeBase());
+//            resampled_frame.setTimeBase(params.in->timeBase());
             resampled_frame.setPts(input_data.pts());
 
 //            log_warning("RESAMPLED: " << resampled_frame);
