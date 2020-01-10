@@ -86,6 +86,7 @@ namespace fpp {
 //    }
 
     Code Stream::stampPacket(Packet& packet) {
+//        if (packet.isAudio()) log_warning("STAMP: " << int(_stamp_type));
         switch (_stamp_type) {
         case StampType::Copy:
             _packet_duration = packet.pts() - _prev_pts;
@@ -119,15 +120,20 @@ namespace fpp {
             break;
         }
         case StampType::Rescale: {
+            auto debug_value_00 = packet.pts();
+            log_warning("res from " << packet.timeBase() << " to " << params->timeBase());
             /* Рескеил в таймбейс потока без изменений */
             packet.setDts(av_rescale_q(packet.dts(), packet.timeBase(), params->timeBase()));
             packet.setPts(av_rescale_q(packet.pts(), packet.timeBase(), params->timeBase()));
+            auto debug_value_01 = packet.pts();
 
             if (packetIndex() == 0) {
                 _pts_offset = -packet.pts();
                 _dts_offset = -packet.dts();
-                log_error("OFFSET: " << _pts_offset);
+//                log_error("OFFSET: " << _pts_offset);
             }
+
+            auto debug_value = packet.pts();
 
             /* Пересчет с учетом смещения */
             auto new_pts = packet.pts() + _pts_offset;
@@ -140,7 +146,8 @@ namespace fpp {
                 _dts_offset = offset;
                 new_pts = packet.pts() + _pts_offset;
                 new_dts = packet.dts() + _dts_offset;
-//                log_error("new_pts < _prev_pts: " << new_pts << " " << offset);
+                log_error("new_pts < _prev_pts: " << new_pts << " " << offset);
+                log_error("source pts: " << debug_value << ", " << debug_value_00 << " -> " << debug_value_01);
             }
 
             /* Расчет длительности пакета */
@@ -183,12 +190,12 @@ namespace fpp {
         _prev_dts = packet.dts();
         _prev_pts = packet.pts();
         _packet_index++;
-        if (packet.isAudio()) {
-            packet.setDts(AV_NOPTS_VALUE);
-            packet.setPts(AV_NOPTS_VALUE);
-            packet.setTimeBase({ 1, 16000 });
-//            packet.setDuration(0);
-        }
+//        if (packet.isAudio()) {
+//            packet.setDts(AV_NOPTS_VALUE);
+//            packet.setPts(AV_NOPTS_VALUE);
+//            packet.setTimeBase({ 1, 16000 });
+////            packet.setDuration(0);
+//        }
         return Code::OK;
     }
 

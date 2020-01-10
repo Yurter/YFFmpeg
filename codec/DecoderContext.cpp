@@ -33,7 +33,9 @@ namespace fpp {
         int ret = avcodec_receive_frame(_codec_context, &output_frame.raw()); //TODO брать тип из типа потока (добавить потоку тип)
         switch (ret) { //TODO убрать свич ?
         case 0:
-            output_frame.setType(input_packet.type());
+            output_frame.setType(params.in->type());
+            output_frame.setTimeBase(params.in->timeBase());
+//            log_warning("DECODED: " << output_frame);
             if (output_frame.empty()) {
                 log_error("Sending empty frame: " << output_frame);
             }

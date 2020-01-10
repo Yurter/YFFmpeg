@@ -65,22 +65,25 @@ namespace fpp {
         }
         auto audio_params = static_cast<const AudioParameters * const>(params.out);
         do {
-            Frame output_data; // TODO frameSize брать из контекста энкодера
-            if (!initOutputFrame(output_data, audio_params->frameSize())) {
+            Frame resampled_frame; // TODO frameSize брать из контекста энкодера
+            if (!initOutputFrame(resampled_frame, audio_params->frameSize())) {
                 log_error("initOutputFrame failed");
                 return Code::ERR;
             }
-            if (configChanged(&input_data.raw(), &output_data.raw())) {
+            if (configChanged(&input_data.raw(), &resampled_frame.raw())) {
                 log_error("configChanged failed");
                 return Code::ERR;
             }
-            if (swr_convert_frame(_resampler_context, &output_data.raw(), nullptr) != 0) {
+            if (swr_convert_frame(_resampler_context, &resampled_frame.raw(), nullptr) != 0) {
                 log_error("swr_convert_frame failed");
                 return Code::ERR;
             }
-            output_data.setType(MEDIA_TYPE_AUDIO);
+            resampled_frame.setType(params.in->type());
+            resampled_frame.setTimeBase(params.in->timeBase());
+            resampled_frame.setPts(input_data.pts());
 
-            try_to(sendOutputData(output_data));
+//            log_warning("RESAMPLED: " << resampled_frame);
+            try_to(sendOutputData(resampled_frame));
         } while (swr_get_out_samples(_resampler_context, 0) >= audio_params->frameSize());
 
         return Code::OK;

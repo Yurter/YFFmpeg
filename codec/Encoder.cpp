@@ -42,6 +42,7 @@ namespace fpp {
         return_if(utils::exit_code(ret), ret);
         if (ret == Code::OK) {
             encoded_packet.setDts(encoded_packet.pts()); //TODO костыль, разобраться, почему смещение во времени (0, -45)
+//            if (encoded_packet.isAudio()) log_warning("encoded audio: " << encoded_packet << " : " << _encoder_context.codecContext()->time_base);
             try_to(sendOutputData(encoded_packet));
         }
         return ret;

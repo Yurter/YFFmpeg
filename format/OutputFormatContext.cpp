@@ -24,11 +24,11 @@ namespace fpp {
             //(decoders: mp3float mp3 ) (encoders: libmp3lame libshine )
         case Event: { /* Евент должен писаться копипастой */
             /* Video */
-            auto video_params = new VideoParameters(); //TODO memory leak
-            video_params->setCodec("libx264", CodecType::Encoder);
-            video_params->setGopSize(2);
-            video_params->setTimeBase(DEFAULT_TIME_BASE);
-            try_to(createStream(video_params));
+//            auto video_params = new VideoParameters(); //TODO memory leak
+//            video_params->setCodec("libx264", CodecType::Encoder);
+//            video_params->setGopSize(2);
+//            video_params->setTimeBase(DEFAULT_TIME_BASE);
+//            try_to(createStream(video_params));
             /* Audio */
             auto audio_params = new AudioParameters(); //TODO memory leak
 //            audio_params->setCodec("mp3", CodecType::Encoder);

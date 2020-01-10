@@ -234,6 +234,8 @@ namespace fpp {
     void utils::parameters_to_context(const Parameters * const param, AVCodecContext* codec) {
         codec->codec_id = param->codecId();
         codec->bit_rate = param->bitrate();
+//        codec->time_base = param->timeBase();
+        codec->time_base = { 1, 16000 };
 
         switch (param->type()) {
         case MediaType::MEDIA_TYPE_VIDEO: {
@@ -241,7 +243,7 @@ namespace fpp {
             codec->pix_fmt      = video_parameters->pixelFormat();
             codec->width        = int(video_parameters->width());
             codec->height       = int(video_parameters->height());
-            codec->time_base    = param->timeBase();
+//            codec->time_base    = param->timeBase();
             codec->framerate    = video_parameters->frameRate();
             codec->gop_size     = int(video_parameters->gopSize());
 

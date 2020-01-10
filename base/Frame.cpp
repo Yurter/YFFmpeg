@@ -77,6 +77,7 @@ namespace fpp {
         if (isVideo()) {
             str += std::to_string(size()) + " bytes, "
                     + "pts " + utils::pts_to_string(_data.pts) + ", "
+                    + "tb " + utils::rational_to_string(_time_base) + ", "
                     + "key_frame " + utils::bool_to_string(_data.key_frame) + ", "
                     + "width " + std::to_string(_data.width) + ", "
                     + "height " + std::to_string(_data.height) + ", "
@@ -87,6 +88,7 @@ namespace fpp {
         if (isAudio()) {
             str += std::to_string(size()) + " bytes, "
                     + "pts " + utils::pts_to_string(_data.pts) + ", "
+                    + "tb " + utils::rational_to_string(_time_base) + ", "
                     + "nb_samples " + std::to_string(_data.nb_samples) + ", "
                     + "channel_layout " + std::to_string(_data.channel_layout) + ", "
                     + "sample_rate " + std::to_string(_data.sample_rate);

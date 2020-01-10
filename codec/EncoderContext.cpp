@@ -15,8 +15,6 @@ namespace fpp {
 
     Code EncoderContext::encode(Frame input_frame, Packet& output_packet) {
         try_to(output_packet.init());
-        output_packet.setType(params.out->type());
-        output_packet.setTimeBase(params.in->timeBase());
 //        log_error("$$ input_frame: " << input_frame);
         log_trace("Frame for encoding: " << input_frame);
         int ret;
@@ -31,9 +29,13 @@ namespace fpp {
 //            log_warning("avcodec_receive_packet failed");
             return Code::AGAIN;
         }
+        output_packet.setType(params.in->type());
+//        output_packet.setTimeBase(params.in->timeBase());
+        output_packet.setTimeBase(_codec_context->time_base);
         output_packet.setStreamIndex(params.out->streamIndex());
         output_packet.setStreamUid(params.out->streamUid());
-//        log_error("$$ output_packet: " << output_packet);
+        log_warning("ENCODED: " << output_packet.pts() << " : " << _codec_context->time_base);
+//        log_warning("ENCODED: " << output_packet << " : " << _codec_context->time_base);
         return Code::OK;
     }
 

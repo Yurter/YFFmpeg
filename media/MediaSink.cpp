@@ -86,12 +86,16 @@ namespace fpp {
 //            log_warning("stamp 1: " << input_data);
 //        }
 
-//        if (input_data.isAudio()) log_warning("1 Write audio: " << input_data);
+        auto debug_pts_0 = input_data.pts();
+//        if (input_data.isAudio()) log_warning("1 Write audio: " << input_data << " : " << int(_output_format_context.stream(input_data.streamIndex())->stampType()));
 
 //        if (input_data.isVideo())
         try_to(_output_format_context.stream(input_data.streamIndex())->stampPacket(input_data));
 
-//        if (input_data.isAudio()) log_warning("/*2*/ Write audio: " << input_data << "\n");
+        auto debug_pts_1 = input_data.pts();
+
+//        if (input_data.isAudio()) log_warning("2 Write audio: " << input_data << "\n");
+        if (input_data.isAudio()) log_warning("Rescaled from " << debug_pts_0 << " to " << debug_pts_1);
 //        if (input_data.isAudio()) {
 //            log_warning("stamp 2: " << input_data);
 //        }
