@@ -231,21 +231,21 @@ namespace fpp {
         return Code::OK;
     }
 
-    void utils::parameters_to_context(const Parameters * const param, AVCodecContext* codec) {
-        codec->codec_id = param->codecId();
-        codec->bit_rate = param->bitrate();
+    void utils::parameters_to_context(const Parameters* param, AVCodecContext* codec_context) {
+        codec_context->codec_id = param->codecId();
+        codec_context->bit_rate = param->bitrate();
 //        codec->time_base = param->timeBase();
-        codec->time_base = { 1, 16000 };
+//        codec_context->time_base = { 1, 16000 /*тут нужен таймбейс входного потока, либо рескейлить в энкодере*/ };
 
         switch (param->type()) {
         case MediaType::MEDIA_TYPE_VIDEO: {
-            auto video_parameters = dynamic_cast<const VideoParameters*>(param);
-            codec->pix_fmt      = video_parameters->pixelFormat();
-            codec->width        = int(video_parameters->width());
-            codec->height       = int(video_parameters->height());
+            auto video_parameters = static_cast<const VideoParameters*>(param);
+            codec_context->pix_fmt      = video_parameters->pixelFormat();
+            codec_context->width        = int(video_parameters->width());
+            codec_context->height       = int(video_parameters->height());
 //            codec->time_base    = param->timeBase();
-            codec->framerate    = video_parameters->frameRate();
-            codec->gop_size     = int(video_parameters->gopSize());
+            codec_context->framerate    = video_parameters->frameRate();
+            codec_context->gop_size     = int(video_parameters->gopSize());
 
             //TODO опции не применяются, лог раздражает
 //            if (auto ret = av_opt_set(codec->priv_data, "crf", "23", 0); ret != 0) {
@@ -265,11 +265,11 @@ namespace fpp {
             break;
         }
         case MediaType::MEDIA_TYPE_AUDIO: {
-            auto audio_parameters = dynamic_cast<const AudioParameters*>(param);
-            codec->sample_fmt       = audio_parameters->sampleFormat();
-            codec->channel_layout   = audio_parameters->channelLayout();
-            codec->channels         = int(audio_parameters->channels());
-            codec->sample_rate      = int(audio_parameters->sampleRate());
+            auto audio_parameters = static_cast<const AudioParameters*>(param);
+            codec_context->sample_fmt       = audio_parameters->sampleFormat();
+            codec_context->channel_layout   = audio_parameters->channelLayout();
+            codec_context->channels         = int(audio_parameters->channels());
+            codec_context->sample_rate      = int(audio_parameters->sampleRate());
             break;
         }
         case MediaType::MEDIA_TYPE_UNKNOWN:

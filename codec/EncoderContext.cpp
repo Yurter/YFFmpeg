@@ -41,6 +41,7 @@ namespace fpp {
 
     Code EncoderContext::initParams() {
         utils::parameters_to_context(params.out, _codec_context);
+        _codec_context->time_base = params.in->timeBase(); //TODO костыль
         return Code::OK;
     }
 

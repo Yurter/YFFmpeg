@@ -56,7 +56,7 @@ namespace fpp {
         static AVCodec*     find_encoder(AVCodecID codec_id);
 
         static Code         init_codecpar(AVCodecParameters* codecpar, AVCodec* codec);
-        static void         parameters_to_context(const Parameters * const param, AVCodecContext* codec);
+        static void         parameters_to_context(const Parameters* param, AVCodecContext* codec_context);
         static void         parameters_to_avcodecpar(Parameters* parametres, AVCodecParameters* codecpar);
         static void         parameters_from_avcodecpar(Parameters* parametres, AVCodecParameters* codecpar);
 
