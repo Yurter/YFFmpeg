@@ -17,17 +17,17 @@ namespace fpp {
         return_if(inited(), Code::INVALID_CALL_ORDER);
         try_to(createContext());
         switch (_preset) {
-        case Auto: {
+        case IOType::Auto: {
             try_to(guessOutputFromat());
             break;
         }
-        case Event: {
+        case IOType::Event: {
             /* Video */
-            auto video_params = new VideoParameters(); //TODO memory leak
-            video_params->setCodec("libx264", CodecType::Encoder);
-            video_params->setGopSize(2);
-            video_params->setTimeBase(DEFAULT_TIME_BASE);
-            try_to(createStream(video_params));
+//            auto video_params = new VideoParameters(); //TODO memory leak
+//            video_params->setCodec("libx264", CodecType::Encoder);
+//            video_params->setGopSize(2);
+//            video_params->setTimeBase(DEFAULT_TIME_BASE);
+//            try_to(createStream(video_params));
             /* Audio */
             auto audio_params = new AudioParameters(); //TODO memory leak
             audio_params->setCodec("libmp3lame", CodecType::Encoder);
@@ -36,7 +36,7 @@ namespace fpp {
             try_to(createStream(audio_params));
             break;
         }
-        case YouTube: {
+        case IOType::YouTube: {
             /* Video */
             auto video_parameters = new VideoParameters;
 //            video_parameters->setWidth(1920);
@@ -66,7 +66,7 @@ namespace fpp {
 //            try_to(createStream(audio_parameters));
             break;
         }
-        case Timelapse: {
+        case IOType::Timelapse: {
             /* Video */
             auto video_parameters = new VideoParameters;
             video_parameters->setCodec("libx264", CodecType::Encoder);
@@ -75,7 +75,7 @@ namespace fpp {
             try_to(createStream(video_parameters));
             break;
         }
-//        case OpenCV: {
+//        case IOType::OpenCV: {
 //            /* Video */
 //            auto video_parameters = new VideoParameters;
 //            video_parameters->setWidth(1920);

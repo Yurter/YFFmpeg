@@ -2,9 +2,9 @@
 
 namespace fpp {
 
-    InputFormatContext::InputFormatContext(const std::string mrl, /*ProcessorPointer stream_context,*/ IOType preset) :
-        FormatContext(mrl, /*stream_context,*/ preset)
-      , _input_format(nullptr)
+    InputFormatContext::InputFormatContext(const std::string mrl, IOType preset) :
+        FormatContext { mrl, preset }
+      , _input_format { nullptr }
     {
         setName("InputFormatContext");
     }
@@ -21,6 +21,7 @@ namespace fpp {
             avdevice_register_all();
             try_to(guessInputFromat());
             _artificial_delay = 1024; //TODO: 1024 для аудио, для видео - ? (1000 / frame_rate)
+//            _media_resource_locator = SINE;
             break;
         default:
             log_error("Invalid preset");
@@ -59,28 +60,42 @@ namespace fpp {
         return Code::OK;
     }
 
+//    Code InputFormatContext::read(Packet& packet, ReadWriteMode read_mode) {
+//        switch (read_mode) {
+//        case ReadWriteMode::Instant: {
+//            int ret = av_read_frame(mediaFormatContext(), &packet.raw());
+//            return_info_if(ret == AVERROR_EOF
+//                           , "Reading completed"
+//                           , Code::END_OF_FILE);
+//            return_error_if(ret < 0
+//                            , "Cannot read source: \"" << mediaResourceLocator() << "\". "
+//                            , Code::FFMPEG_ERROR);
+//            break;
+//        }
+//        case ReadWriteMode::Interleaved:
+
+//            return Code::NOT_IMPLEMENTED;
+//        }
+//        initPacket(packet);
+//        return Code::OK;
+//    }
     Code InputFormatContext::read(Packet& packet, ReadWriteMode read_mode) {
-        switch (read_mode) {
-        case ReadWriteMode::Instant: {
-            int ret = av_read_frame(mediaFormatContext(), &packet.raw());
-            return_info_if(ret == AVERROR_EOF
-                           , "Reading completed"
-                           , Code::END_OF_FILE);
-            return_error_if(ret < 0
-                            , "Cannot read source: \"" << mediaResourceLocator() << "\". "
-                            , Code::FFMPEG_ERROR);
-            initPacket(packet);
-//            if (packet.isAudio()) {
-//                log_warning("packet: " << packet);
-//                log_warning("params: " << stream(packet.streamIndex())->params->toString());
-//                log_warning("");
-//            }
-            return Code::OK;
+        int ret = av_read_frame(mediaFormatContext(), &packet.raw());
+
+        return_info_if(ret == AVERROR_EOF
+                       , "Reading completed"
+                       , Code::END_OF_FILE);
+
+        return_error_if(ret < 0
+                        , "Cannot read source: \"" << mediaResourceLocator() << "\". "
+                        , Code::FFMPEG_ERROR);
+
+        if (read_mode == ReadWriteMode::Interleaved) { //TODO 13.01
+            utils::sleep_for_ms(23); //TODO сделать задержку (1024мс в tb{1,1000}) 13.01
         }
-        case ReadWriteMode::Interleaved:
-            return Code::NOT_IMPLEMENTED;
-        }
-        return Code::INVALID_INPUT;
+
+        initPacket(packet);
+        return Code::OK;
     }
 
     Code fpp::InputFormatContext::createContext() {

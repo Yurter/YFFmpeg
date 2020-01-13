@@ -201,6 +201,9 @@ namespace fpp {
         if (media_resurs_locator.find("aevalsrc") != std::string::npos) {
             return std::string("lavfi");
         }
+        if (media_resurs_locator.find("sine=") != std::string::npos) {
+            return std::string("lavfi");
+        }
         if (media_resurs_locator.find("video=") != std::string::npos) {
             return std::string("dshow");
         }

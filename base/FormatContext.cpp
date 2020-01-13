@@ -47,7 +47,7 @@ namespace fpp {
         return _preset;
     }
 
-    bool FormatContext::preset(IOType value) const {
+    bool FormatContext::presetIs(IOType value) const {
         return _preset == value;
     }
 

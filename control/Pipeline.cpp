@@ -141,7 +141,7 @@ namespace fpp {
         auto out_context = dynamic_cast<MediaSink*>(findProcessorByUid(output_stream->params->contextUid()).get()); //TODO кривой код: вынести IOType в Processor ?
         if (inited_ptr(out_context)) {
             video_filter_required = video_filter_required
-                                    || out_context->outputFormatContext()->preset(IOType::Timelapse); //TODO кривой код
+                                    || out_context->outputFormatContext()->presetIs(IOType::Timelapse); //TODO кривой код
         }
 
         transcoding_required = (transcoding_required

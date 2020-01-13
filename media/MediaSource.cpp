@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    MediaSource::MediaSource(const std::string mrl, IOType preset) :
-        _input_format_context(mrl, preset)
+    MediaSource::MediaSource(const std::string& mrl, IOType preset) :
+        _input_format_context { mrl, preset }
     {
         setName("MediaSource");
     }
@@ -44,7 +44,7 @@ namespace fpp {
         stopWait(); //TODO костыль?
         try_to(_input_format_context.close());
         log_info("Source \"" << _input_format_context.mediaResourceLocator() << "\" closed, "
-                 << utils::time_to_string(stream(0)->params->duration(), stream(0)->params->timeBase()));
+                 << utils::time_to_string(stream(0)->params->duration(), stream(0)->params->timeBase())); //TODO индекс нулевой закардкожен - брать блиьельность из контекста, а в нем максимальную по потокам 13.01
         setOpened(false);
         return Code::OK;
     }
@@ -78,8 +78,10 @@ namespace fpp {
                 try_to(_input_format_context.seek(stream->index(), stream->startTimePoint()));
             }
         }
-        try_to(_input_format_context.read(input_data));
-        return_if(stream(input_data.streamIndex())->timeIsOver(), Code::END_OF_FILE);
+//        try_to(_input_format_context.read(input_data));
+        try_to(_input_format_context.read(input_data, _input_format_context.presetIs(IOType::Virtual) ? ReadWriteMode::Interleaved : ReadWriteMode::Instant)); //TODO refactoring 13.01
+        if (input_data.isAudio()) log_warning("1] READ: " << input_data);
+        return_if(stream(input_data.streamIndex())->timeIsOver(), Code::END_OF_FILE); //TODO перенести
         return Code::OK;
     }
 
@@ -93,6 +95,7 @@ namespace fpp {
 
         auto data_stream = stream(input_data.streamIndex());
         try_to(stream(input_data.streamIndex())->stampPacket(input_data/*, data_stream->params->timeBase()*/));
+//        if (input_data.isAudio()) log_warning("1] READ: " << input_data);
 
         if (inputDataCount() == 0) { //TODO нуженл ли этот лог?
             log_debug("Read from "
