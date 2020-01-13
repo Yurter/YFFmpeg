@@ -26,9 +26,9 @@ namespace fpp {
 
     private:
 
-        std::string                     _sink_name;
-        std::function<Code(Packet&)>    _write_func;
-        std::function<Code(Packet&)>    _process_func;
+        std::string         _sink_name;
+        WriteFunction       _write_func;
+        ProcessFunction     _process_func;
 
     };
 

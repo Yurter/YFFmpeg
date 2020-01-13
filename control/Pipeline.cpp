@@ -3,8 +3,7 @@
 
 namespace fpp {
 
-    Pipeline::Pipeline()
-    {
+    Pipeline::Pipeline() {
         setName("Pipeline");
     }
 
@@ -12,12 +11,16 @@ namespace fpp {
         try_throw(stop());
     }
 
-    Code Pipeline::addElement(ProcessorPointer processor) { //TODO каша из кода
+    Code Pipeline::addElement(ProcessorPointer processor, SourceType priority) { //TODO каша из кода
         switch (processor->type()) {
         case ProcessorType::Input:
             try_to(processor->init());
             try_to(processor->open());
-            _data_sources.push_back(processor);
+            if (priority == SourceType::Mandatory) {
+                _data_sources.push_back(processor);
+            } else {
+                _data_backup_sources.push_back(processor);
+            }
             return Code::OK;
         case ProcessorType::Output:
             _data_sinks.push_back(processor);

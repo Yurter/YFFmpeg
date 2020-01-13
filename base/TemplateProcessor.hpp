@@ -11,12 +11,14 @@ namespace fpp {
 
     public:
 
+        using InputQueue = AsyncQueue<inType>;
+        using OutputQueue = AsyncQueue<outType>;
+
         using IOFunction = std::function<Code(void)>;
+        using ReadFunction = std::function<Code(inType&)>;
         using WriteFunction = std::function<Code(outType&)>;
         using ProcessFunction = std::function<Code(outType&)>;
         using DataVerification = std::function<Code(const inType&)>;
-        using InputQueue = AsyncQueue<inType>;
-        using OutputQueue = AsyncQueue<outType>;
 
         TemplateProcessor() :
             _input_queue(50 MEGABYTES,  [](const inType& input_data)   { return input_data.size();  })

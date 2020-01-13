@@ -21,8 +21,7 @@ namespace fpp {
             try_to(guessOutputFromat());
             break;
         }
-            //(decoders: mp3float mp3 ) (encoders: libmp3lame libshine )
-        case Event: { /* Евент должен писаться копипастой */
+        case Event: {
             /* Video */
             auto video_params = new VideoParameters(); //TODO memory leak
             video_params->setCodec("libx264", CodecType::Encoder);
@@ -31,11 +30,9 @@ namespace fpp {
             try_to(createStream(video_params));
             /* Audio */
             auto audio_params = new AudioParameters(); //TODO memory leak
-//            audio_params->setCodec("mp3", CodecType::Encoder);
             audio_params->setCodec("libmp3lame", CodecType::Encoder);
             audio_params->setTimeBase(DEFAULT_TIME_BASE);
-//            audio_params->setTimeBase({ 1, 16000 });
-            audio_params->setSampleRate(44'100);
+            audio_params->setSampleRate(DEFAULT_SAMPLE_RATE);
             try_to(createStream(audio_params));
             break;
         }
@@ -49,12 +46,9 @@ namespace fpp {
             video_parameters->setAspectRatio({ 16,9 });
             video_parameters->setFrameRate({ 30, 1 });
             video_parameters->setBitrate(400'000);
-//            video_parameters->setCodec("libx264", CodecType::Encoder);
-            video_parameters->setCodec("h264_qsv", CodecType::Encoder);
-            video_parameters->setTimeBase({ 1, 1000 });
+            video_parameters->setCodec("libx264", CodecType::Encoder);
+            video_parameters->setTimeBase(DEFAULT_TIME_BASE);
             video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
-//            video_parameters->setPixelFormat(AV_PIX_FMT_NV12);
-//            video_parameters->setContextUid(uid());
             try_to(createStream(video_parameters));
 //            /* Audio */
 //            auto audio_parameters = new AudioParameters;
@@ -76,18 +70,9 @@ namespace fpp {
             /* Video */
             auto video_parameters = new VideoParameters;
             video_parameters->setCodec("libx264", CodecType::Encoder);
-//            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
-//            video_parameters->setCodec("h264_qsv", CodecType::Encoder);
-//            video_parameters->setFrameRate({ 15, 1 }); //TODO
-            video_parameters->setTimeBase({ 1, 1000 });
-//            video_parameters->setPixelFormat(AV_PIX_FMT_NV12);
-//            video_parameters->setPixelFormat(AV_PIX_FMT_BGR24);
-//            video_parameters->setContextUid(uid());
+            video_parameters->setTimeBase(DEFAULT_TIME_BASE);
 			video_parameters->setGopSize(2);
             try_to(createStream(video_parameters));
-//            stream(0)->setStampType(StampType::Rescale);
-//            stream(0)->setStampType(StampType::Convert);
-//            stream(0)->setStampType(StampType::ConstantFramerate);
             break;
         }
 //        case OpenCV: {

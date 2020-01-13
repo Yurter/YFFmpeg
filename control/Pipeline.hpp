@@ -19,6 +19,11 @@ namespace fpp {
     class Pipeline;
     using PipelinePointer = std::shared_ptr<Pipeline>;
 
+    enum class SourceType {
+        Mandatory,
+        Backup,
+    };
+
     class Pipeline : public Thread {
 
     public:
@@ -26,7 +31,7 @@ namespace fpp {
         Pipeline();
         virtual ~Pipeline() override;
 
-        Code                addElement(ProcessorPointer processor);
+        Code                addElement(ProcessorPointer processor, SourceType priority = SourceType::Mandatory); //TODO refactoring priority 13.01
         void                remElement(ProcessorPointer processor);
         void                remElement(const int64_t uid);
 
@@ -63,6 +68,7 @@ namespace fpp {
 
         ProcessorList       _data_sources;
         ProcessorList       _data_sinks;
+        ProcessorList       _data_backup_sources;
 
         RouteVector         _route_list;
 

@@ -28,7 +28,7 @@ namespace fpp {
         /* Input */
         Virtual,
         /* Output */
-        Event, //TODO костыльный тип ради создания потоков у синков, убрать
+        Event, //TODO костыльный тип ради создания потоков у синков, убрать (нет, необходимо жестко задавать видео- и аудиопотоки)
         YouTube,
         Timelapse,
         OpenCV,
@@ -117,12 +117,13 @@ namespace fpp {
 #define DEFAULT_INT             0
 #define DEFAULT_FLOAT           0.f
 #define DEFAULT_STRING          "none"
-#define DEFAULT_RATIONAL        AVRational{ 0, 1 }
+#define DEFAULT_RATIONAL        AVRational { 0, 1 }
 #define DEFAULT_CODEC_ID        AV_CODEC_ID_NONE
 #define DEFAULT_PIXEL_FORMAT    AV_PIX_FMT_NONE
 #define DEFAULT_SAMPLE_FORMAT   AV_SAMPLE_FMT_NONE
 #define DEFAULT_CHANEL_LAYOUT   0
-#define DEFAULT_TIME_BASE       AVRational({ 1, 1000 })
+#define DEFAULT_TIME_BASE       AVRational { 1, 1000 }
+#define DEFAULT_SAMPLE_RATE     44'100
 
 #define FROM_START              0
 #define TO_END                  LONG_MAX

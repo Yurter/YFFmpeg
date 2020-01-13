@@ -30,7 +30,6 @@ namespace fpp {
     }
 
     Code CustomPacketSource::close() {
-//        try_to(sendEofPacket()); //TODO костыль?
         try_to(sendEof()); //TODO костыль?
         try_to(stop());
         stopWait(); //TODO костыль?
@@ -61,18 +60,5 @@ namespace fpp {
         try_to(close());
         return Code::OK;
     }
-
-//    Code CustomPacketSource::sendEofPacket() {
-//        Packet eof_packet;
-//        for (auto&& stream : streams()) {
-//            if (stream->used()) {
-//                eof_packet.setType(stream->type());
-//                eof_packet.setStreamUid(stream->params->streamUid());
-//                try_to(sendOutputData(eof_packet));
-//                stream->setUsed(false);
-//            }
-//        }
-//        return Code::OK;
-//    }
 
 } // namespace fpp
