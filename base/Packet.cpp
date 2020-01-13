@@ -154,7 +154,7 @@ namespace fpp {
         setPts(other.pts());
         setDts(other.dts());
         setDuration(other.duration());
-//        setTimeBase(other.timeBase());
+        setTimeBase(other.timeBase());
         setPos(other.pos());
         setStreamIndex(other.streamIndex());
 //        setStreamUid(other.streamUid());

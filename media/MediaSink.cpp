@@ -82,10 +82,10 @@ namespace fpp {
     }
 
     Code MediaSink::processInputData(Packet input_data) {
-        if (input_data.isAudio()) log_warning("2] WRITE: " << input_data);
 
         auto data_stream = stream(input_data.streamIndex());
         try_to(data_stream->stampPacket(input_data/*, data_stream->params->timeBase()*/));
+        if (input_data.isAudio()) log_warning("2] WRITE: " << input_data);
         try_to(storeOutputData(input_data));
         return Code::OK;
     }
