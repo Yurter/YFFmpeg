@@ -72,7 +72,7 @@ namespace fpp {
         }
     }
 
-    Code Stream::stampPacket(Packet& packet, AVRational packet_time_base) {
+    Code Stream::stampPacket(Packet& packet/*, AVRational packet_time_base*/) {
         switch (_stamp_type) {
         case StampType::Copy:
             _packet_duration = packet.pts() - _prev_pts;
@@ -109,10 +109,10 @@ namespace fpp {
             auto debug_value_00 = packet.pts();
 //            if (packet.isAudio()) log_warning("res from " << packet.timeBase() << " to " << params->timeBase());
             /* Рескеил в таймбейс потока без изменений */
-//            packet.setDts(av_rescale_q(packet.dts(), packet.timeBase(), params->timeBase()));
-//            packet.setPts(av_rescale_q(packet.pts(), packet.timeBase(), params->timeBase()));
-            packet.setDts(av_rescale_q(packet.dts(), packet_time_base, params->timeBase()));
-            packet.setPts(av_rescale_q(packet.pts(), packet_time_base, params->timeBase()));
+            packet.setDts(av_rescale_q(packet.dts(), packet.timeBase(), params->timeBase()));
+            packet.setPts(av_rescale_q(packet.pts(), packet.timeBase(), params->timeBase()));
+//            packet.setDts(av_rescale_q(packet.dts(), packet_time_base, params->timeBase()));
+//            packet.setPts(av_rescale_q(packet.pts(), packet_time_base, params->timeBase()));
             auto debug_value_01 = packet.pts();
 
             if (packetIndex() == 0) {

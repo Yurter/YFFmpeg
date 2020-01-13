@@ -12,8 +12,8 @@ namespace fpp {
         MediaSink(const std::string mrl, IOType preset = IOType::Auto);
         virtual ~MediaSink() override;
 
-        virtual Code        init() override;
-        virtual Code        open() override;
+        virtual Code        init()  override;
+        virtual Code        open()  override;
         virtual Code        close() override;
         virtual std::string toString() const override;
         virtual bool        equalTo(const ProcessorPointer other) const override;
@@ -29,7 +29,6 @@ namespace fpp {
     private:
 
         OutputFormatContext _output_format_context;
-
         Timer               _flush_timer;
 
     };

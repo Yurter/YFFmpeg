@@ -141,22 +141,35 @@ namespace fpp {
 //                    static_log_error("Debug", "Send EOF to " << next_processor->name());
 //                }
 //            });
-            if (stream_uid == BROADCAST) { //TODO кривой код 13.01
-                _stream_map.begin()->second.for_each([&output_data,this](auto& next_processor) {
-                    static_log_trace("Sender", "Sending data to " << next_processor->name());
-                    try_throw_static(next_processor->push(&output_data));
-                    if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) { //Debug log
-                        static_log_error("Debug", "Send EOF to " << next_processor->name());
+            if_not(_stream_map.empty()) {
+                if (stream_uid == BROADCAST) { //TODO кривой код 13.01
+                    for (auto it = _stream_map.begin(); it != _stream_map.end(); ++it)
+                    {
+                      it->second.for_each([&output_data,this](auto& next_processor) {
+                          static_log_trace("Sender", "Sending data to " << next_processor->name());
+                          try_throw_static(next_processor->push(&output_data));
+                          if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) { //Debug log
+                              static_log_error("Debug", "Send EOF to " << next_processor->name());
+                          }
+                      });
                     }
-                });
-            } else {
-                _stream_map[stream_uid].for_each([&output_data,this](auto& next_processor) {
-                    static_log_trace("Sender", "Sending data to " << next_processor->name());
-                    try_throw_static(next_processor->push(&output_data));
-                    if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) { //Debug log
-                        static_log_error("Debug", "Send EOF to " << next_processor->name());
-                    }
-                });
+
+//                    _stream_map.begin()->second.for_each([&output_data,this](auto& next_processor) {
+//                        static_log_trace("Sender", "Sending data to " << next_processor->name());
+//                        try_throw_static(next_processor->push(&output_data));
+//                        if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) { //Debug log
+//                            static_log_error("Debug", "Send EOF to " << next_processor->name());
+//                        }
+//                    });
+                } else {
+                    _stream_map[stream_uid].for_each([&output_data,this](auto& next_processor) {
+                        static_log_trace("Sender", "Sending data to " << next_processor->name());
+                        try_throw_static(next_processor->push(&output_data));
+                        if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) { //Debug log
+                            static_log_error("Debug", "Send EOF to " << next_processor->name());
+                        }
+                    });
+                }
             }
             return Code::OK;
         }

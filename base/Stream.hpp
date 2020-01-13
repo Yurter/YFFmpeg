@@ -34,7 +34,7 @@ namespace fpp {
         virtual std::string toString() const override final;
 
         void                determineStampType(const Packet& packet);
-        Code                stampPacket(Packet& packet, AVRational packet_time_base);
+        Code                stampPacket(Packet& packet/*, AVRational packet_time_base*/);
         bool                timeIsOver() const;
 
         void                setUsed(bool value);

@@ -92,7 +92,7 @@ namespace fpp {
 //        }
 
         auto data_stream = stream(input_data.streamIndex());
-        try_to(stream(input_data.streamIndex())->stampPacket(input_data, data_stream->params->timeBase()));
+        try_to(stream(input_data.streamIndex())->stampPacket(input_data/*, data_stream->params->timeBase()*/));
 
         if (inputDataCount() == 0) { //TODO нуженл ли этот лог?
             log_debug("Read from "

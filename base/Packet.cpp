@@ -6,7 +6,7 @@ namespace fpp {
     Packet::Packet() :
         Data<AVPacket>()
 //      , _stream_uid(INVALID_INT)
-//      , _time_base(DEFAULT_RATIONAL)
+      , _time_base { DEFAULT_RATIONAL }
     {
         setName("Packet");
     }
@@ -69,9 +69,9 @@ namespace fpp {
         _data.duration = duration;
     }
 
-//    void Packet::setTimeBase(AVRational time_base) {
-//        _time_base = time_base;
-//    }
+    void Packet::setTimeBase(AVRational time_base) {
+        _time_base = time_base;
+    }
 
     void Packet::setPos(int64_t pos) {
         _data.pos = pos;
@@ -97,9 +97,9 @@ namespace fpp {
         return _data.duration;
     }
 
-//    AVRational Packet::timeBase() const {
-//        return _time_base;
-//    }
+    AVRational Packet::timeBase() const {
+        return _time_base;
+    }
 
     int64_t Packet::pos() const {
         return _data.pos;

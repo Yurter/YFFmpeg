@@ -145,7 +145,7 @@ namespace fpp {
         packet.setType(packet_stream->type());
 //        packet.setStreamIndex(packet_stream->index()); //TODO надо ли ставить тут? 10.01
 //        packet.setStreamUid(packet_stream->params->streamUid());
-//        packet.setTimeBase(packet_stream->params->timeBase());
+        packet.setTimeBase(packet_stream->params->timeBase());
     }
 
 } // namespace fpp

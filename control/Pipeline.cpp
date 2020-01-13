@@ -367,7 +367,7 @@ namespace fpp {
 //                }
 //            }
 //        }
-        return nullptr;
+//        return nullptr;
     }
 
     Code Pipeline::determineSequence(const ProcessorPointer output_processor) { //TODO говнокод

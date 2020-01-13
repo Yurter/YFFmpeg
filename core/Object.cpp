@@ -2,9 +2,9 @@
 
 namespace fpp {
 
-    Object::Object() :
-        _name("Object"),
-        _inited(false)
+    Object::Object()
+        : _name { "Object" }
+        , _inited { false }
     {
         EMPTY_CONSTRUCTOR
     }
