@@ -26,7 +26,9 @@ namespace fpp {
 
         virtual Code        open();
         virtual Code        close();
-        virtual Code        push(const Object* input_data) = 0;
+        virtual Code        push(const Object* input_data) = 0; //TODO 1) убрать виртуальность метода и перенести на уровень выше
+                                                                //     2) избавиться от каста объекта в пакет или фрейм - сделать тип шаблонным 13.01
+                                                                //   => проблема - метод необходим в базовом классе, а тип даты опредеятся выше по уровню
 
         int64_t             uid()                       const;
         const StreamVector& streams()                   const; //TODO копируется функционал с контекстами 10.01

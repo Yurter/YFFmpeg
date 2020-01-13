@@ -60,12 +60,24 @@ namespace fpp {
             );
             return Code::OK;
         }
+//        Code push(const inType& input_data) {
+//            increaseInputDataCount();
+//            if (closed()) {
+//                log_warning("Got " << input_data->name() << " but closed");
+//            }
+//            return_warning_if_not(
+//                _input_queue.wait_and_push(input_data)
+//                , "Failed to store " << input_data->name()
+//                , Code::EXIT
+//            );
+//            return Code::OK;
+//        }
 
     protected:
 
         virtual Code processInputData(inType input_data) = 0;
-        virtual Code readInputData(inType& input_data) { UNUSED(input_data); return Code::NOT_IMPLEMENTED; }
-        virtual Code writeOutputData(outType output_data) { UNUSED(output_data); return Code::NOT_IMPLEMENTED; }
+        virtual Code readInputData  ([[maybe_unused]] inType& input_data ) { return Code::NOT_IMPLEMENTED; }
+        virtual Code writeOutputData([[maybe_unused]] outType output_data) { return Code::NOT_IMPLEMENTED; }
 
         Code setStartDataPred(const DataVerification&& pred) {
             return_if_not(pred, Code::ERR);
@@ -100,7 +112,7 @@ namespace fpp {
             return Code::OK;
         }
 
-        Code sendOutputData(const outType& output_data) {
+        Code sendOutputData(const outType& output_data, int64_t stream_uid = BROADCAST) {
             increaseOutputDataCount();
 //            for (auto [stream_id, proc_list] : _stream_map) {
 //                if (stream_id == output_data.streamUid()) {
@@ -121,6 +133,31 @@ namespace fpp {
 //                    static_log_error("Debug", "Send EOF to " << next_processor->name());
 //                }
 //            });
+            //
+//            _stream_map[stream_uid].for_each([&output_data,this](auto& next_processor) {
+//                static_log_trace("Sender", "Sending data to " << next_processor->name());
+//                try_throw_static(next_processor->push(&output_data));
+//                if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) { //Debug log
+//                    static_log_error("Debug", "Send EOF to " << next_processor->name());
+//                }
+//            });
+            if (stream_uid == BROADCAST) { //TODO кривой код 13.01
+                _stream_map.begin()->second.for_each([&output_data,this](auto& next_processor) {
+                    static_log_trace("Sender", "Sending data to " << next_processor->name());
+                    try_throw_static(next_processor->push(&output_data));
+                    if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) { //Debug log
+                        static_log_error("Debug", "Send EOF to " << next_processor->name());
+                    }
+                });
+            } else {
+                _stream_map[stream_uid].for_each([&output_data,this](auto& next_processor) {
+                    static_log_trace("Sender", "Sending data to " << next_processor->name());
+                    try_throw_static(next_processor->push(&output_data));
+                    if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) { //Debug log
+                        static_log_error("Debug", "Send EOF to " << next_processor->name());
+                    }
+                });
+            }
             return Code::OK;
         }
 

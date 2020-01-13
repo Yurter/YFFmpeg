@@ -102,7 +102,7 @@ namespace fpp {
                       << ", first packet: " << input_data);
         }
 
-        return sendOutputData(input_data);
+        return sendOutputData(input_data, data_stream->params->streamUid());
     }
 
     Code MediaSource::onStop() {

@@ -228,6 +228,7 @@ namespace fpp {
                                                 }\
                                             } while(false)
 
+//TODO объединить макросы в один, определять тип лога исходя из кода возврата 13.01
 #define return_warning_if_not(cond,msg,ret_value)  do {\
                                                 if_not(cond) {\
                                                     log_warning(msg);\
@@ -272,3 +273,6 @@ namespace fpp {
 /* ? */
 #define KILOBYTES * 1024
 #define MEGABYTES * 1024 * 1024
+
+/* ? */
+#define BROADCAST -1

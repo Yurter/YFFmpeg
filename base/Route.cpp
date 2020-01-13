@@ -28,8 +28,8 @@ namespace fpp {
         if (inited()) {
             return Code::INVALID_CALL_ORDER;
         }
-        _sequence.for_each([](ProcessorPointer& current, ProcessorPointer& next) {
-            try_throw_static(current->connectTo(next));
+        _sequence.for_each([uid = _input_stream_uid](ProcessorPointer& current, ProcessorPointer& next) {
+            try_throw_static(current->connectTo(uid, next));
         });
         setInited(true);
         return Code::OK;
@@ -136,7 +136,7 @@ namespace fpp {
         }
         auto debug_value_0 = other[other.size() - 1];
         auto debug_value_1 = _sequence[other.size()];
-        try_to(other[other.size() - 1]->connectTo(_sequence[other.size()]));
+        try_to(other[other.size() - 1]->connectTo(_input_stream_uid, _sequence[other.size()]));
         log_warning("To: " << this->toString());
         return Code::OK;
     }
