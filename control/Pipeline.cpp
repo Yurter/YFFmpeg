@@ -59,7 +59,6 @@ namespace fpp {
 
     Code Pipeline::init() {
         log_info("Initialization started...");
-        try_to(checkFormatContexts());  /* Проверка на наличие входо-выходов    */
         dump();                         /* Дамп всей информации в лог           */
         setInited(true);
         log_info("Processing started...");
@@ -106,28 +105,10 @@ namespace fpp {
 
     Code Pipeline::onStop() {
         log_info("Stopping...");
-//        try_to(stopProcesors());
         _data_sources.for_each([](auto& source){
             try_throw_static(source->stop());
         });
         log_info("Processing finished");
-        return Code::OK;
-    }
-
-    Code Pipeline::checkFormatContexts() { //TODO
-        return Code::OK; //debug
-        return_if(_data_sources.empty(),   Code::NOT_INITED);
-//        return_if(mediaSinks().empty(),     Code::NOT_INITED);
-        return Code::OK;
-    }
-
-    Code Pipeline::joinProcesors() {
-        _data_sources.for_each([](auto& source) {
-            try_throw_static(source->stop());
-        });
-        _data_sinks.for_each([](auto& sink) {
-            try_throw_static(sink->stop());
-        });
         return Code::OK;
     }
 
@@ -288,52 +269,6 @@ namespace fpp {
         }
         return Code::OK;
     }
-//    Code Pipeline::simplifyRoutes() {
-//        return_if(_route_list.empty(), Code::OK);
-//        for (size_t i = 0; i < (_route_list.size() - 1); ++i) {
-//            for (size_t j = i + 1; j < _route_list.size(); ++j) {
-//                Route& route_one = _route_list[i];
-//                Route& route_two = _route_list[j];
-
-//                log_warning("");
-//                log_warning("Comparing ");
-//                log_warning(i << "] " << route_one);
-//                log_warning(j << "] " << route_two);
-
-//                auto sequence_one = route_one.processorSequence(); //TODO заменить на сслыки или указатели
-//                auto sequence_two = route_two.processorSequence();
-
-//                size_t min_size = std::min(sequence_one.size(), sequence_two.size());
-
-//                for (size_t k = 0; k < min_size; ++k) {
-//                    if (k > 0) {
-//                        if (sequence_one[k]->uid() == sequence_two[k]->uid()) {
-//                            //уже один и тот же
-//                            break;
-//                        }
-//                    }
-//                    if_not(sequence_one[k]->equalTo(sequence_two[k])) {
-//                        log_warning("FORK POINT is " << sequence_one[k]->name());
-//                        //TODO склеить последовательности от 0 до k-1
-//                        if (k > 0) {
-////                            ProcessorVector mutual(route_one.processorSequence().begin()
-////                                                   , route_one.processorSequence().begin() + int64_t(k - 1));
-//                            ProcessorVector mutual;
-//                            for (size_t j = 0; j < k; ++j) {
-//                                mutual.push_back(route_one.processorSequence()[j]);
-//                            }
-//                            try_to(route_two.changePartTo(mutual));
-//                        }
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//        for (const auto& route : _route_list) {
-//            log_warning("Result: " << route);
-//        }
-//        return Code::OK;
-//    }
 
     Stream* Pipeline::findStream(int64_t uid) {
         Stream* ret_stream = nullptr;
@@ -354,23 +289,6 @@ namespace fpp {
             }
         });
         return ret_stream;
-
-        ////////////////////////////////////////////////////////////
-//        for (const auto& source : _data_sources) {
-//            for (auto&& stream : source->streams()) {
-//                if (stream->parameters->streamUid() == uid) {
-//                    return stream;
-//                }
-//            }
-//        }
-//        for (auto&& sink : _data_sinks) {
-//            for (auto&& stream : sink->streams()) {
-//                if (stream->parameters->streamUid() == uid) {
-//                    return stream;
-//                }
-//            }
-//        }
-//        return nullptr;
     }
 
     Code Pipeline::determineSequence(const ProcessorPointer output_processor) { //TODO говнокод
@@ -473,35 +391,22 @@ namespace fpp {
         return dump_str;
     }
 
-    Stream* Pipeline::findBestInputStream(MediaType media_type) { //TODO
+    Stream* Pipeline::findBestInputStream(MediaType media_type) { //TODO оптимизировать и унифицировать поиск потоков внутри обработчика и внутри пайплайна 13.01
         StreamVector all_streams;
         _data_sources.for_each([media_type,&all_streams](const auto& source) {
             Stream* stream = source->bestStream(media_type);
             if (not_inited_ptr(stream)) { return; }
             all_streams.push_back(stream);
         });
+        if (all_streams.empty()) {
+            _data_backup_sources.for_each([media_type,&all_streams](const auto& source) {
+                Stream* stream = source->bestStream(media_type);
+                if (not_inited_ptr(stream)) { return; }
+                all_streams.push_back(stream);
+            });
+        }
         return utils::find_best_stream(all_streams);
     }
-//    Stream* Pipeline::findBestInputStream(MediaType media_type) { //TODO
-//        switch (media_type) {
-//        case MediaType::MEDIA_TYPE_VIDEO: {
-//            StreamVector all_video_streams;
-//            _data_sources.for_each([media_type,&all_video_streams](const auto& source) {
-//                all_video_streams.push_back(source->stream(0));
-//            });
-//            return static_cast<VideoStream*>(utils::find_best_stream(all_video_streams));
-//        }
-//        case MediaType::MEDIA_TYPE_AUDIO: {
-//            StreamVector all_audio_streams;
-//            for (auto&& source : mediaSinks()) {
-//                all_audio_streams.push_back(source->outputFormatContext().bestStream(MediaType::MEDIA_TYPE_AUDIO));
-//            }
-//            return static_cast<AudioStream*>(utils::find_best_stream(all_audio_streams));
-//        }
-//        default:
-//            return nullptr;
-//        }
-//    }
 
     Route *Pipeline::findRoute(const int64_t uid) { //TODO
         for (auto&& route : _route_list) {

@@ -35,9 +35,11 @@ namespace fpp {
         void                remElement(ProcessorPointer processor);
         void                remElement(const int64_t uid);
 
-        void                dump() const;                       ///< TODO description
+        void                dump() const;
 
-        Code                simplifyRoutes();
+        Code                simplifyRoutes(); //TODO сделать приватным 13.01
+
+//        Code abort(); //TODO метод быстрого завершения работы класса 13.01
 
     private:
 
@@ -45,10 +47,6 @@ namespace fpp {
         virtual Code        run()       override;
         virtual Code        onStart()   override;
         virtual Code        onStop()    override;
-
-        Code                checkFormatContexts();
-
-        Code                joinProcesors();
 
         Code                createSequence(Route& route);
 
