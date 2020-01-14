@@ -308,7 +308,7 @@ void silence_mux_debug() {
         static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    utils::sleep_for_sec(10);
+    utils::sleep_for_sec(100);
 }
 
 int main() {

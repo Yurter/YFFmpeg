@@ -27,6 +27,7 @@ namespace fpp {
             video_params->setCodec("libx264", CodecType::Encoder);
             video_params->setGopSize(2);
             video_params->setTimeBase(DEFAULT_TIME_BASE);
+            video_params->setHeight(100);
             try_to(createStream(video_params));
             /* Audio */
             auto audio_params = new AudioParameters(); //TODO memory leak

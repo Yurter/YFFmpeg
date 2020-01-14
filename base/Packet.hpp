@@ -9,14 +9,10 @@ namespace fpp {
 
         Packet();
         Packet(const Packet& other);
-        Packet(const Packet&& other); //TODO убрать мув ? совпадает с копированием 14.01
-        Packet(const AVPacket& avpacket);
+        Packet(const AVPacket& avpacket, MediaType type);
         virtual ~Packet() override;
 
         Packet& operator=(const Packet& other);
-        Packet& operator=(const Packet&& other); //TODO убрать мув ? совпадает с копированием 14.01
-
-        virtual Code        init() override;
 
         void                setPts(int64_t pts);
         void                setDts(int64_t dts);
@@ -39,6 +35,7 @@ namespace fpp {
     private:
 
         void                copy(const Packet& other);
+        void                copy(const AVPacket& other, MediaType type);
 
     private:
 

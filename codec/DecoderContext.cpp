@@ -3,10 +3,7 @@
 namespace fpp {
 
     DecoderContext::DecoderContext(const IOParams params) :
-        CodecContext(params, CodecType::Decoder)
-    {
-//        setName("DecoderContext");
-//        setName("DeContext");
+        CodecContext(params, CodecType::Decoder) {
         setName("DeCtx");
     }
 
@@ -16,15 +13,6 @@ namespace fpp {
     }
 
     Code DecoderContext::decode(Packet input_packet, Frame& output_frame) {
-//        if (!input_packet.empty()) {
-//            if (int ret = avcodec_send_packet(_codec_context, &input_packet.raw()); ret != 0) {
-//                char errstr[1024];
-//                av_strerror(ret, errstr, 1024);
-//                log_error(" Could not send packet to decoder: " << errstr << ". Data: " << input_packet);
-//                log_error("DecoderContext: " << this->toString());
-//                return Code::FFMPEG_ERROR;
-//            }
-//        }
         if (int ret = avcodec_send_packet(_codec_context, &input_packet.raw()); ret != 0) {
             char errstr[1024];
             av_strerror(ret, errstr, 1024);
@@ -36,8 +24,6 @@ namespace fpp {
         switch (ret) { //TODO убрать свич ?
         case 0:
             output_frame.setType(params.in->type());
-//            output_frame.setTimeBase(params.in->timeBase());
-//            output_frame.se
 //            log_warning("DECODED: " << output_frame);
             if (output_frame.empty()) {
                 log_error("Sending empty frame: " << output_frame);
@@ -55,11 +41,6 @@ namespace fpp {
     }
 
     Code DecoderContext::initParams() {
-//        utils::parameters_to_avcodecpar(_params, _stream->codecParameters());
-//        if (avcodec_parameters_to_context(_codec_context, _stream->codecParameters()) < 0) {
-//            log_error("avcodec_parameters_to_context failed");
-//            return Code::ERR;
-//        } findme
         utils::parameters_to_context(params.in, _codec_context);
         return Code::OK;
     }

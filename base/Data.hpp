@@ -13,10 +13,9 @@ namespace fpp {
             EMPTY_CONSTRUCTOR
         }
 
-        Data(Type data, MediaType type = MediaType::Unknown) :
-            MediaData(type),
-            _data(data)
-        {
+        Data(Type data, MediaType type = MediaType::Unknown)
+            : MediaData(type)
+            , _data(data) {
             setName("Data");
         }
 

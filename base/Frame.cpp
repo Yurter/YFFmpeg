@@ -3,26 +3,19 @@
 
 namespace fpp {
 
-    Frame::Frame() :
-        Data<AVFrame>()
-//      , _time_base(DEFAULT_RATIONAL)
-    {
+    Frame::Frame()
+        : Data<AVFrame>() {
         setName("Frame");
     }
 
-    Frame::Frame(const Frame& other) {
-        setName("Frame"); //TODO вызов базового конструктора
-        copyOther(other);
+    Frame::Frame(const Frame& other)
+        : Frame() {
+        copy(other);
     }
 
-    Frame::Frame(const Frame&& other) {
-        setName("Frame"); //TODO вызов базового конструктора
-        copyOther(other);
-    }
-
-    Frame::Frame(const AVFrame& frame, MediaType type, AVRational time_base) {
-        setName("Frame"); //TODO вызов базового конструктора
-        copyOther(frame, type, time_base);
+    Frame::Frame(const AVFrame& frame, MediaType type)
+        : Frame() {
+        copy(frame, type);
     }
 
     Frame::~Frame() {
@@ -30,12 +23,7 @@ namespace fpp {
     }
 
     Frame& Frame::operator=(const Frame& other) {
-        copyOther(other);
-        return *this;
-    }
-
-    Frame& Frame::operator=(const Frame&& other) {
-        copyOther(other);
+        copy(other);
         return *this;
     }
 
@@ -43,17 +31,13 @@ namespace fpp {
         return _data.pts;
     }
 
-//    AVRational Frame::timeBase() const {
-//        return _time_base;
-//    }
-
     void Frame::setPts(int64_t value) {
         _data.pts = value;
     }
 
-//    void Frame::setTimeBase(AVRational time_base) {
-//        _time_base = time_base;
-//    }
+    bool Frame::keyFrame() const {
+        return _data.key_frame == 1;
+    }
 
     uint64_t Frame::size() const {
         if (isVideo()) {
@@ -72,24 +56,23 @@ namespace fpp {
     }
 
     std::string Frame::toString() const {
-        /* Video frame: 33123 bytes, dts 460, pts 460, duration 33 */
+        /* Video frame: 460800 bytes, pts 1016370, key_frame false, width 640, height 480, yuv420p */
         std::string str = utils::media_type_to_string(type()) + " frame: ";
         if (isVideo()) {
             str += std::to_string(size()) + " bytes, "
+                    + (keyFrame() ? "[I]" : "[_]") + ", "
                     + "pts " + utils::pts_to_string(_data.pts) + ", "
-//                    + "tb " + utils::rational_to_string(_time_base) + ", "
-                    + "key_frame " + utils::bool_to_string(_data.key_frame) + ", "
                     + "width " + std::to_string(_data.width) + ", "
                     + "height " + std::to_string(_data.height) + ", "
-                    + "px_fmt " + std::string(av_get_pix_fmt_name(AVPixelFormat(_data.format)));
+                    + std::string(av_get_pix_fmt_name(AVPixelFormat(_data.format)));
             return str;
         }
-        /* Audio frame: 316 bytes, dts 460, pts 460, duration 33 */
+        /* Audio frame: 1024 bytes, pts 425984, nb_samples 1024, channel_layout 4, sample_rate 44100 */
         if (isAudio()) {
             str += std::to_string(size()) + " bytes, "
+                    + (keyFrame() ? "[I]" : "[_]") + ", "
                     + "pts " + utils::pts_to_string(_data.pts) + ", "
-//                    + "tb " + utils::rational_to_string(_time_base) + ", "
-                    + "nb_samples " + std::to_string(_data.nb_samples) + ", "
+                    + "samples " + std::to_string(_data.nb_samples) + ", "
                     + "channel_layout " + std::to_string(_data.channel_layout) + ", "
                     + "sample_rate " + std::to_string(_data.sample_rate);
             return str;
@@ -101,17 +84,15 @@ namespace fpp {
         }
     }
 
-    void Frame::copyOther(const Frame& other) {
+    void Frame::copy(const Frame& other) {
         av_frame_ref(&_data, &other._data);
         setType(other.type());
-//        setTimeBase(other.timeBase());
         setInited(true);
     }
 
-    void Frame::copyOther(const AVFrame& other, MediaType type, AVRational time_base) {
+    void Frame::copy(const AVFrame& other, MediaType type) {
         av_frame_ref(&_data, &other);
         setType(type);
-//        setTimeBase(time_base);
         setInited(true);
     }
 

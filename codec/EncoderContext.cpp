@@ -20,7 +20,7 @@ namespace fpp {
     }
 
     Code EncoderContext::encode(Frame input_frame, Packet& output_packet) {
-        try_to(output_packet.init());
+//        try_to(output_packet.init());
 //        log_error("$$ input_frame: " << input_frame);
         log_trace("Frame for encoding: " << input_frame);
         int ret;
@@ -56,7 +56,7 @@ namespace fpp {
         log_error("FLUSH");
         while (avcodec_send_frame(_codec_context, nullptr) != 0) {
             Packet output_packet;
-            try_to(output_packet.init());
+//            try_to(output_packet.init());
             while (avcodec_receive_packet(_codec_context, &output_packet.raw()) != 0) {
                 log_error("Flushed success");
             }
@@ -64,7 +64,7 @@ namespace fpp {
         log_error("FLUSH finished");
         return Code::OK;
         Packet output_packet;
-        try_to(output_packet.init());
+//        try_to(output_packet.init());
         output_packet.setType(params.out->type());
         auto debug_value = this;
         auto op = opened();

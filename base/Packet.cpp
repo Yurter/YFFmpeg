@@ -5,34 +5,19 @@ namespace fpp {
 
     Packet::Packet()
         : Data<AVPacket>()
-        , _time_base { DEFAULT_RATIONAL }
-    {
+        , _time_base { DEFAULT_RATIONAL } {
         setName("Packet");
     }
 
-    Packet::Packet(const Packet& other) {
-        setName("Packet");
-        copy(other);
-        setInited(true);
-    }
-
-    Packet::Packet(const Packet&& other) {
+    Packet::Packet(const Packet& other)
+        : Packet() {
         setName("Packet");
         copy(other);
-        setInited(true);
     }
 
-    Packet::Packet(const AVPacket& avpacket) { //TODO refactoring 14.01
-        setPts(avpacket.pts);
-        setDts(avpacket.dts);
-        setDuration(avpacket.duration);
-        setPos(avpacket.pos);
-        setStreamIndex(avpacket.stream_index);
-        if (av_packet_ref(&_data, &avpacket) != 0) {
-            log_error("av_packet_ref failed!");
-            return;
-        }
-        setInited(true);
+    Packet::Packet(const AVPacket& avpacket, MediaType type)
+        : Packet() {
+        copy(avpacket, type);
     }
 
     Packet::~Packet() {
@@ -41,20 +26,7 @@ namespace fpp {
 
     Packet& Packet::operator=(const Packet& other) {
         copy(other);
-        setInited(true);
         return *this;
-    }
-
-    Packet& Packet::operator=(const Packet&& other) {
-        copy(other);
-        setInited(true);
-        return *this;
-    }
-
-    Code Packet::init() { //TODO убрать за ненадобностью? как
-//        av_init_packet(&_data);
-        setInited(true);
-        return Code::OK;
     }
 
     void Packet::setPts(int64_t pts) {
@@ -114,7 +86,7 @@ namespace fpp {
     }
 
     std::string Packet::toString() const {
-        /* Video packet: [_], 1516 bytes, dts 1709, pts 1709, duration 29, time_base 1/90000, stream index 0    */
+        /* Video packet: [I], 1516 bytes, dts 1709, pts 1709, duration 29, time_base 1/90000, stream index 0    */
         /* Audio packet: [I], 1045 bytes, dts 392, pts 392, duration 26, time_base 1/44100, stream index 1      */
         return utils::media_type_to_string(type()) + " packet: "
                 + (keyFrame() ? "[I]" : "[_]") + ", "
@@ -136,6 +108,19 @@ namespace fpp {
         setStreamIndex(other.streamIndex());
         if (av_packet_ref(&_data, &other._data) != 0) {
             log_error("av_packet_ref failed, " << other);
+        }
+    }
+
+    void Packet::copy(const AVPacket& other, MediaType type) {
+        setType(type);
+        setPts(other.pts);
+        setDts(other.dts);
+        setDuration(other.duration);
+        setPos(other.pos);
+        setStreamIndex(other.stream_index);
+        if (av_packet_ref(&_data, &other) != 0) {
+            log_error("av_packet_ref failed!");
+            return;
         }
     }
 

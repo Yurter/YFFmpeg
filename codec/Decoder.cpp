@@ -2,9 +2,8 @@
 
 namespace fpp {
 
-    Decoder::Decoder(const IOParams params) :
-        _decoder_context(params)
-    {
+    Decoder::Decoder(const IOParams params)
+        : _decoder_context(params) {
         setName("Decoder");
         try_throw(setStartDataPred([](const Packet& packet){
             return_if_not(packet.keyFrame(), Code::AGAIN);
@@ -19,7 +18,6 @@ namespace fpp {
     Code Decoder::init() {
         log_debug("Initialization");
         try_to(_decoder_context.init());
-//        setDiscardType(utils::antitype(_decoder_context.params.in->type())); //TODO кривой костыль
         setInited(true);
         return Code::OK;
     }
