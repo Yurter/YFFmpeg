@@ -1,24 +1,24 @@
-#pragma once
-#include "base/Stream.hpp"
-#include "AudioParameters.hpp"
+//#pragma once
+//#include "base/Stream.hpp"
+//#include "AudioParameters.hpp"
 
-namespace fpp {
+//namespace fpp {
 
-    class AudioStream : public Stream { //TODO свернуть наследование ?
+//    class AudioStream : public Stream { //TODO свернуть наследование ?
 
-    public:
+//    public:
 
-        AudioStream(AudioParameters* param = new AudioParameters());
-        AudioStream(AVStream* stream, AudioParameters* param);
-        virtual ~AudioStream() override = default;
+//        AudioStream(AudioParameters* param = new AudioParameters());
+//        AudioStream(AVStream* stream, AudioParameters* param);
+//        virtual ~AudioStream() override = default;
 
-        Code                init() override;
+//        Code                init() override;
 
-        bool                operator>(const Stream& other) const override;
+//        bool                operator>(const Stream& other) const override;
 
-    };
+//    };
 
-//    typedef std::list<AudioStream*> AudioStreamList;
-    using AudioStreamList = std::list<AudioStream*>;
+////    typedef std::list<AudioStream*> AudioStreamList;
+//    using AudioStreamList = std::list<AudioStream*>;
 
-} // namespace fpp
+//} // namespace fpp

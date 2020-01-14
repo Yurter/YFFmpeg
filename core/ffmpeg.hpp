@@ -116,6 +116,16 @@ namespace fpp {
         Any,
     };
 
+    /* ? */
+    enum class StampType {
+        /* Штампы сорса */
+        Copy,
+        Realtime,
+        Offset,
+        /* Штампы синка */
+        Rescale,
+    };
+
 } // namespace fpp
 
 #define UNUSED(x) (void)(x)

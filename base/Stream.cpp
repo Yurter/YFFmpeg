@@ -3,16 +3,8 @@
 
 namespace fpp {
 
-    Stream::Stream(Parameters* param) :
-        Stream(nullptr, param)
-    {
-        EMPTY_CONSTRUCTOR
-    }
-
-    Stream::Stream(AVStream* stream, Parameters* param) :
-        Data<AVStream*>(stream, param->type())
-        , params(param)
-        , _used(false)
+    Stream::Stream()
+        : _used(false)
         , _stamp_type(StampType::Rescale)
         , _prev_dts(DEFAULT_INT)
         , _prev_pts(DEFAULT_INT)
@@ -23,18 +15,24 @@ namespace fpp {
         , _pts_offset(DEFAULT_INT)
         , _dts_offset(DEFAULT_INT)
         , _start_time_point(FROM_START)
-        , _end_time_point(TO_END)
-    {
-        setName("Stream");
+        , _end_time_point(TO_END) {
+        setType(params->type());
+        setName(utils::media_type_to_string(type()) + " stream");
     }
 
-    Stream::Stream(const AVStream* avstream) {
-        setName("Stream");
+    Stream::Stream(const AVStream* avstream)
+        : Stream() {
         params->parseStream(avstream);
     }
 
+    Stream::Stream(Parameters* param)
+        : Data<AVStream*>(nullptr, param->type())
+        , params(param)
+    {
+    }
+
     Stream::~Stream() {
-        delete params;
+        delete params; //TODO в шаред поинтер 14.01
     }
 
     Code Stream::init() {
@@ -51,12 +49,10 @@ namespace fpp {
     std::string Stream::toString() const {
         return_if_not(inited(), "not inited!");
 
-        std::string str = "[" + std::to_string(params->contextUid())
+        return "[" + std::to_string(params->contextUid())
                 + ":" + std::to_string(params->streamIndex()) + "] "
-                + utils::media_type_to_string(type()) + " stream: ";
-
-        str += used() ? params->toString() : "not used";
-        return str;
+                + utils::media_type_to_string(type()) + " stream: "
+                + (used() ? params->toString() : "not used");
     }
 
     void Stream::determineStampType(const Packet& packet) { //TODO: перенести в сорс, т.к. только в нем изменяется дефолтный тип штампа
@@ -261,17 +257,6 @@ namespace fpp {
 
     bool Stream::operator>(const Stream& other) const {
         return params->bitrate() > other.params->bitrate();
-    }
-
-//    void Stream::parseStream() {
-//    }
-
-    void Stream::parseParameters() //TODO перенести код из FormatContext::parseFormatContext()
-    {
-        return_error_if(not_inited_ptr(_data)
-                        , "Cannot parse virtual stream."
-                        , void());
-        _data->time_base = params->timeBase();
     }
 
 } // namespace fpp

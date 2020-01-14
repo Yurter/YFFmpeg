@@ -7,30 +7,20 @@
 
 namespace fpp {
 
-    //TODO
-    class Processor;
-    using ProcessorPointer = std::shared_ptr<Processor>;
-
-    enum class StampType {
-        /* Штампы сорса */
-        Copy,
-        Realtime,
-        Offset,
-        /* Штампы синка */
-        Rescale,
-    };
+    class Stream;
+    using StreamPointer = std::shared_ptr<Stream>;
 
     class Stream : public Data<AVStream*> { //TODO сделать шаред и вик поинтеры 14.01
 
+        Stream();
+
     public:
+
+        Stream(const AVStream* avstream);
+        Stream(Parameters* param);
 
         Stream(const Stream& other)  = delete;
         Stream(const Stream&& other) = delete;
-        Stream(Parameters* param = new Parameters()); //TODO memeory leak 14.01
-        Stream(AVStream* stream, Parameters* param);
-
-        //Stream(Parameters* param); TODO оставить отлько эти два конструктора 14.01
-        Stream(const AVStream* avstream);
 
         virtual ~Stream() override;
 
@@ -60,11 +50,6 @@ namespace fpp {
     public:
 
         Parameters*         params;
-
-    protected:
-
-//        virtual void        parseStream();
-        virtual void        parseParameters();
 
     protected:
 
