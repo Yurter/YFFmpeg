@@ -18,12 +18,12 @@ namespace fpp {
         setName("Logger");
 //        av_log_set_callback(log_callback); //TODO later
         setFFmpegLogLevel(LogLevel::Error);
-        print(this->name(), code_pos, LogLevel::Info, "Logger opened");
+        print(this->name(), CODE_POS, LogLevel::Info, "Logger opened");
         openFile(log_dir);
     }
 
     Logger::~Logger() {
-        print(this->name(), code_pos, LogLevel::Info, "Logger closed");
+        print(this->name(), CODE_POS, LogLevel::Info, "Logger closed");
         av_log_set_callback(nullptr);
         closeFile();
     }
@@ -84,47 +84,55 @@ namespace fpp {
     std::string Logger::formatMessage(std::string caller_name, const std::string& code_position, LogLevel log_level, const std::string& message) {
         std::string header;
 
-        const size_t max_name_length = 20;
-        const int message_offset = 30;
+        const bool debug_type = log_level >= LogLevel::Debug;
+        const bool trace_type = log_level >= LogLevel::Trace;
+
+        const size_t max_name_length = debug_type ? 11 : 15;
 
         caller_name.resize(max_name_length, ' ');
 
         header += "[" + encodeLogLevel(log_level) + "]";
-        const int64_t t = std::time(nullptr);
-//        header += "[" + (std::stringstream() << std::put_time(std::localtime(&t), "%H:%M:%S")).str() + "]"; //TODO if Debug выводить мс через хроно, вынести формирование временной метки в метод
-        header += "[" + getTimeStamp(log_level) + "]";
+        header += "[" + getTimeStamp() + "]";
         header += "[" + caller_name + "]";
 
-        if (log_level >= LogLevel::Debug) {
-            std::string thread_id = (std::stringstream() << "[" << current_thread_id() << "]").str();
-            thread_id.resize(7, ' ');
-            header += " " + thread_id;
-        }
-        if (log_level >= LogLevel::Trace) {
-            header += "\n";
-            header += (std::stringstream() << TAB << std::setw(message_offset) << std::left << "Code position: " << shortenCodePosition(code_position)).str();
-            header += "\n";
-            header += (std::stringstream() << TAB << std::setw(message_offset) << std::left << "Message: ").str();
-        }
+        if (debug_type) { header += " [" + getThreadId() + "]"; }
+        if (trace_type) { header += getTraceFormat(code_position); }
+        if_not(trace_type) { header += " "; }
 
-        std::stringstream ss;
-        ss << header << " " << message;
-
-        return ss.str();
+        return header + message;
     }
 
-    std::string Logger::getTimeStamp(LogLevel log_level) const {
+    std::string Logger::getTimeStamp() const {
         const auto now = std::chrono::system_clock::now();
         const auto in_time_t = std::chrono::system_clock::to_time_t(now);
 
         std::stringstream ss;
         ss << std::put_time(std::localtime(&in_time_t), "%H:%M:%S");
-        if (log_level >= LogLevel::Debug) {
-            ss << std::chrono::duration_cast<std::chrono::milliseconds>(
-                        now.time_since_epoch()
-                  ).count();
-        }
+
+        const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                            now.time_since_epoch()
+                        ).count() % 1000;
+        auto ms_str = std::to_string(ms);
+        const auto ms_max_length = 3;
+        ss << "." << ms_str.insert(0, ms_max_length - ms_str.length(), '0');
+
         return ss.str();
+    }
+
+    std::string Logger::getThreadId() const {
+        const auto thread_id_max_length = 5;
+        std::string thread_id = (std::stringstream() << current_thread_id()).str();
+        thread_id.insert(0, thread_id_max_length - thread_id.length(), '0');
+        return thread_id;
+    }
+
+    std::string Logger::getTraceFormat(const std::string& code_position) const {
+        const auto message_offset = 34;
+        std::string code_pos_word = "  Code position:";
+        code_pos_word.resize(message_offset, ' ');
+        std::string message_word = "  Message:";
+        message_word.resize(message_offset, ' ');
+        return "\n" + code_pos_word + shortenCodePosition(code_position) + "\n" + message_word;
     }
 
     void Logger::log_callback(void* ptr, int level, const char* fmt, va_list vl) {

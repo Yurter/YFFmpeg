@@ -1,6 +1,5 @@
 #include "fpp.hpp"
 
-using namespace std;
 using namespace fpp;
 
 void progress_bar(int sec) {
@@ -367,7 +366,7 @@ int main() {
 //    }
 
     {
-        set_log_level(LogLevel::Debug);
+        set_log_level(LogLevel::Trace);
         silence_mux_debug();
         return 0;
     }

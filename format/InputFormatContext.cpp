@@ -6,7 +6,8 @@ namespace fpp {
         FormatContext { mrl, preset }
       , _input_format { nullptr }
     {
-        setName("InputFormatContext");
+//        setName("InputFormatContext");
+        setName("InpFmtCtx");
     }
 
     InputFormatContext::~InputFormatContext() {

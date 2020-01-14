@@ -6,7 +6,8 @@ namespace fpp {
         FormatContext(mrl, preset)
       , _output_format(nullptr)
     {
-        setName("OutputFormatContext");
+//        setName("OutputFormatContext");
+        setName("OutFmtCtx");
     }
 
     OutputFormatContext::~OutputFormatContext() {

@@ -64,9 +64,9 @@ namespace fpp {
         }
         if_not(utils::compatible_with_pixel_format(_codec, pixel_format)) {
             const auto defailt_h264_pixel_format = AV_PIX_FMT_YUV420P;
-            log_warning("Cannot set pixel format: " << av_get_pix_fmt_name(pixel_format)
+            log_warning("Cannot set pixel format: " << pixel_format
                         << " - " << _codec->name << " doesn't compatible with it, "
-                        << "setting default: " << av_get_pix_fmt_name(defailt_h264_pixel_format));
+                        << "setting default: " << defailt_h264_pixel_format);
             _pixel_format = defailt_h264_pixel_format;
             return;
         }

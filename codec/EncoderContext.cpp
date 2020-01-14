@@ -6,7 +6,8 @@ namespace fpp {
         CodecContext(params, CodecType::Encoder)
     {
 //        setName("EncoderContext");
-        setName("EnContext");
+//        setName("EnContext");
+        setName("EnCtx");
     //[warn][14:54:00][EncoderContext libmp]
     //[warn][14:54:30][Enc libmp3lame      ]
         //            [EncCtx libmp3lame   ]

@@ -33,7 +33,9 @@ namespace fpp {
         void                closeFile();
         std::string         genFileName() const;
         std::string         formatMessage(std::string caller_name, const std::string& code_position, LogLevel log_level, const std::string& message);
-        std::string         getTimeStamp(LogLevel log_level) const;
+        std::string         getTimeStamp() const;
+        std::string         getThreadId() const;
+        std::string         getTraceFormat(const std::string& code_position) const;
         static void         log_callback(void* ptr, int level, const char* fmt, va_list vl);
         static LogLevel     convert_log_level(int ffmpeg_level);
         std::string         encodeLogLevel(LogLevel value);

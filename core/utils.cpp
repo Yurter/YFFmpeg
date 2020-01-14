@@ -3,8 +3,6 @@
 
 namespace fpp {
 
-    static std::atomic_llong object_uid_handle = 0;
-
     std::string utils::media_type_to_string(MediaType media_type) {
         switch (media_type) {
         case MediaType::MEDIA_TYPE_UNKNOWN:
@@ -197,6 +195,7 @@ namespace fpp {
     }
 
     int64_t utils::gen_uid() {
+        static std::atomic_llong object_uid_handle = 0;
         return object_uid_handle++;
     }
 
@@ -497,9 +496,9 @@ namespace fpp {
 
         if (in->codecId() != out->codecId()) {
             static_log_warning("utils", "Transcoding required: codec id mismatch "
-                                           << avcodec_get_name(in->codecId())
+                                           << in->codecId()
                                            << " != "
-                                           << avcodec_get_name(out->codecId())
+                                           << out->codecId()
             );
             return true;
         }

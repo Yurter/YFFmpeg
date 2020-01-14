@@ -6,7 +6,8 @@ namespace fpp {
         CodecContext(params, CodecType::Decoder)
     {
 //        setName("DecoderContext");
-        setName("DeContext");
+//        setName("DeContext");
+        setName("DeCtx");
     }
 
     DecoderContext::~DecoderContext() {
