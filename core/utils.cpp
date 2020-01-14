@@ -117,10 +117,9 @@ namespace fpp {
     }
 
     std::string utils::rational_to_string(AVRational rational) {
-        std::string str = std::to_string(rational.num)
-                            + "/"
-                            + std::to_string(rational.den);
-        return str;
+        return std::to_string(rational.num)
+                + "/" +
+               std::to_string(rational.den);
     }
 
     bool utils::compatible_with_pixel_format(const AVCodec* codec, AVPixelFormat pixel_format) {
@@ -444,22 +443,22 @@ namespace fpp {
         auto out = static_cast<const AudioParameters * const>(params.out);
 
         if (in->sampleRate() != out->sampleRate()) {
-            static_log_warning("utils", "Rescaling required: sample rate mismatch "
+            static_log_warning("utils", "Resampling required: sample rate mismatch "
                                << in->sampleRate() << " != " << out->sampleRate());
             return true;
         }
         if (in->sampleFormat() != out->sampleFormat()) {
-            static_log_warning("utils", "Rescaling required: sample format mismatch "
+            static_log_warning("utils", "Resampling required: sample format mismatch "
                                << in->sampleFormat() << " != " << out->sampleFormat());
             return true;
         }
         if (in->channels() != out->channels()) {
-            static_log_warning("utils", "Rescaling required: channels mismatch "
+            static_log_warning("utils", "Resampling required: channels mismatch "
                                << in->channels() << " != " << out->channels());
             return true;
         }
         if (in->channelLayout() != out->channelLayout()) {
-            static_log_warning("utils", "Rescaling required: channel layout mismatch "
+            static_log_warning("utils", "Resampling required: channel layout mismatch "
                                << in->channelLayout() << " != " << out->channelLayout());
             return true;
         }
@@ -471,14 +470,16 @@ namespace fpp {
         return_if(params.in->isAudio(),  false);
         return_if(params.out->isAudio(), false);
 
-        auto in = static_cast<const VideoParameters * const>(params.in);
-        auto out = static_cast<const VideoParameters * const>(params.out);
+        auto in = static_cast<const VideoParameters*>(params.in);
+        auto out = static_cast<const VideoParameters*>(params.out);
 
-        if (av_cmp_q(in->frameRate(), out->frameRate()) != 0) {
+//        if (av_cmp_q(in->frameRate(), out->frameRate()) != 0) {
+        if (in->frameRate() != out->frameRate()) {
             static_log_warning("utils", "Video filter required: framerate mismatch "
-                               << rational_to_string(in->frameRate())
-                               << " != "
-                               << rational_to_string(out->frameRate()));
+                                           << rational_to_string(in->frameRate())
+                                           << " != "
+                                           << rational_to_string(out->frameRate())
+            );
             return true;
         }
 
@@ -495,8 +496,11 @@ namespace fpp {
         auto out = params.out;
 
         if (in->codecId() != out->codecId()) {
-            static_log_warning("utils", "Rescaling required: codec id mismatch "
-                               << in->codecId() << " != " << out->codecId());
+            static_log_warning("utils", "Transcoding required: codec id mismatch "
+                                           << avcodec_get_name(in->codecId())
+                                           << " != "
+                                           << avcodec_get_name(out->codecId())
+            );
             return true;
         }
 

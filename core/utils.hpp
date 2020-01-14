@@ -98,6 +98,16 @@ namespace fpp {
         return os;
     }
 
+    inline std::ostream& operator<<(std::ostream& os, const AVPixelFormat& pix_fmt) {
+        os << utils::pixel_format_to_string(pix_fmt);
+        return os;
+    }
+
+    inline std::ostream& operator<<(std::ostream& os, const AVSampleFormat& smpl_fmt) {
+        os << utils::sample_format_to_string(smpl_fmt);
+        return os;
+    }
+
 } // namespace fpp
 
 /* Обертка пространства имён fpp */
