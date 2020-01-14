@@ -282,11 +282,6 @@ void lavfi_debug() {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554");
-    if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
-        static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
-    }
-
     ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOType::Event);
     if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
@@ -298,8 +293,13 @@ void lavfi_debug() {
 void silence_mux_debug() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-    ProcessorPointer source = std::make_shared<MediaSource>(SINE(100), IOType::Virtual);
+//    ProcessorPointer silence = std::make_shared<MediaSource>(SINE(100), IOType::Virtual);
+    ProcessorPointer silence = std::make_shared<MediaSource>(SILENCE, IOType::Virtual);
+    if (auto ret = pipeline->addElement(silence); ret != fpp::Code::OK) {
+        static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
+    }
 
+    ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554");
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }

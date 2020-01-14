@@ -279,6 +279,6 @@ namespace fpp {
 #define BROADCAST -1
 
 /* ? */
-#define SILENCE     anullsrc=r=41000:cl=mono
+#define SILENCE     "anullsrc=r=41000:cl=mono"
 //#define SINE        "sine=frequency=1000:sample_rate=44100"
 #define SINE(x)     "sine=frequency=" + std::to_string(x) + ":sample_rate=44100"

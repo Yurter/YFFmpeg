@@ -156,8 +156,8 @@ namespace fpp {
         return false;
     }
 
-    bool utils::compatibleWithSampleFormat(AVCodecContext *codec_context, AVSampleFormat sample_format) {
-        auto smp_fmt = codec_context->codec->sample_fmts;
+    bool utils::compatible_with_sample_format(AVCodec* codec, AVSampleFormat sample_format) {
+        auto smp_fmt = codec->sample_fmts;
         while (smp_fmt[0] != AV_SAMPLE_FMT_NONE) {
             if (smp_fmt[0] == sample_format) { return true; }
             smp_fmt++;
@@ -201,11 +201,17 @@ namespace fpp {
         if (media_resurs_locator.find("aevalsrc") != std::string::npos) {
             return std::string("lavfi");
         }
-        if (media_resurs_locator.find("sine=") != std::string::npos) {
+        if (media_resurs_locator.find("anullsrc=") != std::string::npos) {  /* Silence              */
             return std::string("lavfi");
         }
-        if (media_resurs_locator.find("video=") != std::string::npos) {
+        if (media_resurs_locator.find("sine=") != std::string::npos) {      /* Гул\писк             */
+            return std::string("lavfi");
+        }
+        if (media_resurs_locator.find("video=") != std::string::npos) {     /* USB camera's video   */
             return std::string("dshow");
+        }
+        if (media_resurs_locator.find("audio=") != std::string::npos) {     /* USB micro's audio    */
+            return std::string("TODO 13.01");
         }
         return std::string(); //TODO use fmpeg funtion to get format list, нет нельзя: нужно возвращать пустую строку для логики в месте вызова
     }
