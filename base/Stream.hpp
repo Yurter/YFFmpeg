@@ -20,7 +20,7 @@ namespace fpp {
         Rescale,
     };
 
-    class Stream : public Data<AVStream*> {
+    class Stream : public Data<AVStream*> { //TODO сделать шаред и вик поинтеры 14.01
 
     public:
 

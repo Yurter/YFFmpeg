@@ -215,6 +215,11 @@ namespace fpp {
                 result = source;
             }
         });
+        _data_backup_sources.for_each([uid,&result](const auto& source) {
+            if (source->uid() == uid) {
+                result = source;
+            }
+        });
         _data_sinks.for_each([uid,&result](const auto& sink) {
             if (sink->uid() == uid) {
                 result = sink;
@@ -273,6 +278,14 @@ namespace fpp {
     Stream* Pipeline::findStream(int64_t uid) {
         Stream* ret_stream = nullptr;
         _data_sources.for_each([uid,&ret_stream](const auto& source) {
+            for (auto&& stream : source->streams()) {
+                if (stream->params->streamUid() == uid) {
+                    ret_stream = stream;
+                    return;
+                }
+            }
+        });
+        _data_backup_sources.for_each([uid,&ret_stream](const auto& source) {
             for (auto&& stream : source->streams()) {
                 if (stream->params->streamUid() == uid) {
                     ret_stream = stream;
@@ -399,6 +412,7 @@ namespace fpp {
             all_streams.push_back(stream);
         });
         if (all_streams.empty()) {
+            log_warning("Sources do not contain " << media_type << " stream, search among backup");
             _data_backup_sources.for_each([media_type,&all_streams](const auto& source) {
                 Stream* stream = source->bestStream(media_type);
                 if (not_inited_ptr(stream)) { return; }

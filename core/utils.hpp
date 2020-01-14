@@ -113,6 +113,11 @@ namespace fpp {
         return os;
     }
 
+    inline std::ostream& operator<<(std::ostream& os, const MediaType& type) {
+        os << utils::media_type_to_string(type);
+        return os;
+    }
+
 } // namespace fpp
 
 /* Обертка пространства имён fpp */

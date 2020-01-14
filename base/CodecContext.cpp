@@ -19,7 +19,7 @@ namespace fpp {
         return_if(inited(), Code::INVALID_CALL_ORDER);
         log_debug("Initialization");
         AVCodec* codec = nullptr;
-        switch (_type) { //TODO ref
+        switch (_type) { //TODO refactoring
         case CodecType::Decoder:
             codec = params.in->codec();
             break;

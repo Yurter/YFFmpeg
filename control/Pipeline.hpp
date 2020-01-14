@@ -32,6 +32,7 @@ namespace fpp {
         virtual ~Pipeline() override;
 
         Code                addElement(ProcessorPointer processor, SourceType priority = SourceType::Mandatory); //TODO refactoring priority 13.01
+                                                                                                                    // перенести свойство в процессор
         void                remElement(ProcessorPointer processor);
         void                remElement(const int64_t uid);
 
@@ -66,7 +67,7 @@ namespace fpp {
 
         ProcessorList       _data_sources;
         ProcessorList       _data_sinks;
-        ProcessorList       _data_backup_sources;
+        ProcessorList       _data_backup_sources; //TODO убрать и объединить с обычными сорсами ? 14.01
 
         RouteVector         _route_list;
 
