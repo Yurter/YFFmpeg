@@ -35,7 +35,10 @@ namespace fpp {
         void                increaseDuration(const int64_t value);
 
         virtual std::string toString() const override;
-        virtual Code        completeFrom(const Parameters* other_parametrs);
+
+        virtual Code        completeFrom(const Parameters* other_params);
+        virtual void        parseStream(const AVStream* avstream);
+//        virtual void        parseParameters();
 
     private:
 

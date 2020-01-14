@@ -28,6 +28,11 @@ namespace fpp {
         setName("Stream");
     }
 
+    Stream::Stream(const AVStream* avstream) {
+        setName("Stream");
+        params->parseStream(avstream);
+    }
+
     Stream::~Stream() {
         delete params;
     }
@@ -257,6 +262,9 @@ namespace fpp {
     bool Stream::operator>(const Stream& other) const {
         return params->bitrate() > other.params->bitrate();
     }
+
+//    void Stream::parseStream() {
+//    }
 
     void Stream::parseParameters() //TODO перенести код из FormatContext::parseFormatContext()
     {

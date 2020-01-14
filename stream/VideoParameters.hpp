@@ -8,7 +8,7 @@ namespace fpp {
     public:
 
         VideoParameters();
-        virtual ~VideoParameters() override;
+        virtual ~VideoParameters() override = default;
 
         void                setWidth(int64_t width);
         void                setHeight(int64_t height);
@@ -26,7 +26,8 @@ namespace fpp {
 
         virtual std::string toString() const override;
 
-        Code                completeFrom(const Parameters* other_parametrs) override;
+        Code                completeFrom(const Parameters* other_params) override;
+        virtual void        parseStream(const AVStream* avstream) override;
 
     private:
 

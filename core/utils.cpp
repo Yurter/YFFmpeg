@@ -382,7 +382,7 @@ namespace fpp {
         return audio_params;
     }
 
-    Code utils::find_encoder_for(const Parameters * const src_prm, Parameters * const dst_prm) {
+    Code utils::find_encoder_for(const Parameters * const src_prm, Parameters * const dst_prm) { //TODO return struct { codec + type }, убрать второй аргумент 14.01
         switch (src_prm->codecId()) {
         case AVCodecID::AV_CODEC_ID_H264:
             dst_prm->setCodec("libx264", CodecType::Encoder);

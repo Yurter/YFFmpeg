@@ -3,19 +3,18 @@
 
 namespace fpp {
 
-    Parameters::Parameters(MediaType type) :
-        MediaData(type),
-        _codec(nullptr)
-        , _codec_id(DEFAULT_CODEC_ID)
-        , _codec_name(DEFAULT_STRING)
-        , _codec_type(CodecType::Unknown)
-        , _bitrate(DEFAULT_INT)
-        , _duration(DEFAULT_INT)
-        , _stream_index(INVALID_INT)
-        , _stream_uid(INVALID_INT)
-        , _time_base(DEFAULT_RATIONAL)
-        , _context_uid(INVALID_INT)
-    {
+    Parameters::Parameters(MediaType type)
+        : MediaData(type)
+        , _codec { nullptr }
+        , _codec_id { DEFAULT_CODEC_ID }
+        , _codec_name { DEFAULT_STRING }
+        , _codec_type { CodecType::Unknown }
+        , _bitrate { DEFAULT_INT }
+        , _duration { DEFAULT_INT }
+        , _stream_index { INVALID_INT }
+        , _stream_uid { INVALID_INT }
+        , _time_base { DEFAULT_RATIONAL }
+        , _context_uid { INVALID_INT } {
         setName("Parameters");
     }
 
@@ -153,14 +152,22 @@ namespace fpp {
         return str;
     }
 
-    Code Parameters::completeFrom(const Parameters* other_parametrs) {
+    Code Parameters::completeFrom(const Parameters* other_params) {
         if (not_inited_codec_id(_codec_id)) {
-            try_to(utils::find_encoder_for(other_parametrs, this));
+            try_to(utils::find_encoder_for(other_params, this));
         }
 
-        if (not_inited_int(_bitrate)) { setBitrate(other_parametrs->bitrate());     }
-        if (not_inited_q(_time_base)) { setTimeBase(other_parametrs->timeBase());   }
+        if (not_inited_int(_bitrate)) { setBitrate(other_params->bitrate());     }
+        if (not_inited_q(_time_base)) { setTimeBase(other_params->timeBase());   }
         return Code::OK;
+    }
+
+    void Parameters::parseStream(const AVStream* avstream) {
+        setCodec(avstream->codecpar->codec_id, _codec_type);
+        setBitrate(avstream->codecpar->bit_rate);
+        setDuration(avstream->duration);
+        setStreamIndex(avstream->index);
+        setTimeBase(avstream->time_base);
     }
 
     void Parameters::setCodecType(CodecType value) {

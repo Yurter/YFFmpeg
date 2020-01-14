@@ -3,31 +3,15 @@
 
 namespace fpp {
 
-    VideoParameters::VideoParameters() :
-        Parameters(MediaType::Video)
-        , _width(DEFAULT_INT)
-        , _height(DEFAULT_INT)
-        , _aspect_ratio(DEFAULT_RATIONAL)
-        , _frame_rate(DEFAULT_RATIONAL)
-        , _pixel_format(DEFAULT_PIXEL_FORMAT)
-        , _gop_size(INVALID_INT)
-    {
+    VideoParameters::VideoParameters()
+        : Parameters(MediaType::Video)
+        , _width { DEFAULT_INT }
+        , _height { DEFAULT_INT }
+        , _aspect_ratio { DEFAULT_RATIONAL }
+        , _frame_rate { DEFAULT_RATIONAL }
+        , _pixel_format { DEFAULT_PIXEL_FORMAT }
+        , _gop_size { DEFAULT_INT } {
         setName("VideoParameters");
-    }
-
-    //VideoParameters::VideoParameters(Parameters parameters) :
-    //    Parameters(parameters),
-    //    _width(DEFAULT_INT),
-    //    _height(DEFAULT_INT),
-    //    _aspect_ratio(DEFAULT_RATIONAL),
-    //    _frame_rate(DEFAULT_FLOAT),
-    //    _pixel_format(DEFAULT_PIXEL_FORMAT)
-    //{
-    //    setName("VideoParameters");
-    //}
-
-    VideoParameters::~VideoParameters() {
-        //
     }
 
     void VideoParameters::setWidth(int64_t width) {
@@ -41,10 +25,6 @@ namespace fpp {
     void VideoParameters::setAspectRatio(AVRational aspect_ratio) {
         _aspect_ratio = aspect_ratio;
     }
-
-//    void VideoParameters::setFrameRate(float frame_rate) { //TODO сделать AVRational { frame_rate, 1 }, удалить?
-//        _frame_rate = frame_rate;
-//    }
 
     void VideoParameters::setFrameRate(AVRational frame_rate) {
         if ((frame_rate.num * frame_rate.den) == 0) {
@@ -62,7 +42,7 @@ namespace fpp {
             log_error("Cannot set pixel format before codec");
             return;
         }
-        if_not(utils::compatible_with_pixel_format(_codec, pixel_format)) {
+        if_not(utils::compatible_with_pixel_format(_codec, pixel_format)) { //TODO ? почему формат захардкожен? _codec->pix_fmts[0] ? 14.01
             const auto defailt_h264_pixel_format = AV_PIX_FMT_YUV420P;
             log_warning("Cannot set pixel format: " << pixel_format
                         << " - " << _codec->name << " doesn't compatible with it, "
@@ -102,23 +82,32 @@ namespace fpp {
     }
 
     std::string VideoParameters::toString() const {
-        std::string str = Parameters::toString() + "; ";
-        str += std::to_string(width()) + "x" + std::to_string(height()) + ", ";
-        str += utils::rational_to_string(aspectRatio()) + ", ";
-        str += utils::rational_to_string(frameRate()) + " fps" + ", ";
-        str += utils::pixel_format_to_string(pixelFormat());
-        return str;
+        return Parameters::toString() + "; "
+            + std::to_string(width()) + "x" + std::to_string(height()) + ", "
+            + utils::rational_to_string(aspectRatio()) + ", "
+            + utils::rational_to_string(frameRate()) + " fps" + ", "
+            + utils::pixel_format_to_string(pixelFormat());
     }
 
-    Code VideoParameters::completeFrom(const Parameters* other_parametrs) {
-        auto other_video_parameters = static_cast<const VideoParameters*>(other_parametrs);
-        if (not_inited_int(_width))             { setWidth(other_video_parameters->width());                }
-        if (not_inited_int(_height))            { setHeight(other_video_parameters->height());              }
-        if (not_inited_q(_aspect_ratio))        { setAspectRatio(other_video_parameters->aspectRatio());    }
-        if (not_inited_q(_frame_rate))          { setFrameRate(other_video_parameters->frameRate());        }
-        if (not_inited_pix_fmt(_pixel_format))  { setPixelFormat(other_video_parameters->pixelFormat());    }
-        try_to(Parameters::completeFrom(other_parametrs));
+    Code VideoParameters::completeFrom(const Parameters* other_params) {
+        auto other_video_parames = static_cast<const VideoParameters*>(other_params);
+        if (not_inited_int(_width))             { setWidth(other_video_parames->width());                }
+        if (not_inited_int(_height))            { setHeight(other_video_parames->height());              }
+        if (not_inited_q(_aspect_ratio))        { setAspectRatio(other_video_parames->aspectRatio());    }
+        if (not_inited_q(_frame_rate))          { setFrameRate(other_video_parames->frameRate());        }
+        if (not_inited_pix_fmt(_pixel_format))  { setPixelFormat(other_video_parames->pixelFormat());    }
+        try_to(Parameters::completeFrom(other_params));
         return Code::OK;
+    }
+
+    void VideoParameters::parseStream(const AVStream* avstream) {
+        setWidth(avstream->codecpar->width);
+        setHeight(avstream->codecpar->height);
+        setAspectRatio(avstream->codecpar->sample_aspect_ratio);
+        setFrameRate(avstream->avg_frame_rate);
+        setPixelFormat(avstream->codec->pix_fmt);
+        setGopSize(avstream->codec->gop_size);
+        Parameters::parseStream(avstream);
     }
 
 } // namespace fpp

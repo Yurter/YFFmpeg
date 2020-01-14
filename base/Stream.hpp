@@ -26,8 +26,12 @@ namespace fpp {
 
         Stream(const Stream& other)  = delete;
         Stream(const Stream&& other) = delete;
-        Stream(Parameters* param = new Parameters());
+        Stream(Parameters* param = new Parameters()); //TODO memeory leak 14.01
         Stream(AVStream* stream, Parameters* param);
+
+        //Stream(Parameters* param); TODO оставить отлько эти два конструктора 14.01
+        Stream(const AVStream* avstream);
+
         virtual ~Stream() override;
 
         virtual Code        init() override;
@@ -59,6 +63,7 @@ namespace fpp {
 
     protected:
 
+//        virtual void        parseStream();
         virtual void        parseParameters();
 
     protected:

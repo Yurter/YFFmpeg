@@ -3,14 +3,13 @@
 
 namespace fpp {
 
-    AudioParameters::AudioParameters() :
-        Parameters(MediaType::Audio)
-      , _sample_rate(DEFAULT_INT)
-      , _sample_format(DEFAULT_SAMPLE_FORMAT)
-      , _channel_layout(DEFAULT_CHANEL_LAYOUT)
-      , _channels(DEFAULT_INT)
-      , _frame_size(DEFAULT_INT)
-    {
+    AudioParameters::AudioParameters()
+        : Parameters(MediaType::Audio)
+        , _sample_rate { DEFAULT_INT }
+        , _sample_format { DEFAULT_SAMPLE_FORMAT }
+        , _channel_layout { DEFAULT_CHANEL_LAYOUT }
+        , _channels { DEFAULT_INT }
+        , _frame_size { DEFAULT_INT } {
         setName("AudioParameters");
     }
 
@@ -28,7 +27,7 @@ namespace fpp {
             return;
         }
         if_not(utils::compatible_with_sample_format(_codec, sample_format)) {
-            const auto defailt_mp3_sample_format = _codec->sample_fmts[0];//AV_SAMPLE_FMT_FLTP;
+            const auto defailt_mp3_sample_format = _codec->sample_fmts[0];;
             log_warning("Cannot set pixel format: " << sample_format
                         << " - " << _codec->name << " doesn't compatible with it, "
                         << "setting default: " << defailt_mp3_sample_format);
@@ -79,22 +78,30 @@ namespace fpp {
     }
 
     std::string AudioParameters::toString() const {
-        std::string str = Parameters::toString() + "; ";
-        str += "smplr: " + std::to_string(sampleRate()) + ", ";
-        str += utils::sample_format_to_string(sampleFormat()) + ", ";
-        str += "chlt: " + std::to_string(channelLayout()) + ", ";
-        str += "ch: " + std::to_string(channels());
-        return str;
+        return Parameters::toString() + "; "
+            + "sample_rate: " + std::to_string(sampleRate()) + ", "
+            + utils::sample_format_to_string(sampleFormat()) + ", "
+            + "channel_layout: " + std::to_string(channelLayout()) + ", "
+            + "channels: " + std::to_string(channels());
     }
 
-    Code AudioParameters::completeFrom(const Parameters* other_parametrs) {
-        auto other_audio_parameters = static_cast<const AudioParameters*>(other_parametrs);
-        if (not_inited_int(_sample_rate))           { setSampleRate(other_audio_parameters->sampleRate());          }
-        if (not_inited_smp_fmt(_sample_format))     { setSampleFormat(other_audio_parameters->sampleFormat());      }
-        if (not_inited_ch_layout(_channel_layout))  { setChannelLayout(other_audio_parameters->channelLayout());    }
-        if (not_inited_int(_channels))              { setChannels(other_audio_parameters->channels());              }
-        try_to(Parameters::completeFrom(other_parametrs));
+    Code AudioParameters::completeFrom(const Parameters* other_params) {
+        auto other_audio_parames = static_cast<const AudioParameters*>(other_params);
+        if (not_inited_int(_sample_rate))           { setSampleRate(other_audio_parames->sampleRate());          }
+        if (not_inited_smp_fmt(_sample_format))     { setSampleFormat(other_audio_parames->sampleFormat());      }
+        if (not_inited_ch_layout(_channel_layout))  { setChannelLayout(other_audio_parames->channelLayout());    }
+        if (not_inited_int(_channels))              { setChannels(other_audio_parames->channels());              }
+        try_to(Parameters::completeFrom(other_params));
         return Code::OK;
+    }
+
+    void AudioParameters::parseStream(const AVStream* avstream) {
+        setSampleRate(avstream->codecpar->sample_rate);
+        setSampleFormat(avstream->codec->sample_fmt);
+        setChannelLayout(avstream->codecpar->channel_layout);
+        setChannels(avstream->codecpar->channels);
+        setFrameSize(avstream->codecpar->frame_size);
+        Parameters::parseStream(avstream);
     }
 
 } // namespace fpp

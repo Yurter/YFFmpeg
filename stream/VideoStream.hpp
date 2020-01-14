@@ -4,7 +4,7 @@
 
 namespace fpp {
 
-    class VideoStream : public Stream { //TODO свернуть наследование ?
+    class VideoStream : public Stream { //TODO свернуть наследование ? да 14.01
 
     public:
 
@@ -14,7 +14,7 @@ namespace fpp {
 
         virtual Code        init() override;
 
-        bool                operator>(const Stream& other) const override;
+        bool                operator>(const Stream& other) const override; //TODO сравнивать параметры, а не потоки 14.01
 
     };
 
