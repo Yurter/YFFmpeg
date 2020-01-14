@@ -299,7 +299,7 @@ void silence_mux_debug() {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554");
+    ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:admin@192.168.10.3:554");
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }

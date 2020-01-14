@@ -28,7 +28,7 @@ namespace fpp {
             return;
         }
         if_not(utils::compatible_with_sample_format(_codec, sample_format)) {
-            const auto defailt_mp3_sample_format = AV_SAMPLE_FMT_FLTP;
+            const auto defailt_mp3_sample_format = _codec->sample_fmts[0];//AV_SAMPLE_FMT_FLTP;
             log_warning("Cannot set pixel format: " << av_get_sample_fmt_name(sample_format)
                         << " - " << _codec->name << " doesn't compatible with it, "
                         << "setting default: " << av_get_sample_fmt_name(defailt_mp3_sample_format));

@@ -158,7 +158,7 @@ namespace fpp {
 
             switch (codec_type) {//TODO
             case AVMEDIA_TYPE_VIDEO: {
-                auto video_parameters = new VideoParameters;
+                auto video_parameters = new VideoParameters{}; //TODO memory leak 14.01
                 video_parameters->setCodec(codecpar->codec_id, CodecType::Decoder);
                 video_parameters->setWidth(codecpar->width);
                 video_parameters->setHeight(codecpar->height);
@@ -169,12 +169,11 @@ namespace fpp {
                 video_parameters->setPixelFormat(codec->pix_fmt);
                 video_parameters->setStreamIndex(i);
                 video_parameters->setTimeBase(avstream->time_base);
-//                video_parameters->setContextUid(uid());
                 try_to(createStream(new VideoStream(avstream, video_parameters)));
                 break;
             }
             case AVMEDIA_TYPE_AUDIO: {
-                auto audio_parameters = new AudioParameters;
+                auto audio_parameters = new AudioParameters{}; //TODO memory leak 14.01
                 audio_parameters->setCodec(codecpar->codec_id, CodecType::Decoder);
                 audio_parameters->setSampleRate(codecpar->sample_rate);
                 audio_parameters->setSampleFormat(codec->sample_fmt);
@@ -188,8 +187,6 @@ namespace fpp {
                 }
                 audio_parameters->setStreamIndex(i);
                 audio_parameters->setTimeBase(avstream->time_base);
-//                audio_parameters->setContextUid(uid());
-                log_warning("---> IN " << audio_parameters->toString());
                 try_to(createStream(new AudioStream(avstream, audio_parameters)));
                 break;
             }

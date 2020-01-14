@@ -123,40 +123,58 @@ namespace fpp {
         return str;
     }
 
-    bool utils::compatible_with_pixel_format(AVCodec* codec, AVPixelFormat pixel_format) { //TODO не работает на неоткрытом кодеке (открывать и закрывать сразу?)
-        if (codec->id != AV_CODEC_ID_H264) {
-            static_log_warning("utils", "compatible_with_pixel_format doesn't work with " << avcodec_get_name(codec->id));
+    bool utils::compatible_with_pixel_format(const AVCodec* codec, AVPixelFormat pixel_format) {
+        if (not_inited_ptr(codec->pix_fmts)) {
+            static_log_warning("utils", "compatible_with_pixel_format failed: codec->pix_fmts is NULL");
             return true;
         }
-        AVPixelFormat h264_pxl_fmts[] = {
-            AV_PIX_FMT_YUV420P
-            , AV_PIX_FMT_YUVJ420P
-            , AV_PIX_FMT_YUV422P
-            , AV_PIX_FMT_YUVJ422P
-            , AV_PIX_FMT_YUV444P
-            , AV_PIX_FMT_YUVJ444P
-            , AV_PIX_FMT_NV12
-            , AV_PIX_FMT_NV16
-            , AV_PIX_FMT_NV21
-            , AV_PIX_FMT_YUV420P10LE
-            , AV_PIX_FMT_YUV422P10LE
-            , AV_PIX_FMT_YUV444P10LE
-            , AV_PIX_FMT_NV20LE
-            , AV_PIX_FMT_GRAY8
-            , AV_PIX_FMT_GRAY10LE
-            , AV_PIX_FMT_NONE
-        };
 
-        auto pix_fmt = h264_pxl_fmts;
-
+        auto pix_fmt = codec->pix_fmts;
         while (pix_fmt[0] != AV_PIX_FMT_NONE) {
             if (pix_fmt[0] == pixel_format) { return true; }
             pix_fmt++;
         }
         return false;
     }
+//    bool utils::compatible_with_pixel_format(AVCodec* codec, AVPixelFormat pixel_format) { //TODO не работает на неоткрытом кодеке (открывать и закрывать сразу?)
+//        if (codec->id != AV_CODEC_ID_H264) {
+//            static_log_warning("utils", "compatible_with_pixel_format doesn't work with " << avcodec_get_name(codec->id));
+//            return true;
+//        }
+//        AVPixelFormat h264_pxl_fmts[] = {
+//            AV_PIX_FMT_YUV420P
+//            , AV_PIX_FMT_YUVJ420P
+//            , AV_PIX_FMT_YUV422P
+//            , AV_PIX_FMT_YUVJ422P
+//            , AV_PIX_FMT_YUV444P
+//            , AV_PIX_FMT_YUVJ444P
+//            , AV_PIX_FMT_NV12
+//            , AV_PIX_FMT_NV16
+//            , AV_PIX_FMT_NV21
+//            , AV_PIX_FMT_YUV420P10LE
+//            , AV_PIX_FMT_YUV422P10LE
+//            , AV_PIX_FMT_YUV444P10LE
+//            , AV_PIX_FMT_NV20LE
+//            , AV_PIX_FMT_GRAY8
+//            , AV_PIX_FMT_GRAY10LE
+//            , AV_PIX_FMT_NONE
+//        };
 
-    bool utils::compatible_with_sample_format(AVCodec* codec, AVSampleFormat sample_format) {
+//        auto pix_fmt = h264_pxl_fmts;
+
+//        while (pix_fmt[0] != AV_PIX_FMT_NONE) {
+//            if (pix_fmt[0] == pixel_format) { return true; }
+//            pix_fmt++;
+//        }
+//        return false;
+//    }
+
+    bool utils::compatible_with_sample_format(const AVCodec* codec, AVSampleFormat sample_format) {
+        if (not_inited_ptr(codec->sample_fmts)) {
+            static_log_warning("utils", "compatible_with_pixel_format failed: codec->sample_fmts is NULL");
+            return true;
+        }
+
         auto smp_fmt = codec->sample_fmts;
         while (smp_fmt[0] != AV_SAMPLE_FMT_NONE) {
             if (smp_fmt[0] == sample_format) { return true; }
@@ -176,7 +194,7 @@ namespace fpp {
         case MediaType::MEDIA_TYPE_EOF:
             return AVMEDIA_TYPE_DATA;
         }
-        throw Exception("1646");
+        throw Exception("TODO");
     }
 
     int64_t utils::gen_uid() {
