@@ -8,13 +8,12 @@ namespace fpp {
 
     public:
 
-        Data() :
-            Data(Type())
-        {
+        Data()
+            : Data(Type{}) {
             EMPTY_CONSTRUCTOR
         }
 
-        Data(Type data, MediaType type = MediaType::MEDIA_TYPE_UNKNOWN) :
+        Data(Type data, MediaType type = MediaType::Unknown) :
             MediaData(type),
             _data(data)
         {

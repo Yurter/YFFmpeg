@@ -27,7 +27,7 @@ namespace fpp {
 
     private:
 
-        AVOutputFormat*     _output_format;
+        AVOutputFormat*     _output_format; //TODO убрать ? 14.01
 
     };
 

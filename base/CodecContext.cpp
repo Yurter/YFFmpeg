@@ -52,7 +52,7 @@ namespace fpp {
         return_if(opened(), Code::OK);
         log_debug("Opening");
         AVCodec* codec = nullptr;
-        switch (_type) { //TODO ref
+        switch (_type) { //TODO refactoring
         case CodecType::Decoder:
             codec = params.in->codec();
             break;

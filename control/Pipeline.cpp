@@ -318,7 +318,7 @@ namespace fpp {
                           << utils::media_type_to_string(out_stream->type()));
                 return Code::INVALID_INPUT;
             }
-            if (out_stream->typeIs(MediaType::MEDIA_TYPE_AUDIO)) {
+            if (out_stream->typeIs(MediaType::Audio)) {
                 setName(name());
             }
             Route route;

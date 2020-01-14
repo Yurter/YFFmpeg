@@ -69,7 +69,7 @@ namespace fpp {
         av_frame_copy_props(&output_data.raw(), &input_data.raw());
 
 //        Frame output_data(converted_frame);
-        output_data.setType(MEDIA_TYPE_VIDEO);
+        output_data.setType(output_params->type());
 //        log_info("Input: " << input_data);
 //        log_info("Output: " << output_data);
 //        input_data.free();

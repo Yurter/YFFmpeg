@@ -3,16 +3,16 @@
 
 namespace fpp {
 
-    Processor::Processor() :
-        _uid(utils::gen_uid())
-      , _type(ProcessorType::Unknown)
-      , _opened(false)
-      , _close_on_disconnect(true)
-      , _discard_types(MediaType::MEDIA_TYPE_UNKNOWN)
-      , _input_data_count(0)
-      , _output_data_count(0)
-      , _discarded_data_count(0)
-      , _processing_iterations_count(0)
+    Processor::Processor()
+        : _uid { utils::gen_uid() }
+        , _type { ProcessorType::Unknown }
+        , _opened { false }
+        , _close_on_disconnect { true }
+//      , _discard_types(MediaType::Unknown)
+        , _input_data_count { 0 }
+        , _output_data_count { 0 }
+        , _discarded_data_count { 0 }
+        , _processing_iterations_count { 0 }
     {
         setName("Processor");
     }
@@ -91,9 +91,9 @@ namespace fpp {
         _close_on_disconnect = value;
     }
 
-    void Processor::setDiscardType(MediaType type) {
-        _discard_types |= type;
-    }
+//    void Processor::setDiscardType(MediaType type) {
+//        _discard_types |= type;
+//    }
 
     void Processor::setMetaData(const std::string& value) {
         _meta_data = value;
@@ -147,9 +147,9 @@ namespace fpp {
         return !_opened;
     }
 
-    bool Processor::discardType(MediaType type) const {
-        return _discard_types & type;
-    }
+//    bool Processor::discardType(MediaType type) const {
+//        return _discard_types & type;
+//    }
 
     std::string Processor::metaData() const {
         return _meta_data;

@@ -26,9 +26,9 @@ namespace fpp {
         return_if(opened(), Code::OK);
         return_if_not(inited(), Code::NOT_INITED);
         log_debug("Opening");
-        log_info(_output_format_context.mediaResourceLocator() << "\" is opening...");
+        log_info("'" << _output_format_context.mediaResourceLocator() << "' is opening...");
         try_to(_output_format_context.open());
-        log_info(_output_format_context.mediaResourceLocator() << "\" opened");
+        log_info("'" <<_output_format_context.mediaResourceLocator() << "' opened");
         // НЕ УДАЛЯТЬ
 //        _flush_timer.setInterval([&](){
 //            Code ret = _output_format_context.flush();
@@ -51,13 +51,13 @@ namespace fpp {
 //            stopWait(); //TODO костыль?
 //        }
         try_to(_output_format_context.close());
-        log_info("Destination \"" << _output_format_context.mediaResourceLocator() << "\" closed, " //TODO метод отрабатывает дважды: из деструктора и из онСтоп
+        log_info("Destination '" << _output_format_context.mediaResourceLocator() << "' closed, " //TODO метод отрабатывает дважды: из деструктора и из онСтоп
                  << utils::time_to_string(stream(0)->params->duration(), stream(0)->params->timeBase()));
         for (auto stream : streams()) { //Debug log
             log_warning("stream suration: " << utils::time_to_string(stream->params->duration(), stream->params->timeBase()));
         }
         if (stream(0)->params->duration() == 0) { //TODO кривой код
-            log_warning('"' << _output_format_context.mediaResourceLocator() << "\" closed empty!");
+            log_warning("'" << _output_format_context.mediaResourceLocator() << "' closed empty!");
         }
         setOpened(false);
         return Code::OK;
@@ -86,6 +86,7 @@ namespace fpp {
         auto data_stream = stream(input_data.streamIndex());
         try_to(data_stream->stampPacket(input_data/*, data_stream->params->timeBase()*/));
 //        if (input_data.isAudio()) log_warning("2] WRITE: " << input_data);
+        log_warning("2] WRITE: " << input_data);
         try_to(storeOutputData(input_data));
         return Code::OK;
     }
@@ -95,7 +96,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code MediaSink::onStop() {
+    Code MediaSink::onStop() { //TODO убрать, если не используется 14.01
         log_debug("onStop");
 //        try_to(close());
         return Code::OK;

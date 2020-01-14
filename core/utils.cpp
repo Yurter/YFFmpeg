@@ -5,13 +5,13 @@ namespace fpp {
 
     std::string utils::media_type_to_string(MediaType media_type) {
         switch (media_type) {
-        case MediaType::MEDIA_TYPE_UNKNOWN:
+        case MediaType::Unknown:
             return "Unknown";
-        case MediaType::MEDIA_TYPE_VIDEO:
+        case MediaType::Video:
             return "Video";
-        case MediaType::MEDIA_TYPE_AUDIO:
+        case MediaType::Audio:
             return "Audio";
-        case MediaType::MEDIA_TYPE_EOF:
+        case MediaType::EndOF:
             return "EOF";
         }
         return "Invalid";
@@ -168,7 +168,7 @@ namespace fpp {
 
     bool utils::compatible_with_sample_format(const AVCodec* codec, AVSampleFormat sample_format) {
         if (not_inited_ptr(codec->sample_fmts)) {
-            static_log_warning("utils", "compatible_with_pixel_format failed: codec->sample_fmts is NULL");
+            static_log_warning("utils", "compatible_with_sample_format failed: codec->sample_fmts is NULL");
             return true;
         }
 
@@ -182,13 +182,13 @@ namespace fpp {
 
     AVMediaType utils::mediatype_to_avmediatype(MediaType media_type) {
         switch (media_type) {
-        case MediaType::MEDIA_TYPE_UNKNOWN:
-            return AVMEDIA_TYPE_UNKNOWN;
-        case MediaType::MEDIA_TYPE_VIDEO:
-            return AVMEDIA_TYPE_VIDEO;
-        case MediaType::MEDIA_TYPE_AUDIO:
-            return AVMEDIA_TYPE_AUDIO;
-        case MediaType::MEDIA_TYPE_EOF:
+        case MediaType::Unknown:
+            return AVMediaType::AVMEDIA_TYPE_UNKNOWN;
+        case MediaType::Video:
+            return AVMediaType::AVMEDIA_TYPE_VIDEO;
+        case MediaType::Audio:
+            return AVMediaType::AVMEDIA_TYPE_AUDIO;
+        case MediaType::EndOF:
             return AVMEDIA_TYPE_DATA;
         }
         throw Exception("TODO");
@@ -263,7 +263,7 @@ namespace fpp {
 //        codec_context->time_base = { 1, 16000 /*тут нужен таймбейс входного потока, либо рескейлить в энкодере*/ };
 
         switch (param->type()) {
-        case MediaType::MEDIA_TYPE_VIDEO: {
+        case MediaType::Video: {
             auto video_parameters = static_cast<const VideoParameters*>(param);
             codec_context->pix_fmt      = video_parameters->pixelFormat();
             codec_context->width        = int(video_parameters->width());
@@ -289,7 +289,7 @@ namespace fpp {
     //        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
             break;
         }
-        case MediaType::MEDIA_TYPE_AUDIO: {
+        case MediaType::Audio: {
             auto audio_parameters = static_cast<const AudioParameters*>(param);
             codec_context->sample_fmt       = audio_parameters->sampleFormat();
             codec_context->channel_layout   = audio_parameters->channelLayout();
@@ -297,7 +297,7 @@ namespace fpp {
             codec_context->sample_rate      = int(audio_parameters->sampleRate());
             break;
         }
-        case MediaType::MEDIA_TYPE_UNKNOWN:
+        case MediaType::Unknown:
             break;
         }
     }
@@ -308,7 +308,7 @@ namespace fpp {
         codecpar->bit_rate = parametres->bitrate();
 
         switch (parametres->type()) {
-        case MediaType::MEDIA_TYPE_VIDEO: {
+        case MediaType::Video: {
             codecpar->codec_type = AVMediaType::AVMEDIA_TYPE_VIDEO;
             auto video_parameters = dynamic_cast<VideoParameters*>(parametres);
             codecpar->width                  = int(video_parameters->width());
@@ -317,7 +317,7 @@ namespace fpp {
             codecpar->format                = int(video_parameters->pixelFormat());
             break;
         }
-        case MediaType::MEDIA_TYPE_AUDIO: {
+        case MediaType::Audio: {
             codecpar->codec_type = AVMediaType::AVMEDIA_TYPE_AUDIO;
             auto audio_parameters = dynamic_cast<AudioParameters*>(parametres);
             codecpar->channel_layout   = audio_parameters->channelLayout();
@@ -325,7 +325,7 @@ namespace fpp {
             codecpar->sample_rate      = int(audio_parameters->sampleRate());
             break;
         }
-        case MediaType::MEDIA_TYPE_UNKNOWN:
+        case MediaType::Unknown:
             break;
         }
     }
@@ -336,7 +336,7 @@ namespace fpp {
         parametres->setBitrate(codecpar->bit_rate);
 
         switch (parametres->type()) {
-        case MediaType::MEDIA_TYPE_VIDEO: {
+        case MediaType::Video: {
             auto video_parameters = dynamic_cast<VideoParameters*>(parametres);
     //        video_parameters->setPixelFormat(codecpar->pix_fmt);
             video_parameters->setWidth(codecpar->width);
@@ -344,7 +344,7 @@ namespace fpp {
     //        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
             break;
         }
-        case MediaType::MEDIA_TYPE_AUDIO: {
+        case MediaType::Audio: {
             auto audio_parameters = dynamic_cast<AudioParameters*>(parametres);
     //        audio_parameters->setSampleFormat(codecpar->sample_fmt);
             audio_parameters->setChannelLayout(codecpar->channel_layout);
@@ -352,7 +352,7 @@ namespace fpp {
             audio_parameters->setSampleRate(codecpar->sample_rate);
             break;
         }
-        case MediaType::MEDIA_TYPE_UNKNOWN:
+        case MediaType::Unknown:
             break;
         }
     }
@@ -397,10 +397,10 @@ namespace fpp {
 
     MediaType utils::antitype(const MediaType value) {
         switch (value) {
-        case MediaType::MEDIA_TYPE_VIDEO:
-            return MediaType::MEDIA_TYPE_AUDIO;
-        case MediaType::MEDIA_TYPE_AUDIO:
-            return MediaType::MEDIA_TYPE_VIDEO;
+        case MediaType::Video:
+            return MediaType::Audio;
+        case MediaType::Audio:
+            return MediaType::Video;
         default:
             throw std::exception("Bad media type - antitype()");
         }

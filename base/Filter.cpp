@@ -138,7 +138,7 @@ namespace fpp {
         return _filters_descr;
     }
 
-    Code Filter::processInputData(Frame input_data) {
+    Code Filter::processInputData(Frame input_data) { //TODO много параметров захардкожено 14.01
         if (av_buffersrc_add_frame_flags(_buffersrc_ctx, &input_data.raw(), AV_BUFFERSRC_FLAG_KEEP_REF) < 0) {
             log_error("Error while feeding the filtergraph: " << input_data);
             return Code::FFMPEG_ERROR;
@@ -151,7 +151,7 @@ namespace fpp {
                 return Code::AGAIN;
             if (ret < 0)
                 return Code::FFMPEG_ERROR;
-            output_data.setType(MEDIA_TYPE_VIDEO);
+            output_data.setType(MediaType::Video);
             output_data.raw().linesize[0] = input_data.raw().linesize[0]; //TODO убрать?
             output_data.raw().linesize[1] = input_data.raw().linesize[1];
             output_data.raw().linesize[2] = input_data.raw().linesize[2];

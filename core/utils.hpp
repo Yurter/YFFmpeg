@@ -93,28 +93,33 @@ namespace fpp {
         return av_cmp_q(lhs, rhs) != 0;
     }
 
-    inline std::ostream& operator<<(std::ostream& os, const AVRational& rational) {
+    inline std::ostream& operator<<(std::ostream& os, const AVRational rational) {
         os << utils::rational_to_string(rational);
         return os;
     }
 
-    inline std::ostream& operator<<(std::ostream& os, const AVPixelFormat& pix_fmt) {
+    inline std::ostream& operator<<(std::ostream& os, const AVPixelFormat pix_fmt) {
         os << utils::pixel_format_to_string(pix_fmt);
         return os;
     }
 
-    inline std::ostream& operator<<(std::ostream& os, const AVSampleFormat& smpl_fmt) {
+    inline std::ostream& operator<<(std::ostream& os, const AVSampleFormat smpl_fmt) {
         os << utils::sample_format_to_string(smpl_fmt);
         return os;
     }
 
-    inline std::ostream& operator<<(std::ostream& os, const AVCodecID& codec_id) {
+    inline std::ostream& operator<<(std::ostream& os, const AVCodecID codec_id) {
         os << avcodec_get_name(codec_id);
         return os;
     }
 
-    inline std::ostream& operator<<(std::ostream& os, const MediaType& type) {
+    inline std::ostream& operator<<(std::ostream& os, const MediaType type) {
         os << utils::media_type_to_string(type);
+        return os;
+    }
+
+    inline std::ostream& operator<<(std::ostream& os, const Code code) {
+        os << utils::code_to_string(code);
         return os;
     }
 

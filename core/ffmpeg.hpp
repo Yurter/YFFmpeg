@@ -28,10 +28,10 @@ namespace fpp {
         /* Input */
         Virtual,
         /* Output */
-        Event, //TODO костыльный тип ради создания потоков у синков, убрать (нет, необходимо жестко задавать видео- и аудиопотоки)
+        Event,
+        OpenCV,
         YouTube,
         Timelapse,
-        OpenCV,
     };
 
     /* Коды результата выполнения некоторых функций */
@@ -72,11 +72,11 @@ namespace fpp {
     };
 
     /* Медиа тип потока/пакета/фрейма */
-    enum MediaType {
-        MEDIA_TYPE_UNKNOWN  = 0x0001,
-        MEDIA_TYPE_VIDEO    = 0x0002,
-        MEDIA_TYPE_AUDIO    = 0x0004,
-        MEDIA_TYPE_EOF      = 0x0008,
+    enum class MediaType { //TODO убрать инициализацию полей и методы дискад и игнорм (этот функционал переходит под ответственность потоков) 14.01
+        Unknown = 0x0001,
+        Video   = 0x0002,
+        Audio   = 0x0004,
+        EndOF   = 0x0008,
     };
 
     /* Категории сообщений, которые выводятся в консоль.
@@ -106,6 +106,14 @@ namespace fpp {
         Closing,
         Reading,
         Writing,
+    };
+
+    /* ? */
+    enum class SeekPrecision {
+        Forward,
+        Backward,
+        Precisely,
+        Any,
     };
 
 } // namespace fpp

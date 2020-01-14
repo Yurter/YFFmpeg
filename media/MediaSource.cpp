@@ -23,9 +23,9 @@ namespace fpp {
     Code MediaSource::open() {
         return_if(opened(), Code::OK);
         log_debug("Opening");
-        log_info('"' << _input_format_context.mediaResourceLocator() << "\" is opening...");
+        log_info("'" << _input_format_context.mediaResourceLocator() << "' is opening...");
         try_to(_input_format_context.open());
-        log_info('"' << _input_format_context.mediaResourceLocator() << "\" opened");
+        log_info("'" << _input_format_context.mediaResourceLocator() << "' opened");
         { //TODO refactoring
             try_to(setStreams(_input_format_context.streams()));
             for (auto&& avstream : streams()) { //TODO
@@ -43,7 +43,7 @@ namespace fpp {
         try_to(stop());
         stopWait(); //TODO костыль?
         try_to(_input_format_context.close());
-        log_info("Source \"" << _input_format_context.mediaResourceLocator() << "\" closed, "
+        log_info("Source '" << _input_format_context.mediaResourceLocator() << "' closed, "
                  << utils::time_to_string(stream(0)->params->duration(), stream(0)->params->timeBase())); //TODO индекс нулевой закардкожен - брать блиьельность из контекста, а в нем максимальную по потокам 13.01
         setOpened(false);
         return Code::OK;
@@ -52,7 +52,7 @@ namespace fpp {
     std::string MediaSource::toString() const {
         /* Input #0, rtsp, from 'rtsp://admin:admin@192.168.10.3': */
         std::string str = "Input #"
-                + std::to_string(_input_format_context.uid()) + ", "
+//                + std::to_string(_input_format_context.uid()) + ", "
                 + utils::guess_format_short_name(_input_format_context.mediaResourceLocator()) + ", "
                 + "from '" + _input_format_context.mediaResourceLocator() + "'";
         return str;

@@ -27,7 +27,7 @@ namespace fpp {
 //        try_to(output_file->init());
 
 ////        output_file->stream(0)->setStampType(StampType::Append);
-//        output_file->setDiscardType(MediaType::MEDIA_TYPE_EOF);
+//        output_file->setDiscardType(MediaType::EndOF);
 
 ////        log_debug("OUT UID: " << output_file->stream(0)->params->streamUid());
 
@@ -93,7 +93,7 @@ namespace fpp {
 
 //        output_file->resetDiscardTypes();
 //        Packet eof;
-//        eof.setType(MediaType::MEDIA_TYPE_EOF);
+//        eof.setType(MediaType::EndOF);
 //        try_to(output_file->push(&eof));
 
 //        output_file->join();

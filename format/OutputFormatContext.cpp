@@ -2,11 +2,10 @@
 
 namespace fpp {
 
-    OutputFormatContext::OutputFormatContext(const std::string mrl, IOType preset) :
-        FormatContext(mrl, preset)
-      , _output_format(nullptr)
+    OutputFormatContext::OutputFormatContext(const std::string mrl, IOType preset)
+        : FormatContext { mrl, preset }
+        , _output_format { nullptr }
     {
-//        setName("OutputFormatContext");
         setName("OutFmtCtx");
     }
 
@@ -14,10 +13,10 @@ namespace fpp {
         try_throw(close());
     }
 
-    Code OutputFormatContext::init() {
+    Code OutputFormatContext::init() { //TODO refactoring 14.01
         return_if(inited(), Code::INVALID_CALL_ORDER);
         try_to(createContext());
-        switch (_preset) {
+        switch (preset()) {
         case IOType::Auto: {
             try_to(guessOutputFromat());
             break;
@@ -39,7 +38,7 @@ namespace fpp {
         }
         case IOType::YouTube: {
             /* Video */
-            auto video_parameters = new VideoParameters;
+            auto video_parameters = new VideoParameters; //TODO memory leak 14.01
 //            video_parameters->setWidth(1920);
 //            video_parameters->setHeight(1080);
             video_parameters->setWidth(1280);
@@ -52,7 +51,7 @@ namespace fpp {
             video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
             try_to(createStream(video_parameters));
 //            /* Audio */
-//            auto audio_parameters = new AudioParameters;
+//            auto audio_parameters = new AudioParameters; //TODO memory leak 14.01
 //            audio_parameters->setSampleRate(44'100);
 //    //        audio_parameters->setSampleFormat(AV_SAMPLE_FMT_FLTP);
 //            audio_parameters->setSampleFormat(AV_SAMPLE_FMT_FLTP);
@@ -69,7 +68,7 @@ namespace fpp {
         }
         case IOType::Timelapse: {
             /* Video */
-            auto video_parameters = new VideoParameters;
+            auto video_parameters = new VideoParameters; //TODO memory leak 14.01
             video_parameters->setCodec("libx264", CodecType::Encoder);
             video_parameters->setTimeBase(DEFAULT_TIME_BASE);
 			video_parameters->setGopSize(2);
@@ -98,13 +97,11 @@ namespace fpp {
         return Code::OK;
     }
 
-    std::string OutputFormatContext::toString() const {
+    std::string OutputFormatContext::toString() const { //TODO реализация 14.01
         /* Output #0, flv, to 'rtmp://a.rtmp.youtube.com/live2/ytub-8t5w-asjj-avyf'*/
-        std::string str = "Output #"
-                + std::to_string(uid()) + ", "
-                + utils::guess_format_short_name(_media_resource_locator) + ", " //TODO пустая строка
-                + "to '" + _media_resource_locator + "'";
-        return str;
+        return "Output #"
+                + utils::guess_format_short_name(mediaResourceLocator()) + ", " //TODO пустая строка
+                + "to '" + mediaResourceLocator() + "'";
     }
 
     Code OutputFormatContext::write(Packet packet, ReadWriteMode write_mode) {
@@ -136,13 +133,13 @@ namespace fpp {
     }
 
     Code OutputFormatContext::createContext() {
-        return_error_if(inited_ptr(_format_context)
+        return_error_if(inited_ptr(mediaFormatContext())
                         , "Context already created!"
                         , Code::INVALID_CALL_ORDER);
-        _format_context = avformat_alloc_context();
-        std::string format_short_name = utils::guess_format_short_name(_media_resource_locator);
+        try_to(setMediaFormatContext(avformat_alloc_context()));
+        std::string format_short_name = utils::guess_format_short_name(mediaResourceLocator());
         const char* format_name = format_short_name.empty() ? nullptr : format_short_name.c_str();
-        if (avformat_alloc_output_context2(&_format_context, nullptr, format_name, _media_resource_locator.c_str()) < 0) {
+        if (avformat_alloc_output_context2(mediaFormatContext2(), nullptr, format_name, mediaResourceLocator().c_str()) < 0) {
             log_error("Failed to alloc output context.");
             return Code::ERR;
         }
@@ -150,9 +147,10 @@ namespace fpp {
     }
 
     Code OutputFormatContext::openContext() {
+        return_if(opened(), Code::OK);
         return_if_not(inited(), Code::NOT_INITED);
-        return_error_if(_streams.empty()
-                        , "No streams to mux were specified: " << _media_resource_locator
+        return_error_if(streams().empty()
+                        , "No streams to mux were specified: " << mediaResourceLocator()
                         , Code::NOT_INITED);
         for (auto&& avstream : streams()) { //TODO refactoring
             if (not_inited_codec_id(avstream->raw()->codecpar->codec_id)) {
@@ -160,39 +158,39 @@ namespace fpp {
             }
             try_to(avstream->init());
         }
-        if (!(_format_context->flags & AVFMT_NOFILE)) {
-            if (avio_open(&_format_context->pb, _media_resource_locator.c_str(), AVIO_FLAG_WRITE) < 0) {
-                log_error("Could not open output: " << _media_resource_locator);
+        if (!(mediaFormatContext()->flags & AVFMT_NOFILE)) {
+            if (avio_open(&mediaFormatContext()->pb, mediaResourceLocator().c_str(), AVIO_FLAG_WRITE) < 0) {
+                log_error("Could not open output: " << mediaResourceLocator());
                 return Code::INVALID_INPUT;
             }
         }
 //        auto debug_valu1 = _format_context->streams[0]->codecpar;
 //        auto debug_value = _format_context->streams[1]->codecpar;
 //        log_warning("---> OUT " << streams()[1]->params->toString());
-        if (auto ret = avformat_write_header(_format_context, nullptr); ret < 0) {
-            log_error("Error occurred when opening output: " << _media_resource_locator << ", " << ret);
+        if (auto ret = avformat_write_header(mediaFormatContext(), nullptr); ret < 0) { //TODO unesed result 14.01
+            log_error("Error occurred when opening output: " << mediaResourceLocator() << ", " << ret);
             return Code::ERR;
         }
-        {
-            av_dump_format(_format_context, 0, _media_resource_locator.c_str(), 1);
+        { //TODO убрать дамп 14.01
+//            av_dump_format(_format_context, 0, _media_resource_locator.c_str(), 1);
             return Code::OK;
         }
     }
 
     Code OutputFormatContext::closeContext() {
         return_if(closed(), Code::OK);
-        if (av_write_trailer(_format_context) != 0) {
+        if (av_write_trailer(mediaFormatContext()) != 0) {
             log_error("Failed to write the stream trailer to an output media file");
             return Code::ERR;
         }
-        avio_close(_format_context->pb);
+        avio_close(mediaFormatContext()->pb);
         return Code::OK;
     }
 
     Code OutputFormatContext::guessOutputFromat() {// см: _format_context->oformat
-        AVOutputFormat* output_format = av_guess_format(nullptr, _media_resource_locator.c_str(), nullptr);
+        AVOutputFormat* output_format = av_guess_format(nullptr, mediaResourceLocator().c_str(), nullptr);
         if (output_format == nullptr) {
-            log_error("Failed guess output format: " << _media_resource_locator);
+            log_error("Failed guess output format: " << mediaResourceLocator());
             return Code::INVALID_INPUT;
         }
         _output_format = output_format;

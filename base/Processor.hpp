@@ -40,8 +40,8 @@ namespace fpp {
         void                setType(ProcessorType value);
         void                setOpened(bool opened);
         void                setCloseOnDisconnect(bool value);
-        void                setDiscardType(MediaType type);
-        void                resetDiscardTypes() { _discard_types = 0; } //TODO костыль: нельзя закрыть синк еоф пакетом в конкатенаторе
+//        void                setDiscardType(MediaType type);
+//        void                resetDiscardTypes() { _discard_types = 0; } //TODO костыль: нельзя закрыть синк еоф пакетом в конкатенаторе
         void                setMetaData(const std::string& value);
 
         Code                connectTo(StreamId_t stream_id, ProcessorPointer other);
@@ -53,7 +53,7 @@ namespace fpp {
         bool                typeIs(ProcessorType value) const;
         bool                opened() const;
         bool                closed() const;
-        bool                discardType(MediaType type) const;
+//        bool                discardType(MediaType type) const;
         std::string         metaData() const;
 
     protected:
@@ -78,7 +78,7 @@ namespace fpp {
         ProcessorType       _type;
         bool                _opened;
         bool                _close_on_disconnect; //TODO убрать? 10.01
-        int64_t             _discard_types;
+//        int64_t             _discard_types;
         StreamVector        _streams;
         std::string         _meta_data; //TODO not used 10.01
         uint64_t            _input_data_count;

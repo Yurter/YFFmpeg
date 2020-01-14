@@ -3,13 +3,6 @@
 
 namespace fpp {
 
-    enum class SeekPrecision {
-        Forward,
-        Backward,
-        Precisely,
-        Any,
-    };
-
     class InputFormatContext : public FormatContext {
 
     public:
@@ -34,7 +27,7 @@ namespace fpp {
 
     private:
 
-        AVInputFormat*      _input_format;
+        AVInputFormat*      _input_format; //TODO зачем хранить копию из контекста? 14.01
 
     };
 

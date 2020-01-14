@@ -116,33 +116,6 @@ namespace fpp {
 
         Code sendOutputData(const outType& output_data, int64_t stream_uid = BROADCAST) {
             increaseOutputDataCount();
-//            for (auto [stream_id, proc_list] : _stream_map) {
-//                if (stream_id == output_data.streamUid()) {
-//                    proc_list.for_each([&output_data,this](auto& next_processor){
-//                        static_log_trace("Sender", "Sending data to " << next_processor->name());
-//                        try_throw_static(next_processor->push(&output_data));
-//                        if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) {
-//                            static_log_error("Debug", "Send EOF to " << next_processor->name());
-//                        }
-//                    });
-//                }
-//            }
-            //
-//            _stream_map[output_data.streamUid()].for_each([&output_data,this](auto& next_processor) {
-//                static_log_trace("Sender", "Sending data to " << next_processor->name());
-//                try_throw_static(next_processor->push(&output_data));
-//                if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) {
-//                    static_log_error("Debug", "Send EOF to " << next_processor->name());
-//                }
-//            });
-            //
-//            _stream_map[stream_uid].for_each([&output_data,this](auto& next_processor) {
-//                static_log_trace("Sender", "Sending data to " << next_processor->name());
-//                try_throw_static(next_processor->push(&output_data));
-//                if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) { //Debug log
-//                    static_log_error("Debug", "Send EOF to " << next_processor->name());
-//                }
-//            });
             if_not(_stream_map.empty()) {
                 if (stream_uid == BROADCAST) { //TODO кривой код 13.01
                     for (auto it = _stream_map.begin(); it != _stream_map.end(); ++it)
@@ -150,24 +123,16 @@ namespace fpp {
                       it->second.for_each([&output_data,this](auto& next_processor) {
                           static_log_trace("Sender", "Sending data to " << next_processor->name());
                           try_throw_static(next_processor->push(&output_data));
-                          if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) { //Debug log
+                          if (output_data.typeIs(MediaType::EndOF)) { //Debug log
                               static_log_error("Debug", "Send EOF to " << next_processor->name());
                           }
                       });
                     }
-
-//                    _stream_map.begin()->second.for_each([&output_data,this](auto& next_processor) {
-//                        static_log_trace("Sender", "Sending data to " << next_processor->name());
-//                        try_throw_static(next_processor->push(&output_data));
-//                        if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) { //Debug log
-//                            static_log_error("Debug", "Send EOF to " << next_processor->name());
-//                        }
-//                    });
                 } else {
                     _stream_map[stream_uid].for_each([&output_data,this](auto& next_processor) {
                         static_log_trace("Sender", "Sending data to " << next_processor->name());
                         try_throw_static(next_processor->push(&output_data));
-                        if (output_data.typeIs(MediaType::MEDIA_TYPE_EOF)) { //Debug log
+                        if (output_data.typeIs(MediaType::EndOF)) { //Debug log
                             static_log_error("Debug", "Send EOF to " << next_processor->name());
                         }
                     });
@@ -185,7 +150,7 @@ namespace fpp {
             log_error("Sending EOF"); //TODO удалить отладночный лог
             log_debug("Sending EOF");
             outType eof;
-            eof.setType(MediaType::MEDIA_TYPE_EOF);
+            eof.setType(MediaType::EndOF);
             try_to(sendOutputData(eof));
             return Code::OK;
         }
@@ -200,10 +165,10 @@ namespace fpp {
 
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
-            if (discardType(input_data.type())) {
-                increaseDiscardedDataCount();
-                return Code::AGAIN;
-            }
+//            if (discardType(input_data.type())) {
+//                increaseDiscardedDataCount();
+//                return Code::AGAIN;
+//            }
 
             if (_start_data_pred) {
                 if (Code ret = _start_data_pred(input_data); ret == Code::AGAIN) {
@@ -213,7 +178,7 @@ namespace fpp {
                 _start_data_pred = nullptr;
             }
 
-            if (input_data.typeIs(MediaType::MEDIA_TYPE_EOF)) {
+            if (input_data.isEOF()) {
                 log_error("Got EOF " << input_data.name()); //TODO удалить отладночный лог
                 log_debug("Got EOF " << input_data.name());
                 try_to(sendEof());

@@ -34,10 +34,9 @@ namespace fpp {
         Stream*             bestStream(MediaType type);                 ///< Функция возвращает указатель на поток заданного типа с наилучшими параметрами; nullptr, если потока заданного типа нет.
         void                reopenAfterFailure(int64_t timeout);        ///< Функция позволяет автоматически переоткрывать контекст в случаее его закрытия по заданному таймауту в секундах.
 
-        int64_t             uid() const;                                ///< Функция возвращает uid.
         std::string         mediaResourceLocator() const;               ///< Функция возвращает mrl.
         AVFormatContext*    mediaFormatContext() const;                 ///< Функция возвращает ffmpeg медиа-контекст.
-//        int64_t             duration() const;							///< Функция возвращает длительность медиа-файла в секундах.
+        AVFormatContext**   mediaFormatContext2(); // TODO 14.01
         Stream*             stream(int64_t index);                      ///< Функция возвращает указатель на поток с заданным индексом; nullptr, если невалидный индекс.
         int64_t             numberStream() const;                       ///< Функция возвращает количество потоков в текущем котексте.
 
@@ -63,6 +62,7 @@ namespace fpp {
             InterruptedProcess  interrupted_process;
             FormatContext*      caller_object;
             Chronometer         chronometer;
+
         };
 
     protected:
@@ -71,31 +71,28 @@ namespace fpp {
         virtual Code        openContext()   = 0;
         virtual Code        closeContext()  = 0;
 
+        Code                setMediaFormatContext(AVFormatContext* value);
+
         Code                parseFormatContext();
 
     private:
 
         void                setOpened(bool opened);
-        void                setUid(int64_t uid);                        ///< Функция установки uid контекста, не допускает повторного вызовова.
-
         void                setInteruptCallback(InterruptedProcess process);
         void                resetInteruptCallback();
         static int          interrupt_callback(void* opaque);
 
-    protected:
+    private:
 
-        int64_t             _uid;
-        std::string			_media_resource_locator;
+        AVFormatContext*	_format_context;
+        const std::string   _media_resource_locator;
         bool                _opened;
-        StreamVector        _streams;
+        StreamVector        _streams; //TODO убрать, использовать только потоки в процессоре 14.01
         bool                _reopening_after_failure;
         int64_t             _reopening_timeout;
         int64_t             _artificial_delay;
-        IOType              _preset;
+        const IOType        _preset;
         Interrupter         _current_interrupter;
-
-        // FFmpeg
-        AVFormatContext*	_format_context;
 
     };
 

@@ -9,7 +9,7 @@ namespace fpp {
 
     public:
 
-        Parameters(MediaType type = MediaType::MEDIA_TYPE_UNKNOWN);
+        Parameters(MediaType type = MediaType::Unknown);
         virtual ~Parameters() override = default;
 
         void                setCodec(AVCodecID codec_id, CodecType codec_type);

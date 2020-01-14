@@ -85,7 +85,7 @@ namespace fpp {
         int ret = avcodec_receive_frame(_codec_context, &output_frame.raw());
         switch (ret) {
         case 0:
-            output_frame.setType(MediaType::MEDIA_TYPE_VIDEO); //TODO
+            output_frame.setType(MediaType::Video); //TODO
             if (output_frame.empty()) {
                 log_error("Sending empty frame: " << output_frame);
             }

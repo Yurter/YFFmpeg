@@ -4,7 +4,7 @@
 namespace fpp {
 
     AudioParameters::AudioParameters() :
-        Parameters(MediaType::MEDIA_TYPE_AUDIO)
+        Parameters(MediaType::Audio)
       , _sample_rate(DEFAULT_INT)
       , _sample_format(DEFAULT_SAMPLE_FORMAT)
       , _channel_layout(DEFAULT_CHANEL_LAYOUT)

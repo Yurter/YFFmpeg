@@ -86,7 +86,7 @@ namespace fpp {
     }
 
     Code EncoderContext::onOpen() {
-        if (params.out->typeIs(MediaType::MEDIA_TYPE_AUDIO)) {
+        if (params.out->typeIs(MediaType::Audio)) {
             static_cast<AudioParameters * const>(params.out)->setFrameSize(_codec_context->frame_size); //TODO не надежно: нет гарантий, что кодек откроется раньше, чем рескейлер начнет работу
         }
         return Code::OK;

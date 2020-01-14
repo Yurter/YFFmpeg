@@ -72,7 +72,7 @@ namespace fpp {
         }
     }
 
-    Code Stream::stampPacket(Packet& packet/*, AVRational packet_time_base*/) {
+    Code Stream::stampPacket(Packet& packet) { // TODO refactoring 14.01
         switch (_stamp_type) {
         case StampType::Copy:
             _packet_duration = packet.pts() - _prev_pts;
@@ -168,8 +168,7 @@ namespace fpp {
 
         packet.setPos(-1);
         packet.setDuration(_packet_duration);
-//        packet.setTimeBase(params->timeBase());
-//        packet.setStreamUid(params->streamUid());
+        packet.setTimeBase(params->timeBase());
         params->increaseDuration(packet.duration());
         _prev_dts = packet.dts();
         _prev_pts = packet.pts();

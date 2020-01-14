@@ -4,7 +4,7 @@
 namespace fpp {
 
     VideoParameters::VideoParameters() :
-        Parameters(MediaType::MEDIA_TYPE_VIDEO)
+        Parameters(MediaType::Video)
         , _width(DEFAULT_INT)
         , _height(DEFAULT_INT)
         , _aspect_ratio(DEFAULT_RATIONAL)
