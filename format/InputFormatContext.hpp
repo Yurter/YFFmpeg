@@ -22,6 +22,7 @@ namespace fpp {
         virtual Code        openContext()   override;
         virtual Code        closeContext()  override;
 
+        StreamVector        parseFormatContext();
         Code                guessInputFromat();
         void                initPacket(Packet& packet);
 

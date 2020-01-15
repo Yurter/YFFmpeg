@@ -22,8 +22,7 @@ namespace fpp {
 
         TemplateProcessor() :
             _input_queue(50 MEGABYTES,  [](const inType& input_data)   { return input_data.size();  })
-          , _output_queue(50 MEGABYTES, [](const outType& output_data) { return output_data.size(); })
-        {
+          , _output_queue(50 MEGABYTES, [](const outType& output_data) { return output_data.size(); }) {
             setName("TemplateProcessor");
         }
 
@@ -132,9 +131,6 @@ namespace fpp {
                     _stream_map[stream_uid].for_each([&output_data,this](auto& next_processor) {
                         static_log_trace("Sender", "Sending data to " << next_processor->name());
                         try_throw_static(next_processor->push(&output_data));
-                        if (output_data.typeIs(MediaType::EndOF)) { //Debug log
-                            static_log_error("Debug", "Send EOF to " << next_processor->name());
-                        }
                     });
                 }
             }
@@ -147,7 +143,6 @@ namespace fpp {
         }
 
         Code sendEof() {
-            log_error("Sending EOF"); //TODO удалить отладночный лог
             log_debug("Sending EOF");
             outType eof;
             eof.setType(MediaType::EndOF);
@@ -165,10 +160,6 @@ namespace fpp {
 
             inType input_data;
             return_if_not(_input_queue.wait_and_pop(input_data), Code::EXIT);
-//            if (discardType(input_data.type())) {
-//                increaseDiscardedDataCount();
-//                return Code::AGAIN;
-//            }
 
             if (_start_data_pred) {
                 if (Code ret = _start_data_pred(input_data); ret == Code::AGAIN) {
@@ -179,7 +170,6 @@ namespace fpp {
             }
 
             if (input_data.isEOF()) {
-                log_error("Got EOF " << input_data.name()); //TODO удалить отладночный лог
                 log_debug("Got EOF " << input_data.name());
                 try_to(sendEof());
                 return Code::END_OF_FILE;
@@ -187,7 +177,7 @@ namespace fpp {
 
             log_trace("Running processInputData");
             try_to(processInputData(input_data));
-            increaseProcessingIterationCount();
+            increaseProcessedDataCount();
 
             if /*constexpr*/ (_post_function) {
                 log_trace("Running _post_function");

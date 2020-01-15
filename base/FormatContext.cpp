@@ -7,19 +7,14 @@ namespace fpp {
         : _format_context { nullptr }
         , _media_resource_locator { mrl }
         , _opened { false }
-        , _reopening_after_failure { false }
-        , _reopening_timeout { INVALID_INT }
-        , _artificial_delay { DEFAULT_INT }
+        , _artificial_delay { 0 }
         , _preset { preset }
-        , _current_interrupter { Interrupter { InterruptedProcess::None, this } }
-    {
+        , _current_interrupter { Interrupter { InterruptedProcess::None, this } } {
         setName("FormatContext");
     }
 
     FormatContext::~FormatContext() {
-        if_not(closed()) {
-            log_warning("Context deleted without closing!");
-        }
+        try_throw(close());
     }
 
     Code FormatContext::close() {
@@ -58,39 +53,6 @@ namespace fpp {
         resetInteruptCallback();
         setOpened(true);
         return Code::OK;
-    }
-
-    Code FormatContext::createStream(Stream* new_stream) {
-        new_stream->params->setStreamIndex(numberStream());
-        _streams.push_back(new_stream);
-        return Code::OK;
-    }
-
-    Code FormatContext::createStream(Parameters* param) {
-//        return_if_not(param->inited(), Code::INVALID_INPUT); //TODO метод inited() не виртуальный, добавить проверку параметров
-        auto avstream = avformat_new_stream(_format_context, param->codec()); //TODO memory leak
-        return_if(not_inited_ptr(avstream), Code::ERR);
-        Stream* new_stream = nullptr;
-        if (param->isVideo()) {
-            auto video_param = dynamic_cast<VideoParameters*>(param);   //TODO memory leak
-            new_stream = new VideoStream(video_param);                  //TODO memory leak
-            new_stream->setRaw(avstream);
-        }
-        if (param->isAudio()) {
-            auto audio_param = dynamic_cast<AudioParameters*>(param);   //TODO memory leak
-            new_stream = new AudioStream(audio_param);                  //TODO memory leak
-            new_stream->setRaw(avstream);
-        }
-        return createStream(new_stream);
-    }
-
-    Stream* FormatContext::bestStream(MediaType type) {
-        return utils::find_best_stream(streams(type));
-    }
-
-    void FormatContext::reopenAfterFailure(int64_t timeout) {
-        _reopening_after_failure = true;
-        _reopening_timeout = timeout;
     }
 
     void FormatContext::setInteruptCallback(InterruptedProcess process) {
@@ -135,61 +97,6 @@ namespace fpp {
         return 0;
     }
 
-    Code FormatContext::parseFormatContext() { //TODO перенести код в Stream::parseParametres() - лучше в конструктор Stream(AVStream* stream) 14.01
-        if (_format_context == nullptr) {
-            log_error("Format context not inited. Parsing failed");
-            return Code::INVALID_INPUT;
-        }
-
-        for (int64_t i = 0; i < _format_context->nb_streams; i++) {
-            AVStream* avstream = _format_context->streams[i];
-            auto codec = avstream->codec;
-            auto codecpar = avstream->codecpar;
-            auto codec_type = codecpar->codec_type;
-
-            switch (codec_type) {//TODO
-            case AVMediaType::AVMEDIA_TYPE_VIDEO: {
-                auto video_parameters = new VideoParameters{}; //TODO memory leak 14.01
-                video_parameters->setCodec(codecpar->codec_id, CodecType::Decoder);
-                video_parameters->setWidth(codecpar->width);
-                video_parameters->setHeight(codecpar->height);
-                video_parameters->setAspectRatio(codecpar->sample_aspect_ratio);
-                video_parameters->setDuration(avstream->duration);
-                video_parameters->setFrameRate(avstream->avg_frame_rate); // ? -> r_frame_rate
-                video_parameters->setBitrate(codecpar->bit_rate);
-                video_parameters->setPixelFormat(codec->pix_fmt);
-                video_parameters->setStreamIndex(i);
-                video_parameters->setTimeBase(avstream->time_base);
-                try_to(createStream(new VideoStream(avstream, video_parameters))); //TODO memory leak 14.01
-                break;
-            }
-            case AVMediaType::AVMEDIA_TYPE_AUDIO: {
-                auto audio_parameters = new AudioParameters{}; //TODO memory leak 14.01
-                audio_parameters->setCodec(codecpar->codec_id, CodecType::Decoder);
-                audio_parameters->setSampleRate(codecpar->sample_rate);
-                audio_parameters->setSampleFormat(codec->sample_fmt);
-                audio_parameters->setDuration(avstream->duration);
-                audio_parameters->setBitrate(codecpar->bit_rate);
-                audio_parameters->setChannelLayout(codecpar->channel_layout);
-                audio_parameters->setChannels(codecpar->channels);
-                /* crutch */ //TODO
-                if (audio_parameters->channelLayout() == 0) {
-                    audio_parameters->setChannelLayout(uint64_t(av_get_default_channel_layout(int(audio_parameters->channels()))));
-                }
-                audio_parameters->setStreamIndex(i);
-                audio_parameters->setTimeBase(avstream->time_base);
-                try_to(createStream(new AudioStream(avstream, audio_parameters))); //TODO memory leak 14.01
-                break;
-            }
-            default:
-                log_warning("Unsupported media type founded: " << av_get_media_type_string(codec_type));
-                break;
-            }
-        }
-
-        return Code::OK;
-    }
-
     std::string FormatContext::mediaResourceLocator() const {
         return _media_resource_locator;
     }
@@ -202,16 +109,12 @@ namespace fpp {
         return &_format_context;
     }
 
-    Stream* FormatContext::stream(int64_t index) {
-        if (size_t(index) < _streams.size()) {
-            return _streams[size_t(index)];
-        } else {
-            return nullptr;
-        }
+    AVStream* FormatContext::stream(int64_t index) {
+       return  _format_context->streams[size_t(index)];
     }
 
     int64_t FormatContext::numberStream() const {
-        return int64_t(_streams.size());
+        return int64_t(_format_context->nb_streams);
     }
 
     AVInputFormat* FormatContext::inputFormat() const {
@@ -222,42 +125,10 @@ namespace fpp {
         return _format_context->oformat;
     }
 
-    bool FormatContext::supportsVideo() {
-        // return inited_ptr(bestStream(MediaType::Video)); //TODO объеденить? сорс не знает о своих потоках до открытия..
-        if (is("Source")) {
-            return inited_ptr(bestStream(MediaType::Video));
-        }
-        if (is("Sink")) {
-            return inited_codec_id(outputFormat()->video_codec); //TODO защиту от пнг в мп3
-        }
-        return false;
-    }
-
-    bool FormatContext::supportsAudio(){
-        if (this->is("Source")) {
-            return inited_ptr(bestStream(MediaType::Audio));
-        }
-        if (this->is("Sink")) {
-            return inited_codec_id(outputFormat()->audio_codec);
-        }
-        return false;
-    }
-
-    StreamVector FormatContext::streams() const {
-        return _streams;
-    }
-
-    StreamVector FormatContext::streams(MediaType media_type) {
-        StreamVector streams;
-        for (auto&& str : _streams) {
-            if (str->typeIs(media_type)) { streams.push_back(str); }
-        }
-        return streams;
-    }
-
     Code FormatContext::setMediaFormatContext(AVFormatContext* value) {
         return_if(not_inited_ptr(value), Code::INVALID_INPUT);
         _format_context = value;
+        return Code::OK;
     }
 
 } // namespace fpp

@@ -19,9 +19,7 @@ namespace fpp {
 
         Processor();
         Processor(const Processor& other)  = delete;
-        Processor(const Processor&& other) = delete;
         Processor& operator=(const Processor& other)  = delete;
-        Processor& operator=(const Processor&& other) = delete;
         virtual ~Processor() override;
 
         virtual Code        open();
@@ -31,16 +29,14 @@ namespace fpp {
                                                                 //   => проблема - метод необходим в базовом классе, а тип даты опредеятся выше по уровню
 
         int64_t             uid()                       const;
-        const StreamVector& streams()                   const; //TODO копируется функционал с контекстами 10.01
-        Stream*             bestStream(MediaType type)  const;
-        Stream*             stream(int64_t index)       const;
-        Code                addStream(Stream* stream);
-        Code                setStreams(StreamVector streams);
+        StreamVector        streams()                   const;
+        StreamPointer       stream(int64_t index)       const;
+        StreamPointer       bestStream(MediaType type)  const;
 
+        Code                setStreams(StreamVector streams);
         void                setType(ProcessorType value);
         void                setOpened(bool opened);
         void                setCloseOnDisconnect(bool value);
-        void                setMetaData(const std::string& value);
 
         Code                connectTo(StreamId_t stream_id, ProcessorPointer other);
         Code                disconnectFrom(const ProcessorPointer other);
@@ -51,20 +47,18 @@ namespace fpp {
         bool                typeIs(ProcessorType value) const;
         bool                opened() const;
         bool                closed() const;
-//        bool                discardType(MediaType type) const;
-        std::string         metaData() const;
 
     protected:
 
-        uint64_t            inputDataCount()            const;
-        uint64_t            outputDataCount()           const;
-        uint64_t            discardedDataCount()        const;
-        uint64_t            processingIterationCount()  const;
+        uint64_t            inputDataCount()        const;
+        uint64_t            outputDataCount()       const;
+        uint64_t            discardedDataCount()    const;
+        uint64_t            processedDataCount()    const;
 
         void                increaseInputDataCount();
         void                increaseOutputDataCount();
         void                increaseDiscardedDataCount();
-        void                increaseProcessingIterationCount();
+        void                increaseProcessedDataCount();
 
     protected:
 
@@ -75,14 +69,11 @@ namespace fpp {
         const int64_t       _uid;
         ProcessorType       _type;
         bool                _opened;
-        bool                _close_on_disconnect; //TODO убрать? 10.01
-//        int64_t             _discard_types;
         StreamVector        _streams;
-        std::string         _meta_data; //TODO not used 10.01
         uint64_t            _input_data_count;
         uint64_t            _output_data_count;
         uint64_t            _discarded_data_count;
-        uint64_t            _processing_iterations_count;
+        uint64_t            _processed_data_count;
 
     };
 

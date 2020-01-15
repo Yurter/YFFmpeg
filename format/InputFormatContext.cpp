@@ -109,8 +109,8 @@ namespace fpp {
             return Code::ERR;
         }
         {
-            _input_format = mediaFormatContext()->iformat;
-            try_to(parseFormatContext());
+//            _input_format = mediaFormatContext()->iformat;
+//            try_to(parseFormatContext());
 //            av_dump_format(_format_context, 0, _media_resource_locator.c_str(), 0); //TODO использовать свой метод дампа 14.01
             return Code::OK;
         }
@@ -121,15 +121,14 @@ namespace fpp {
         avformat_close_input(mediaFormatContext2());
         return Code::OK;
     }
-//    Code InputFormatContext::closeContext() {
-//        return_if(closed(), Code::OK);
-//        if (inited_ptr(mediaFormatContext())) {
-//            auto todo = mediaFormatContext();
-//            avformat_close_input(&todo);
-//            return Code::OK;
-//        }
-//        return Code::INVALID_CALL_ORDER;
-//    }
+
+    StreamVector InputFormatContext::parseFormatContext() {
+        StreamVector result;
+        for (unsigned i = 0; i < mediaFormatContext()->nb_streams; ++i) {
+            auto stream = std::make_shared<Stream>(mediaFormatContext()->streams[i]);
+        }
+        return result;
+    }
 
     Code InputFormatContext::guessInputFromat() {
         auto short_name = utils::guess_format_short_name(mediaResourceLocator());

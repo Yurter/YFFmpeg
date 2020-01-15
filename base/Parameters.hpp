@@ -4,6 +4,9 @@
 namespace fpp {
 
     using StreamId_t = int64_t;
+    class Parameters;
+    using ParametersPointer = std::shared_ptr<Parameters>;
+    using IOParams = struct { ParametersPointer in; ParametersPointer out; };
 
     class Parameters : public MediaData {
 
@@ -39,6 +42,8 @@ namespace fpp {
         virtual Code        completeFrom(const Parameters* other_params);
         virtual void        parseStream(const AVStream* avstream);
 
+        virtual bool        betterThen(const ParametersPointer& other) = 0;
+
     private:
 
         void                setStreamUid(int64_t value);
@@ -61,8 +66,6 @@ namespace fpp {
 
 //    using IOParams = struct { const Parameters * const in; const Parameters * const out; }; константа убрана из-за необходимости устанваливать фрейм сайз из энкодера
 //    using IOParams = struct { Parameters * const in; Parameters * const out; };
-    using ParametersPointer = std::shared_ptr<Parameters>;
-    using IOParams = struct { ParametersPointer in; ParametersPointer out; };
 
 
 } // namespace fpp

@@ -7,22 +7,19 @@ namespace fpp {
         : _uid { utils::gen_uid() }
         , _type { ProcessorType::Unknown }
         , _opened { false }
-        , _close_on_disconnect { true }
-//      , _discard_types(MediaType::Unknown)
         , _input_data_count { 0 }
         , _output_data_count { 0 }
         , _discarded_data_count { 0 }
-        , _processing_iterations_count { 0 }
-    {
+        , _processed_data_count { 0 } {
         setName("Processor");
     }
 
     Processor::~Processor() {
-        log_debug("Iterations count: " << processingIterationCount());
         log_debug("Data usage brief: "
                   << "in " << inputDataCount() << ", "
-                  << "out " << outputDataCount() << ", "
-                  << "discarded " << discardedDataCount()
+                  << "discarded " << discardedDataCount() << ", "
+                  << "processed " << processedDataCount() << ", "
+                  << "out " << outputDataCount()
         );
     }
 
@@ -38,21 +35,23 @@ namespace fpp {
         return _uid;
     }
 
-    const StreamVector& Processor::streams() const {
+    StreamVector Processor::streams() const {
         return _streams;
     }
 
-    Stream* Processor::bestStream(MediaType type) const { //TODO refactoring методы работы с потоками в процессоре и формат контексте
-        StreamVector all_type_streams;
-        for (auto& str : streams()) {
-            if (str->typeIs(type)) {
-                all_type_streams.push_back(str);
-            }
+    StreamPointer Processor::bestStream(MediaType type) const {
+        StreamVector candidate_list;
+        for (auto& candidate : streams()) {
+            if (candidate->typeIs(type)) { candidate_list.push_back(candidate); }
         }
-        return utils::find_best_stream(all_type_streams);
+        auto ret = std::max_element(std::begin(candidate_list), std::end(candidate_list), [](const StreamPointer& lhs, const StreamPointer& rhs) {
+            return lhs->params->betterThen(rhs->params);
+        });
+        return_if(ret == std::end(candidate_list), nullptr);
+        return *ret;
     }
 
-    Stream* Processor::stream(int64_t index) const {
+    StreamPointer Processor::stream(int64_t index) const {
         if (size_t(index) < _streams.size()) {
             return _streams[size_t(index)];
         } else {
@@ -60,20 +59,11 @@ namespace fpp {
         }
     }
 
-    Code Processor::addStream(Stream* stream) {
-        return_if(not_inited_ptr(stream), Code::INVALID_INPUT);
-        _streams.push_back(stream);
-        log_debug("Stream added: " << stream->toString());
-        return Code::OK;
-    }
-
     Code Processor::setStreams(StreamVector streams) {
-        return_if(streams.empty(), Code::INVALID_INPUT);
-        return_if_not(_streams.empty(), Code::INVALID_CALL_ORDER);
+        return_if_not(_streams.empty(), Code::INVALID_CALL_ORDER); //TODO нужна ли эта проверка? 15.01
         _streams = streams;
-        const int64_t this_context_uid = uid();
         std::for_each(_streams.begin(), _streams.end()
-            , [this_context_uid](Stream*& stream) {
+            , [this_context_uid = uid()](auto& stream) {
             stream->params->setContextUid(this_context_uid);
         });
         return Code::OK;
@@ -85,18 +75,6 @@ namespace fpp {
 
     void Processor::setOpened(bool opened) {
         _opened = opened;
-    }
-
-    void Processor::setCloseOnDisconnect(bool value) {
-        _close_on_disconnect = value;
-    }
-
-//    void Processor::setDiscardType(MediaType type) {
-//        _discard_types |= type;
-//    }
-
-    void Processor::setMetaData(const std::string& value) {
-        _meta_data = value;
     }
 
     Code fpp::Processor::connectTo(StreamId_t stream_id, ProcessorPointer other) {
@@ -114,20 +92,11 @@ namespace fpp {
             });
         }
         log_debug("Disconnected from " << other->name());
-//        if (_next_processor_list.empty()) {
-//            if (_close_on_disconnect) {
-//                log_info("TODO self destroy"); //TODO заменить return type на void?
-//                try_to(stop());
-//            } else {
-//                log_warning("Connection list is empty");
-//            }
-//        }
         return Code::OK;
     }
 
-    bool Processor::equalTo(const ProcessorPointer other) const {
-        UNUSED(other);
-        log_warning("Method equalTo() was not implemented.");
+    bool Processor::equalTo([[maybe_unused]] const ProcessorPointer other) const {
+        log_warning("Method equalTo() was not implemented");
         return false;
     }
 
@@ -147,14 +116,6 @@ namespace fpp {
         return !_opened;
     }
 
-//    bool Processor::discardType(MediaType type) const {
-//        return _discard_types & type;
-//    }
-
-    std::string Processor::metaData() const {
-        return _meta_data;
-    }
-
     uint64_t Processor::inputDataCount() const {
         return _input_data_count;
     }
@@ -167,8 +128,8 @@ namespace fpp {
         return _discarded_data_count;
     }
 
-    uint64_t Processor::processingIterationCount() const {
-        return _processing_iterations_count;
+    uint64_t Processor::processedDataCount() const {
+        return _processed_data_count;
     }
 
     void Processor::increaseInputDataCount() {
@@ -183,8 +144,8 @@ namespace fpp {
         _discarded_data_count++;
     }
 
-    void Processor::increaseProcessingIterationCount() {
-        _processing_iterations_count++;
+    void Processor::increaseProcessedDataCount() {
+        _processed_data_count++;
     }
 
 } // namespace fpp

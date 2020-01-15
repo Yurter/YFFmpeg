@@ -8,7 +8,7 @@
 namespace fpp {
 
     class Stream;
-    using StreamPointer = std::shared_ptr<Stream>;
+    using StreamPointer = std::shared_ptr<Stream>; //TODO rename to Stream, сам класс переименовать в другое 15.01
     using StreamVector = std::vector<StreamPointer>;
 
     class Stream : public Data<const AVStream*> {
@@ -41,8 +41,6 @@ namespace fpp {
         int64_t             packetIndex()       const;
 
         AVCodecParameters*  codecParameters();
-
-        virtual bool        operator>(const Stream& other) const; //TODO func betterThen(Stream* other) ? нет, максимум дублировать, т.к. испольуется в std::max_element
 
     public:
 

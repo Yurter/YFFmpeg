@@ -255,39 +255,4 @@ namespace fpp {
         return _data->codecpar;
     }
 
-    bool Stream::operator>(const Stream& other) const {
-        return params->bitrate() > other.params->bitrate();
-    }
-
-//    void Stream::todoInit() {
-///*
-//        , _used(false)
-//        , _stamp_type(StampType::Rescale)
-//        , _prev_dts(0)
-//        , _prev_pts(0)
-//        , _packet_index(0)
-//        , _packet_dts_delta(INVALID_INT)
-//        , _packet_pts_delta(INVALID_INT)
-//        , _packet_duration(INVALID_INT)
-//        , _pts_offset(0)
-//        , _dts_offset(0)
-//        , _start_time_point(FROM_START)
-//        , _end_time_point(TO_END) {
-//        setName(utils::media_type_to_string(type()) + " stream");
-//*/
-//        _used = false;
-//        _stamp_type = StampType::Rescale;
-//        _prev_dts = 0;
-//        _prev_pts = 0;
-//        _packet_index = 0;
-//        _packet_dts_delta = INVALID_INT;
-//        _packet_pts_delta = INVALID_INT;
-//        _packet_duration = INVALID_INT;
-//        _pts_offset = 0;
-//        _dts_offset = 0;
-//        _start_time_point = FROM_START;
-//        _end_time_point = TO_END;
-//        setName(utils::media_type_to_string(type()) + " stream");
-//    }
-
 } // namespace fpp
