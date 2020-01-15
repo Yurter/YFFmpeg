@@ -22,33 +22,35 @@ namespace fpp {
         }
         case IOPreset::Event: {
             /* Video */
+            StreamVector stream_list;
             auto video_params = std::make_shared<VideoParameters>();
             video_params->setCodec("libx264", CodecType::Encoder);
             video_params->setGopSize(2);
             video_params->setTimeBase(DEFAULT_TIME_BASE);
-            try_to(createStream(video_params));
+            stream_list.push_back(createStream(video_params));
             /* Audio */
             auto audio_params = std::make_shared<AudioParameters>();
             audio_params->setCodec("libmp3lame", CodecType::Encoder);
             audio_params->setTimeBase(DEFAULT_TIME_BASE);
             audio_params->setSampleRate(DEFAULT_SAMPLE_RATE);
-            try_to(createStream(audio_params));
+            stream_list.push_back(createStream(audio_params));
+            try_to(registerStreams(stream_list));
             break;
         }
         case IOPreset::YouTube: {
             /* Video */
-            auto video_parameters = std::make_shared<VideoParameters>();
-//            video_parameters->setWidth(1920);
-//            video_parameters->setHeight(1080);
-            video_parameters->setWidth(1280);
-            video_parameters->setHeight(720);
-            video_parameters->setAspectRatio({ 16,9 });
-            video_parameters->setFrameRate({ 30, 1 });
-            video_parameters->setBitrate(400'000);
-            video_parameters->setCodec("libx264", CodecType::Encoder);
-            video_parameters->setTimeBase(DEFAULT_TIME_BASE);
-            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
-            try_to(createStream(video_parameters));
+//            auto video_parameters = std::make_shared<VideoParameters>();
+////            video_parameters->setWidth(1920);
+////            video_parameters->setHeight(1080);
+//            video_parameters->setWidth(1280);
+//            video_parameters->setHeight(720);
+//            video_parameters->setAspectRatio({ 16,9 });
+//            video_parameters->setFrameRate({ 30, 1 });
+//            video_parameters->setBitrate(400'000);
+//            video_parameters->setCodec("libx264", CodecType::Encoder);
+//            video_parameters->setTimeBase(DEFAULT_TIME_BASE);
+//            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
+//            try_to(createStream(video_parameters));
 //            /* Audio */
 //            auto audio_parameters = new AudioParameters; //TODO memory leak 14.01
 //            audio_parameters->setSampleRate(44'100);
@@ -177,6 +179,11 @@ namespace fpp {
         }
         avio_close(mediaFormatContext()->pb);
         return Code::OK;
+    }
+
+    StreamPointer OutputFormatContext::createStream(ParametersPointer params) {
+        auto avstream = avformat_new_stream(mediaFormatContext(), params->codec());
+        return std::make_shared<Stream>(avstream, params);
     }
 
     Code OutputFormatContext::guessOutputFromat() {// см: _format_context->oformat

@@ -22,6 +22,7 @@ namespace fpp {
         virtual Code        openContext()   override;
         virtual Code        closeContext()  override;
 
+        [[nodiscard]]
         StreamVector        parseFormatContext();
         Code                guessInputFromat();
 

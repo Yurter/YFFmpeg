@@ -1,7 +1,7 @@
 #pragma once
-#include "Parameters.hpp"
+#include "base/Parameters.hpp"
 #include "core/time/Chronometer.hpp"
-#include "Packet.hpp"
+#include "base/Packet.hpp"
 #include <vector>
 #include <list>
 

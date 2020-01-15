@@ -107,9 +107,8 @@ namespace fpp {
             return Code::ERR;
         }
         {
-//            _input_format = mediaFormatContext()->iformat;
-//            try_to(parseFormatContext());
-//            av_dump_format(_format_context, 0, _media_resource_locator.c_str(), 0); //TODO использовать свой метод дампа 14.01
+            auto input_streams = parseFormatContext();
+            try_to(registerStreams(input_streams));
             return Code::OK;
         }
     }

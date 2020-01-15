@@ -22,6 +22,7 @@ namespace fpp {
         virtual Code        openContext()   override;
         virtual Code        closeContext()  override;
 
+        StreamPointer       createStream(ParametersPointer params);
         Code                guessOutputFromat();
         Code                parseOutputFormat();
 

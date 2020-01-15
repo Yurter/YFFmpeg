@@ -34,7 +34,7 @@ namespace fpp {
 
     protected:
 
-        AVCodecContext*     _codec_context;
+        AVCodecContext*     _codec_context; //TODO убрать голый указатель 15.01
         CodecType           _type;
         bool                _opened;
 

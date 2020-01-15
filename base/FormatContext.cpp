@@ -3,13 +3,14 @@
 
 namespace fpp {
 
-    FormatContext::FormatContext(const std::string mrl, IOPreset preset)
+    FormatContext::FormatContext(const std::string& mrl, StreamSetter stream_setter, IOPreset preset)
         : _format_context { nullptr }
         , _media_resource_locator { mrl }
         , _preset { preset }
         , _opened { false }
         , _artificial_delay { 0 }
-        , _current_interrupter { Interrupter { InterruptedProcess::None, this } } {
+        , _current_interrupter { Interrupter { InterruptedProcess::None, this } }
+        , _stream_setter { stream_setter } {
         setName("FormatContext");
     }
 
@@ -123,6 +124,10 @@ namespace fpp {
 
     AVOutputFormat* FormatContext::outputFormat() const{
         return _format_context->oformat;
+    }
+
+    Code FormatContext::registerStreams(StreamVector stream_list) {
+        return _stream_setter(stream_list);
     }
 
     Code FormatContext::setMediaFormatContext(AVFormatContext* value) {
