@@ -252,31 +252,18 @@ namespace fpp {
     }
 
     StreamPointer Pipeline::findStream(StreamId_t uid) {
-        Stream* ret_stream = nullptr;
-        _data_sources.for_each([uid,&ret_stream](const auto& source) {
-            for (auto&& stream : source->streams()) {
-                if (stream->params->streamUid() == uid) {
-                    ret_stream = stream;
-                    return;
-                }
-            }
-        });
-        _data_backup_sources.for_each([uid,&ret_stream](const auto& source) {
-            for (auto&& stream : source->streams()) {
-                if (stream->params->streamUid() == uid) {
-                    ret_stream = stream;
-                    return;
-                }
-            }
-        });
-        _data_sinks.for_each([uid,&ret_stream](const auto& sink) {
-            for (auto&& stream : sink->streams()) {
-                if (stream->params->streamUid() == uid) {
-                    ret_stream = stream;
-                    return;
-                }
-            }
-        });
+        StreamPointer ret_stream;
+        auto finder = [uid,&ret_stream](const auto& proc) {
+            auto proc_streams = proc->streams();
+            auto ret_it = std::find_if(std::begin(proc_streams), std::end(proc_streams)
+                         , [uid](const auto& stream) {
+                return stream->params->streamUid() == uid;
+            });
+            if (ret_it != std::end(proc_streams)) { ret_stream = *ret_it; }
+        };
+        _data_sources.for_each(finder);
+        _data_backup_sources.for_each(finder);
+        _data_sinks.for_each(finder);
         return ret_stream;
     }
 
@@ -302,11 +289,6 @@ namespace fpp {
             route.startAll();
         }
         return Code::OK;
-    }
-
-    ProcessorPointer Pipeline::findProcessor(int64_t uid)
-    {
-
     }
 
     std::string Pipeline::toString() const { //TODO восстановить метод

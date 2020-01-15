@@ -4,13 +4,13 @@
 namespace fpp {
 
     AudioParameters::AudioParameters()
-        : Parameters(MediaType::Audio)
-        , _sample_rate { DEFAULT_INT }
+        : _sample_rate { 0 }
         , _sample_format { DEFAULT_SAMPLE_FORMAT }
         , _channel_layout { DEFAULT_CHANEL_LAYOUT }
-        , _channels { DEFAULT_INT }
-        , _frame_size { DEFAULT_INT } {
+        , _channels { 0 }
+        , _frame_size { 0 } {
         setName("AudioParameters");
+        setType(MediaType::Audio);
     }
 
     void AudioParameters::setSampleRate(int64_t sample_rate) {
@@ -85,8 +85,8 @@ namespace fpp {
             + "channels: " + std::to_string(channels());
     }
 
-    Code AudioParameters::completeFrom(const Parameters* other_params) {
-        auto other_audio_parames = static_cast<const AudioParameters*>(other_params);
+    Code AudioParameters::completeFrom(const ParametersPointer other_params) {
+        auto other_audio_parames = std::static_pointer_cast<const AudioParameters>(other_params);
         if (not_inited_int(_sample_rate))           { setSampleRate(other_audio_parames->sampleRate());          }
         if (not_inited_smp_fmt(_sample_format))     { setSampleFormat(other_audio_parames->sampleFormat());      }
         if (not_inited_ch_layout(_channel_layout))  { setChannelLayout(other_audio_parames->channelLayout());    }

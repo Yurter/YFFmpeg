@@ -45,8 +45,8 @@ namespace fpp {
         virtual Code        onStart()   override;
         virtual Code        onStop()    override;
 
-        Code                createSequence(Route& route);
         Code                determineSequence(const ProcessorPointer output_processor);
+        Code                createSequence(Route& route);
 
 
         ProcessorPointer    findProcessor(int64_t uid);
