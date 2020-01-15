@@ -46,6 +46,7 @@ namespace fpp {
         static bool         compatible_with_pixel_format(const AVCodec* codec, AVPixelFormat pixel_format);
         static bool         compatible_with_sample_format(const AVCodec* codec, AVSampleFormat sample_format);
         static AVMediaType  mediatype_to_avmediatype(MediaType media_type);
+        static MediaType    avmt_to_mt(AVMediaType avmedia_type);
         static int64_t      gen_uid();
         static int64_t      gen_stream_uid(int64_t context_uid, int64_t stream_index);
         static int64_t      get_context_uid(int64_t stream_uid);
@@ -55,9 +56,11 @@ namespace fpp {
         static AVCodec*     find_encoder(std::string codec_short_name);
         static AVCodec*     find_encoder(AVCodecID codec_id);
 
+        static ParametersPointer createParams(MediaType type);
+
         static Code         init_codecpar(AVCodecParameters* codecpar, AVCodec* codec);
-        static void         parameters_to_context(const Parameters* param, AVCodecContext* codec_context);
-        static void         parameters_to_avcodecpar(Parameters* parametres, AVCodecParameters* codecpar);
+        static void         parameters_to_context(const ParametersPointer params, AVCodecContext* codec_context);
+        static void         parameters_to_avcodecpar(const ParametersPointer params, AVCodecParameters* codecpar);
         static void         parameters_from_avcodecpar(Parameters* parametres, AVCodecParameters* codecpar);
 
         static VideoParameters*    default_video_parameters(AVCodecID codec_id);

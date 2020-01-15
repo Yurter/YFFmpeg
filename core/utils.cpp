@@ -191,7 +191,20 @@ namespace fpp {
         case MediaType::EndOF:
             return AVMEDIA_TYPE_DATA;
         }
-        throw Exception("TODO");
+        throw Exception("TODO mediatype_to_avmediatype");
+    }
+
+    MediaType utils::avmt_to_mt(AVMediaType avmedia_type) {
+        switch (avmedia_type) {
+        case AVMediaType::AVMEDIA_TYPE_UNKNOWN:
+            return MediaType::Unknown;
+        case AVMediaType::AVMEDIA_TYPE_VIDEO:
+            return MediaType::Video;
+        case AVMediaType::AVMEDIA_TYPE_AUDIO:
+            return MediaType::Audio;
+        default:
+            throw Exception("TODO avmt_to_mt");
+        }
     }
 
     int64_t utils::gen_uid() {
@@ -248,6 +261,17 @@ namespace fpp {
         return avcodec_find_encoder(codec_id);
     }
 
+    ParametersPointer utils::createParams(MediaType type) {
+        switch (type) {
+        case MediaType::Video:
+            return std::make_shared<VideoParameters>();
+        case MediaType::Audio:
+            return std::make_shared<AudioParameters>();
+        default:
+            throw Exception("TODO createParams");
+        }
+    }
+
     Code utils::init_codecpar(AVCodecParameters* codecpar, AVCodec* codec) {
         auto codec_context = avcodec_alloc_context3(codec);
         return_if(not_inited_ptr(codec_context), Code::ERR);
@@ -256,15 +280,15 @@ namespace fpp {
         return Code::OK;
     }
 
-    void utils::parameters_to_context(const Parameters* param, AVCodecContext* codec_context) {
-        codec_context->codec_id = param->codecId();
-        codec_context->bit_rate = param->bitrate();
+    void utils::parameters_to_context(const ParametersPointer params, AVCodecContext* codec_context) {
+        codec_context->codec_id = params->codecId();
+        codec_context->bit_rate = params->bitrate();
 //        codec->time_base = param->timeBase();
 //        codec_context->time_base = { 1, 16000 /*тут нужен таймбейс входного потока, либо рескейлить в энкодере*/ };
 
-        switch (param->type()) {
+        switch (params->type()) {
         case MediaType::Video: {
-            auto video_parameters = static_cast<const VideoParameters*>(param);
+            auto video_parameters = static_cast<const VideoParameters*>(params.get());
             codec_context->pix_fmt      = video_parameters->pixelFormat();
             codec_context->width        = int(video_parameters->width());
             codec_context->height       = int(video_parameters->height());
@@ -290,7 +314,7 @@ namespace fpp {
             break;
         }
         case MediaType::Audio: {
-            auto audio_parameters = static_cast<const AudioParameters*>(param);
+            auto audio_parameters = static_cast<const AudioParameters*>(params.get());
             codec_context->sample_fmt       = audio_parameters->sampleFormat();
             codec_context->channel_layout   = audio_parameters->channelLayout();
             codec_context->channels         = int(audio_parameters->channels());
@@ -303,14 +327,14 @@ namespace fpp {
     }
 
     //TODO
-    void utils::parameters_to_avcodecpar(Parameters* parametres, AVCodecParameters* codecpar) {
-        codecpar->codec_id = parametres->codecId();
-        codecpar->bit_rate = parametres->bitrate();
+    void utils::parameters_to_avcodecpar(const ParametersPointer params, AVCodecParameters* codecpar) {
+        codecpar->codec_id = params->codecId();
+        codecpar->bit_rate = params->bitrate();
 
-        switch (parametres->type()) {
+        switch (params->type()) {
         case MediaType::Video: {
             codecpar->codec_type = AVMediaType::AVMEDIA_TYPE_VIDEO;
-            auto video_parameters = dynamic_cast<VideoParameters*>(parametres);
+            auto video_parameters = dynamic_cast<VideoParameters*>(params.get());
             codecpar->width                  = int(video_parameters->width());
             codecpar->height                 = int(video_parameters->height());
     //        codec->sample_aspect_ratio    = video_parameters->sampl; //TODO
@@ -319,7 +343,7 @@ namespace fpp {
         }
         case MediaType::Audio: {
             codecpar->codec_type = AVMediaType::AVMEDIA_TYPE_AUDIO;
-            auto audio_parameters = dynamic_cast<AudioParameters*>(parametres);
+            auto audio_parameters = dynamic_cast<AudioParameters*>(params.get());
             codecpar->channel_layout   = audio_parameters->channelLayout();
             codecpar->channels         = int(audio_parameters->channels());
             codecpar->sample_rate      = int(audio_parameters->sampleRate());
@@ -410,8 +434,8 @@ namespace fpp {
         return_if(params.in->isAudio(),  false);
         return_if(params.out->isAudio(), false);
 
-        auto in = static_cast<const VideoParameters * const>(params.in);
-        auto out = static_cast<const VideoParameters * const>(params.out);
+        auto in = static_cast<const VideoParameters * const>(params.in.get());
+        auto out = static_cast<const VideoParameters * const>(params.out.get());
 
         if (in->width() != out->width()) {
             static_log_warning("utils", "Rescaling required: width mismatch "
@@ -438,8 +462,8 @@ namespace fpp {
         return_if(params.in->isVideo(),  false);
         return_if(params.out->isVideo(), false);
 
-        auto in = static_cast<const AudioParameters * const>(params.in);
-        auto out = static_cast<const AudioParameters * const>(params.out);
+        auto in = static_cast<const AudioParameters * const>(params.in.get());
+        auto out = static_cast<const AudioParameters * const>(params.out.get());
 
         if (in->sampleRate() != out->sampleRate()) {
             static_log_warning("utils", "Resampling required: sample rate mismatch "
@@ -469,8 +493,8 @@ namespace fpp {
         return_if(params.in->isAudio(),  false);
         return_if(params.out->isAudio(), false);
 
-        auto in = static_cast<const VideoParameters*>(params.in);
-        auto out = static_cast<const VideoParameters*>(params.out);
+        auto in = static_cast<const VideoParameters*>(params.in.get());
+        auto out = static_cast<const VideoParameters*>(params.out.get());
 
 //        if (av_cmp_q(in->frameRate(), out->frameRate()) != 0) {
         if (in->frameRate() != out->frameRate()) {

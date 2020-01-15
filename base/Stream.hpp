@@ -9,26 +9,23 @@ namespace fpp {
 
     class Stream;
     using StreamPointer = std::shared_ptr<Stream>;
+    using StreamVector = std::vector<StreamPointer>;
 
-    class Stream : public Data<AVStream*> { //TODO сделать шаред и вик поинтеры 14.01
-
-        Stream();
+    class Stream : public Data<const AVStream*> {
 
     public:
 
-        Stream(const AVStream* avstream);
-        Stream(Parameters* param);
-
+        Stream(const AVStream* avstream, ParametersPointer params);
+        Stream(const AVStream* avstream);   // Создание реального потока
+        Stream(ParametersPointer params);   // Создание виртуального потока
         Stream(const Stream& other)  = delete;
-        Stream(const Stream&& other) = delete;
-
-        virtual ~Stream() override;
+        virtual ~Stream() override = default;
 
         virtual Code        init() override;
         virtual std::string toString() const override final;
 
         void                determineStampType(const Packet& packet);
-        Code                stampPacket(Packet& packet/*, AVRational packet_time_base*/);
+        Code                stampPacket(Packet& packet);
         bool                timeIsOver() const;
 
         void                setUsed(bool value);
@@ -49,7 +46,7 @@ namespace fpp {
 
     public:
 
-        Parameters*         params;
+        ParametersPointer   params;
 
     protected:
 
@@ -72,9 +69,5 @@ namespace fpp {
         int64_t             _end_time_point;
 
     };
-
-    using StreamList = std::list<Stream*>;
-    using StreamVector = std::vector<Stream*>;
-    using StreamPair = std::pair<Stream*,Stream*>;
 
 } // namespace fpp

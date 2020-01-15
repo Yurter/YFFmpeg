@@ -3,8 +3,8 @@
 
 namespace fpp {
 
-    Parameters::Parameters(MediaType type)
-        : MediaData(type)
+    Parameters::Parameters(/*MediaType type*/)
+        : MediaData(/*type*/)
         , _codec { nullptr }
         , _codec_id { DEFAULT_CODEC_ID }
         , _codec_name { DEFAULT_STRING }

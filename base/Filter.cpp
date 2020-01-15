@@ -15,7 +15,7 @@ namespace fpp {
 
     Code Filter::init() {
         return_if(inited(), Code::INVALID_CALL_ORDER);
-        auto out_params = dynamic_cast<const VideoParameters*>(params.out); //TODO решить использовать входные или выходные параметры
+        auto out_params = dynamic_cast<const VideoParameters*>(params.out.get()); //TODO решить использовать входные или выходные параметры
 
         char args[512];
         int ret = 0;

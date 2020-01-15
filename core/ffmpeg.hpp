@@ -286,8 +286,8 @@ namespace fpp {
 #define TAB                     "  "
 
 /* ? */
-#define EMPTY_CONSTRUCTOR
-#define EMPTY_DESTRUCTOR
+//#define EMPTY_CONSTRUCTOR
+//#define EMPTY_DESTRUCTOR
 
 /* ? */
 #define KILOBYTES * 1024

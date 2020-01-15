@@ -3,37 +3,43 @@
 
 namespace fpp {
 
-    Stream::Stream()
-        : _used(false)
+    Stream::Stream(const AVStream* avstream, ParametersPointer params)
+        : Data(avstream, params->type())
+        , _used(false)
         , _stamp_type(StampType::Rescale)
-        , _prev_dts(DEFAULT_INT)
-        , _prev_pts(DEFAULT_INT)
-        , _packet_index(DEFAULT_INT)
+        , _prev_dts(0)
+        , _prev_pts(0)
+        , _packet_index(0)
         , _packet_dts_delta(INVALID_INT)
         , _packet_pts_delta(INVALID_INT)
         , _packet_duration(INVALID_INT)
-        , _pts_offset(DEFAULT_INT)
-        , _dts_offset(DEFAULT_INT)
+        , _pts_offset(0)
+        , _dts_offset(0)
         , _start_time_point(FROM_START)
         , _end_time_point(TO_END) {
-        setType(params->type());
         setName(utils::media_type_to_string(type()) + " stream");
     }
 
     Stream::Stream(const AVStream* avstream)
-        : Stream() {
+        : Stream(avstream, utils::createParams(utils::avmt_to_mt(avstream->codecpar->codec_type))) { //TODO refactoring params creation 15.01
         params->parseStream(avstream);
     }
 
-    Stream::Stream(Parameters* param)
-        : Data<AVStream*>(nullptr, param->type())
-        , params(param)
-    {
+    Stream::Stream(ParametersPointer params)
+        : Stream(nullptr, params) {
     }
+//Stream::Stream(const AVStream* avstream)
+//        : Data(avstream, utils::avmt_to_mt(avstream->codecpar->codec_type))
+//        , params { utils::createParams(type()) } {
+//        params->parseStream(avstream);
+//        todoInit();
+//    }
 
-    Stream::~Stream() {
-        delete params; //TODO в шаред поинтер 14.01
-    }
+//    Stream::Stream(ParametersPointer params)
+//        : Data(nullptr, params->type())
+//        , params(params) {
+//        todoInit();
+//    }
 
     Code Stream::init() {
         if (inited_ptr(raw())) {
@@ -63,13 +69,7 @@ namespace fpp {
                 setStampType(StampType::Offset); /* Происходит чтение не с начала файла */
             }
         } else {
-            setStampType(StampType::Copy); // (нет смысла рескейлить, т.к. этот метод вызывается отлько на входе)
-//            /* Валидные штампы, проверка на необходимость рескейла */
-//            if (utils::equal_rational(packet.timeBase(), params->timeBase())) {
-//                setStampType(StampType::Copy);
-//            } else {
-//                setStampType(StampType::Rescale); //мысля не работает как надо, потому что этот метод вызывается только на входе
-//            }
+            setStampType(StampType::Copy);
         }
     }
 
@@ -89,7 +89,7 @@ namespace fpp {
             _chronometer.reset_timepoint();
 
             if (_packet_duration < 16) { //TODO костыль: ффмпег отдает первый кадров 10 мгновенно
-                const int64_t duration_ms = int64_t(1000 / av_q2d(static_cast<VideoParameters*>(params)->frameRate()));
+                const int64_t duration_ms = int64_t(1000 / av_q2d(static_cast<VideoParameters*>(params.get())->frameRate()));
                 _packet_duration = av_rescale_q(duration_ms, DEFAULT_TIME_BASE, params->timeBase());
             }
 
@@ -258,5 +258,36 @@ namespace fpp {
     bool Stream::operator>(const Stream& other) const {
         return params->bitrate() > other.params->bitrate();
     }
+
+//    void Stream::todoInit() {
+///*
+//        , _used(false)
+//        , _stamp_type(StampType::Rescale)
+//        , _prev_dts(0)
+//        , _prev_pts(0)
+//        , _packet_index(0)
+//        , _packet_dts_delta(INVALID_INT)
+//        , _packet_pts_delta(INVALID_INT)
+//        , _packet_duration(INVALID_INT)
+//        , _pts_offset(0)
+//        , _dts_offset(0)
+//        , _start_time_point(FROM_START)
+//        , _end_time_point(TO_END) {
+//        setName(utils::media_type_to_string(type()) + " stream");
+//*/
+//        _used = false;
+//        _stamp_type = StampType::Rescale;
+//        _prev_dts = 0;
+//        _prev_pts = 0;
+//        _packet_index = 0;
+//        _packet_dts_delta = INVALID_INT;
+//        _packet_pts_delta = INVALID_INT;
+//        _packet_duration = INVALID_INT;
+//        _pts_offset = 0;
+//        _dts_offset = 0;
+//        _start_time_point = FROM_START;
+//        _end_time_point = TO_END;
+//        setName(utils::media_type_to_string(type()) + " stream");
+//    }
 
 } // namespace fpp

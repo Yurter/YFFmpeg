@@ -9,7 +9,7 @@ namespace fpp {
 
     public:
 
-        Parameters(MediaType type = MediaType::Unknown);
+        Parameters(/*MediaType type = MediaType::Unknown*/); //TODO убрать параметр ? 15.01
         virtual ~Parameters() override = default;
 
         void                setCodec(AVCodecID codec_id, CodecType codec_type);
@@ -38,7 +38,6 @@ namespace fpp {
 
         virtual Code        completeFrom(const Parameters* other_params);
         virtual void        parseStream(const AVStream* avstream);
-//        virtual void        parseParameters();
 
     private:
 
@@ -61,6 +60,9 @@ namespace fpp {
     };
 
 //    using IOParams = struct { const Parameters * const in; const Parameters * const out; }; константа убрана из-за необходимости устанваливать фрейм сайз из энкодера
-    using IOParams = struct { Parameters * const in; Parameters * const out; };
+//    using IOParams = struct { Parameters * const in; Parameters * const out; };
+    using ParametersPointer = std::shared_ptr<Parameters>;
+    using IOParams = struct { ParametersPointer in; ParametersPointer out; };
+
 
 } // namespace fpp
