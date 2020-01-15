@@ -52,10 +52,8 @@ SOURCES += \
     inout/PacketSource.cpp \
     opencv/OpenCVSink.cpp \
     stream/AudioParameters.cpp \
-    stream/AudioStream.cpp \
     control/Pipeline.cpp \
     stream/VideoParameters.cpp \
-    stream/VideoStream.cpp \
     inout/FrameSource.cpp \
     refi/AudioFilter.cpp \
     refi/Resampler.cpp \
@@ -112,10 +110,8 @@ HEADERS += \
     inout/PacketSource.hpp \
     opencv/OpenCVSink.hpp \
     stream/AudioParameters.hpp \
-    stream/AudioStream.hpp \
     control/Pipeline.hpp \
     stream/VideoParameters.hpp \
-    stream/VideoStream.hpp \
     fpp.hpp \
     inout/FrameSink.hpp \
     inout/FrameSource.hpp \

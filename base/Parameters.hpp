@@ -3,6 +3,8 @@
 
 namespace fpp {
 
+//    using Parameters = std::shared_ptr<_Parameters>; //TODO
+
     using StreamId_t = int64_t;
     class Parameters;
     using ParametersPointer = std::shared_ptr<Parameters>;
@@ -12,7 +14,7 @@ namespace fpp {
 
     public:
 
-        Parameters(/*MediaType type = MediaType::Unknown*/); //TODO убрать параметр ? 15.01
+        Parameters();
         virtual ~Parameters() override = default;
 
         void                setCodec(AVCodecID codec_id, CodecType codec_type);

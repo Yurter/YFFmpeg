@@ -2,10 +2,9 @@
 
 namespace fpp {
 
-    InputFormatContext::InputFormatContext(const std::string mrl, IOPreset preset)
+    InputFormatContext::InputFormatContext(const std::string& mrl, IOPreset preset)
         : FormatContext { mrl, preset }
-        , _input_format { nullptr }
-    {
+        , _input_format { nullptr } {
         setName("InpFmtCtx");
     }
 
@@ -37,7 +36,7 @@ namespace fpp {
     }
 
     Code InputFormatContext::seek(int64_t stream_index, int64_t timestamp, SeekPrecision seek_precision) {
-        return_if(timestamp == av_rescale_q(stream(stream_index)->params->duration(), stream(stream_index)->params->timeBase(), DEFAULT_TIME_BASE), Code::OK); //TODO кривой код
+//        return_if(timestamp == av_rescale_q(stream(stream_index)->params->duration(), stream(stream_index)->params->timeBase(), DEFAULT_TIME_BASE), Code::OK); //TODO кривой код
         int flags = 0;
         switch (seek_precision) {
         case SeekPrecision::Forward:
@@ -75,7 +74,6 @@ namespace fpp {
             utils::sleep_for_ms(23); //TODO сделать задержку (1024мс в tb{1,1000}) 13.01
         }
 
-        initPacket(packet);
         return Code::OK;
     }
 
@@ -139,13 +137,6 @@ namespace fpp {
         }
         _input_format = input_format;
         return Code::OK;
-    }
-
-    void InputFormatContext::initPacket(Packet& packet) {
-        auto packet_stream = stream(packet.streamIndex());
-        packet.setType(packet_stream->type());
-//        packet.setStreamIndex(packet_stream->index()); //TODO надо ли ставить тут? 10.01
-        packet.setTimeBase(packet_stream->params->timeBase());
     }
 
 } // namespace fpp

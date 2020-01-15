@@ -5,18 +5,18 @@ namespace fpp {
 
     Stream::Stream(const AVStream* avstream, ParametersPointer params)
         : Data(avstream, params->type())
-        , _used(false)
-        , _stamp_type(StampType::Rescale)
-        , _prev_dts(0)
-        , _prev_pts(0)
-        , _packet_index(0)
-        , _packet_dts_delta(INVALID_INT)
-        , _packet_pts_delta(INVALID_INT)
-        , _packet_duration(INVALID_INT)
-        , _pts_offset(0)
-        , _dts_offset(0)
-        , _start_time_point(FROM_START)
-        , _end_time_point(TO_END) {
+        , _used { false }
+        , _stamp_type { StampType::Rescale }
+        , _prev_dts { 0 }
+        , _prev_pts { 0 }
+        , _packet_index { 0 }
+        , _packet_dts_delta { 0 }
+        , _packet_pts_delta { 0 }
+        , _packet_duration { 0 }
+        , _pts_offset { 0 }
+        , _dts_offset { 0 }
+        , _start_time_point { FROM_START }
+        , _end_time_point { TO_END } {
         setName(utils::media_type_to_string(type()) + " stream");
     }
 
@@ -28,18 +28,6 @@ namespace fpp {
     Stream::Stream(ParametersPointer params)
         : Stream(nullptr, params) {
     }
-//Stream::Stream(const AVStream* avstream)
-//        : Data(avstream, utils::avmt_to_mt(avstream->codecpar->codec_type))
-//        , params { utils::createParams(type()) } {
-//        params->parseStream(avstream);
-//        todoInit();
-//    }
-
-//    Stream::Stream(ParametersPointer params)
-//        : Data(nullptr, params->type())
-//        , params(params) {
-//        todoInit();
-//    }
 
     Code Stream::init() {
         if (inited_ptr(raw())) {
@@ -108,12 +96,9 @@ namespace fpp {
         }
         case StampType::Rescale: {
             auto debug_value_00 = packet.pts();
-//            if (packet.isAudio()) log_warning("res from " << packet.timeBase() << " to " << params->timeBase());
             /* Рескеил в таймбейс потока без изменений */
             packet.setDts(av_rescale_q(packet.dts(), packet.timeBase(), params->timeBase()));
             packet.setPts(av_rescale_q(packet.pts(), packet.timeBase(), params->timeBase()));
-//            packet.setDts(av_rescale_q(packet.dts(), packet_time_base, params->timeBase()));
-//            packet.setPts(av_rescale_q(packet.pts(), packet_time_base, params->timeBase()));
             auto debug_value_01 = packet.pts();
 
             if (packetIndex() == 0) {
@@ -170,6 +155,7 @@ namespace fpp {
         packet.setPos(-1);
         packet.setDuration(_packet_duration);
         packet.setTimeBase(params->timeBase());
+        packet.setType(params->type());
         params->increaseDuration(packet.duration());
         _prev_dts = packet.dts();
         _prev_pts = packet.pts();
