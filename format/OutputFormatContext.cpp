@@ -2,10 +2,9 @@
 
 namespace fpp {
 
-    OutputFormatContext::OutputFormatContext(const std::string mrl, IOPreset preset)
+    OutputFormatContext::OutputFormatContext(const std::string& mrl, IOPreset preset)
         : FormatContext { mrl, preset }
-        , _output_format { nullptr }
-    {
+        , _output_format { nullptr } {
         setName("OutFmtCtx");
     }
 
@@ -14,7 +13,7 @@ namespace fpp {
     }
 
     Code OutputFormatContext::init() { //TODO refactoring 14.01
-        return_if(inited(), Code::INVALID_CALL_ORDER);
+        return_if(inited(), Code::OK);
         try_to(createContext());
         switch (preset()) {
         case IOPreset::Auto: {
@@ -23,14 +22,13 @@ namespace fpp {
         }
         case IOPreset::Event: {
             /* Video */
-            auto video_params = new VideoParameters(); //TODO memory leak
+            auto video_params = std::make_shared<VideoParameters>();
             video_params->setCodec("libx264", CodecType::Encoder);
             video_params->setGopSize(2);
             video_params->setTimeBase(DEFAULT_TIME_BASE);
-            video_params->setHeight(100);
             try_to(createStream(video_params));
             /* Audio */
-            auto audio_params = new AudioParameters(); //TODO memory leak
+            auto audio_params = std::make_shared<AudioParameters>();
             audio_params->setCodec("libmp3lame", CodecType::Encoder);
             audio_params->setTimeBase(DEFAULT_TIME_BASE);
             audio_params->setSampleRate(DEFAULT_SAMPLE_RATE);
@@ -39,7 +37,7 @@ namespace fpp {
         }
         case IOPreset::YouTube: {
             /* Video */
-            auto video_parameters = new VideoParameters; //TODO memory leak 14.01
+            auto video_parameters = std::make_shared<VideoParameters>();
 //            video_parameters->setWidth(1920);
 //            video_parameters->setHeight(1080);
             video_parameters->setWidth(1280);
@@ -69,7 +67,7 @@ namespace fpp {
         }
         case IOPreset::Timelapse: {
             /* Video */
-            auto video_parameters = new VideoParameters; //TODO memory leak 14.01
+            auto video_parameters = std::make_shared<VideoParameters>();
             video_parameters->setCodec("libx264", CodecType::Encoder);
             video_parameters->setTimeBase(DEFAULT_TIME_BASE);
 			video_parameters->setGopSize(2);
@@ -165,16 +163,9 @@ namespace fpp {
                 return Code::INVALID_INPUT;
             }
         }
-//        auto debug_valu1 = _format_context->streams[0]->codecpar;
-//        auto debug_value = _format_context->streams[1]->codecpar;
-//        log_warning("---> OUT " << streams()[1]->params->toString());
         if (auto ret = avformat_write_header(mediaFormatContext(), nullptr); ret < 0) { //TODO unesed result 14.01
             log_error("Error occurred when opening output: " << mediaResourceLocator() << ", " << ret);
             return Code::ERR;
-        }
-        { //TODO убрать дамп 14.01
-//            av_dump_format(_format_context, 0, _media_resource_locator.c_str(), 1);
-            return Code::OK;
         }
     }
 
