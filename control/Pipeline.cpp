@@ -28,7 +28,6 @@ namespace fpp {
             try_to(determineSequence(processor));
             return Code::OK;
         case ProcessorType::Process:
-            return Code::NOT_IMPLEMENTED;
         case ProcessorType::Unknown:
             return Code::INVALID_INPUT;
         }
@@ -44,7 +43,7 @@ namespace fpp {
         });
     }
 
-    void Pipeline::remElement(const int64_t uid) {
+    void Pipeline::remElement(int64_t uid) {
         _data_sinks.remove_if([uid](const auto& sink) { return sink->uid() == uid; });
         _data_sources.remove_if([uid](const auto& source) { return source->uid() == uid; });
 
@@ -57,9 +56,8 @@ namespace fpp {
         log_info(toString());
     }
 
-    Code Pipeline::init() {
+    Code Pipeline::init() { //TODO если инициализации нет, убрать реализацию метода 15.01
         log_info("Initialization started...");
-        dump();                         /* Дамп всей информации в лог           */
         setInited(true);
         log_info("Processing started...");
         return Code::OK;
@@ -113,8 +111,8 @@ namespace fpp {
     }
 
     Code Pipeline::createSequence(Route& route) {
-        Stream* input_stream = findStream(route.inputStreamUid());
-        Stream* output_stream = findStream(route.outputStreamUid());
+        auto input_stream = findStream(route.inputStreamUid());
+        auto output_stream = findStream(route.outputStreamUid());
         return_error_if(not_inited_ptr(input_stream)
                         , "Failed to find input stream"
                         , Code::ERR);
@@ -124,12 +122,12 @@ namespace fpp {
 
         const IOParams params { input_stream->params, output_stream->params };
 
-        try_to(output_stream->params->completeFrom(input_stream->params));
+        try_to(params.out->completeFrom(params.in));
 
         input_stream->setUsed(true);
         output_stream->setUsed(true);
 
-        try_to(route.append(findProcessorByUid(input_stream->params->contextUid())));
+        try_to(route.append(findProcessor(params.in->contextUid())));
 
         bool rescaling_required     = utils::rescaling_required   (params);
         bool resampling_required    = utils::resampling_required  (params);
@@ -137,17 +135,15 @@ namespace fpp {
         bool audio_filter_required  = utils::audio_filter_required(params);
         bool transcoding_required   = utils::transcoding_required (params);
 
-        auto debug = findProcessorByUid(output_stream->params->contextUid());
-        auto out_context = dynamic_cast<MediaSink*>(findProcessorByUid(output_stream->params->contextUid()).get()); //TODO кривой код: вынести IOType в Processor ?
+        auto out_context = dynamic_cast<MediaSink*>(findProcessor(output_stream->params->contextUid()).get()); //TODO кривой код: вынести IOPreset в Processor ?
         if (inited_ptr(out_context)) {
             video_filter_required = video_filter_required
-                                    || out_context->outputFormatContext()->presetIs(IOType::Timelapse); //TODO кривой код
+                                    || out_context->outputFormatContext()->presetIs(IOPreset::Timelapse); //TODO кривой код
         }
 
         transcoding_required = (transcoding_required
                                 || rescaling_required
                                 || resampling_required);
-
         bool decoding_required = transcoding_required
                                 || rescaling_required
                                 || resampling_required
@@ -160,26 +156,17 @@ namespace fpp {
                                 || audio_filter_required;
 
         if (decoding_required) {
-            ProcessorPointer decoder = std::make_shared<Decoder>(params);
-            try_to(route.append(decoder));
+            try_to(route.append(std::make_shared<Decoder>(params)));
         }
 
         if (rescaling_required) {
-            ProcessorPointer rescaler = std::make_shared<Rescaler>(params);
-            try_to(route.append(rescaler));
+            try_to(route.append(std::make_shared<Rescaler>(params)));
         }
 
-        if (video_filter_required) {
-//            std::string filters_descr = "select='not(mod(n,10))',setpts=N/FRAME_RATE/TB";
-//            std::string filters_descr = "setpts=N/(10*TB)";
-//            std::string filters_descr = "setpts=0.016*PTS";
-//            std::string filters_descr = "select='not(mod(n,2))'";
-//            std::string filters_descr = "select='not(mod(n,2))',setpts=0.5*PTS";
-
+        if (video_filter_required) { //TODO не универсальный код 15.01
             const int X = 4; //TODO "магическое" число
-            std::string filters_descr = "select='not(mod(n," + std::to_string(X) + "))',setpts=" + std::to_string(1.f / X) + "*PTS";
-            ProcessorPointer video_filter = std::make_shared<VideoFilter>(params, filters_descr);
-            try_to(route.append(video_filter));
+            std::string filters_descr = Filter::keep_every_frame(X) + Filter::Separator + Filter::set_pts(1.f / X);
+            try_to(route.append(std::make_shared<VideoFilter>(params, filters_descr)));
         }
 
         if (audio_filter_required) {
@@ -187,44 +174,33 @@ namespace fpp {
         }
 
         if (resampling_required) {
-            ProcessorPointer resampler = std::make_shared<Resampler>(params);
-            try_to(route.append(resampler));
+            try_to(route.append(std::make_shared<Resampler>(params)));
         }
 
         if (encoding_required) {
-            ProcessorPointer encoder = std::make_shared<Encoder>(params);
-            try_to(route.append(encoder));
+            try_to(route.append(std::make_shared<Encoder>(params)));
         }
 
-        try_to(route.append(findProcessorByUid(output_stream->params->contextUid())));
+        try_to(route.append(findProcessor(params.out->contextUid())));
 
         _route_list.push_back(route);
 //        try_to(simplifyRoutes()); //TODO вернуть вызов метода
         try_to(route.init());
-//        try_to(route.startAll()); // BUG зпускает синк после создания первого потока
 
-        log_info("route created: " << route);
-
+        log_debug("Created route: " << route);
         return Code::OK;
     }
 
-    ProcessorPointer Pipeline::findProcessorByUid(const int64_t uid) {
+    ProcessorPointer Pipeline::findProcessor(int64_t uid) {
         ProcessorPointer result;
-        _data_sources.for_each([uid,&result](const auto& source) {
+        auto finder = [uid,&result](const auto& source) {
             if (source->uid() == uid) {
                 result = source;
             }
-        });
-        _data_backup_sources.for_each([uid,&result](const auto& source) {
-            if (source->uid() == uid) {
-                result = source;
-            }
-        });
-        _data_sinks.for_each([uid,&result](const auto& sink) {
-            if (sink->uid() == uid) {
-                result = sink;
-            }
-        });
+        };
+        _data_sources.for_each(finder);
+        _data_backup_sources.for_each(finder);
+        _data_sinks.for_each(finder);
         return result;
     }
 
@@ -275,7 +251,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Stream* Pipeline::findStream(int64_t uid) {
+    StreamPointer Pipeline::findStream(StreamId_t uid) {
         Stream* ret_stream = nullptr;
         _data_sources.for_each([uid,&ret_stream](const auto& source) {
             for (auto&& stream : source->streams()) {
@@ -312,26 +288,25 @@ namespace fpp {
         }
         std::vector<Route> route_list;
         for (auto out_stream : output_streams) {
-            Stream* in_stream = findBestInputStream(out_stream->type());
-            if (not_inited_ptr(in_stream)) {
-                log_error("Failed to find input stream type "
-                          << utils::media_type_to_string(out_stream->type()));
-                return Code::INVALID_INPUT;
-            }
-            if (out_stream->typeIs(MediaType::Audio)) {
-                setName(name());
-            }
+            auto best_in_stream = findBestInputStream(out_stream->type());
+            return_error_if(not_inited_ptr(best_in_stream)
+                            , "Failed to find input stream type " << out_stream->type()
+                            , Code::INVALID_CALL_ORDER);
             Route route;
-            try_to(route.setMetaRoute(in_stream->params->streamUid()
+            try_to(route.setMetaRoute(best_in_stream->params->streamUid()
                                       , out_stream->params->streamUid()));
             try_to(createSequence(route));
-//            route.startAll();
             route_list.push_back(route);
         }
         for (auto& route : route_list) { //Нельзя старттовать процессоры в папйлане, пока все потоки не образуют маршруты
             route.startAll();
         }
         return Code::OK;
+    }
+
+    ProcessorPointer Pipeline::findProcessor(int64_t uid)
+    {
+
     }
 
     std::string Pipeline::toString() const { //TODO восстановить метод
@@ -404,22 +379,19 @@ namespace fpp {
         return dump_str;
     }
 
-    Stream* Pipeline::findBestInputStream(MediaType media_type) { //TODO оптимизировать и унифицировать поиск потоков внутри обработчика и внутри пайплайна 13.01
-        StreamVector all_streams;
-        _data_sources.for_each([media_type,&all_streams](const auto& source) {
-            Stream* stream = source->bestStream(media_type);
+    StreamPointer Pipeline::findBestInputStream(MediaType type) {
+        StreamVector stream_list;
+        auto stream_getter = [type,&stream_list](const auto& source) {
+            auto stream = source->bestStream(type);
             if (not_inited_ptr(stream)) { return; }
-            all_streams.push_back(stream);
-        });
-        if (all_streams.empty()) {
-            log_warning("Sources do not contain " << media_type << " stream, search among backup");
-            _data_backup_sources.for_each([media_type,&all_streams](const auto& source) {
-                Stream* stream = source->bestStream(media_type);
-                if (not_inited_ptr(stream)) { return; }
-                all_streams.push_back(stream);
-            });
+            stream_list.push_back(stream);
+        };
+        _data_sources.for_each(stream_getter);
+        if (stream_list.empty()) {
+            log_warning("Sources do not contain " << type << " stream, search among backup");
+            _data_backup_sources.for_each(stream_getter);
         }
-        return utils::find_best_stream(all_streams);
+        return utils::find_best_stream(stream_list);
     }
 
     Route *Pipeline::findRoute(const int64_t uid) { //TODO

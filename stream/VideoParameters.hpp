@@ -26,7 +26,7 @@ namespace fpp {
 
         virtual std::string toString() const override;
 
-        Code                completeFrom(const Parameters* other_params) override;
+        Code                completeFrom(const ParametersPointer other_params) override;
         virtual void        parseStream(const AVStream* avstream) override;
 
     private:

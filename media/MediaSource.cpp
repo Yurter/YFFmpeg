@@ -2,7 +2,7 @@
 
 namespace fpp {
 
-    MediaSource::MediaSource(const std::string& mrl, IOType preset) :
+    MediaSource::MediaSource(const std::string& mrl, IOPreset preset) :
         _input_format_context { mrl, preset }
     {
         setName("MediaSource");
@@ -79,7 +79,7 @@ namespace fpp {
             }
         }
 //        try_to(_input_format_context.read(input_data));
-        try_to(_input_format_context.read(input_data, _input_format_context.presetIs(IOType::Virtual) ? ReadWriteMode::Interleaved : ReadWriteMode::Instant)); //TODO refactoring 13.01
+        try_to(_input_format_context.read(input_data, _input_format_context.presetIs(IOPreset::Virtual) ? ReadWriteMode::Interleaved : ReadWriteMode::Instant)); //TODO refactoring 13.01
 //        if (input_data.isAudio()) log_warning("1] READ: " << input_data);
         return_if(stream(input_data.streamIndex())->timeIsOver(), Code::END_OF_FILE); //TODO перенести
         return Code::OK;

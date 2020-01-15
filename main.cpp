@@ -93,7 +93,7 @@ void copy_file_debug() {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer sink_copy = std::make_shared<MediaSink>("debug_files/a_event_copy.flv", IOType::Event);
+    ProcessorPointer sink_copy = std::make_shared<MediaSink>("debug_files/a_event_copy.flv", IOPreset::Event);
     if (auto ret = pipeline->addElement(sink_copy); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add sink_copy failed: " << ret << " - " << utils::code_to_string(ret));
     }
@@ -169,7 +169,7 @@ void event_debug() {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer sink_event = std::make_shared<MediaSink>("group_video/event.flv", IOType::Event);
+    ProcessorPointer sink_event = std::make_shared<MediaSink>("group_video/event.flv", IOPreset::Event);
     if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
     }
@@ -185,7 +185,7 @@ void timelapse_debug() {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("group_video/timelapse.flv", IOType::Timelapse);
+    ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("group_video/timelapse.flv", IOPreset::Timelapse);
     if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
     }
@@ -203,7 +203,7 @@ void route_simplify_debug() {
     }
 
     for (int i = 0; i < 5; ++i) {
-        ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/" + std::to_string(i) + "_event.flv", IOType::Event);
+        ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/" + std::to_string(i) + "_event.flv", IOPreset::Event);
         if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
             static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
         }
@@ -226,14 +226,14 @@ void memory_leak_test() {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-//    ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("group_video/timelapse.flv", IOType::Timelapse);
+//    ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("group_video/timelapse.flv", IOPreset::Timelapse);
 //    if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
 //        static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
 //    }
 
     int counter = 0;
     while (true) {
-        ProcessorPointer sink_event = std::make_shared<MediaSink>("group_video/" + std::to_string(counter++) + "_event.flv", IOType::Event);
+        ProcessorPointer sink_event = std::make_shared<MediaSink>("group_video/" + std::to_string(counter++) + "_event.flv", IOPreset::Event);
         if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
             static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
         }
@@ -252,7 +252,7 @@ void write_video_from_camera() {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOType::Event);
+    ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOPreset::Event);
     if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
     }
@@ -275,13 +275,13 @@ void timer_debug() {
 void lavfi_debug() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-    ProcessorPointer silence = std::make_shared<MediaSource>(SINE(1000), IOType::Virtual);
+    ProcessorPointer silence = std::make_shared<MediaSource>(SINE(1000), IOPreset::Virtual);
 
     if (auto ret = pipeline->addElement(silence); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOType::Event);
+    ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOPreset::Event);
     if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
     }
@@ -292,8 +292,8 @@ void lavfi_debug() {
 void silence_mux_debug() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-//    ProcessorPointer silence = std::make_shared<MediaSource>(SINE(100), IOType::Virtual);
-    ProcessorPointer silence = std::make_shared<MediaSource>(SILENCE, IOType::Virtual);
+//    ProcessorPointer silence = std::make_shared<MediaSource>(SINE(100), IOPreset::Virtual);
+    ProcessorPointer silence = std::make_shared<MediaSource>(SILENCE, IOPreset::Virtual);
     if (auto ret = pipeline->addElement(silence, SourceType::Backup); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
@@ -303,7 +303,7 @@ void silence_mux_debug() {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOType::Event);
+    ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOPreset::Event);
     if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
     }

@@ -41,14 +41,12 @@ namespace fpp {
 
     StreamPointer Processor::bestStream(MediaType type) const {
         StreamVector candidate_list;
-        for (auto& candidate : streams()) {
-            if (candidate->typeIs(type)) { candidate_list.push_back(candidate); }
-        }
-        auto ret = std::max_element(std::begin(candidate_list), std::end(candidate_list), [](const StreamPointer& lhs, const StreamPointer& rhs) {
-            return lhs->params->betterThen(rhs->params);
+        std::copy_if(std::begin(_streams), std::end(_streams)
+            , std::begin(candidate_list)
+            , [type](const auto& stream) {
+                return stream->typeIs(type);
         });
-        return_if(ret == std::end(candidate_list), nullptr);
-        return *ret;
+        return utils::find_best_stream(candidate_list);
     }
 
     StreamPointer Processor::stream(int64_t index) const {

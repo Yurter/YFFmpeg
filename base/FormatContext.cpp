@@ -3,12 +3,12 @@
 
 namespace fpp {
 
-    FormatContext::FormatContext(const std::string mrl, IOType preset)
+    FormatContext::FormatContext(const std::string mrl, IOPreset preset)
         : _format_context { nullptr }
         , _media_resource_locator { mrl }
+        , _preset { preset }
         , _opened { false }
         , _artificial_delay { 0 }
-        , _preset { preset }
         , _current_interrupter { Interrupter { InterruptedProcess::None, this } } {
         setName("FormatContext");
     }
@@ -37,11 +37,11 @@ namespace fpp {
         _opened = opened;
     }
 
-    IOType FormatContext::preset() const {
+    IOPreset FormatContext::preset() const {
         return _preset;
     }
 
-    bool FormatContext::presetIs(IOType value) const {
+    bool FormatContext::presetIs(IOPreset value) const {
         return _preset == value;
     }
 

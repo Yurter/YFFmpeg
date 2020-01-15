@@ -15,12 +15,12 @@ namespace fpp {
 
     public:
 
-        FormatContext(const std::string mrl, IOType preset = IOType::Auto); ///< mrl - media resource locator.
+        FormatContext(const std::string mrl, IOPreset preset = IOPreset::Auto); ///< mrl - media resource locator.
         FormatContext(const FormatContext& other)  = delete;
         virtual ~FormatContext() override;
 
-        IOType              preset() const;
-        bool                presetIs(IOType value) const;
+        IOPreset            preset() const;
+        bool                presetIs(IOPreset value) const;
 
         Code                open();
         Code                close();
@@ -72,9 +72,9 @@ namespace fpp {
 
         AVFormatContext*	_format_context;
         const std::string   _media_resource_locator;
+        const IOPreset      _preset;
         bool                _opened;
         int64_t             _artificial_delay;
-        const IOType        _preset;
         Interrupter         _current_interrupter;
 
     };

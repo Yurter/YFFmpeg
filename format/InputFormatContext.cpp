@@ -2,7 +2,7 @@
 
 namespace fpp {
 
-    InputFormatContext::InputFormatContext(const std::string mrl, IOType preset)
+    InputFormatContext::InputFormatContext(const std::string mrl, IOPreset preset)
         : FormatContext { mrl, preset }
         , _input_format { nullptr }
     {

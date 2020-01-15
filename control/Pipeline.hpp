@@ -34,13 +34,9 @@ namespace fpp {
         Code                addElement(ProcessorPointer processor, SourceType priority = SourceType::Mandatory); //TODO refactoring priority 13.01
                                                                                                                     // перенести свойство в процессор
         void                remElement(ProcessorPointer processor);
-        void                remElement(const int64_t uid);
+        void                remElement(int64_t uid);
 
         void                dump() const;
-
-        Code                simplifyRoutes(); //TODO сделать приватным 13.01
-
-//        Code abort(); //TODO метод быстрого завершения работы класса 13.01
 
     private:
 
@@ -50,25 +46,26 @@ namespace fpp {
         virtual Code        onStop()    override;
 
         Code                createSequence(Route& route);
-
-        ProcessorPointer    findProcessorByUid(const int64_t uid);
-
-        Stream*             findStream(int64_t uid);
         Code                determineSequence(const ProcessorPointer output_processor);
+
+
+        ProcessorPointer    findProcessor(int64_t uid);
+        StreamPointer       findStream(StreamId_t uid);
+        StreamPointer       findBestInputStream(MediaType type);
+
 
         virtual std::string toString() const override;
 
-        Stream*             findBestInputStream(MediaType media_type);
-        StreamList          getOutputStreams(MediaType media_type);
 
         Route*              findRoute(const int64_t uid);
+
+        Code                simplifyRoutes(); //TODO доаработать 15.01
 
     private:
 
         ProcessorList       _data_sources;
         ProcessorList       _data_sinks;
         ProcessorList       _data_backup_sources; //TODO убрать и объединить с обычными сорсами ? 14.01
-
         RouteVector         _route_list;
 
     };

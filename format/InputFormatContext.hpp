@@ -7,7 +7,7 @@ namespace fpp {
 
     public:
 
-        InputFormatContext(const std::string mrl, IOType preset = IOType::Auto);
+        InputFormatContext(const std::string mrl, IOPreset preset = IOPreset::Auto);
         virtual ~InputFormatContext() override;
 
         virtual Code        init()           override;
@@ -24,7 +24,7 @@ namespace fpp {
 
         StreamVector        parseFormatContext();
         Code                guessInputFromat();
-        void                initPacket(Packet& packet);
+        void                initPacket(Packet& packet); //TODO убрать и перенести функционал в метод штампа потока 15.01
 
     private:
 

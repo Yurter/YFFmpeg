@@ -152,9 +152,9 @@ namespace fpp {
         return str;
     }
 
-    Code Parameters::completeFrom(const Parameters* other_params) {
+    Code Parameters::completeFrom(const ParametersPointer other_params) {
         if (not_inited_codec_id(_codec_id)) {
-            try_to(utils::find_encoder_for(other_params, this));
+            try_to(utils::find_encoder_for(other_params, std::make_shared<Parameters>(this)));
         }
 
         if (not_inited_int(_bitrate)) { setBitrate(other_params->bitrate());     }

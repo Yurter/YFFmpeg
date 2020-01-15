@@ -2,7 +2,7 @@
 
 namespace fpp {
 
-    OutputFormatContext::OutputFormatContext(const std::string mrl, IOType preset)
+    OutputFormatContext::OutputFormatContext(const std::string mrl, IOPreset preset)
         : FormatContext { mrl, preset }
         , _output_format { nullptr }
     {
@@ -17,11 +17,11 @@ namespace fpp {
         return_if(inited(), Code::INVALID_CALL_ORDER);
         try_to(createContext());
         switch (preset()) {
-        case IOType::Auto: {
+        case IOPreset::Auto: {
             try_to(guessOutputFromat());
             break;
         }
-        case IOType::Event: {
+        case IOPreset::Event: {
             /* Video */
             auto video_params = new VideoParameters(); //TODO memory leak
             video_params->setCodec("libx264", CodecType::Encoder);
@@ -37,7 +37,7 @@ namespace fpp {
             try_to(createStream(audio_params));
             break;
         }
-        case IOType::YouTube: {
+        case IOPreset::YouTube: {
             /* Video */
             auto video_parameters = new VideoParameters; //TODO memory leak 14.01
 //            video_parameters->setWidth(1920);
@@ -67,7 +67,7 @@ namespace fpp {
 //            try_to(createStream(audio_parameters));
             break;
         }
-        case IOType::Timelapse: {
+        case IOPreset::Timelapse: {
             /* Video */
             auto video_parameters = new VideoParameters; //TODO memory leak 14.01
             video_parameters->setCodec("libx264", CodecType::Encoder);
@@ -76,7 +76,7 @@ namespace fpp {
             try_to(createStream(video_parameters));
             break;
         }
-//        case IOType::OpenCV: {
+//        case IOPreset::OpenCV: {
 //            /* Video */
 //            auto video_parameters = new VideoParameters;
 //            video_parameters->setWidth(1920);

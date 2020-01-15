@@ -89,8 +89,8 @@ namespace fpp {
             + utils::pixel_format_to_string(pixelFormat());
     }
 
-    Code VideoParameters::completeFrom(const Parameters* other_params) {
-        auto other_video_parames = static_cast<const VideoParameters*>(other_params);
+    Code VideoParameters::completeFrom(const ParametersPointer other_params) {
+        auto other_video_parames = std::static_pointer_cast<const VideoParameters>(other_params);
         if (not_inited_int(_width))             { setWidth(other_video_parames->width());                }
         if (not_inited_int(_height))            { setHeight(other_video_parames->height());              }
         if (not_inited_q(_aspect_ratio))        { setAspectRatio(other_video_parames->aspectRatio());    }

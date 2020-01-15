@@ -7,7 +7,10 @@ namespace fpp {
 
     public:
 
-        MediaData(MediaType type = MediaType::Unknown);
+        MediaData(MediaType type = MediaType::Unknown)
+            : _type(type) {
+            setName("MediaData");
+        }
         virtual ~MediaData() override = default;
 
         MediaType           type() const { return _type; }

@@ -22,7 +22,7 @@ namespace fpp {
 
     /* Варианты для быстрой преднастройки */
     /* параметров медиа-контекстов        */
-    enum IOType { //TODO rename 13.01
+    enum IOPreset {
         Auto,
         Raw,
         /* Input */

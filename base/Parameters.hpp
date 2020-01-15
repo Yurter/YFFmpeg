@@ -39,7 +39,7 @@ namespace fpp {
 
         virtual std::string toString() const override;
 
-        virtual Code        completeFrom(const Parameters* other_params);
+        virtual Code        completeFrom(const ParametersPointer other_params);
         virtual void        parseStream(const AVStream* avstream);
 
         virtual bool        betterThen(const ParametersPointer& other) = 0;
@@ -63,9 +63,5 @@ namespace fpp {
         int64_t             _context_uid;
 
     };
-
-//    using IOParams = struct { const Parameters * const in; const Parameters * const out; }; константа убрана из-за необходимости устанваливать фрейм сайз из энкодера
-//    using IOParams = struct { Parameters * const in; Parameters * const out; };
-
 
 } // namespace fpp

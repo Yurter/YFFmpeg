@@ -66,7 +66,7 @@ namespace fpp {
         static VideoParameters*    default_video_parameters(AVCodecID codec_id);
         static AudioParameters*    default_audio_parameters(AVCodecID codec_id);
 
-        static Code         find_encoder_for(const Parameters * const src_prm, Parameters * const dst_prm);
+        static Code         find_encoder_for(const ParametersPointer src_prm, ParametersPointer dst_prm);
 
         static MediaType    antitype(const MediaType value);
 
@@ -76,7 +76,7 @@ namespace fpp {
         static bool         audio_filter_required(const IOParams params);
         static bool         transcoding_required(const IOParams params);
 
-        static Stream*      find_best_stream(const StreamVector& stream_list);
+        static StreamPointer find_best_stream(const StreamVector& stream_list);
 
         static bool         compare_float(float a, float b);
         static bool         equal_rational(const AVRational a, const AVRational b);

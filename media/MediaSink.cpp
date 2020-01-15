@@ -3,7 +3,7 @@
 
 namespace fpp {
 
-    MediaSink::MediaSink(const std::string mrl, IOType preset) :
+    MediaSink::MediaSink(const std::string mrl, IOPreset preset) :
         _output_format_context(mrl, preset)
     {
         setName("MediaSink");

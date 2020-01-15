@@ -406,7 +406,7 @@ namespace fpp {
         return audio_params;
     }
 
-    Code utils::find_encoder_for(const Parameters * const src_prm, Parameters * const dst_prm) { //TODO return struct { codec + type }, убрать второй аргумент 14.01
+    Code utils::find_encoder_for(const ParametersPointer src_prm, ParametersPointer dst_prm) { //TODO return struct { codec + type }, убрать второй аргумент 14.01
         switch (src_prm->codecId()) {
         case AVCodecID::AV_CODEC_ID_H264:
             dst_prm->setCodec("libx264", CodecType::Encoder);
@@ -530,8 +530,11 @@ namespace fpp {
         return false;
     }
 
-    Stream* utils::find_best_stream(const StreamVector& stream_list) {
-        auto best_stream_it = std::max_element(stream_list.begin(), stream_list.end());
+    StreamPointer utils::find_best_stream(const StreamVector& stream_list) {
+        auto best_stream_it = std::max_element(std::begin(stream_list), std::end(stream_list)
+            , [](const auto& lhs, const auto& rhs) {
+            return lhs->params->betterThen(rhs->params);
+        });
         return_if(best_stream_it == stream_list.end(), nullptr);
         return *best_stream_it;
     }

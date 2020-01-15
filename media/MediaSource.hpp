@@ -8,7 +8,7 @@ namespace fpp {
 
     public:
 
-        MediaSource(const std::string& mrl, IOType preset = IOType::Auto);
+        MediaSource(const std::string& mrl, IOPreset preset = IOPreset::Auto);
         virtual ~MediaSource() override;
 
         virtual Code        init() override;

@@ -4,9 +4,9 @@
 namespace fpp {
 
     Route::Route()
-    {
+        : _input_stream_uid(INVALID_INT)
+        , _output_stream_uid(INVALID_INT){
         setName("Route");
-//        log_error("CONSTR");
     }
 
     Route::~Route() { //TODO

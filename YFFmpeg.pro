@@ -41,7 +41,6 @@ SOURCES += \
     inout/FrameProcessor.cpp \
     base/FormatContext.cpp \
     core/Logger.cpp \
-    base/MediaData.cpp \
     core/Object.cpp \
     base/Processor.cpp \
     core/Thread.cpp \

@@ -34,13 +34,12 @@ namespace fpp {
 
     private:
 
-        int64_t             _input_stream_uid;
-        int64_t             _output_stream_uid;
+        StreamId_t          _input_stream_uid;
+        StreamId_t          _output_stream_uid;
         ProcessorSequence   _sequence;
 
     };
 
-    using RouteList = std::list<Route>;
     using RouteVector = std::vector<Route>;
 
 } // namespace fpp
