@@ -3,7 +3,7 @@
 
 namespace fpp {
 
-    class Filter : public FrameProcessor { //TODO определиться: фильтровать по выходным параметрам или входным, или настраивать?
+    class Filter : public FrameProcessor { //TODO определиться: фильтровать по выходным параметрам или входным, или настраивать? от этого зависит порядко на пайплайне
 
     public:
 
@@ -32,9 +32,9 @@ namespace fpp {
     private:
 
         std::string         _filters_descr;
-        AVFilterGraph*      _filter_graph;
-        AVFilterContext*    _buffersrc_ctx;
-        AVFilterContext*    _buffersink_ctx;
+        AVFilterGraph*      _filter_graph;      //TODO убрать голый указатель 15.01
+        AVFilterContext*    _buffersrc_ctx;     //TODO убрать голый указатель 15.01
+        AVFilterContext*    _buffersink_ctx;    //TODO убрать голый указатель 15.01
 
     };
 

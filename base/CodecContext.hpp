@@ -1,6 +1,6 @@
 #pragma once
 #include "TemplateProcessor.hpp"
-#include "base/Stream.hpp"
+#include "stream/Stream.hpp"
 
 namespace fpp {
 
@@ -8,7 +8,6 @@ namespace fpp {
 
     public:
 
-//        CodecContext(const IOParams params, CodecType type);
         CodecContext(const IOParams params, CodecType type);
         virtual ~CodecContext() override;
 

@@ -1,6 +1,5 @@
 #pragma once
 #include "inout/FrameProcessor.hpp"
-#include "stream/VideoStream.hpp"
 
 namespace fpp {
 
@@ -25,7 +24,7 @@ namespace fpp {
 
     private:
 
-        SwsContext*         _rescaler_context;
+        SwsContext*         _rescaler_context; //TODO убрать голый указатель 15.01
 
     };
 

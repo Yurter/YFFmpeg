@@ -1,7 +1,7 @@
 #pragma once
 #include "core/async/AsyncList.hpp"
 #include "core/Thread.hpp"
-#include "Stream.hpp"
+#include "stream/Stream.hpp"
 #include <map>
 
 namespace fpp {

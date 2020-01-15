@@ -1,6 +1,6 @@
 #pragma once
 #include "base/Processor.hpp"
-#include "base/Stream.hpp"
+#include "stream/Stream.hpp"
 
 namespace fpp {
 

@@ -1,8 +1,6 @@
 #pragma once
 #include "base/TemplateProcessor.hpp"
 #include "base/Frame.hpp"
-#include "stream/VideoStream.hpp"
-#include "stream/AudioStream.hpp"
 
 namespace fpp {
 

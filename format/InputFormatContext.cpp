@@ -95,9 +95,9 @@ namespace fpp {
             guessInputFromat();
         }
         return_if(mediaResourceLocator().empty(), Code::INVALID_INPUT);
-        for (auto&& avstream : streams()) {
-            try_to(avstream->init());
-        }
+//        for (auto&& avstream : streams()) { //TODO роверить необходимость инициализации 15.01
+//            try_to(avstream->init());
+//        }
         if (avformat_open_input(mediaFormatContext2(), mediaResourceLocator().c_str(), _input_format, nullptr) < 0) {
             log_error("Failed to open input context.");
             return Code::INVALID_INPUT;

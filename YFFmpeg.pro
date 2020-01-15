@@ -21,7 +21,7 @@ QMAKE_CXXFLAGS += /std:c++latest #Домашний креатор не може�
 
 SOURCES += \
     base/CodecContext.cpp \
-    base/Route.cpp \
+    control/Route.cpp \
     codec/Decoder.cpp \
     codec/DecoderContext.cpp \
     codec/Encoder.cpp \
@@ -57,7 +57,7 @@ SOURCES += \
     inout/FrameSource.cpp \
     refi/AudioFilter.cpp \
     refi/Resampler.cpp \
-    base/Stream.cpp \
+    stream/Stream.cpp \
     core/utils.cpp \
     main.cpp \
     base/Frame.cpp \
@@ -68,7 +68,7 @@ SOURCES += \
 
 HEADERS += \
     base/CodecContext.hpp \
-    base/Route.hpp \
+    control/Route.hpp \
     codec/Decoder.hpp \
     codec/DecoderContext.hpp \
     codec/Encoder.hpp \
@@ -99,7 +99,7 @@ HEADERS += \
     base/MediaData.hpp \
     core/Object.hpp \
     base/Processor.hpp \
-    base/Stream.hpp \
+    stream/Stream.hpp \
     core/Thread.hpp \
     core/utils.hpp \
     inout/FrameSource.hpp \

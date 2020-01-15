@@ -20,13 +20,12 @@ namespace fpp {
     private:
 
         virtual Code        processInputData(Frame input_data) override;
-//        bool                initOutputFrame(AVFrame** frame, int frame_size);
         bool                initOutputFrame(Frame& frame, int64_t frame_size);
         bool                configChanged(AVFrame* in, AVFrame* out); //TODO убрать постоянную проверку?
 
     protected:
 
-        SwrContext*         _resampler_context;
+        SwrContext*         _resampler_context; //TODO убрать голый указатель 15.01
 
     };
 
