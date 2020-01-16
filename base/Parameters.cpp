@@ -169,6 +169,10 @@ namespace fpp {
         setTimeBase(avstream->time_base);
     }
 
+    bool Parameters::betterThen(const ParametersPointer& other) {
+        return this->bitrate() > other->bitrate();
+    }
+
     void Parameters::setCodecType(CodecType value) {
         _codec_type = value;
     }

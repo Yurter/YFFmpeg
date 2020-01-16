@@ -110,4 +110,11 @@ namespace fpp {
         Parameters::parseStream(avstream);
     }
 
+    bool VideoParameters::betterThen(const ParametersPointer& other) {
+        auto other_vparams = std::static_pointer_cast<const VideoParameters>(other);
+        auto this_picture_size = width() * height();
+        auto other_picture_size = other_vparams->width() * other_vparams->height();
+        return this_picture_size > other_picture_size;
+    }
+
 } // namespace fpp

@@ -3,7 +3,7 @@
 namespace fpp {
 
     MediaSource::MediaSource(const std::string& mrl, IOPreset preset) :
-        _input_format_context { mrl, preset }
+        _input_format_context { mrl,  [&](const StreamVector& list){ return setStreams(list); }, preset }
     {
         setName("MediaSource");
     }
@@ -27,8 +27,8 @@ namespace fpp {
         try_to(_input_format_context.open());
         log_info("'" << _input_format_context.mediaResourceLocator() << "' opened");
         { //TODO refactoring
-            try_to(setStreams(_input_format_context.streams()));
-            for (auto&& avstream : streams()) { //TODO
+//            try_to(setStreams(_input_format_context.streams()));
+            for (auto&& avstream : streams()) { //TODO перенести внуть метода setStreams ? 16.01
                 try_to(avstream->init());
             }
         }

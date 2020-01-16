@@ -1,6 +1,5 @@
 #pragma once
 #include "inout/FrameProcessor.hpp"
-#include "stream/AudioStream.hpp"
 
 namespace fpp {
 

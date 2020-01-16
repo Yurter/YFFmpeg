@@ -16,8 +16,8 @@ namespace fpp {
 
     // TODO https://stackoverflow.com/questions/12831761/how-to-resize-a-picture-using-ffmpegs-sws-scale
     Code Rescaler::init() {
-        auto input_params = dynamic_cast<const VideoParameters * const>(params.in);
-        auto output_params = dynamic_cast<const VideoParameters * const>(params.out);
+        auto input_params = dynamic_cast<const VideoParameters * const>(params.in.get());
+        auto output_params = dynamic_cast<const VideoParameters * const>(params.out.get());
         _rescaler_context = sws_getContext(
                     int(input_params->width()), int(input_params->height()), input_params->pixelFormat()
                     , int(output_params->width()), int(output_params->height()), output_params->pixelFormat()
@@ -55,7 +55,7 @@ namespace fpp {
 //        return_if(not_inited_ptr(converted_frame), Code::ERR);
         Frame output_data;
 
-        auto output_params = dynamic_cast<const VideoParameters * const>(params.out); //TODO убрать каст из основного метода
+        auto output_params = dynamic_cast<const VideoParameters * const>(params.out.get()); //TODO убрать каст из основного метода
         output_data.raw().format = output_params->pixelFormat();
         output_data.raw().width  = int(output_params->width());
         output_data.raw().height = int(output_params->height());

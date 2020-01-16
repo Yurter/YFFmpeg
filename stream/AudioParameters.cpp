@@ -104,4 +104,11 @@ namespace fpp {
         Parameters::parseStream(avstream);
     }
 
+    bool AudioParameters::betterThen(const ParametersPointer& other) {
+        auto other_aparams = std::static_pointer_cast<const AudioParameters>(other);
+        auto this_sound_quality = sampleRate() * channels();
+        auto other_sound_quality = other_aparams->sampleRate() * other_aparams->channels();
+        return this_sound_quality > other_sound_quality;
+    }
+
 } // namespace fpp

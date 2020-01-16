@@ -4,9 +4,7 @@ namespace fpp {
 
     Object::Object()
         : _name { "Object" }
-        , _inited { false }
-    {
-        EMPTY_CONSTRUCTOR
+        , _inited { false } {
     }
 
     void Object::setName(const std::string& name) {

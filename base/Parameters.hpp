@@ -5,7 +5,7 @@ namespace fpp {
 
 //    using Parameters = std::shared_ptr<_Parameters>; //TODO
 
-    using StreamId_t = int64_t;
+    using StreamId_t = int64_t; //TODO rename to UID и перенести объявление в утилиты ? 16.01
     class Parameters;
     using ParametersPointer = std::shared_ptr<Parameters>;
     using IOParams = struct { ParametersPointer in; ParametersPointer out; };
@@ -15,7 +15,10 @@ namespace fpp {
     public:
 
         Parameters();
+        Parameters(const Parameters&) = default;
         virtual ~Parameters() override = default;
+
+        Parameters& operator=(const Parameters&) = default;
 
         void                setCodec(AVCodecID codec_id, CodecType codec_type);
         void                setCodec(std::string _codec_short_name, CodecType codec_type);
@@ -43,8 +46,7 @@ namespace fpp {
 
         virtual Code        completeFrom(const ParametersPointer other_params);
         virtual void        parseStream(const AVStream* avstream);
-
-        virtual bool        betterThen(const ParametersPointer& other) = 0;
+        virtual bool        betterThen(const ParametersPointer& other);
 
     private:
 

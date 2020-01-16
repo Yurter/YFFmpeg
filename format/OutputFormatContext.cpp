@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    OutputFormatContext::OutputFormatContext(const std::string& mrl, IOPreset preset)
-        : FormatContext { mrl, preset }
+    OutputFormatContext::OutputFormatContext(const std::string& mrl, StreamSetter stream_setter, IOPreset preset)
+        : FormatContext { mrl, stream_setter, preset }
         , _output_format { nullptr } {
         setName("OutFmtCtx");
     }
@@ -21,8 +21,8 @@ namespace fpp {
             break;
         }
         case IOPreset::Event: {
-            /* Video */
             StreamVector stream_list;
+            /* Video */
             auto video_params = std::make_shared<VideoParameters>();
             video_params->setCodec("libx264", CodecType::Encoder);
             video_params->setGopSize(2);
@@ -68,12 +68,13 @@ namespace fpp {
             break;
         }
         case IOPreset::Timelapse: {
+            StreamVector stream_list;
             /* Video */
             auto video_parameters = std::make_shared<VideoParameters>();
             video_parameters->setCodec("libx264", CodecType::Encoder);
             video_parameters->setTimeBase(DEFAULT_TIME_BASE);
 			video_parameters->setGopSize(2);
-            try_to(createStream(video_parameters));
+            stream_list.push_back(createStream(video_parameters));
             break;
         }
 //        case IOPreset::OpenCV: {
@@ -150,15 +151,15 @@ namespace fpp {
     Code OutputFormatContext::openContext() {
         return_if(opened(), Code::OK);
         return_if_not(inited(), Code::NOT_INITED);
-        return_error_if(streams().empty()
-                        , "No streams to mux were specified: " << mediaResourceLocator()
-                        , Code::NOT_INITED);
-        for (auto&& avstream : streams()) { //TODO refactoring
-            if (not_inited_codec_id(avstream->raw()->codecpar->codec_id)) {
-                utils::parameters_to_avcodecpar(avstream->params, avstream->raw()->codecpar);
-            }
-            try_to(avstream->init());
-        }
+//        return_error_if(streams().empty() //TODO убедиться в необходимости этого кода 16.01
+//                        , "No streams to mux were specified: " << mediaResourceLocator()
+//                        , Code::NOT_INITED);
+//        for (auto&& avstream : streams()) { //TODO refactoring
+//            if (not_inited_codec_id(avstream->raw()->codecpar->codec_id)) {
+//                utils::parameters_to_avcodecpar(avstream->params, avstream->raw()->codecpar);
+//            }
+//            try_to(avstream->init());
+//        }
         if (!(mediaFormatContext()->flags & AVFMT_NOFILE)) {
             if (avio_open(&mediaFormatContext()->pb, mediaResourceLocator().c_str(), AVIO_FLAG_WRITE) < 0) {
                 log_error("Could not open output: " << mediaResourceLocator());
@@ -197,21 +198,22 @@ namespace fpp {
     }
 
     Code OutputFormatContext::parseOutputFormat() {
-        return_if_not(inited_ptr(_output_format), Code::NOT_INITED);
-        {
-            //TODO:                                   ↓ mp3 AVOutputFormat дает видеокодек PNG ↓
-            auto& video_codec_id = _output_format->video_codec;
-            if (inited_codec_id(video_codec_id) && _output_format->video_codec != AV_CODEC_ID_PNG) {
-                try_to(createStream(utils::default_video_parameters(video_codec_id)));
-            }
-        }
-        {
-            auto& audio_codec_id = _output_format->audio_codec;
-            if (inited_codec_id(audio_codec_id)) {
-                try_to(createStream(utils::default_audio_parameters(audio_codec_id)));
-            }
-        }
-        return Code::OK;
+        return Code::NOT_IMPLEMENTED;
+//        return_if_not(inited_ptr(_output_format), Code::NOT_INITED);
+//        {
+//            //TODO:                                   ↓ mp3 AVOutputFormat дает видеокодек PNG ↓
+//            auto& video_codec_id = _output_format->video_codec;
+//            if (inited_codec_id(video_codec_id) && _output_format->video_codec != AV_CODEC_ID_PNG) {
+//                try_to(createStream(utils::default_video_parameters(video_codec_id)));
+//            }
+//        }
+//        {
+//            auto& audio_codec_id = _output_format->audio_codec;
+//            if (inited_codec_id(audio_codec_id)) {
+//                try_to(createStream(utils::default_audio_parameters(audio_codec_id)));
+//            }
+//        }
+//        return Code::OK;
     }
 
 } // namespace fpp

@@ -22,8 +22,8 @@ namespace fpp {
 
     //    auto in_param = dynamic_cast<AudioStream*>(_io_streams.first)->parameters; //TODO
     //    auto out_param = dynamic_cast<AudioStream*>(_io_streams.second)->parameters;
-        auto in_param = dynamic_cast<const AudioParameters * const>(params.in);
-        auto out_param = dynamic_cast<const AudioParameters * const>(params.out);
+        auto in_param = dynamic_cast<const AudioParameters * const>(params.in.get());
+        auto out_param = dynamic_cast<const AudioParameters * const>(params.out.get());
 
         _resampler_context = swr_alloc_set_opts(
             nullptr,
@@ -63,7 +63,7 @@ namespace fpp {
             log_error("swr_convert_frame failed");
             return Code::ERR;
         }
-        auto audio_params = static_cast<const AudioParameters * const>(params.out);
+        auto audio_params = static_cast<const AudioParameters * const>(params.out.get());
         do {
             Frame resampled_frame; // TODO frameSize брать из контекста энкодера
             if (!initOutputFrame(resampled_frame, audio_params->frameSize())) {
@@ -119,8 +119,8 @@ namespace fpp {
     // ПЕРЕДЕЛКИ С УКАЗАТЕЛЯ
     bool Resampler::initOutputFrame(Frame& frame, int64_t frame_size) {
         frame_size = 1024; //TODO critical!
-        auto in_param = dynamic_cast<const AudioParameters * const>(params.in);
-        auto out_param = dynamic_cast<const AudioParameters * const>(params.out);
+        auto in_param = dynamic_cast<const AudioParameters * const>(params.in.get());
+        auto out_param = dynamic_cast<const AudioParameters * const>(params.out.get());
         /* Set the frame's parameters, especially its size and format.
          * av_frame_get_buffer needs this to allocate memory for the
          * audio samples of the frame.
@@ -141,8 +141,8 @@ namespace fpp {
 
     //bool Resampler::configChanged(const AVFrame *in, const AVFrame *out)
     bool Resampler::configChanged(AVFrame* in, AVFrame* out) {
-        auto in_param = dynamic_cast<const AudioParameters * const>(params.in); //TODO убрать динамичный каст
-        auto out_param = dynamic_cast<const AudioParameters * const>(params.out);
+        auto in_param = dynamic_cast<const AudioParameters * const>(params.in.get()); //TODO убрать динамичный каст
+        auto out_param = dynamic_cast<const AudioParameters * const>(params.out.get());
 
         if (in) {
             if (in_param->channelLayout() != in->channel_layout

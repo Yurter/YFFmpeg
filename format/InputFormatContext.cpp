@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    InputFormatContext::InputFormatContext(const std::string& mrl, IOPreset preset)
-        : FormatContext { mrl, preset }
+    InputFormatContext::InputFormatContext(const std::string& mrl, StreamSetter stream_setter, IOPreset preset)
+        : FormatContext { mrl, stream_setter, preset }
         , _input_format { nullptr } {
         setName("InpFmtCtx");
     }

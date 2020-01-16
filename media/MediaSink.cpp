@@ -3,9 +3,8 @@
 
 namespace fpp {
 
-    MediaSink::MediaSink(const std::string mrl, IOPreset preset) :
-        _output_format_context(mrl, preset)
-    {
+    MediaSink::MediaSink(const std::string& mrl, IOPreset preset) :
+        _output_format_context { mrl, [&](const StreamVector& list){ return setStreams(list); }, preset } {
         setName("MediaSink");
     }
 
@@ -17,7 +16,7 @@ namespace fpp {
         return_if(inited(), Code::OK);
         log_debug("Initialization");
         try_to(_output_format_context.init());
-        try_to(setStreams(_output_format_context.streams()));
+//        try_to(setStreams(_output_format_context.streams()));
         setInited(true);
         return Code::OK;
     }

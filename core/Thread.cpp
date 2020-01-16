@@ -5,18 +5,15 @@
 
 namespace fpp {
 
-    Thread::Thread() :
-        Thread(std::bind(&Thread::run,this))
-    {
-        EMPTY_CONSTRUCTOR
+    Thread::Thread()
+        : Thread(std::bind(&Thread::run,this)) {
     }
 
-    Thread::Thread(LoopFunction loop_function) :
-        _running(false)
-      , _stop_flag(false)
-      , _exit_code(Code::OK)
-      , _loop_function(loop_function)
-    {
+    Thread::Thread(LoopFunction loop_function)
+        : _running { false }
+        , _stop_flag { false }
+        , _exit_code { Code::OK }
+        , _loop_function { loop_function } {
         setName("Thread");
     }
 

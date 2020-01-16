@@ -209,9 +209,9 @@ void route_simplify_debug() {
         }
     }
 
-    if (auto ret = pipeline->simplifyRoutes(); ret != fpp::Code::OK) {
-        static_log_error("main", "Pipeline simplify routes failed: " << ret << " - " << utils::code_to_string(ret));
-    }
+//    if (auto ret = pipeline->simplifyRoutes(); ret != fpp::Code::OK) {
+//        static_log_error("main", "Pipeline simplify routes failed: " << ret << " - " << utils::code_to_string(ret));
+//    }
 
     progress_bar(60 * 31);
 }
