@@ -36,7 +36,6 @@ namespace fpp {
         Code                setStreams(StreamVector streams);
         void                setType(ProcessorType value);
         void                setOpened(bool opened);
-        void                setCloseOnDisconnect(bool value);
 
         Code                connectTo(StreamId_t stream_id, ProcessorPointer other);
         Code                disconnectFrom(const ProcessorPointer other);

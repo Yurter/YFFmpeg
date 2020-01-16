@@ -197,7 +197,7 @@ void route_simplify_debug() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
     ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:admin@192.168.10.3:554");
-    source->setCloseOnDisconnect(false);
+//    source->setCloseOnDisconnect(false);
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
@@ -220,7 +220,7 @@ void memory_leak_test() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
     ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:admin@192.168.10.3:554");
-    source->setCloseOnDisconnect(false);
+//    source->setCloseOnDisconnect(false);
 
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
