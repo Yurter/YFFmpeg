@@ -102,7 +102,7 @@ namespace fpp {
         return header + message;
     }
 
-    std::string Logger::getTimeStamp() const {
+    std::string Logger::getTimeStamp() const { //TODO перенести реализацию в утилиты currentTimeFormated()  16.01
         const auto now = std::chrono::system_clock::now();
         const auto in_time_t = std::chrono::system_clock::to_time_t(now);
 

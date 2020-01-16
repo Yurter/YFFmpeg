@@ -4,8 +4,8 @@
 
 namespace fpp {
 
-    std::string utils::media_type_to_string(MediaType media_type) {
-        switch (media_type) {
+    std::string utils::media_type_to_string(MediaType value) {
+        switch (value) {
         case MediaType::Unknown:
             return "Unknown";
         case MediaType::Video:
@@ -26,14 +26,14 @@ namespace fpp {
         return value ? "true" : "false";
     }
 
-    std::string utils::pixel_format_to_string(const AVPixelFormat value) {
+    std::string utils::pixel_format_to_string(AVPixelFormat value) {
         const char* ret = av_get_pix_fmt_name(value);
         return_if(not_inited_ptr(ret)
                   , "NONE");
         return std::string(ret);
     }
 
-    std::string utils::sample_format_to_string(const AVSampleFormat value) {
+    std::string utils::sample_format_to_string(AVSampleFormat value) {
         const char* ret = av_get_sample_fmt_name(value);
         return_if(not_inited_ptr(ret)
                   , "NONE");
@@ -56,8 +56,8 @@ namespace fpp {
         sleep_for_sec(minutes * 60);
     }
 
-    std::string utils::time_to_string(int64_t value, AVRational time_base) {
-        const auto time_ms = av_rescale_q(value, time_base, DEFAULT_TIME_BASE);
+    std::string utils::time_to_string(int64_t time_stamp, AVRational time_base) {
+        const auto time_ms = av_rescale_q(time_stamp, time_base, DEFAULT_TIME_BASE);
         const int64_t ms = time_ms % 1000;
         const int64_t ss = (time_ms / 1000) % 60;
         const int64_t mm = ((time_ms / 1000) % 3600) / 60;
@@ -65,42 +65,42 @@ namespace fpp {
         return std::to_string(hh) + ':' + std::to_string(mm) + ':' + std::to_string(ss) + '.' + std::to_string(ms);
     }
 
-    bool utils::exit_code(Code code) {
-        if (code == Code::ERR)                  { return true; }
-        if (code == Code::EXIT)                 { return true; }
-        if (code == Code::EXCEPTION)            { return true; }
-        if (code == Code::NOT_INITED)           { return true; }
-        if (code == Code::END_OF_FILE)          { return true; }
-        if (code == Code::FFMPEG_ERROR)         { return true; }
-        if (code == Code::INVALID_INPUT)        { return true; }
-        if (code == Code::NOT_IMPLEMENTED)      { return true; }
-        if (code == Code::INVALID_CALL_ORDER)   { return true; }
+    bool utils::exit_code(Code value) {
+        if (value == Code::ERR)                 { return true; }
+        if (value == Code::EXIT)                { return true; }
+        if (value == Code::EXCEPTION)           { return true; }
+        if (value == Code::NOT_INITED)          { return true; }
+        if (value == Code::END_OF_FILE)         { return true; }
+        if (value == Code::FFMPEG_ERROR)        { return true; }
+        if (value == Code::INVALID_INPUT)       { return true; }
+        if (value == Code::NOT_IMPLEMENTED)     { return true; }
+        if (value == Code::INVALID_CALL_ORDER)  { return true; }
         return false;
     }
 
-    bool utils::error_code(Code code) {
-        if (code == Code::ERR)                  { return true; }
-        if (code == Code::EXCEPTION)            { return true; }
-        if (code == Code::NOT_INITED)           { return true; }
-        if (code == Code::FFMPEG_ERROR)         { return true; }
-        if (code == Code::INVALID_INPUT)        { return true; }
-        if (code == Code::NOT_IMPLEMENTED)      { return true; }
-        if (code == Code::INVALID_CALL_ORDER)   { return true; }
+    bool utils::error_code(Code value) {
+        if (value == Code::ERR)                 { return true; }
+        if (value == Code::EXCEPTION)           { return true; }
+        if (value == Code::NOT_INITED)          { return true; }
+        if (value == Code::FFMPEG_ERROR)        { return true; }
+        if (value == Code::INVALID_INPUT)       { return true; }
+        if (value == Code::NOT_IMPLEMENTED)     { return true; }
+        if (value == Code::INVALID_CALL_ORDER)  { return true; }
         return false;
     }
 
-    std::string utils::code_to_string(Code code) {
-        if (code == Code::OK)                   { return "OK";                      }
-        if (code == Code::ERR)                  { return "Error";                   }
-        if (code == Code::EXIT)                 { return "Exit";                    }
-        if (code == Code::AGAIN)                { return "Again";                   }
-        if (code == Code::NOT_INITED)           { return "Not inited";              }
-        if (code == Code::END_OF_FILE)          { return "EOF";                     }
-        if (code == Code::FFMPEG_ERROR)         { return "FFmpeg error";            }
-        if (code == Code::INVALID_INPUT)        { return "Invalid input";           }
-        if (code == Code::NOT_IMPLEMENTED)      { return "Method not implemented";  }
-        if (code == Code::INVALID_CALL_ORDER)   { return "Invalid call order";      }
-        return "Unknown error code: " + std::to_string(code);
+    std::string utils::code_to_string(Code value) {
+        if (value == Code::OK)                  { return "OK";                      }
+        if (value == Code::ERR)                 { return "Error";                   }
+        if (value == Code::EXIT)                { return "Exit";                    }
+        if (value == Code::AGAIN)               { return "Again";                   }
+        if (value == Code::NOT_INITED)          { return "Not inited";              }
+        if (value == Code::END_OF_FILE)         { return "EOF";                     }
+        if (value == Code::FFMPEG_ERROR)        { return "FFmpeg error";            }
+        if (value == Code::INVALID_INPUT)       { return "Invalid input";           }
+        if (value == Code::NOT_IMPLEMENTED)     { return "Method not implemented";  }
+        if (value == Code::INVALID_CALL_ORDER)  { return "Invalid call order";      }
+        return "Unknown error code: " + std::to_string(value);
     }
 
     std::string utils::codec_type_to_string(CodecType type) {
@@ -545,7 +545,7 @@ namespace fpp {
         return fabs(a - b) < epsilon;
     }
 
-    bool utils::equal_rational(const AVRational a, const AVRational b) {
+    bool utils::equal_rational(AVRational a, AVRational b) {
         return av_cmp_q(a, b) == 0;
     }
 
