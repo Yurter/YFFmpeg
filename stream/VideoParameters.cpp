@@ -111,6 +111,13 @@ namespace fpp {
         setGopSize(avstream->codec->gop_size);
     }
 
+    void VideoParameters::initStream(AVStream* avstream) const {
+        Parameters::initStream(avstream);
+        avstream->codecpar->width = int(width());
+        avstream->codecpar->height = int(height());
+        avstream->avg_frame_rate = frameRate();
+    }
+
     bool VideoParameters::betterThen(const ParametersPointer& other) {
         auto other_vparams = std::static_pointer_cast<const VideoParameters>(other);
         auto this_picture_size = width() * height();

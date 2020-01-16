@@ -158,6 +158,13 @@ namespace fpp {
         setTimeBase(avstream->time_base);
     }
 
+    void Parameters::initStream(AVStream* avstream) const {
+        avstream->codecpar->codec_id = codecId();
+        avstream->codecpar->bit_rate = bitrate();
+        avstream->duration = duration();
+        avstream->time_base = timeBase();
+    }
+
     bool Parameters::betterThen(const ParametersPointer& other) {
         return this->bitrate() > other->bitrate();
     }

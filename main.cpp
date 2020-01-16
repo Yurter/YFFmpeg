@@ -246,7 +246,7 @@ void memory_leak_test() {
 void write_video_from_camera() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-    ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:admin@192.168.10.3:554");
+    ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554");
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
@@ -350,7 +350,7 @@ int main() {
 //    }
 
     {
-//        set_log_level(LogLevel::Debug);
+//        set_log_level(LogLevel::Error);
         write_video_from_camera();
         return 0;
     }

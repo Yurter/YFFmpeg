@@ -29,11 +29,11 @@ namespace fpp {
             video_params->setTimeBase(DEFAULT_TIME_BASE);
             stream_list.push_back(createStream(video_params));
             /* Audio */
-            auto audio_params = std::make_shared<AudioParameters>(ParamsType::Output);
-            audio_params->setCodec("libmp3lame");
-            audio_params->setTimeBase(DEFAULT_TIME_BASE);
-            audio_params->setSampleRate(DEFAULT_SAMPLE_RATE);
-            stream_list.push_back(createStream(audio_params));
+//            auto audio_params = std::make_shared<AudioParameters>(ParamsType::Output);
+//            audio_params->setCodec("libmp3lame");
+//            audio_params->setTimeBase(DEFAULT_TIME_BASE);
+//            audio_params->setSampleRate(DEFAULT_SAMPLE_RATE);
+//            stream_list.push_back(createStream(audio_params));
             try_to(registerStreams(stream_list));
             break;
         }
@@ -160,7 +160,7 @@ namespace fpp {
 //            }
 //            try_to(avstream->init());
 //        }
-        log_error(">> " << mediaFormatContext()->streams[0]->codecpar->codec_id << " " << mediaFormatContext()->streams[1]->codecpar->codec_id);
+//        log_error(">> " << mediaFormatContext()->streams[0]->codecpar->codec_id << " " << mediaFormatContext()->streams[1]->codecpar->codec_id);
         if (!(mediaFormatContext()->flags & AVFMT_NOFILE)) {
             if (auto ret = avio_open(&mediaFormatContext()->pb, mediaResourceLocator().c_str(), AVIO_FLAG_WRITE); ret < 0) {
                 log_error("Could not open output: " << mediaResourceLocator());

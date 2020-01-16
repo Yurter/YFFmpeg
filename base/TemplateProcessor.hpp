@@ -122,9 +122,6 @@ namespace fpp {
                       it->second.for_each([&output_data,this](auto& next_processor) {
                           static_log_trace("Sender", "Sending data to " << next_processor->name());
                           try_throw_static(next_processor->push(&output_data));
-                          if (output_data.typeIs(MediaType::EndOF)) { //Debug log
-                              static_log_error("Debug", "Send EOF to " << next_processor->name());
-                          }
                       });
                     }
                 } else {
