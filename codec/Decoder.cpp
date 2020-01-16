@@ -5,7 +5,7 @@ namespace fpp {
     Decoder::Decoder(const IOParams params)
         : _decoder_context(params) {
         setName("Decoder");
-        try_throw(setStartDataPred([](const Packet& packet){
+        try_throw(setStartDataPred([](const auto& packet){
             return_if_not(packet.keyFrame(), Code::AGAIN);
             return Code::OK;
         }));

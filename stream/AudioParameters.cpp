@@ -96,12 +96,12 @@ namespace fpp {
     }
 
     void AudioParameters::parseStream(const AVStream* avstream) {
+        Parameters::parseStream(avstream);
         setSampleRate(avstream->codecpar->sample_rate);
         setSampleFormat(avstream->codec->sample_fmt);
         setChannelLayout(avstream->codecpar->channel_layout);
         setChannels(avstream->codecpar->channels);
         setFrameSize(avstream->codecpar->frame_size);
-        Parameters::parseStream(avstream);
     }
 
     bool AudioParameters::betterThen(const ParametersPointer& other) {

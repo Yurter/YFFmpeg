@@ -3,11 +3,12 @@
 
 namespace fpp {
 
-    Parameters::Parameters()
+    Parameters::Parameters(ParamsType io_type)
         : _codec { nullptr }
         , _codec_id { DEFAULT_CODEC_ID }
         , _codec_name { DEFAULT_STRING }
-        , _codec_type { CodecType::Unknown }
+        , _io_type { io_type }
+//        , _codec_type { CodecType::Unknown }
         , _bitrate { DEFAULT_INT }
         , _duration { DEFAULT_INT }
         , _stream_index { INVALID_INT }
@@ -20,7 +21,7 @@ namespace fpp {
     void Parameters::setCodec(AVCodecID codec_id, CodecType codec_type) {
         switch (codec_type) {
         case CodecType::Unknown:
-            log_error("Unknown codec type of " << avcodec_get_name(codec_id) << ", ignored");
+            log_error("Unknown codec type of " << codec_id << ", ignored");
             return;
         case CodecType::Decoder:
             setCodecType(codec_type);
@@ -109,9 +110,9 @@ namespace fpp {
         return _codec;
     }
 
-    CodecType Parameters::codecType() const {
-        return _codec_type;
-    }
+//    CodecType Parameters::codecType() const {
+//        return _codec_type;
+//    }
 
     int64_t Parameters::bitrate() const {
         return _bitrate;
@@ -142,13 +143,11 @@ namespace fpp {
     }
 
     std::string Parameters::toString() const {
-        std::string str;
-        str += codecName() + ", ";
-        str += utils::codec_type_to_string(codecType()) + ", ";
-        str += "bit/s " + std::to_string(bitrate()) + ", ";
-        str += "dur " + std::to_string(duration()) + ", ";
-        str += "tb " + utils::rational_to_string(timeBase());
-        return str;
+        return codecName() + ", "
+//        str += utils::codec_type_to_string(codecType()) + ", ";
+        + "bit/s " + std::to_string(bitrate()) + ", "
+        + "dur " + std::to_string(duration()) + ", "
+        + "tb " + utils::rational_to_string(timeBase());
     }
 
     Code Parameters::completeFrom(const ParametersPointer other_params) {

@@ -3,8 +3,9 @@
 
 namespace fpp {
 
-    Stream::Stream(const AVStream* avstream, ParametersPointer params)
-        : Data(avstream, params->type())
+    Stream::Stream(const AVStream* avstream, ParametersPointer parameters)
+        : Data(avstream, parameters->type())
+        , params { parameters }
         , _used { false }
         , _stamp_type { StampType::Rescale }
         , _prev_dts { 0 }
@@ -20,7 +21,7 @@ namespace fpp {
         setName(utils::media_type_to_string(type()) + " stream");
     }
 
-    Stream::Stream(const AVStream* avstream)
+    Stream::Stream(const AVStream* avstream, StreamType type)
         : Stream(avstream, utils::createParams(utils::avmt_to_mt(avstream->codecpar->codec_type))) { //TODO refactoring params creation 15.01
         params->parseStream(avstream);
     }

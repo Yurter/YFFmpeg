@@ -101,13 +101,13 @@ namespace fpp {
     }
 
     void VideoParameters::parseStream(const AVStream* avstream) {
+        Parameters::parseStream(avstream);
         setWidth(avstream->codecpar->width);
         setHeight(avstream->codecpar->height);
         setAspectRatio(avstream->codecpar->sample_aspect_ratio);
         setFrameRate(avstream->avg_frame_rate);
         setPixelFormat(avstream->codec->pix_fmt);
         setGopSize(avstream->codec->gop_size);
-        Parameters::parseStream(avstream);
     }
 
     bool VideoParameters::betterThen(const ParametersPointer& other) {

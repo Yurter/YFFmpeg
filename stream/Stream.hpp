@@ -7,16 +7,22 @@
 
 namespace fpp {
 
+    enum class StreamType { //TODO crutch ? 16.01
+        Output,
+        Input,
+    };
+
     class Stream;
     using StreamPointer = std::shared_ptr<Stream>; //TODO rename to Stream, сам класс переименовать в другое 15.01
     using StreamVector = std::vector<StreamPointer>;
 
     class Stream : public Data<const AVStream*> {
 
+
     public:
 
-        Stream(const AVStream* avstream, ParametersPointer params);
-        Stream(const AVStream* avstream);   // Создание реального потока
+        Stream(const AVStream* avstream, ParametersPointer parameters);
+        Stream(const AVStream* avstream, StreamType type);   // Создание реального потока
         Stream(ParametersPointer params);   // Создание виртуального потока
         Stream(const Stream& other)  = delete;
         virtual ~Stream() override = default;

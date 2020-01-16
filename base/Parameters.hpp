@@ -10,11 +10,16 @@ namespace fpp {
     using ParametersPointer = std::shared_ptr<Parameters>;
     using IOParams = struct { ParametersPointer in; ParametersPointer out; };
 
+    enum ParamsType { //TODO rename 16.01
+        Input,
+        Output,
+    };
+
     class Parameters : public MediaData {
 
     public:
 
-        Parameters();
+        Parameters(ParamsType type);
         Parameters(const Parameters&) = default;
         virtual ~Parameters() override = default;
 
@@ -32,7 +37,7 @@ namespace fpp {
         AVCodecID           codecId()       const;
         std::string         codecName()     const;
         AVCodec*            codec()         const;
-        CodecType           codecType()     const;
+//        CodecType           codecType()     const;
         int64_t             bitrate()       const;
         int64_t             duration()      const;
         StreamId_t          streamIndex()   const;
@@ -50,7 +55,7 @@ namespace fpp {
 
     private:
 
-        void                setStreamUid(int64_t value);
+        void                setStreamUid(StreamId_t value);
         void                setCodecType(CodecType value);
 
     protected:
@@ -58,7 +63,8 @@ namespace fpp {
         AVCodec*            _codec;
         AVCodecID           _codec_id;
         std::string			_codec_name;
-        CodecType           _codec_type;
+//        CodecType           _codec_type;
+        ParamsType          _io_type;
         int64_t             _bitrate;
         int64_t             _duration;
         StreamId_t          _stream_index;
