@@ -25,8 +25,8 @@ namespace fpp {
 
         Parameters& operator=(const Parameters&) = default;
 
-        void                setCodec(AVCodecID codec_id, CodecType codec_type);
-        void                setCodec(std::string _codec_short_name, CodecType codec_type);
+        void                setCodec(AVCodecID codec_id);
+        void                setCodec(std::string _codec_short_name);
         void                setCodec(AVCodec* codec);
         void                setBitrate(int64_t bitrate);
         void                setDuration(int64_t duration);
@@ -37,7 +37,6 @@ namespace fpp {
         AVCodecID           codecId()       const;
         std::string         codecName()     const;
         AVCodec*            codec()         const;
-//        CodecType           codecType()     const;
         int64_t             bitrate()       const;
         int64_t             duration()      const;
         StreamId_t          streamIndex()   const;

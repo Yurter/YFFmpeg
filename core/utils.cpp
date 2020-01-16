@@ -262,12 +262,12 @@ namespace fpp {
         return avcodec_find_encoder(codec_id);
     }
 
-    ParametersPointer utils::createParams(MediaType type) {
+    ParametersPointer utils::createParams(MediaType type, ParamsType par_type) {
         switch (type) {
         case MediaType::Video:
-            return std::make_shared<VideoParameters>();
+            return std::make_shared<VideoParameters>(par_type);
         case MediaType::Audio:
-            return std::make_shared<AudioParameters>();
+            return std::make_shared<AudioParameters>(par_type);
         default:
             throw Exception("TODO createParams");
         }
@@ -382,38 +382,38 @@ namespace fpp {
         }
     }
 
-    VideoParameters* utils::default_video_parameters(AVCodecID codec_id) {
-        auto video_params = new VideoParameters;
-        video_params->setCodec(codec_id, CodecType::Encoder);
-        video_params->setBitrate(400000); //TODO расчитывать
-        video_params->setTimeBase(DEFAULT_TIME_BASE);
-        video_params->setWidth(1920);
-        video_params->setHeight(1080);
-        video_params->setAspectRatio({ 16, 9 });
-        video_params->setFrameRate({ 30, 1 });
-        video_params->setPixelFormat(AV_PIX_FMT_YUV420P);
-        return video_params;
-    }
+//    VideoParameters* utils::default_video_parameters(AVCodecID codec_id) {
+//        auto video_params = new VideoParameters;
+//        video_params->setCodec(codec_id, CodecType::Encoder);
+//        video_params->setBitrate(400000); //TODO расчитывать
+//        video_params->setTimeBase(DEFAULT_TIME_BASE);
+//        video_params->setWidth(1920);
+//        video_params->setHeight(1080);
+//        video_params->setAspectRatio({ 16, 9 });
+//        video_params->setFrameRate({ 30, 1 });
+//        video_params->setPixelFormat(AV_PIX_FMT_YUV420P);
+//        return video_params;
+//    }
 
-    AudioParameters* utils::default_audio_parameters(AVCodecID codec_id) {
-        auto audio_params = new AudioParameters;
-        audio_params->setCodec(codec_id, CodecType::Encoder);
-        audio_params->setBitrate(192000); //TODO расчитывать
-        audio_params->setTimeBase(DEFAULT_TIME_BASE);
-        audio_params->setSampleRate(44100);
-        audio_params->setSampleFormat(audio_params->codec()->sample_fmts[0]);
-        audio_params->setChannels(2);
-        audio_params->setChannelLayout(uint64_t(av_get_default_channel_layout(int(audio_params->channels()))));
-        return audio_params;
-    }
+//    AudioParameters* utils::default_audio_parameters(AVCodecID codec_id) {
+//        auto audio_params = new AudioParameters;
+//        audio_params->setCodec(codec_id, CodecType::Encoder);
+//        audio_params->setBitrate(192000); //TODO расчитывать
+//        audio_params->setTimeBase(DEFAULT_TIME_BASE);
+//        audio_params->setSampleRate(44100);
+//        audio_params->setSampleFormat(audio_params->codec()->sample_fmts[0]);
+//        audio_params->setChannels(2);
+//        audio_params->setChannelLayout(uint64_t(av_get_default_channel_layout(int(audio_params->channels()))));
+//        return audio_params;
+//    }
 
     Code utils::find_encoder_for(const ParametersPointer src_prm, ParametersPointer dst_prm) { //TODO return struct { codec + type }, убрать второй аргумент 14.01
         switch (src_prm->codecId()) {
         case AVCodecID::AV_CODEC_ID_H264:
-            dst_prm->setCodec("libx264", CodecType::Encoder);
+            dst_prm->setCodec("libx264");
             return Code::OK;
         default: //TODO возможны случаи с несимметричными названиями кодера и энкодера как у h264
-            dst_prm->setCodec(src_prm->codecName(), CodecType::Encoder);
+            dst_prm->setCodec(src_prm->codecName());
             return Code::OK;
 //        default:
 //            return Code::INVALID_INPUT;

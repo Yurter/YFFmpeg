@@ -54,7 +54,7 @@ namespace fpp {
         static AVCodec*     find_encoder(std::string codec_short_name);
         static AVCodec*     find_encoder(AVCodecID codec_id);
 
-        static ParametersPointer createParams(MediaType type);
+        static ParametersPointer createParams(MediaType type, ParamsType par_type);
 
         static Code         init_codecpar(AVCodecParameters* codecpar, AVCodec* codec);
         static void         parameters_to_context(const ParametersPointer params, AVCodecContext* codec_context);

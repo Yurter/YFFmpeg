@@ -23,14 +23,14 @@ namespace fpp {
         case IOPreset::Event: {
             StreamVector stream_list;
             /* Video */
-            auto video_params = std::make_shared<VideoParameters>();
-            video_params->setCodec("libx264", CodecType::Encoder);
+            auto video_params = std::make_shared<VideoParameters>(ParamsType::Output);
+            video_params->setCodec("libx264");
             video_params->setGopSize(2);
             video_params->setTimeBase(DEFAULT_TIME_BASE);
             stream_list.push_back(createStream(video_params));
             /* Audio */
-            auto audio_params = std::make_shared<AudioParameters>();
-            audio_params->setCodec("libmp3lame", CodecType::Encoder);
+            auto audio_params = std::make_shared<AudioParameters>(ParamsType::Output);
+            audio_params->setCodec("libmp3lame");
             audio_params->setTimeBase(DEFAULT_TIME_BASE);
             audio_params->setSampleRate(DEFAULT_SAMPLE_RATE);
             stream_list.push_back(createStream(audio_params));
@@ -70,8 +70,8 @@ namespace fpp {
         case IOPreset::Timelapse: {
             StreamVector stream_list;
             /* Video */
-            auto video_parameters = std::make_shared<VideoParameters>();
-            video_parameters->setCodec("libx264", CodecType::Encoder);
+            auto video_parameters = std::make_shared<VideoParameters>(ParamsType::Output);
+            video_parameters->setCodec("libx264");
             video_parameters->setTimeBase(DEFAULT_TIME_BASE);
 			video_parameters->setGopSize(2);
             stream_list.push_back(createStream(video_parameters));
@@ -170,6 +170,7 @@ namespace fpp {
             log_error("Error occurred when opening output: " << mediaResourceLocator() << ", " << ret);
             return Code::ERR;
         }
+        return Code::OK;
     }
 
     Code OutputFormatContext::closeContext() {

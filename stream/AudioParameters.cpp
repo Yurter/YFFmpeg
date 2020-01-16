@@ -3,8 +3,9 @@
 
 namespace fpp {
 
-    AudioParameters::AudioParameters()
-        : _sample_rate { 0 }
+    AudioParameters::AudioParameters(ParamsType type)
+        : Parameters(type)
+        , _sample_rate { 0 }
         , _sample_format { DEFAULT_SAMPLE_FORMAT }
         , _channel_layout { DEFAULT_CHANEL_LAYOUT }
         , _channels { 0 }

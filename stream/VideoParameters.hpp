@@ -7,7 +7,7 @@ namespace fpp {
 
     public:
 
-        VideoParameters();
+        VideoParameters(ParamsType type);
         virtual ~VideoParameters() override = default;
 
         void                setWidth(int64_t width);

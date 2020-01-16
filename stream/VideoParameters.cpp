@@ -3,8 +3,9 @@
 
 namespace fpp {
 
-    VideoParameters::VideoParameters()
-        : _width { 0 }
+    VideoParameters::VideoParameters(ParamsType type)
+        : Parameters(type)
+        , _width { 0 }
         , _height { 0 }
         , _aspect_ratio { DEFAULT_RATIONAL }
         , _frame_rate { DEFAULT_RATIONAL }

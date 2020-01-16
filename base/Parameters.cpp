@@ -8,9 +8,8 @@ namespace fpp {
         , _codec_id { DEFAULT_CODEC_ID }
         , _codec_name { DEFAULT_STRING }
         , _io_type { io_type }
-//        , _codec_type { CodecType::Unknown }
-        , _bitrate { DEFAULT_INT }
-        , _duration { DEFAULT_INT }
+        , _bitrate { 0 }
+        , _duration { 0 }
         , _stream_index { INVALID_INT }
         , _stream_uid { INVALID_INT }
         , _time_base { DEFAULT_RATIONAL }
@@ -18,33 +17,23 @@ namespace fpp {
         setName("Parameters");
     }
 
-    void Parameters::setCodec(AVCodecID codec_id, CodecType codec_type) {
-        switch (codec_type) {
-        case CodecType::Unknown:
-            log_error("Unknown codec type of " << codec_id << ", ignored");
-            return;
-        case CodecType::Decoder:
-            setCodecType(codec_type);
+    void Parameters::setCodec(AVCodecID codec_id) {
+        switch (_io_type) {
+        case ParamsType::Input:
             setCodec(utils::find_decoder(codec_id));
             return;
-        case CodecType::Encoder:
-            setCodecType(codec_type);
+        case ParamsType::Output:
             setCodec(utils::find_encoder(codec_id));
             return;
         }
     }
 
-    void Parameters::setCodec(std::string codec_short_name, CodecType codec_type) {
-        switch (codec_type) {
-        case CodecType::Unknown:
-            log_error("Unknown codec type of " << codec_short_name << ", ignored");
-            return;
-        case CodecType::Decoder:
-            setCodecType(codec_type);
+    void Parameters::setCodec(std::string codec_short_name) {
+        switch (_io_type) {
+        case ParamsType::Input:
             setCodec(utils::find_decoder(codec_short_name));
             return;
-        case CodecType::Encoder:
-            setCodecType(codec_type);
+        case ParamsType::Output:
             setCodec(utils::find_encoder(codec_short_name));
             return;
         }
@@ -162,7 +151,7 @@ namespace fpp {
     }
 
     void Parameters::parseStream(const AVStream* avstream) {
-        setCodec(avstream->codecpar->codec_id, _codec_type);
+        setCodec(avstream->codecpar->codec_id);
         setBitrate(avstream->codecpar->bit_rate);
         setDuration(avstream->duration);
         setStreamIndex(avstream->index);
@@ -171,10 +160,6 @@ namespace fpp {
 
     bool Parameters::betterThen(const ParametersPointer& other) {
         return this->bitrate() > other->bitrate();
-    }
-
-    void Parameters::setCodecType(CodecType value) {
-        _codec_type = value;
     }
 
 } // namespace fpp

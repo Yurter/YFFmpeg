@@ -7,7 +7,7 @@ namespace fpp {
 
     public:
 
-        AudioParameters();
+        AudioParameters(ParamsType type);
         virtual ~AudioParameters() override = default;
 
         void                setSampleRate(int64_t sample_rate);
