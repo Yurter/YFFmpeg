@@ -31,6 +31,7 @@ namespace fpp {
     }
 
     Code Stream::init() {
+        return_if(inited(), Code::OK);
         if (inited_ptr(raw())) {
             /* Иницаиализация полей параметров кодека дефолтными значениями */
             try_to(utils::init_codecpar(codecParameters(), params->codec()));

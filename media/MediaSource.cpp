@@ -75,6 +75,7 @@ namespace fpp {
     Code MediaSource::readInputData(Packet& input_data) {
         if (inputDataCount() == 0) { //TODO кривой костыль
             for (auto& stream : streams()) {
+                if (stream->startTimePoint() == FROM_START) { continue; } //TODO 16.01
                 try_to(_input_format_context.seek(stream->index(), stream->startTimePoint()));
             }
         }

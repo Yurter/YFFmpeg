@@ -188,6 +188,8 @@ namespace fpp {
         try_to(route.init());
 
         log_debug("Created route: " << route);
+        log_error("input_stream  : " << input_stream->toString());
+        log_error("output_stream : " << output_stream->toString());
         return Code::OK;
     }
 

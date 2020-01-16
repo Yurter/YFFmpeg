@@ -62,7 +62,6 @@ namespace fpp {
         AVCodec*            _codec;
         AVCodecID           _codec_id;
         std::string			_codec_name;
-//        CodecType           _codec_type;
         ParamsType          _io_type;
         int64_t             _bitrate;
         int64_t             _duration;

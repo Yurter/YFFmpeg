@@ -160,11 +160,16 @@ namespace fpp {
 //            }
 //            try_to(avstream->init());
 //        }
+        log_error(">> " << mediaFormatContext()->streams[0]->codecpar->codec_id << " " << mediaFormatContext()->streams[1]->codecpar->codec_id);
         if (!(mediaFormatContext()->flags & AVFMT_NOFILE)) {
-            if (avio_open(&mediaFormatContext()->pb, mediaResourceLocator().c_str(), AVIO_FLAG_WRITE) < 0) {
+            if (auto ret = avio_open(&mediaFormatContext()->pb, mediaResourceLocator().c_str(), AVIO_FLAG_WRITE); ret < 0) {
                 log_error("Could not open output: " << mediaResourceLocator());
                 return Code::INVALID_INPUT;
             }
+//            if (avio_open(&mediaFormatContext()->pb, mediaResourceLocator().c_str(), AVIO_FLAG_WRITE) < 0) {
+//                log_error("Could not open output: " << mediaResourceLocator());
+//                return Code::INVALID_INPUT;
+//            }
         }
         if (auto ret = avformat_write_header(mediaFormatContext(), nullptr); ret < 0) { //TODO unesed result 14.01
             log_error("Error occurred when opening output: " << mediaResourceLocator() << ", " << ret);
@@ -185,6 +190,7 @@ namespace fpp {
 
     StreamPointer OutputFormatContext::createStream(ParametersPointer params) {
         auto avstream = avformat_new_stream(mediaFormatContext(), params->codec());
+        params->setStreamIndex(avstream->index);
         return std::make_shared<Stream>(avstream, params);
     }
 
