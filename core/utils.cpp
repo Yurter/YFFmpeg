@@ -112,7 +112,15 @@ namespace fpp {
     std::string utils::rational_to_string(AVRational rational) {
         return std::to_string(rational.num)
                 + "/" +
-               std::to_string(rational.den);
+                std::to_string(rational.den);
+    }
+
+    SharedVideoParameters utils::makeVideoParams(SharedParameters params) {
+        return std::static_pointer_cast<VideoParameters>(params);
+    }
+
+    SharedAudioParameters utils::makeAudioParams(SharedParameters params) {
+        return std::static_pointer_cast<AudioParameters>(params);
     }
 
     bool utils::compatible_with_pixel_format(const AVCodec* codec, AVPixelFormat pixel_format) {

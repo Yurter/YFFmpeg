@@ -28,6 +28,9 @@ namespace fpp {
         static std::string  codec_type_to_string(CodecType type);
         static std::string  rational_to_string(AVRational rational);
 
+        static SharedVideoParameters makeVideoParams(SharedParameters params);
+        static SharedAudioParameters makeAudioParams(SharedParameters params);
+
         static void         sleep_for(int64_t milliseconds);
         static void         sleep_for_ms(int64_t milliseconds);
         static void         sleep_for_sec(int64_t seconds);
