@@ -34,8 +34,8 @@ namespace fpp {
 
     private:
 
-        UID          _input_stream_uid;
-        UID          _output_stream_uid;
+        uid_t               _input_stream_uid;
+        uid_t               _output_stream_uid;
         ProcessorSequence   _sequence;
 
     };

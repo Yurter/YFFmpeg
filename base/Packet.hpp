@@ -29,7 +29,7 @@ namespace fpp {
         int64_t             streamIndex()   const;
         bool                keyFrame()      const;
 
-        virtual uint64_t    size()      const override;
+        virtual size_t      size()      const override;
         virtual std::string toString()  const override;
 
     private:

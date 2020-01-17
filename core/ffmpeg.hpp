@@ -133,7 +133,7 @@ namespace fpp {
 
 } // namespace fpp
 
-using UID = int64_t;
+using uid_t = int64_t;
 
 /* Значения по умолчанию для видео- и аудиопараметров */ //TODO по умолчанию невалидные, добавить по умолчанию валидные
 #define INVALID_INT             -1

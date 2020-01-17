@@ -89,7 +89,7 @@ namespace fpp {
             return Code::OK;
         }
 
-        Code sendOutputData(const outType& output_data, UID stream_uid = BROADCAST) {
+        Code sendOutputData(const outType& output_data, uid_t stream_uid = BROADCAST) {
             increaseOutputDataCount();
             if_not(_stream_map.empty()) {
                 if (stream_uid == BROADCAST) { //TODO кривой код 13.01

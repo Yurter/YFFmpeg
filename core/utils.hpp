@@ -14,9 +14,9 @@ namespace fpp {
 
     public:
 
-        static UID          gen_uid();
-        static UID          gen_stream_uid(UID context_uid, UID stream_index);
-        static UID          get_context_uid(UID stream_uid);
+        static uid_t        gen_uid();
+        static uid_t        gen_stream_uid(uid_t context_uid, uid_t stream_index);
+        static uid_t        get_context_uid(uid_t stream_uid);
 
         static std::string  media_type_to_string(MediaType value);
         static std::string  pts_to_string(int64_t pts);

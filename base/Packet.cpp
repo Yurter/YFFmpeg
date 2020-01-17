@@ -81,8 +81,8 @@ namespace fpp {
         return _data.flags & AV_PKT_FLAG_KEY;
     }
 
-    uint64_t Packet::size() const {
-        return uint64_t(_data.size);
+    size_t Packet::size() const {
+        return size_t(_data.size);
     }
 
     std::string Packet::toString() const {

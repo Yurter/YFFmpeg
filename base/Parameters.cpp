@@ -65,12 +65,12 @@ namespace fpp {
         _duration = duration;
     }
 
-    void Parameters::setStreamIndex(UID stream_index) {
+    void Parameters::setStreamIndex(uid_t stream_index) {
         _stream_index = stream_index;
         setStreamUid(fpp::utils::gen_stream_uid(_context_uid, _stream_index));//TODO
     }
 
-    void Parameters::setStreamUid(UID value) {
+    void Parameters::setStreamUid(uid_t value) {
         _stream_uid = value;
     }
 
@@ -78,7 +78,7 @@ namespace fpp {
         _time_base = time_base;
     }
 
-    void Parameters::setContextUid(int64_t context_uid) {
+    void Parameters::setContextUid(uid_t context_uid) {
         if_not(invalid_int(_context_uid)) {
             log_warning("Cannot set context_uid again: " << context_uid << ", ignored");
             return;
@@ -99,10 +99,6 @@ namespace fpp {
         return _codec;
     }
 
-//    CodecType Parameters::codecType() const {
-//        return _codec_type;
-//    }
-
     int64_t Parameters::bitrate() const {
         return _bitrate;
     }
@@ -111,11 +107,11 @@ namespace fpp {
          return _duration;
     }
 
-    UID Parameters::streamIndex() const {
+    uid_t Parameters::streamIndex() const {
         return _stream_index;
     }
 
-    UID Parameters::streamUid() const {
+    uid_t Parameters::streamUid() const {
         return _stream_uid;
     }
 

@@ -14,7 +14,7 @@ namespace fpp {
     using ProcessorVector = std::vector<SharedProcessor>; //TODO не потокобезопасен
 
     using ProcessorList = AsyncList<SharedProcessor>;
-    using StreamMap = std::map<UID,ProcessorList>;
+    using StreamMap = std::map<uid_t,ProcessorList>;
 
     using InputData = std::variant<Packet,Frame>;
 
@@ -40,7 +40,7 @@ namespace fpp {
         void                setType(ProcessorType value);
         void                setOpened(bool opened);
 
-        Code                connectTo(UID stream_id, SharedProcessor other);
+        Code                connectTo(uid_t stream_id, SharedProcessor other);
         Code                disconnectFrom(const SharedProcessor other);
 
         virtual bool        equalTo(const SharedProcessor other) const;

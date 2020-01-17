@@ -83,7 +83,7 @@ namespace fpp {
         _opened = opened;
     }
 
-    Code fpp::Processor::connectTo(UID stream_id, SharedProcessor other) {
+    Code fpp::Processor::connectTo(uid_t stream_id, SharedProcessor other) {
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
         _stream_map[stream_id].push_back(other);
         log_debug("Connected " << stream_id << " stream to " << other->name());

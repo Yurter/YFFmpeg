@@ -20,7 +20,7 @@ namespace fpp {
 
         virtual ~Data() override = default;
 
-        virtual uint64_t    size() const { return 0; }
+        virtual size_t      size() const { return 0; }
 
         void                setRaw(Type data) { _data = data; }
         Type&               raw() { return _data; }

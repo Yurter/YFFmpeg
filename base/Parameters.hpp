@@ -29,17 +29,17 @@ namespace fpp {
         void                setCodec(AVCodec* codec);
         void                setBitrate(int64_t bitrate);
         void                setDuration(int64_t duration);
-        void                setStreamIndex(UID stream_index);
+        void                setStreamIndex(uid_t stream_index);
         void                setTimeBase(AVRational time_base);
-        void                setContextUid(int64_t context_uid);
+        void                setContextUid(uid_t context_uid);
 
         AVCodecID           codecId()       const;
         std::string         codecName()     const;
         AVCodec*            codec()         const;
         int64_t             bitrate()       const;
         int64_t             duration()      const;
-        UID                 streamIndex()   const;
-        UID                 streamUid()     const;
+        uid_t               streamIndex()   const;
+        uid_t               streamUid()     const;
         AVRational          timeBase()      const;
         int64_t             contextUid()    const;
 
@@ -54,7 +54,7 @@ namespace fpp {
 
     private:
 
-        void                setStreamUid(UID value);
+        void                setStreamUid(uid_t value);
         void                setCodecType(CodecType value);
 
     protected:
@@ -65,8 +65,8 @@ namespace fpp {
         ParamsType          _io_type;
         int64_t             _bitrate;
         int64_t             _duration;
-        UID                 _stream_index;
-        UID                 _stream_uid;
+        uid_t               _stream_index;
+        uid_t               _stream_uid;
         AVRational          _time_base;
         int64_t             _context_uid;
 

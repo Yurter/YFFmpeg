@@ -50,7 +50,7 @@ namespace fpp {
 
 
         SharedProcessor    findProcessor(int64_t uid);
-        SharedStream       findStream(UID uid);
+        SharedStream       findStream(uid_t uid);
         SharedStream       findBestInputStream(MediaType type);
 
 

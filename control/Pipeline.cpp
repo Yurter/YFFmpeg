@@ -254,7 +254,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    SharedStream Pipeline::findStream(UID uid) {
+    SharedStream Pipeline::findStream(uid_t uid) {
         SharedStream ret_stream;
         auto finder = [uid,&ret_stream](const auto& proc) {
             auto proc_streams = proc->streams();
