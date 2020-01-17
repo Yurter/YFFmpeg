@@ -86,14 +86,13 @@ namespace fpp {
             + "channels: " + std::to_string(channels());
     }
 
-    Code AudioParameters::completeFrom(const ParametersPointer other_params) {
+    void AudioParameters::completeFrom(const ParametersPointer other_params) {
+        Parameters::completeFrom(other_params);
         auto other_audio_parames = std::static_pointer_cast<const AudioParameters>(other_params);
-        if (not_inited_int(_sample_rate))           { setSampleRate(other_audio_parames->sampleRate());          }
-        if (not_inited_smp_fmt(_sample_format))     { setSampleFormat(other_audio_parames->sampleFormat());      }
-        if (not_inited_ch_layout(_channel_layout))  { setChannelLayout(other_audio_parames->channelLayout());    }
-        if (not_inited_int(_channels))              { setChannels(other_audio_parames->channels());              }
-        try_to(Parameters::completeFrom(other_params));
-        return Code::OK;
+        if (not_inited_int(sampleRate()))           { setSampleRate(other_audio_parames->sampleRate());         }
+        if (not_inited_smp_fmt(sampleFormat()))     { setSampleFormat(other_audio_parames->sampleFormat());     }
+        if (not_inited_ch_layout(channelLayout()))  { setChannelLayout(other_audio_parames->channelLayout());   }
+        if (not_inited_int(channels()))             { setChannels(other_audio_parames->channels());             }
     }
 
     void AudioParameters::parseStream(const AVStream* avstream) {

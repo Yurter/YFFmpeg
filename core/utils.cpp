@@ -66,15 +66,9 @@ namespace fpp {
     }
 
     bool utils::exit_code(Code value) {
-        if (value == Code::ERR)                 { return true; }
+        if (error_code(value))                  { return true; }
         if (value == Code::EXIT)                { return true; }
-        if (value == Code::EXCEPTION)           { return true; }
-        if (value == Code::NOT_INITED)          { return true; }
         if (value == Code::END_OF_FILE)         { return true; }
-        if (value == Code::FFMPEG_ERROR)        { return true; }
-        if (value == Code::INVALID_INPUT)       { return true; }
-        if (value == Code::NOT_IMPLEMENTED)     { return true; }
-        if (value == Code::INVALID_CALL_ORDER)  { return true; }
         return false;
     }
 
@@ -134,38 +128,6 @@ namespace fpp {
         }
         return false;
     }
-//    bool utils::compatible_with_pixel_format(AVCodec* codec, AVPixelFormat pixel_format) { //TODO не работает на неоткрытом кодеке (открывать и закрывать сразу?)
-//        if (codec->id != AV_CODEC_ID_H264) {
-//            static_log_warning("utils", "compatible_with_pixel_format doesn't work with " << avcodec_get_name(codec->id));
-//            return true;
-//        }
-//        AVPixelFormat h264_pxl_fmts[] = {
-//            AV_PIX_FMT_YUV420P
-//            , AV_PIX_FMT_YUVJ420P
-//            , AV_PIX_FMT_YUV422P
-//            , AV_PIX_FMT_YUVJ422P
-//            , AV_PIX_FMT_YUV444P
-//            , AV_PIX_FMT_YUVJ444P
-//            , AV_PIX_FMT_NV12
-//            , AV_PIX_FMT_NV16
-//            , AV_PIX_FMT_NV21
-//            , AV_PIX_FMT_YUV420P10LE
-//            , AV_PIX_FMT_YUV422P10LE
-//            , AV_PIX_FMT_YUV444P10LE
-//            , AV_PIX_FMT_NV20LE
-//            , AV_PIX_FMT_GRAY8
-//            , AV_PIX_FMT_GRAY10LE
-//            , AV_PIX_FMT_NONE
-//        };
-
-//        auto pix_fmt = h264_pxl_fmts;
-
-//        while (pix_fmt[0] != AV_PIX_FMT_NONE) {
-//            if (pix_fmt[0] == pixel_format) { return true; }
-//            pix_fmt++;
-//        }
-//        return false;
-//    }
 
     bool utils::compatible_with_sample_format(const AVCodec* codec, AVSampleFormat sample_format) {
         if (not_inited_ptr(codec->sample_fmts)) {
@@ -381,31 +343,6 @@ namespace fpp {
             break;
         }
     }
-
-//    VideoParameters* utils::default_video_parameters(AVCodecID codec_id) {
-//        auto video_params = new VideoParameters;
-//        video_params->setCodec(codec_id, CodecType::Encoder);
-//        video_params->setBitrate(400000); //TODO расчитывать
-//        video_params->setTimeBase(DEFAULT_TIME_BASE);
-//        video_params->setWidth(1920);
-//        video_params->setHeight(1080);
-//        video_params->setAspectRatio({ 16, 9 });
-//        video_params->setFrameRate({ 30, 1 });
-//        video_params->setPixelFormat(AV_PIX_FMT_YUV420P);
-//        return video_params;
-//    }
-
-//    AudioParameters* utils::default_audio_parameters(AVCodecID codec_id) {
-//        auto audio_params = new AudioParameters;
-//        audio_params->setCodec(codec_id, CodecType::Encoder);
-//        audio_params->setBitrate(192000); //TODO расчитывать
-//        audio_params->setTimeBase(DEFAULT_TIME_BASE);
-//        audio_params->setSampleRate(44100);
-//        audio_params->setSampleFormat(audio_params->codec()->sample_fmts[0]);
-//        audio_params->setChannels(2);
-//        audio_params->setChannelLayout(uint64_t(av_get_default_channel_layout(int(audio_params->channels()))));
-//        return audio_params;
-//    }
 
     Code utils::find_encoder_for(const ParametersPointer src_prm, ParametersPointer dst_prm) { //TODO return struct { codec + type }, убрать второй аргумент 14.01
         switch (src_prm->codecId()) {

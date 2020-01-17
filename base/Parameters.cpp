@@ -135,15 +135,10 @@ namespace fpp {
         + "tb " + utils::rational_to_string(timeBase());
     }
 
-    Code Parameters::completeFrom(const ParametersPointer other_params) {
-        if (not_inited_codec_id(_codec_id)) {
-//            try_to(utils::find_encoder_for(other_params, std::make_shared<Parameters>(this)));
-            try_to(utils::find_encoder_for(other_params, ParametersPointer(this)));
-        }
-
-        if (not_inited_int(_bitrate)) { setBitrate(other_params->bitrate());     }
-        if (not_inited_q(_time_base)) { setTimeBase(other_params->timeBase());   }
-        return Code::OK;
+    void Parameters::completeFrom(const ParametersPointer other_params) {
+        if (not_inited_codec_id(codecId())) { setCodec(other_params->codecId());        }
+        if (not_inited_int(bitrate()))      { setBitrate(other_params->bitrate());      }
+        if (not_inited_q(timeBase()))       { setTimeBase(other_params->timeBase());    }
     }
 
     void Parameters::parseStream(const AVStream* avstream) {

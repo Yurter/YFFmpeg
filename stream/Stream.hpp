@@ -7,17 +7,9 @@
 
 namespace fpp {
 
-//    enum class StreamType { //TODO crutch ? 16.01
-//        Output,
-//        Input,
-//    };
-
     class Stream;
     using SharedStream = std::shared_ptr<Stream>;
     using StreamVector = std::vector<SharedStream>;
-
-//    static SharedStream createInputStream();
-//    static SharedStream createOutputStream();
 
     class Stream : public Data<const AVStream*> {
 

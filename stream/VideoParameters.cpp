@@ -90,15 +90,14 @@ namespace fpp {
             + utils::pixel_format_to_string(pixelFormat());
     }
 
-    Code VideoParameters::completeFrom(const ParametersPointer other_params) {
+    void VideoParameters::completeFrom(const ParametersPointer other_params) {
+        Parameters::completeFrom(other_params);
         auto other_video_parames = std::static_pointer_cast<const VideoParameters>(other_params);
-        if (not_inited_int(_width))             { setWidth(other_video_parames->width());                }
-        if (not_inited_int(_height))            { setHeight(other_video_parames->height());              }
-        if (not_inited_q(_aspect_ratio))        { setAspectRatio(other_video_parames->aspectRatio());    }
-        if (not_inited_q(_frame_rate))          { setFrameRate(other_video_parames->frameRate());        }
-        if (not_inited_pix_fmt(_pixel_format))  { setPixelFormat(other_video_parames->pixelFormat());    }
-        try_to(Parameters::completeFrom(other_params));
-        return Code::OK;
+        if (not_inited_int(width()))            { setWidth(other_video_parames->width());               }
+        if (not_inited_int(height()))           { setHeight(other_video_parames->height());             }
+        if (not_inited_q(aspectRatio()))        { setAspectRatio(other_video_parames->aspectRatio());   }
+        if (not_inited_q(frameRate()))          { setFrameRate(other_video_parames->frameRate());       }
+        if (not_inited_pix_fmt(pixelFormat()))  { setPixelFormat(other_video_parames->pixelFormat());   }
     }
 
     void VideoParameters::parseStream(const AVStream* avstream) {

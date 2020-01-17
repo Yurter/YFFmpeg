@@ -59,6 +59,11 @@ namespace fpp {
         /* ---- R E F A C T O R I N G ---- */
 
 
+
+        static SharedStream createInputStream();
+        static SharedStream createOutputStream();
+
+
         static AVMediaType  mediatype_to_avmediatype(MediaType media_type);
         static MediaType    avmt_to_mt(AVMediaType avmedia_type);
         static std::string  guess_format_short_name(std::string media_resurs_locator);
@@ -70,9 +75,6 @@ namespace fpp {
         static void         parameters_to_context(const ParametersPointer params, AVCodecContext* codec_context); //TODO перенести внутрь кодекконтекста 17.01
         static void         parameters_to_avcodecpar(const ParametersPointer params, AVCodecParameters* codecpar);
         static void         parameters_from_avcodecpar(Parameters* parametres, AVCodecParameters* codecpar);
-
-//        static VideoParameters*    default_video_parameters(AVCodecID codec_id);
-//        static AudioParameters*    default_audio_parameters(AVCodecID codec_id);
 
         static Code         find_encoder_for(const ParametersPointer src_prm, ParametersPointer dst_prm);
 
@@ -133,7 +135,7 @@ namespace fpp {
 #define FPP_END } while (false)
 
 /* Макрос получения экзмепляра объекта класса Logger */
-#define logger fpp::Logger::instance("fpp_log")
+#define logger fpp::Logger::instance()
 
 /* Макрос установки дирректории, в которой находятся файлы лога.
  * Должен вызыватся первым по отношению к остальным макросам    */

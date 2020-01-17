@@ -24,9 +24,11 @@ namespace fpp {
             StreamVector stream_list;
             /* Video */
             auto video_params = std::make_shared<VideoParameters>(ParamsType::Output);
-            video_params->setCodec("libx264");
+//            video_params->setCodec("libx264");
+            video_params->setCodec(AVCodecID::AV_CODEC_ID_H264);
             video_params->setGopSize(2);
             video_params->setTimeBase(DEFAULT_TIME_BASE);
+            video_params->setWidth(100);
             stream_list.push_back(createStream(video_params));
             /* Audio */
 //            auto audio_params = std::make_shared<AudioParameters>(ParamsType::Output);
