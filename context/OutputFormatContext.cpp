@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    OutputFormatContext::OutputFormatContext(const std::string& mrl, StreamSetter stream_setter, IOPreset preset)
-        : FormatContext { mrl, stream_setter, preset }
+    OutputFormatContext::OutputFormatContext(const std::string& mrl, IOPreset preset)
+        : FormatContext { mrl, preset }
         , _output_format { nullptr } {
         setName("OutFmtCtx");
     }
@@ -34,7 +34,7 @@ namespace fpp {
 //            audio_params->setTimeBase(DEFAULT_TIME_BASE);
 //            audio_params->setSampleRate(DEFAULT_SAMPLE_RATE);
 //            stream_list.push_back(createStream(audio_params));
-            try_to(registerStreams(stream_list));
+            setStreams(stream_list);
             break;
         }
         case IOPreset::YouTube: {
@@ -75,6 +75,7 @@ namespace fpp {
             video_parameters->setTimeBase(DEFAULT_TIME_BASE);
 			video_parameters->setGopSize(2);
             stream_list.push_back(createStream(video_parameters));
+            setStreams(stream_list);
             break;
         }
 //        case IOPreset::OpenCV: {

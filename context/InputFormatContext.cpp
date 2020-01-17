@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    InputFormatContext::InputFormatContext(const std::string& mrl, StreamSetter stream_setter, IOPreset preset)
-        : FormatContext { mrl, stream_setter, preset }
+    InputFormatContext::InputFormatContext(const std::string& mrl, IOPreset preset)
+        : FormatContext { mrl, preset }
         , _input_format { nullptr } {
         setName("InpFmtCtx");
     }
@@ -36,6 +36,7 @@ namespace fpp {
     }
 
     Code InputFormatContext::seek(int64_t stream_index, int64_t timestamp, SeekPrecision seek_precision) {
+        //TODO написать проверку на случай совпадения текущей метки и запрашиваемой 17.01
 //        return_if(timestamp == av_rescale_q(stream(stream_index)->params->duration(), stream(stream_index)->params->timeBase(), DEFAULT_TIME_BASE), Code::OK); //TODO кривой код
         int flags = 0;
         switch (seek_precision) {
@@ -95,9 +96,6 @@ namespace fpp {
             guessInputFromat();
         }
         return_if(mediaResourceLocator().empty(), Code::INVALID_INPUT);
-//        for (auto&& avstream : streams()) { //TODO роверить необходимость инициализации 15.01
-//            try_to(avstream->init());
-//        }
         if (avformat_open_input(mediaFormatContext2(), mediaResourceLocator().c_str(), _input_format, nullptr) < 0) {
             log_error("Failed to open input context.");
             return Code::INVALID_INPUT;
@@ -107,8 +105,7 @@ namespace fpp {
             return Code::ERR;
         }
         {
-            auto input_streams = parseFormatContext();
-            try_to(registerStreams(input_streams));
+            setStreams(parseFormatContext());
             return Code::OK;
         }
     }

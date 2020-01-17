@@ -4,15 +4,13 @@ namespace fpp {
 
     CustomPacketSource::CustomPacketSource(std::string source_name
                                            , StreamVector streams
-                                           , std::function<Code(Packet&)> read_func
-                                           , std::function<Code(Packet&)> process_func) :
-        _source_name(source_name)
-      , _read_func(read_func)
-      , _process_func(process_func)
-    {
-//        setName("CustomPacketSource");
+                                           , ReadFunction read_func
+                                           , ProcessFunction process_func)
+        : _source_name(source_name)
+        , _read_func(read_func)
+        , _process_func(process_func) {
         setName("CsPktSource");
-        try_throw(setStreams(streams));
+        setStreams(streams);
     }
 
     CustomPacketSource::~CustomPacketSource() {

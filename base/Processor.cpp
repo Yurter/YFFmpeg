@@ -66,15 +66,13 @@ namespace fpp {
         }
     }
 
-    Code Processor::setStreams(StreamVector streams) {
-        return_if_not(_streams.empty(), Code::INVALID_CALL_ORDER); //TODO нужна ли эта проверка? 15.01
+    void Processor::setStreams(StreamVector streams) {
         _streams = streams;
         std::for_each(_streams.begin(), _streams.end()
             , [this_context_uid = uid()](auto& stream) {
             stream->params->setContextUid(this_context_uid);
             try_throw_static(stream->init());
         });
-        return Code::OK;
     }
 
     void Processor::setType(ProcessorType value) {

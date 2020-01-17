@@ -7,7 +7,7 @@ namespace fpp {
 
     public:
 
-        OutputFormatContext(const std::string& mrl, StreamSetter stream_setter, IOPreset preset = IOPreset::Auto);
+        OutputFormatContext(const std::string& mrl, IOPreset preset = IOPreset::Auto);
         virtual ~OutputFormatContext() override;
 
         virtual Code        init()           override;

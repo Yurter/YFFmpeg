@@ -9,8 +9,8 @@ namespace fpp {
 
         CustomPacketSink(std::string sink_name
                            , StreamVector streams
-                           , std::function<Code(Packet&)> write_func
-                           , std::function<Code(Packet&)> process_func);
+                           , WriteFunction write_func
+                           , ProcessFunction process_func);
         virtual ~CustomPacketSink() override;
 
         virtual Code        init() override;

@@ -30,7 +30,7 @@ namespace fpp {
         : Stream(nullptr, params) {
     }
 
-    Code Stream::init() {
+    Code Stream::init() { //TODO продумать инициализацию ффмпег потока из параметров по типу completeFrom метода 17.01
 //        return_if(inited(), Code::OK);
         if (inited_ptr(raw())) {
             /* Иницаиализация полей параметров кодека дефолтными значениями */

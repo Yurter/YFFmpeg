@@ -9,13 +9,11 @@ namespace fpp {
         Interleaved,
     };
 
-    using StreamSetter = std::function<Code(const StreamVector&)>;
-
     class FormatContext : public Object {
 
     public:
 
-        FormatContext(const std::string& mrl, StreamSetter stream_setter, IOPreset preset = IOPreset::Auto); ///< mrl - media resource locator.
+        FormatContext(const std::string& mrl, IOPreset preset = IOPreset::Auto); ///< mrl - media resource locator.
         FormatContext(const FormatContext& other)  = delete;
         virtual ~FormatContext() override;
 
@@ -32,7 +30,9 @@ namespace fpp {
 
         AVFormatContext**   mediaFormatContext2(); // TODO 14.01
 
-        AVStream*           stream(int64_t index);          ///< Функция возвращает указатель на поток с заданным индексом; nullptr, если невалидный индекс.
+        void                setStreams(StreamVector stream_list);
+        StreamVector        streams();
+        const AVStream*     stream(int64_t index);          ///< Функция возвращает указатель на поток с заданным индексом; nullptr, если невалидный индекс.
         int64_t             numberStream()  const;          ///< Функция возвращает количество потоков в текущем котексте.
         AVInputFormat*      inputFormat()   const;          ///< Функция ...
         AVOutputFormat*     outputFormat()  const;          ///< Функция ...
@@ -59,8 +59,6 @@ namespace fpp {
         virtual Code        openContext()   = 0;
         virtual Code        closeContext()  = 0;
 
-        Code                registerStreams(StreamVector stream_list); //TODO костыль? 15.01
-
         Code                setMediaFormatContext(AVFormatContext* value);
 
     private:
@@ -79,7 +77,6 @@ namespace fpp {
         StreamVector        _streams;
         int64_t             _artificial_delay;
         Interrupter         _current_interrupter;
-        StreamSetter        _stream_setter;
 
     };
 

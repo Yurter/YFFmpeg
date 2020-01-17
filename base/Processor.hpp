@@ -35,7 +35,7 @@ namespace fpp {
         StreamPointer       stream(int64_t index)       const;
         StreamPointer       bestStream(MediaType type)  const;
 
-        Code                setStreams(StreamVector streams);
+        void                setStreams(StreamVector streams);
         void                setType(ProcessorType value);
         void                setOpened(bool opened);
 

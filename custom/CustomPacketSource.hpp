@@ -9,8 +9,8 @@ namespace fpp {
 
         CustomPacketSource(std::string source_name
                            , StreamVector streams
-                           , std::function<Code(Packet&)> read_func
-                           , std::function<Code(Packet&)> process_func);
+                           , ReadFunction read_func
+                           , ProcessFunction process_func);
         virtual ~CustomPacketSource() override;
 
         virtual Code        init() override;

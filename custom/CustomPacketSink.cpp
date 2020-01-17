@@ -4,15 +4,13 @@ namespace fpp {
 
     CustomPacketSink::CustomPacketSink(std::string sink_name
                                        , StreamVector streams
-                                       , std::function<Code(Packet&)> write_func
-                                       , std::function<Code(Packet&)> process_func) :
-        _sink_name(sink_name)
-      , _write_func(write_func)
-      , _process_func(process_func)
-    {
-//        setName("CustomPacketSink");
+                                       , WriteFunction write_func
+                                       , ProcessFunction process_func)
+        : _sink_name(sink_name)
+        , _write_func(write_func)
+        , _process_func(process_func) {
         setName("CustPktSink");
-        try_throw(setStreams(streams));
+        setStreams(streams);
     }
 
     CustomPacketSink::~CustomPacketSink() {
