@@ -108,7 +108,7 @@ namespace fpp {
         return_if(closed(), Code::OK);
         auto todo_ptr = formatContext().get();
         avformat_close_input(&todo_ptr);
-        formatContext().reset();
+//        formatContext().reset();
         return Code::OK;
     }
 

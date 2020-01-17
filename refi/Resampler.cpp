@@ -2,16 +2,15 @@
 
 namespace fpp {
 
-    Resampler::Resampler(IOParams params) :
-        params(params)
-      , _resampler_context(nullptr)
-    {
+    Resampler::Resampler(IOParams params)
+        : params(params)
+        , _resampler_context(nullptr) {
         setName("Resampler");
     }
 
     Resampler::~Resampler() {
         if (_resampler_context != nullptr) {
-            swr_free(&_resampler_context);
+//            swr_free(&_resampler_context);
         }
     }
 
@@ -25,23 +24,37 @@ namespace fpp {
         auto in_param = dynamic_cast<const AudioParameters * const>(params.in.get());
         auto out_param = dynamic_cast<const AudioParameters * const>(params.out.get());
 
-        _resampler_context = swr_alloc_set_opts(
-            nullptr,
-            av_get_default_channel_layout(int(out_param->channels())),
-            out_param->sampleFormat(),
-            int(out_param->sampleRate()),
-            av_get_default_channel_layout(int(in_param->channels())),
-            in_param->sampleFormat(),
-            int(in_param->sampleRate()),
-            0, nullptr
-        );
+        _resampler_context = SharedSwrContext {
+                swr_alloc_set_opts(
+                            nullptr,
+                            av_get_default_channel_layout(int(out_param->channels())),
+                            out_param->sampleFormat(),
+                            int(out_param->sampleRate()),
+                            av_get_default_channel_layout(int(in_param->channels())),
+                            in_param->sampleFormat(),
+                            int(in_param->sampleRate()),
+                            0, nullptr
+                        )
+                , [](SwrContext*& ctx) { swr_free(&ctx); }
+        };
+
+//        _resampler_context = swr_alloc_set_opts(
+//            nullptr,
+//            av_get_default_channel_layout(int(out_param->channels())),
+//            out_param->sampleFormat(),
+//            int(out_param->sampleRate()),
+//            av_get_default_channel_layout(int(in_param->channels())),
+//            in_param->sampleFormat(),
+//            int(in_param->sampleRate()),
+//            0, nullptr
+//        );
         if (_resampler_context == nullptr) {
             log_error("Could not allocate resampler context");
             return Code::ERR;
         }
-        if (swr_init(_resampler_context) < 0) {
+        if (swr_init(_resampler_context.get()) < 0) {
             log_error("Could not open resample context");
-            swr_free(&_resampler_context);
+//            swr_free(&_resampler_context); ??TODO !!!
             return Code::ERR;
         }
         setInited(true);
@@ -59,7 +72,7 @@ namespace fpp {
     }
 
     Code Resampler::processInputData(Frame input_data) {
-        if (swr_convert_frame(_resampler_context, nullptr, &input_data.raw()) != 0) {
+        if (swr_convert_frame(_resampler_context.get(), nullptr, &input_data.raw()) != 0) {
             log_error("swr_convert_frame failed");
             return Code::ERR;
         }
@@ -74,7 +87,7 @@ namespace fpp {
                 log_error("configChanged failed");
                 return Code::ERR;
             }
-            if (swr_convert_frame(_resampler_context, &resampled_frame.raw(), nullptr) != 0) {
+            if (swr_convert_frame(_resampler_context.get(), &resampled_frame.raw(), nullptr) != 0) {
                 log_error("swr_convert_frame failed");
                 return Code::ERR;
             }
@@ -84,7 +97,7 @@ namespace fpp {
 
 //            log_warning("RESAMPLED: " << resampled_frame);
             try_to(sendOutputData(resampled_frame));
-        } while (swr_get_out_samples(_resampler_context, 0) >= audio_params->frameSize());
+        } while (swr_get_out_samples(_resampler_context.get(), 0) >= audio_params->frameSize());
 
         return Code::OK;
     }

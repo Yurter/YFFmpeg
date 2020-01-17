@@ -26,7 +26,7 @@ namespace fpp {
 
     protected:
 
-        SwrContext*         _resampler_context; //TODO убрать голый указатель 15.01
+        SharedSwrContext    _resampler_context;
 
     };
 
