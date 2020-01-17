@@ -3,6 +3,9 @@
 
 namespace fpp {
 
+    class AudioParameters;
+    using SharedAudioParameters = std::shared_ptr<AudioParameters>;
+
     class AudioParameters : public Parameters {
 
     public:

@@ -156,7 +156,7 @@ namespace fpp {
         avstream->time_base = timeBase();
     }
 
-    bool Parameters::betterThen(const ParametersPointer& other) {
+    bool Parameters::betterThen(const SharedParameters& other) {
         return this->bitrate() > other->bitrate();
     }
 

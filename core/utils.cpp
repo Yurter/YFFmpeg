@@ -224,7 +224,7 @@ namespace fpp {
         return avcodec_find_encoder(codec_id);
     }
 
-    ParametersPointer utils::createParams(MediaType type, ParamsType par_type) {
+    SharedParameters utils::createParams(MediaType type, ParamsType par_type) {
         switch (type) {
         case MediaType::Video:
             return std::make_shared<VideoParameters>(par_type);
@@ -243,7 +243,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    void utils::parameters_to_context(const ParametersPointer params, AVCodecContext* codec_context) {
+    void utils::parameters_to_context(const SharedParameters params, AVCodecContext* codec_context) {
         codec_context->codec_id = params->codecId();
         codec_context->bit_rate = params->bitrate();
 //        codec->time_base = param->timeBase();
@@ -290,7 +290,7 @@ namespace fpp {
     }
 
     //TODO
-    void utils::parameters_to_avcodecpar(const ParametersPointer params, AVCodecParameters* codecpar) {
+    void utils::parameters_to_avcodecpar(const SharedParameters params, AVCodecParameters* codecpar) {
         codecpar->codec_id = params->codecId();
         codecpar->bit_rate = params->bitrate();
 

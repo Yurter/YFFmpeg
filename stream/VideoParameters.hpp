@@ -3,6 +3,9 @@
 
 namespace fpp {
 
+    class VideoParameters;
+    using SharedVideoParameters = std::shared_ptr<VideoParameters>;
+
     class VideoParameters : public Parameters {
 
     public:
