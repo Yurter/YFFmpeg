@@ -344,19 +344,6 @@ namespace fpp {
         }
     }
 
-    Code utils::find_encoder_for(const ParametersPointer src_prm, ParametersPointer dst_prm) { //TODO return struct { codec + type }, убрать второй аргумент 14.01
-        switch (src_prm->codecId()) {
-        case AVCodecID::AV_CODEC_ID_H264:
-            dst_prm->setCodec("libx264");
-            return Code::OK;
-        default: //TODO возможны случаи с несимметричными названиями кодера и энкодера как у h264
-            dst_prm->setCodec(src_prm->codecName());
-            return Code::OK;
-//        default:
-//            return Code::INVALID_INPUT;
-        }
-    }
-
     MediaType utils::antitype(const MediaType value) {
         switch (value) {
         case MediaType::Video:
@@ -385,11 +372,9 @@ namespace fpp {
                                << in->height() << " != " << out->height());
             return true;
         }
-        //TODO заставляет транскодить h264 из-за несовападения YUV420P и YUVJ420P
         if (in->pixelFormat() != out->pixelFormat()) {
             static_log_warning("utils", "Rescaling required: pixel format mismatch "
-                               << av_get_pix_fmt_name(in->pixelFormat()) << " != "
-                               << av_get_pix_fmt_name(out->pixelFormat()));
+                               << in->pixelFormat() << " != " << out->pixelFormat());
             return true;
         }
 

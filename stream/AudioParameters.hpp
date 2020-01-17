@@ -24,9 +24,9 @@ namespace fpp {
 
         std::string         toString() const override;
 
-        virtual void        completeFrom(const ParametersPointer other_params)  override;
+        virtual void        completeFrom(const SharedParameters other_params)   override;
         virtual void        parseStream(const AVStream* avstream)               override;
-        virtual bool        betterThen(const ParametersPointer& other)          override;
+        virtual bool        betterThen(const SharedParameters& other)           override;
 
     private:
 

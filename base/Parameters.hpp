@@ -6,8 +6,8 @@ namespace fpp {
 //    using Parameters = std::shared_ptr<_Parameters>; //TODO
 
     class Parameters;
-    using ParametersPointer = std::shared_ptr<Parameters>;
-    using IOParams = struct { ParametersPointer in; ParametersPointer out; };
+    using SharedParameters = std::shared_ptr<Parameters>;
+    using IOParams = struct { SharedParameters in; SharedParameters out; };
 
     enum ParamsType { //TODO rename 16.01
         Input,
@@ -47,10 +47,10 @@ namespace fpp {
 
         virtual std::string toString() const override;
 
-        virtual void        completeFrom(const ParametersPointer other_params);
+        virtual void        completeFrom(const SharedParameters other_params);
         virtual void        parseStream(const AVStream* avstream);
         virtual void        initStream(AVStream* avstream) const;
-        virtual bool        betterThen(const ParametersPointer& other);
+        virtual bool        betterThen(const SharedParameters& other);
 
     private:
 

@@ -182,7 +182,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    SharedStream OutputFormatContext::createStream(ParametersPointer params) {
+    SharedStream OutputFormatContext::createStream(SharedParameters params) {
         auto avstream = avformat_new_stream(formatContext().get(), params->codec()); //TODO все где get() перенести в методы форматконтекста 17.01
         params->setStreamIndex(avstream->index);
         return std::make_shared<Stream>(avstream, params);

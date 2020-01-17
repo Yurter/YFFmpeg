@@ -16,9 +16,9 @@ namespace fpp {
 
     public:
 
-        Stream(const AVStream* avstream, ParametersPointer parameters);
+        Stream(const AVStream* avstream, SharedParameters parameters);
         Stream(const AVStream* avstream, ParamsType type);   // Создание реального потока
-        Stream(ParametersPointer params);   // Создание виртуального потока
+        Stream(SharedParameters params);   // Создание виртуального потока
         Stream(const Stream& other)  = delete;
         virtual ~Stream() override = default;
 
@@ -45,7 +45,7 @@ namespace fpp {
 
     public:
 
-        ParametersPointer   params;
+        SharedParameters    params;
 
     protected:
 

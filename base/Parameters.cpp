@@ -135,7 +135,7 @@ namespace fpp {
         + "tb " + utils::rational_to_string(timeBase());
     }
 
-    void Parameters::completeFrom(const ParametersPointer other_params) {
+    void Parameters::completeFrom(const SharedParameters other_params) {
         if (not_inited_codec_id(codecId())) { setCodec(other_params->codecId());        }
         if (not_inited_int(bitrate()))      { setBitrate(other_params->bitrate());      }
         if (not_inited_q(timeBase()))       { setTimeBase(other_params->timeBase());    }

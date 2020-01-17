@@ -90,7 +90,7 @@ namespace fpp {
             + utils::pixel_format_to_string(pixelFormat());
     }
 
-    void VideoParameters::completeFrom(const ParametersPointer other_params) {
+    void VideoParameters::completeFrom(const SharedParameters other_params) {
         Parameters::completeFrom(other_params);
         auto other_video_parames = std::static_pointer_cast<const VideoParameters>(other_params);
         if (not_inited_int(width()))            { setWidth(other_video_parames->width());               }
@@ -117,7 +117,7 @@ namespace fpp {
         avstream->avg_frame_rate = frameRate();
     }
 
-    bool VideoParameters::betterThen(const ParametersPointer& other) {
+    bool VideoParameters::betterThen(const SharedParameters& other) {
         auto other_vparams = std::static_pointer_cast<const VideoParameters>(other);
         auto this_picture_size = width() * height();
         auto other_picture_size = other_vparams->width() * other_vparams->height();

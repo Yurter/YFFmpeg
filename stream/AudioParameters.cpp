@@ -86,7 +86,7 @@ namespace fpp {
             + "channels: " + std::to_string(channels());
     }
 
-    void AudioParameters::completeFrom(const ParametersPointer other_params) {
+    void AudioParameters::completeFrom(const SharedParameters other_params) {
         Parameters::completeFrom(other_params);
         auto other_audio_parames = std::static_pointer_cast<const AudioParameters>(other_params);
         if (not_inited_int(sampleRate()))           { setSampleRate(other_audio_parames->sampleRate());         }
@@ -104,7 +104,7 @@ namespace fpp {
         setFrameSize(avstream->codecpar->frame_size);
     }
 
-    bool AudioParameters::betterThen(const ParametersPointer& other) {
+    bool AudioParameters::betterThen(const SharedParameters& other) {
         auto other_aparams = std::static_pointer_cast<const AudioParameters>(other);
         auto this_sound_quality = sampleRate() * channels();
         auto other_sound_quality = other_aparams->sampleRate() * other_aparams->channels();

@@ -69,14 +69,12 @@ namespace fpp {
         static std::string  guess_format_short_name(std::string media_resurs_locator);
 
 
-        static ParametersPointer createParams(MediaType type, ParamsType par_type);
+        static SharedParameters createParams(MediaType type, ParamsType par_type);
 
         static Code         init_codecpar(AVCodecParameters* codecpar, AVCodec* codec);
-        static void         parameters_to_context(const ParametersPointer params, AVCodecContext* codec_context); //TODO перенести внутрь кодекконтекста 17.01
-        static void         parameters_to_avcodecpar(const ParametersPointer params, AVCodecParameters* codecpar);
+        static void         parameters_to_context(const SharedParameters params, AVCodecContext* codec_context); //TODO перенести внутрь кодекконтекста 17.01
+        static void         parameters_to_avcodecpar(const SharedParameters params, AVCodecParameters* codecpar);
         static void         parameters_from_avcodecpar(Parameters* parametres, AVCodecParameters* codecpar);
-
-        static Code         find_encoder_for(const ParametersPointer src_prm, ParametersPointer dst_prm);
 
         static MediaType    antitype(const MediaType value);
 

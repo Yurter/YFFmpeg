@@ -3,7 +3,7 @@
 
 namespace fpp {
 
-    Stream::Stream(const AVStream* avstream, ParametersPointer parameters)
+    Stream::Stream(const AVStream* avstream, SharedParameters parameters)
         : Data(avstream, parameters->type())
         , params { parameters }
         , _used { false }
@@ -26,7 +26,7 @@ namespace fpp {
         params->parseStream(avstream);
     }
 
-    Stream::Stream(ParametersPointer params)
+    Stream::Stream(SharedParameters params)
         : Stream(nullptr, params) {
     }
 
