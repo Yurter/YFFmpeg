@@ -22,6 +22,4 @@ namespace fpp {
 
     };
 
-    using EncoderContextList = std::list<EncoderContext*>;
-
 } // namespace fpp

@@ -2,16 +2,9 @@
 
 namespace fpp {
 
-    EncoderContext::EncoderContext(const IOParams params) :
-        CodecContext(params, CodecType::Encoder)
-    {
-//        setName("EncoderContext");
-//        setName("EnContext");
-        setName("EnCtx");
-    //[warn][14:54:00][EncoderContext libmp]
-    //[warn][14:54:30][Enc libmp3lame      ]
-        //            [EncCtx libmp3lame   ]
-        //            [EContext libmp3lame ]
+    EncoderContext::EncoderContext(const IOParams params)
+        : CodecContext(params, CodecType::Encoder) {
+        setName("EncCtx");
     }
 
     EncoderContext::~EncoderContext() {
@@ -24,14 +17,14 @@ namespace fpp {
 //        log_error("$$ input_frame: " << input_frame);
         log_trace("Frame for encoding: " << input_frame);
         int ret;
-        if ((ret = avcodec_send_frame(_codec_context, &input_frame.raw())) != 0) {
+        if ((ret = avcodec_send_frame(_codec_context.get(), &input_frame.raw())) != 0) {
             log_error(input_frame);
             log_error("Pxl_fmt: " << input_frame.raw().format << " cc: " << _codec_context->pix_fmt);
             log_error("Could not send frame " << ret);
             return Code::ERR;
         }
 //        input_frame.free(); //memfix
-        if ((ret = avcodec_receive_packet(_codec_context, &output_packet.raw())) != 0) {
+        if ((ret = avcodec_receive_packet(_codec_context.get(), &output_packet.raw())) != 0) {
 //            log_warning("avcodec_receive_packet failed");
             return Code::AGAIN;
         }
@@ -46,7 +39,7 @@ namespace fpp {
     }
 
     Code EncoderContext::initParams() {
-        utils::parameters_to_context(params.out, _codec_context);
+        utils::parameters_to_context(params.out, _codec_context.get());
         _codec_context->time_base = params.in->timeBase(); //TODO костыль
         return Code::OK;
     }
@@ -54,10 +47,10 @@ namespace fpp {
     Code EncoderContext::flush(Object *data) {
         return Code::OK;
         log_error("FLUSH");
-        while (avcodec_send_frame(_codec_context, nullptr) != 0) {
+        while (avcodec_send_frame(_codec_context.get(), nullptr) != 0) {
             Packet output_packet;
 //            try_to(output_packet.init());
-            while (avcodec_receive_packet(_codec_context, &output_packet.raw()) != 0) {
+            while (avcodec_receive_packet(_codec_context.get(), &output_packet.raw()) != 0) {
                 log_error("Flushed success");
             }
         }
@@ -70,12 +63,12 @@ namespace fpp {
         auto op = opened();
 //        log_trace("Frame for encoding: " << input_frame);
         int ret;
-        if ((ret = avcodec_send_frame(_codec_context, nullptr)) != 0) {
+        if ((ret = avcodec_send_frame(_codec_context.get(), nullptr)) != 0) {
             log_error("failed to flush encoder " << ret);
             return Code::ERR;
         }
 //        input_frame.free(); //memfix
-        if ((ret = avcodec_receive_packet(_codec_context, &output_packet.raw())) != 0) {
+        if ((ret = avcodec_receive_packet(_codec_context.get(), &output_packet.raw())) != 0) {
 //            log_warning("avcodec_receive_packet failed");
             return Code::AGAIN;
         }

@@ -30,7 +30,10 @@ namespace fpp {
         }
         return_if(not_inited_ptr(codec), Code::INVALID_INPUT);
         {
-            _codec_context = avcodec_alloc_context3(codec);
+            _codec_context.reset(
+                avcodec_alloc_context3(codec)
+                , [](AVCodecContext*& codec_context) { avcodec_free_context(&codec_context); }
+            );
             setName(name() + " " + codec->name);
         }
         if (not_inited_ptr(_codec_context)) {
@@ -43,7 +46,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code CodecContext::onOpen() {
+    Code CodecContext::onOpen() { //TODO убрть? 17.01
         return Code::OK;
     }
 
@@ -61,8 +64,8 @@ namespace fpp {
         default:
             codec = nullptr;
         }
-        if (int ret = avcodec_open2(_codec_context, codec, nullptr); ret != 0) {
-            std::string codec_type = av_codec_is_decoder(codec) ? "decoder" : "encoder";
+        if (int ret = avcodec_open2(_codec_context.get(), codec, nullptr); ret != 0) {
+            const std::string codec_type = av_codec_is_decoder(codec) ? "decoder" : "encoder";
             log_error("Cannot open codec: " << ret << ", "<< codec->name << ", " << codec_type);
             return Code::ERR;
         }
@@ -75,8 +78,7 @@ namespace fpp {
         return_if(closed(), Code::OK);
         log_debug("Closing");
         if (inited_ptr(_codec_context)) {
-            // использовать ? avcodec_free_context(_codec_context)
-            avcodec_close(_codec_context);
+            avcodec_close(_codec_context.get());
         }
         setOpened(false);
         return Code::OK;
@@ -98,7 +100,7 @@ namespace fpp {
         return str;
     }
 
-    AVCodecContext* CodecContext::codecContext() {
+    SharedCodecContext CodecContext::codecContext() {
         return _codec_context;
     }
 

@@ -4,6 +4,8 @@
 
 namespace fpp {
 
+    using SharedCodecContext = std::shared_ptr<AVCodecContext>;
+
     class CodecContext : public Object {
 
     public:
@@ -24,7 +26,7 @@ namespace fpp {
 
         std::string         toString() const override final;
 
-        AVCodecContext*     codecContext();
+        SharedCodecContext  codecContext();
 
         const IOParams      params;
 
@@ -34,7 +36,10 @@ namespace fpp {
 
     protected:
 
-        AVCodecContext*     _codec_context; //TODO убрать голый указатель 15.01
+        SharedCodecContext  _codec_context;
+
+    private:
+
         CodecType           _type;
         bool                _opened;
 

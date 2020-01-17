@@ -67,7 +67,7 @@ namespace fpp {
         static ParametersPointer createParams(MediaType type, ParamsType par_type);
 
         static Code         init_codecpar(AVCodecParameters* codecpar, AVCodec* codec);
-        static void         parameters_to_context(const ParametersPointer params, AVCodecContext* codec_context);
+        static void         parameters_to_context(const ParametersPointer params, AVCodecContext* codec_context); //TODO перенести внутрь кодекконтекста 17.01
         static void         parameters_to_avcodecpar(const ParametersPointer params, AVCodecParameters* codecpar);
         static void         parameters_from_avcodecpar(Parameters* parametres, AVCodecParameters* codecpar);
 

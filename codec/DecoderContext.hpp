@@ -21,6 +21,4 @@ namespace fpp {
 
     };
 
-    using DecoderContextList = std::list<DecoderContext*>;
-
 } // namespace fpp
