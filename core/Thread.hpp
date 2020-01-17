@@ -21,9 +21,8 @@ namespace fpp {
 
         Code                start();
         Code                stop();
-        Code                quit();
         bool                running() const;
-        void                join() const;
+        void                join();
 
         Code                exitCode()      const;
         std::string         exitMessage()   const;
@@ -31,8 +30,8 @@ namespace fpp {
     protected:
 
         virtual Code        run();
-        virtual Code        onStart();  //вызывается из потока перед основным циклом
-        virtual Code        onStop();   //Должен гарантированно вызыватся после остановки потока
+        virtual Code        onStart();
+        virtual Code        onStop();
 
     private:
 

@@ -350,7 +350,7 @@ int main() {
 //    }
 
     {
-//        set_log_level(LogLevel::Error);
+        set_log_level(LogLevel::Debug);
         write_video_from_camera();
         return 0;
     }

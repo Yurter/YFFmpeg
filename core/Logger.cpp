@@ -86,7 +86,7 @@ namespace fpp {
         const bool debug_type = log_level >= LogLevel::Debug;
         const bool trace_type = log_level >= LogLevel::Trace;
 
-        const size_t max_name_length = debug_type ? 11 : 15;
+        const size_t max_name_length = 15;
 
         caller_name.resize(max_name_length, ' ');
 
