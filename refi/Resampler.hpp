@@ -3,6 +3,8 @@
 
 namespace fpp {
 
+    using SharedSwrContext = std::shared_ptr<SwrContext>;
+
     class Resampler : public FrameProcessor {
 
     public:

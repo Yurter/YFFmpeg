@@ -3,6 +3,8 @@
 
 namespace fpp {
 
+    using SharedSwsContext = std::shared_ptr<SwsContext>;
+
     class Rescaler : public FrameProcessor { //TODO определиться: фильтровать по выходным параметрам или входным, или настраивать?
 
     public:
@@ -24,7 +26,7 @@ namespace fpp {
 
     private:
 
-        SwsContext*         _rescaler_context; //TODO убрать голый указатель 15.01
+        SharedSwsContext    _rescaler_context;
 
     };
 
