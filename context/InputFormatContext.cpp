@@ -31,10 +31,6 @@ namespace fpp {
         return Code::OK;
     }
 
-    std::string InputFormatContext::toString() const {
-        return "TODO";
-    }
-
     Code InputFormatContext::seek(int64_t stream_index, int64_t timestamp, SeekPrecision seek_precision) {
         //TODO написать проверку на случай совпадения текущей метки и запрашиваемой 17.01
 //        return_if(timestamp == av_rescale_q(stream(stream_index)->params->duration(), stream(stream_index)->params->timeBase(), DEFAULT_TIME_BASE), Code::OK); //TODO кривой код

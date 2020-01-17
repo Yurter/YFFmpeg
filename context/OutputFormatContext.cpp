@@ -100,13 +100,6 @@ namespace fpp {
         return Code::OK;
     }
 
-    std::string OutputFormatContext::toString() const { //TODO реализация 14.01
-        /* Output #0, flv, to 'rtmp://a.rtmp.youtube.com/live2/ytub-8t5w-asjj-avyf'*/
-        return "Output #"
-                + utils::guess_format_short_name(mediaResourceLocator()) + ", " //TODO пустая строка
-                + "to '" + mediaResourceLocator() + "'";
-    }
-
     Code OutputFormatContext::write(Packet packet, ReadWriteMode write_mode) {
         switch (write_mode) {
         case ReadWriteMode::Instant:

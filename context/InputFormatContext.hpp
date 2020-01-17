@@ -11,7 +11,6 @@ namespace fpp {
         virtual ~InputFormatContext() override;
 
         virtual Code        init()           override;
-        virtual std::string toString() const override;
 
         Code                seek(int64_t stream_index, int64_t timestamp, SeekPrecision seek_precision = SeekPrecision::Forward);
         Code                read(Packet& packet, ReadWriteMode read_mode = ReadWriteMode::Instant);
