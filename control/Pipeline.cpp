@@ -122,7 +122,7 @@ namespace fpp {
 
         const IOParams params { input_stream->params, output_stream->params };
 
-        try_to(params.out->completeFrom(params.in));
+        params.out->completeFrom(params.in);
 
         input_stream->setUsed(true);
         output_stream->setUsed(true);
