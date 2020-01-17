@@ -123,7 +123,6 @@ namespace fpp {
         StreamVector result;
         for (unsigned i = 0; i < mediaFormatContext()->nb_streams; ++i) {
             result.push_back(std::make_shared<Stream>(mediaFormatContext()->streams[i], ParamsType::Input));
-//            result.back()->params->setCodecType(CodecType::Decoder); //TODO crutch  16.01
         }
         return result;
     }

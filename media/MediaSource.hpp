@@ -1,6 +1,6 @@
 #pragma once
 #include "inout/PacketSource.hpp"
-#include "format/InputFormatContext.hpp"
+#include "context/InputFormatContext.hpp"
 
 namespace fpp {
 
@@ -25,7 +25,7 @@ namespace fpp {
         virtual Code        processInputData(Packet input_data) override;
         virtual Code        onStop() override;
 
-//        void                determineStampType(const Packet& packet);
+//        void                determineStampType(const Packet& packet); //TODO забрать метод у потока 17.01
 
     private:
 

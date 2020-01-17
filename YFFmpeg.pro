@@ -31,8 +31,8 @@ SOURCES += \
     custom/CustomFrameSource.cpp \
     custom/CustomPacketSink.cpp \
     custom/CustomPacketSource.cpp \
-    format/InputFormatContext.cpp \
-    format/OutputFormatContext.cpp \
+    context/InputFormatContext.cpp \
+    context/OutputFormatContext.cpp \
     core/Exception.cpp \
     inout/FrameProducer.cpp \
     inout/FrameSink.cpp \
@@ -83,8 +83,8 @@ HEADERS += \
     custom/CustomFrameSource.hpp \
     custom/CustomPacketSink.hpp \
     custom/CustomPacketSource.hpp \
-    format/InputFormatContext.hpp \
-    format/OutputFormatContext.hpp \
+    context/InputFormatContext.hpp \
+    context/OutputFormatContext.hpp \
     core/async/AsyncQueue.hpp \
     base/Data.hpp \
     base/FormatContext.hpp \

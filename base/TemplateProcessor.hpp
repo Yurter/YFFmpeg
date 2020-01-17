@@ -20,9 +20,9 @@ namespace fpp {
         using ProcessFunction = std::function<Code(outType&)>;
         using DataVerification = std::function<Code(const inType&)>;
 
-        TemplateProcessor() :
-            _input_queue(50 MEGABYTES,  [](const inType& input_data)   { return input_data.size();  })
-          , _output_queue(50 MEGABYTES, [](const outType& output_data) { return output_data.size(); }) {
+        TemplateProcessor()
+            : _input_queue(50 MEGABYTES,  [](const inType& input_data)   { return input_data.size();  })
+            , _output_queue(50 MEGABYTES, [](const outType& output_data) { return output_data.size(); }) {
             setName("TemplateProcessor");
         }
 
@@ -36,31 +36,6 @@ namespace fpp {
             }
         }
 
-        //TODO функции с буфером кривокод
-        bool buferIsEmpty() {
-            return _input_queue.empty();
-        }
-
-        int64_t bufferSize() {
-            return _input_queue.size();
-        }
-
-        int64_t bufferLength() {
-            return _input_queue.length();
-        }
-
-//        virtual Code push(const Object* input_data) override final {
-//            increaseInputDataCount();
-//            if (closed()) {
-//                log_warning("Got " << input_data->name() << " but closed");
-//            }
-//            return_warning_if_not(
-//                _input_queue.wait_and_push(*static_cast<const inType*>(input_data))
-//                , "Failed to store " << input_data->name()
-//                , Code::EXIT
-//            );
-//            return Code::OK;
-//        }
         virtual Code push(const InputData& input_data) {
             auto unpacket_data = std::get<inType>(input_data);
             increaseInputDataCount();
@@ -114,7 +89,7 @@ namespace fpp {
             return Code::OK;
         }
 
-        Code sendOutputData(const outType& output_data, int64_t stream_uid = BROADCAST) {
+        Code sendOutputData(const outType& output_data, UID stream_uid = BROADCAST) {
             increaseOutputDataCount();
             if_not(_stream_map.empty()) {
                 if (stream_uid == BROADCAST) { //TODO кривой код 13.01
@@ -122,14 +97,12 @@ namespace fpp {
                     {
                       it->second.for_each([&output_data,this](auto& next_processor) {
                           static_log_trace("Sender", "Sending data to " << next_processor->name());
-//                          try_throw_static(next_processor->push(&output_data));
                           try_throw_static(next_processor->push(output_data));
                       });
                     }
                 } else {
                     _stream_map[stream_uid].for_each([&output_data,this](auto& next_processor) {
                         static_log_trace("Sender", "Sending data to " << next_processor->name());
-//                        try_throw_static(next_processor->push(&output_data));
                         try_throw_static(next_processor->push(output_data));
                     });
                 }

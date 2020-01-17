@@ -77,7 +77,7 @@ namespace fpp {
         case InterruptedProcess::None:
             return 0;
         case InterruptedProcess::Opening: {
-            int opening_timeout_ms = 5000; //TODO вынести константу
+            const int64_t opening_timeout_ms = 5000;
             if (interrupter->chronometer.elapsed_milliseconds() > opening_timeout_ms) {
                 static_log_error("interrupt_callback", "Opening timed out: " << opening_timeout_ms);
                 return 1;
@@ -94,8 +94,6 @@ namespace fpp {
             static_log_error("interrupt_callback", "InterruptedProcess::Writing is not implemeted");
             return -1;
         }
-        static_log_warning("interrupt_callback", "opaque = " << opaque);
-        return 0;
     }
 
     std::string FormatContext::mediaResourceLocator() const {

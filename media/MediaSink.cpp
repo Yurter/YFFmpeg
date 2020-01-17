@@ -46,9 +46,6 @@ namespace fpp {
         log_debug("Closing");
         stopWait();
         try_to(stop());
-//        if (buferIsEmpty()) {
-//            stopWait(); //TODO костыль?
-//        }
         try_to(_output_format_context.close());
         log_info("Destination '" << _output_format_context.mediaResourceLocator() << "' closed, " //TODO метод отрабатывает дважды: из деструктора и из онСтоп
                  << utils::time_to_string(stream(0)->params->duration(), stream(0)->params->timeBase()));

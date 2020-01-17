@@ -76,6 +76,7 @@ namespace fpp {
         const std::string   _media_resource_locator;
         const IOPreset      _preset;
         bool                _opened;
+        StreamVector        _streams;
         int64_t             _artificial_delay;
         Interrupter         _current_interrupter;
         StreamSetter        _stream_setter;

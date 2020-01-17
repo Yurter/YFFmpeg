@@ -5,6 +5,7 @@
 
 namespace fpp {
 
+
     template <class T>
     class AsyncQueue : public AsyncObject<std::queue<T>> {
 

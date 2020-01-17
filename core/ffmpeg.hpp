@@ -282,7 +282,7 @@ using UID = int64_t;
 
 /* Значения для задержек в коде в мс */
 #define SHORT_DELAY_MS          10
-#define MEDIUM_DELAY_MS         100
+#define MEDIUM_DELAY_MS         100  //TODO избавиться от ожидания в коде, где используются эти макросы 17.01
 #define LONG_DELAY_MS           1000
 
 /* ? */
@@ -300,7 +300,7 @@ using UID = int64_t;
 /* ? */
 #define BROADCAST -1
 
-/* ? */
+/* ? */ //TODO перенести в статичные методы медиа сорса (как фильтры) 17.01
 #define SILENCE     "anullsrc=r=44100:cl=mono"
 //#define SINE        "sine=frequency=1000:sample_rate=44100"
 #define SINE(x)     "sine=frequency=" + std::to_string(x) + ":sample_rate=44100"

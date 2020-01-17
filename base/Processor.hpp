@@ -15,7 +15,6 @@ namespace fpp {
     using ProcessorList = AsyncList<ProcessorPointer>;
     using StreamMap = std::map<UID,ProcessorList>;
 
-//    class Frame;
     using InputData = std::variant<Packet,Frame>;
 
     class Processor : public Thread {
@@ -29,9 +28,6 @@ namespace fpp {
 
         virtual Code        open();
         virtual Code        close();
-//        virtual Code        push(const Object* input_data) = 0; //TODO 1) убрать виртуальность метода и перенести на уровень выше
-                                                                //     2) избавиться от каста объекта в пакет или фрейм - сделать тип шаблонным 13.01
-                                                                //   => проблема - метод необходим в базовом классе, а тип даты опредеятся выше по уровню
         virtual Code        push(const InputData& input_data) = 0;
 
         int64_t             uid()                       const;

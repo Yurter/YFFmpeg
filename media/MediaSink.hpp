@@ -1,6 +1,6 @@
 #pragma once
 #include "inout/PacketSink.hpp"
-#include "format/OutputFormatContext.hpp"
+#include "context/OutputFormatContext.hpp"
 #include "core/time/Timer.hpp"
 
 namespace fpp {
