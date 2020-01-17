@@ -28,8 +28,8 @@ namespace fpp {
         static std::string  codec_type_to_string(CodecType type);
         static std::string  rational_to_string(AVRational rational);
 
-        static SharedVideoParameters makeVideoParams(SharedParameters params);
-        static SharedAudioParameters makeAudioParams(SharedParameters params);
+        static auto         makeVideoParams(SharedParameters params) -> SharedVideoParameters;
+        static auto         makeAudioParams(SharedParameters params) -> SharedAudioParameters;
 
         static void         sleep_for(int64_t milliseconds);
         static void         sleep_for_ms(int64_t milliseconds);
@@ -56,7 +56,7 @@ namespace fpp {
         static bool         compatible_with_pixel_format(const AVCodec* codec, AVPixelFormat pixel_format);
         static bool         compatible_with_sample_format(const AVCodec* codec, AVSampleFormat sample_format);
 
-        static SharedStream    find_best_stream(const StreamVector& stream_list);
+        static SharedStream find_best_stream(const StreamVector& stream_list);
 
 
         /* ---- R E F A C T O R I N G ---- */
