@@ -2,12 +2,11 @@
 
 namespace fpp {
 
-    CodecContext::CodecContext(const IOParams params, CodecType type) :
-        params(params)
-      , _codec_context(nullptr)
-      , _type(type)
-      , _opened(false)
-    {
+    CodecContext::CodecContext(const IOParams params, CodecType type)
+        : params(params)
+        , _codec_context(nullptr)
+        , _type(type)
+        , _opened(false) {
         setName("CodecContext");
     }
 
