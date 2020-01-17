@@ -14,7 +14,9 @@ namespace fpp {
 
     public:
 
-        static int64_t      gen_uid();
+        static UID          gen_uid();
+        static UID          gen_stream_uid(UID context_uid, UID stream_index);
+        static UID          get_context_uid(UID stream_uid);
 
         static std::string  media_type_to_string(MediaType value);
         static std::string  pts_to_string(int64_t pts);
@@ -38,9 +40,9 @@ namespace fpp {
 
         static bool         rescaling_required(const IOParams params);
         static bool         resampling_required(const IOParams params);
+        static bool         transcoding_required(const IOParams params);
         static bool         video_filter_required(const IOParams params);
         static bool         audio_filter_required(const IOParams params);
-        static bool         transcoding_required(const IOParams params);
 
         static bool         compare_float(float a, float b);
         static bool         equal_rational(AVRational a, AVRational b);
@@ -59,8 +61,6 @@ namespace fpp {
 
         static AVMediaType  mediatype_to_avmediatype(MediaType media_type);
         static MediaType    avmt_to_mt(AVMediaType avmedia_type);
-        static int64_t      gen_stream_uid(int64_t context_uid, int64_t stream_index);
-        static int64_t      get_context_uid(int64_t stream_uid);
         static std::string  guess_format_short_name(std::string media_resurs_locator);
 
 

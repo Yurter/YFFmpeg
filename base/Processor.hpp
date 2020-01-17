@@ -2,7 +2,9 @@
 #include "core/async/AsyncList.hpp"
 #include "core/Thread.hpp"
 #include "stream/Stream.hpp"
+#include "base/Frame.hpp"
 #include <map>
+#include <variant>
 
 namespace fpp {
 
@@ -11,7 +13,10 @@ namespace fpp {
     using ProcessorVector = std::vector<ProcessorPointer>; //TODO не потокобезопасен
 
     using ProcessorList = AsyncList<ProcessorPointer>;
-    using StreamMap = std::map<StreamId_t,ProcessorList>;
+    using StreamMap = std::map<UID,ProcessorList>;
+
+//    class Frame;
+    using InputData = std::variant<Packet,Frame>;
 
     class Processor : public Thread {
 
@@ -24,9 +29,10 @@ namespace fpp {
 
         virtual Code        open();
         virtual Code        close();
-        virtual Code        push(const Object* input_data) = 0; //TODO 1) убрать виртуальность метода и перенести на уровень выше
+//        virtual Code        push(const Object* input_data) = 0; //TODO 1) убрать виртуальность метода и перенести на уровень выше
                                                                 //     2) избавиться от каста объекта в пакет или фрейм - сделать тип шаблонным 13.01
                                                                 //   => проблема - метод необходим в базовом классе, а тип даты опредеятся выше по уровню
+        virtual Code        push(const InputData& input_data) = 0;
 
         int64_t             uid()                       const;
         StreamVector        streams()                   const;
@@ -37,7 +43,7 @@ namespace fpp {
         void                setType(ProcessorType value);
         void                setOpened(bool opened);
 
-        Code                connectTo(StreamId_t stream_id, ProcessorPointer other);
+        Code                connectTo(UID stream_id, ProcessorPointer other);
         Code                disconnectFrom(const ProcessorPointer other);
 
         virtual bool        equalTo(const ProcessorPointer other) const;

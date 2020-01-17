@@ -254,7 +254,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    StreamPointer Pipeline::findStream(StreamId_t uid) {
+    StreamPointer Pipeline::findStream(UID uid) {
         StreamPointer ret_stream;
         auto finder = [uid,&ret_stream](const auto& proc) {
             auto proc_streams = proc->streams();

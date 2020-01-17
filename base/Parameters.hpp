@@ -5,7 +5,6 @@ namespace fpp {
 
 //    using Parameters = std::shared_ptr<_Parameters>; //TODO
 
-    using StreamId_t = int64_t; //TODO rename to UID и перенести объявление в утилиты ? 16.01
     class Parameters;
     using ParametersPointer = std::shared_ptr<Parameters>;
     using IOParams = struct { ParametersPointer in; ParametersPointer out; };
@@ -30,7 +29,7 @@ namespace fpp {
         void                setCodec(AVCodec* codec);
         void                setBitrate(int64_t bitrate);
         void                setDuration(int64_t duration);
-        void                setStreamIndex(StreamId_t stream_index);
+        void                setStreamIndex(UID stream_index);
         void                setTimeBase(AVRational time_base);
         void                setContextUid(int64_t context_uid);
 
@@ -39,8 +38,8 @@ namespace fpp {
         AVCodec*            codec()         const;
         int64_t             bitrate()       const;
         int64_t             duration()      const;
-        StreamId_t          streamIndex()   const;
-        StreamId_t          streamUid()     const;
+        UID                 streamIndex()   const;
+        UID                 streamUid()     const;
         AVRational          timeBase()      const;
         int64_t             contextUid()    const;
 
@@ -55,7 +54,7 @@ namespace fpp {
 
     private:
 
-        void                setStreamUid(StreamId_t value);
+        void                setStreamUid(UID value);
         void                setCodecType(CodecType value);
 
     protected:
@@ -66,8 +65,8 @@ namespace fpp {
         ParamsType          _io_type;
         int64_t             _bitrate;
         int64_t             _duration;
-        StreamId_t          _stream_index;
-        StreamId_t          _stream_uid;
+        UID                 _stream_index;
+        UID                 _stream_uid;
         AVRational          _time_base;
         int64_t             _context_uid;
 

@@ -49,30 +49,31 @@ namespace fpp {
             return _input_queue.length();
         }
 
-        virtual Code push(const Object* input_data) override final {
-            increaseInputDataCount();
-            if (closed()) {
-                log_warning("Got " << input_data->name() << " but closed");
-            }
-            return_warning_if_not(
-                _input_queue.wait_and_push(*static_cast<const inType*>(input_data))
-                , "Failed to store " << input_data->name()
-                , Code::EXIT
-            );
-            return Code::OK;
-        }
-//        Code push(const inType& input_data) {
+//        virtual Code push(const Object* input_data) override final {
 //            increaseInputDataCount();
 //            if (closed()) {
 //                log_warning("Got " << input_data->name() << " but closed");
 //            }
 //            return_warning_if_not(
-//                _input_queue.wait_and_push(input_data)
+//                _input_queue.wait_and_push(*static_cast<const inType*>(input_data))
 //                , "Failed to store " << input_data->name()
 //                , Code::EXIT
 //            );
 //            return Code::OK;
 //        }
+        virtual Code push(const InputData& input_data) {
+            auto unpacket_data = std::get<inType>(input_data);
+            increaseInputDataCount();
+            if (closed()) {
+                log_warning("Got " << unpacket_data.name() << " but closed");
+            }
+            return_warning_if_not(
+                _input_queue.wait_and_push(unpacket_data)
+                , "Failed to store " << unpacket_data.name()
+                , Code::EXIT
+            );
+            return Code::OK;
+        }
 
     protected:
 
@@ -121,13 +122,15 @@ namespace fpp {
                     {
                       it->second.for_each([&output_data,this](auto& next_processor) {
                           static_log_trace("Sender", "Sending data to " << next_processor->name());
-                          try_throw_static(next_processor->push(&output_data));
+//                          try_throw_static(next_processor->push(&output_data));
+                          try_throw_static(next_processor->push(output_data));
                       });
                     }
                 } else {
                     _stream_map[stream_uid].for_each([&output_data,this](auto& next_processor) {
                         static_log_trace("Sender", "Sending data to " << next_processor->name());
-                        try_throw_static(next_processor->push(&output_data));
+//                        try_throw_static(next_processor->push(&output_data));
+                        try_throw_static(next_processor->push(output_data));
                     });
                 }
             }

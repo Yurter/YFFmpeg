@@ -208,16 +208,16 @@ namespace fpp {
         }
     }
 
-    int64_t utils::gen_uid() {
-        static std::atomic_llong object_uid_handle = 0;
+    UID utils::gen_uid() {
+        static std::atomic<UID> object_uid_handle = 0;
         return object_uid_handle++;
     }
 
-    int64_t utils::gen_stream_uid(int64_t context_uid, int64_t stream_index) {
+    UID utils::gen_stream_uid(UID context_uid, UID stream_index) {
         return (context_uid + 1) * 100 + stream_index;
     }
 
-    int64_t utils::get_context_uid(int64_t stream_uid) {
+    UID utils::get_context_uid(UID stream_uid) {
         return stream_uid / 100;
     }
 
@@ -511,7 +511,6 @@ namespace fpp {
     }
 
     bool utils::audio_filter_required(const IOParams params) {
-        UNUSED(params);
         return false;
     }
 

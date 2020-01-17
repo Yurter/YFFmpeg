@@ -50,7 +50,7 @@ namespace fpp {
 
 
         ProcessorPointer    findProcessor(int64_t uid);
-        StreamPointer       findStream(StreamId_t uid);
+        StreamPointer       findStream(UID uid);
         StreamPointer       findBestInputStream(MediaType type);
 
 

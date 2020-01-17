@@ -9,7 +9,6 @@ namespace fpp {
     }
 
     Code AudioFilter::processInputData(Frame input_data) {
-        UNUSED(input_data);
         return Code::NOT_IMPLEMENTED;
     }
 
