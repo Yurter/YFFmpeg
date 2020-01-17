@@ -12,7 +12,7 @@ namespace fpp {
         DecoderContext(const IOParams params);
         virtual ~DecoderContext() override;
 
-        Code                decode(Packet input_packet, Frame& output_frame); //TODO rename 'output_frame' to 'decoded_frame' 10.01
+        Code                decode(Packet input_packet, Frame& decoded_frame);
         virtual Code        flush(Object* data)         override;
 
     private:

@@ -31,6 +31,14 @@ namespace fpp {
         return !_opened;
     }
 
+    std::string FormatContext::toString() const {
+        std::string context_info = "mrl: '" + mediaResourceLocator() +  "',";
+        for (const auto& stream : streams()) {
+            context_info += '\n' + stream->toString();
+        }
+        return context_info;
+    }
+
     void FormatContext::setFormatContext(SharedAVFormatContext format_context) {
         _format_context = format_context;
     }
@@ -110,6 +118,10 @@ namespace fpp {
     }
 
     StreamVector FormatContext::streams() {
+        return _streams;
+    }
+
+    const StreamVector FormatContext::streams() const {
         return _streams;
     }
 

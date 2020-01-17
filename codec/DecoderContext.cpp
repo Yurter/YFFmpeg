@@ -12,7 +12,7 @@ namespace fpp {
         flush(nullptr);
     }
 
-    Code DecoderContext::decode(Packet input_packet, Frame& output_frame) {
+    Code DecoderContext::decode(Packet input_packet, Frame& decoded_frame) {
         if (int ret = avcodec_send_packet(_codec_context.get(), &input_packet.raw()); ret != 0) {
             char errstr[1024];
             av_strerror(ret, errstr, 1024);
@@ -20,10 +20,10 @@ namespace fpp {
             log_error("DecoderContext: " << this->toString());
             return Code::FFMPEG_ERROR;
         }
-        int ret = avcodec_receive_frame(_codec_context.get(), &output_frame.raw());
+        int ret = avcodec_receive_frame(_codec_context.get(), &decoded_frame.raw());
         switch (ret) { //TODO убрать свич ?
         case 0:
-            output_frame.setType(params.in->type());
+            decoded_frame.setType(params.in->type());
             return Code::OK;
         case AVERROR(EAGAIN):
             return Code::AGAIN;

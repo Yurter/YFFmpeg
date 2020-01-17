@@ -27,12 +27,14 @@ namespace fpp {
         bool                opened() const;
         bool                closed() const;
 
+        virtual std::string toString() const override final;
 
         std::string         mediaResourceLocator()  const;  ///< Функция возвращает mrl.
         SharedAVFormatContext   formatContext()    const;  ///< Функция возвращает ffmpeg медиа-контекст.
 
         void                setStreams(StreamVector stream_list);
         StreamVector        streams();
+        const StreamVector  streams() const;
         const AVStream* stream(int64_t index);          ///< Функция возвращает указатель на поток с заданным индексом; nullptr, если невалидный индекс.
         int64_t             numberStream()  const;          ///< Функция возвращает количество потоков в текущем котексте.
         AVInputFormat*      inputFormat()   const;          ///< Функция ...
