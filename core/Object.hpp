@@ -22,10 +22,16 @@ namespace fpp {
         bool                inited() const;
 
         virtual std::string toString()      const;
+
         operator            std::string()   const;
 
         friend std::ostream& operator<<(std::ostream& os, const Object& object) {
             os << object.toString();
+            return os;
+        }
+
+        friend std::ostream& operator<<(std::ostream& os, const Object*& object) {
+            os << object->toString();
             return os;
         }
 

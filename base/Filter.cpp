@@ -122,7 +122,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    bool Filter::equalTo(const ProcessorPointer other) const {
+    bool Filter::equalTo(const SharedProcessor other) const {
         auto other_filter = dynamic_cast<const Filter * const>(other.get());
         return_if(not_inited_ptr(other_filter), false);
 

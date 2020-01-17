@@ -4,8 +4,7 @@
 namespace fpp {
 
     FormatContext::FormatContext(const std::string& mrl, IOPreset preset)
-        : _format_context { nullptr }
-        , _media_resource_locator { mrl }
+        : _media_resource_locator { mrl }
         , _preset { preset }
         , _opened { false }
         , _artificial_delay { 0 }
@@ -20,7 +19,6 @@ namespace fpp {
     Code FormatContext::close() {
         return_if(closed(), Code::OK);
         try_to(closeContext());
-        avformat_free_context(_format_context);
         setOpened(false);
         return Code::OK;
     }
@@ -31,6 +29,10 @@ namespace fpp {
 
     bool FormatContext::closed() const {
         return !_opened;
+    }
+
+    void FormatContext::setFormatContext(SharedAVFormatContext format_context) {
+        _format_context = format_context;
     }
 
     void FormatContext::setOpened(bool opened) {
@@ -99,12 +101,8 @@ namespace fpp {
         return _media_resource_locator;
     }
 
-    AVFormatContext* FormatContext::mediaFormatContext() const {
+    SharedAVFormatContext FormatContext::formatContext() const {
         return _format_context;
-    }
-
-    AVFormatContext** FormatContext::mediaFormatContext2() {
-        return &_format_context;
     }
 
     void FormatContext::setStreams(StreamVector stream_list) {
@@ -131,10 +129,10 @@ namespace fpp {
         return _format_context->oformat;
     }
 
-    Code FormatContext::setMediaFormatContext(AVFormatContext* value) {
-        return_if(not_inited_ptr(value), Code::INVALID_INPUT);
-        _format_context = value;
-        return Code::OK;
-    }
+//    Code FormatContext::setMediaFormatContext(AVFormatContext* value) {
+//        return_if(not_inited_ptr(value), Code::INVALID_INPUT);
+//        _format_context = value;
+//        return Code::OK;
+//    }
 
 } // namespace fpp

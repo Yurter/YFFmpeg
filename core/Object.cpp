@@ -44,7 +44,6 @@ namespace fpp {
     }
 
     Object::operator std::string() const {
-//        return Object::toString();
         return toString();
     }
 

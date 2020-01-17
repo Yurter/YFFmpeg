@@ -31,9 +31,9 @@ namespace fpp {
         Pipeline();
         virtual ~Pipeline() override;
 
-        Code                addElement(ProcessorPointer processor, SourceType priority = SourceType::Mandatory); //TODO refactoring priority 13.01
+        Code                addElement(SharedProcessor processor, SourceType priority = SourceType::Mandatory); //TODO refactoring priority 13.01
                                                                                                                     // перенести свойство в процессор
-        void                remElement(ProcessorPointer processor);
+        void                remElement(SharedProcessor processor);
         void                remElement(int64_t uid);
 
         void                dump() const;
@@ -45,13 +45,13 @@ namespace fpp {
         virtual Code        onStart()   override;
         virtual Code        onStop()    override;
 
-        Code                determineSequence(const ProcessorPointer output_processor);
+        Code                determineSequence(const SharedProcessor output_processor);
         Code                createSequence(Route& route);
 
 
-        ProcessorPointer    findProcessor(int64_t uid);
-        StreamPointer       findStream(UID uid);
-        StreamPointer       findBestInputStream(MediaType type);
+        SharedProcessor    findProcessor(int64_t uid);
+        SharedStream       findStream(UID uid);
+        SharedStream       findBestInputStream(MediaType type);
 
 
         virtual std::string toString() const override;

@@ -4,7 +4,7 @@
 
 namespace fpp {
 
-    using SharedCodecContext = std::shared_ptr<AVCodecContext>;
+    using SharedAVCodecContext = std::shared_ptr<AVCodecContext>;
 
     class CodecContext : public Object {
 
@@ -16,6 +16,7 @@ namespace fpp {
         virtual Code        initParams() = 0;
         virtual Code        flush(Object* data) = 0; //TODO (отправлять кодеку NULL)
         virtual Code        init() override;
+        std::string         toString() const override final;
         virtual Code        onOpen();
 
         Code                open();
@@ -24,9 +25,7 @@ namespace fpp {
         bool                opened() const;
         bool                closed() const;
 
-        std::string         toString() const override final;
-
-        SharedCodecContext  codecContext();
+        SharedAVCodecContext    codecContext();
 
         const IOParams      params;
 
@@ -36,12 +35,12 @@ namespace fpp {
 
     protected:
 
-        SharedCodecContext  _codec_context;
+        SharedAVCodecContext    _codec_context;
 
     private:
 
-        CodecType           _type;
-        bool                _opened;
+        CodecType               _type;
+        bool                    _opened;
 
     };
 

@@ -12,9 +12,8 @@
 
 namespace fpp {
 
-    Logger::Logger(std::string log_dir) :
-        _log_level(LogLevel::Info)
-    {
+    Logger::Logger(std::string log_dir)
+        : _log_level(LogLevel::Info) {
         setName("Logger");
 //        av_log_set_callback(log_callback); //TODO later
         setFFmpegLogLevel(LogLevel::Error);

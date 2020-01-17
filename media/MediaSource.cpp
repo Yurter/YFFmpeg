@@ -52,7 +52,7 @@ namespace fpp {
         return str;
     }
 
-    bool MediaSource::equalTo(const ProcessorPointer other) const {
+    bool MediaSource::equalTo(const SharedProcessor other) const {
         auto other_media_source = dynamic_cast<const MediaSource * const>(other.get());
         return_if(not_inited_ptr(other_media_source), false);
 

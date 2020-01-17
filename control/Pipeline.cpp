@@ -11,7 +11,7 @@ namespace fpp {
         try_throw(stop());
     }
 
-    Code Pipeline::addElement(ProcessorPointer processor, SourceType priority) { //TODO каша из кода
+    Code Pipeline::addElement(SharedProcessor processor, SourceType priority) { //TODO каша из кода
         switch (processor->type()) {
         case ProcessorType::Input:
             try_to(processor->init());
@@ -34,7 +34,7 @@ namespace fpp {
         return Code::ERR;
     }
 
-    void Pipeline::remElement(ProcessorPointer processor) {
+    void Pipeline::remElement(SharedProcessor processor) {
         _data_sinks.remove_if([processor](const auto& sink) {
             return sink->uid() == processor->uid();
         });
@@ -194,8 +194,8 @@ namespace fpp {
         return Code::OK;
     }
 
-    ProcessorPointer Pipeline::findProcessor(int64_t uid) {
-        ProcessorPointer result;
+    SharedProcessor Pipeline::findProcessor(int64_t uid) {
+        SharedProcessor result;
         auto finder = [uid,&result](const auto& source) {
             if (source->uid() == uid) {
                 result = source;
@@ -254,8 +254,8 @@ namespace fpp {
         return Code::OK;
     }
 
-    StreamPointer Pipeline::findStream(UID uid) {
-        StreamPointer ret_stream;
+    SharedStream Pipeline::findStream(UID uid) {
+        SharedStream ret_stream;
         auto finder = [uid,&ret_stream](const auto& proc) {
             auto proc_streams = proc->streams();
             auto ret_it = std::find_if(std::begin(proc_streams), std::end(proc_streams)
@@ -270,7 +270,7 @@ namespace fpp {
         return ret_stream;
     }
 
-    Code Pipeline::determineSequence(const ProcessorPointer output_processor) { //TODO говнокод
+    Code Pipeline::determineSequence(const SharedProcessor output_processor) { //TODO говнокод
         const auto& output_streams = output_processor->streams();
         if (output_streams.empty()) {
             log_error(output_processor->name() << " doesn't has any stream.");
@@ -364,7 +364,7 @@ namespace fpp {
         return dump_str;
     }
 
-    StreamPointer Pipeline::findBestInputStream(MediaType type) {
+    SharedStream Pipeline::findBestInputStream(MediaType type) {
         StreamVector stream_list;
         auto stream_getter = [type,&stream_list](const auto& source) {
             auto stream = source->bestStream(type);

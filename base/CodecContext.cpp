@@ -100,7 +100,7 @@ namespace fpp {
         return str;
     }
 
-    SharedCodecContext CodecContext::codecContext() {
+    SharedAVCodecContext CodecContext::codecContext() {
         return _codec_context;
     }
 

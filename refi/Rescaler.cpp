@@ -78,7 +78,7 @@ namespace fpp {
         return sendOutputData(output_data);
     }
 
-    bool Rescaler::equalTo(const ProcessorPointer other) const {
+    bool Rescaler::equalTo(const SharedProcessor other) const {
         auto other_rescaler = dynamic_cast<const Rescaler * const>(other.get());
         return_if(not_inited_ptr(other_rescaler), false);
 

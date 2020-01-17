@@ -48,7 +48,7 @@ namespace fpp {
         return ret;
     }
 
-    bool Encoder::equalTo(const ProcessorPointer other) const {
+    bool Encoder::equalTo(const SharedProcessor other) const {
         auto other_encoder = dynamic_cast<const Encoder * const>(other.get());
         return_if(not_inited_ptr(other_encoder), false);
 

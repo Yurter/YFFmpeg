@@ -1,6 +1,7 @@
 #pragma once
+#include <stdint.h>
 
-//namespace ffmpeg { //TODO использовать неймспейс для ффмпега 16.01
+//namespace ffmpeg { //TODO 17.01
 
     extern "C" {
         #include <libavformat/avformat.h>

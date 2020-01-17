@@ -16,7 +16,7 @@ namespace fpp {
         virtual Code        open()  override;
         virtual Code        close() override;
         virtual std::string toString() const override;
-        virtual bool        equalTo(const ProcessorPointer other) const override;
+        virtual bool        equalTo(const SharedProcessor other) const override;
 
         const OutputFormatContext* outputFormatContext() const;
 

@@ -8,11 +8,12 @@
 
 namespace fpp {
 
+    // TODO бардак 17.01
     class Processor;
-    using ProcessorPointer = std::shared_ptr<Processor>;
-    using ProcessorVector = std::vector<ProcessorPointer>; //TODO не потокобезопасен
+    using SharedProcessor = std::shared_ptr<Processor>;
+    using ProcessorVector = std::vector<SharedProcessor>; //TODO не потокобезопасен
 
-    using ProcessorList = AsyncList<ProcessorPointer>;
+    using ProcessorList = AsyncList<SharedProcessor>;
     using StreamMap = std::map<UID,ProcessorList>;
 
     using InputData = std::variant<Packet,Frame>;
@@ -32,17 +33,17 @@ namespace fpp {
 
         int64_t             uid()                       const;
         StreamVector        streams()                   const;
-        StreamPointer       stream(int64_t index)       const;
-        StreamPointer       bestStream(MediaType type)  const;
+        SharedStream        stream(int64_t index)       const;
+        SharedStream        bestStream(MediaType type)  const;
 
         void                setStreams(StreamVector streams);
         void                setType(ProcessorType value);
         void                setOpened(bool opened);
 
-        Code                connectTo(UID stream_id, ProcessorPointer other);
-        Code                disconnectFrom(const ProcessorPointer other);
+        Code                connectTo(UID stream_id, SharedProcessor other);
+        Code                disconnectFrom(const SharedProcessor other);
 
-        virtual bool        equalTo(const ProcessorPointer other) const;
+        virtual bool        equalTo(const SharedProcessor other) const;
 
         ProcessorType       type() const;
         bool                typeIs(ProcessorType value) const;

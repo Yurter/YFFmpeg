@@ -64,7 +64,7 @@ namespace fpp {
         return _output_format_context.toString();
     }
 
-    bool MediaSink::equalTo(const ProcessorPointer other) const {
+    bool MediaSink::equalTo(const SharedProcessor other) const {
         auto other_media_sink = dynamic_cast<const MediaSink * const>(other.get());
         return_if(not_inited_ptr(other_media_sink), false);
 

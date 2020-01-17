@@ -16,7 +16,7 @@ namespace fpp {
         virtual Code        init() override;
         virtual std::string toString() const override;
 
-        Code                append(ProcessorPointer processor);
+        Code                append(SharedProcessor processor);
 
         Code                setMetaRoute(int64_t input_stream_uid, int64_t output_stream_uid);
 

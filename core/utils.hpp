@@ -53,7 +53,7 @@ namespace fpp {
         static bool         compatible_with_pixel_format(const AVCodec* codec, AVPixelFormat pixel_format);
         static bool         compatible_with_sample_format(const AVCodec* codec, AVSampleFormat sample_format);
 
-        static StreamPointer    find_best_stream(const StreamVector& stream_list);
+        static SharedStream    find_best_stream(const StreamVector& stream_list);
 
 
         /* ---- R E F A C T O R I N G ---- */

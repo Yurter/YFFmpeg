@@ -13,11 +13,11 @@ namespace fpp {
 //    };
 
     class Stream;
-    using StreamPointer = std::shared_ptr<Stream>; //TODO rename to Stream, сам класс переименовать в другое 15.01
-    using StreamVector = std::vector<StreamPointer>;
+    using SharedStream = std::shared_ptr<Stream>;
+    using StreamVector = std::vector<SharedStream>;
 
-//    static StreamPointer createInputStream();
-//    static StreamPointer createOutputStream();
+//    static SharedStream createInputStream();
+//    static SharedStream createOutputStream();
 
     class Stream : public Data<const AVStream*> {
 

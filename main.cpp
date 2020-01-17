@@ -88,12 +88,12 @@ void concatenator_kostya() {
 void copy_file_debug() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-    ProcessorPointer source = std::make_shared<MediaSource>("out.flv");
+    SharedProcessor source = std::make_shared<MediaSource>("out.flv");
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer sink_copy = std::make_shared<MediaSink>("debug_files/a_event_copy.flv", IOPreset::Event);
+    SharedProcessor sink_copy = std::make_shared<MediaSink>("debug_files/a_event_copy.flv", IOPreset::Event);
     if (auto ret = pipeline->addElement(sink_copy); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add sink_copy failed: " << ret << " - " << utils::code_to_string(ret));
     }
@@ -164,12 +164,12 @@ void concatenator_debug() {
 void event_debug() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-    ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554");
+    SharedProcessor source = std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554");
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer sink_event = std::make_shared<MediaSink>("group_video/event.flv", IOPreset::Event);
+    SharedProcessor sink_event = std::make_shared<MediaSink>("group_video/event.flv", IOPreset::Event);
     if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
     }
@@ -180,12 +180,12 @@ void event_debug() {
 void timelapse_debug() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-    ProcessorPointer source = std::make_shared<MediaSource>("a_event.flv");
+    SharedProcessor source = std::make_shared<MediaSource>("a_event.flv");
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("group_video/timelapse.flv", IOPreset::Timelapse);
+    SharedProcessor sink_timelapse = std::make_shared<MediaSink>("group_video/timelapse.flv", IOPreset::Timelapse);
     if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
     }
@@ -196,14 +196,14 @@ void timelapse_debug() {
 void route_simplify_debug() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-    ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:admin@192.168.10.3:554");
+    SharedProcessor source = std::make_shared<MediaSource>("rtsp://admin:admin@192.168.10.3:554");
 //    source->setCloseOnDisconnect(false);
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
     for (int i = 0; i < 5; ++i) {
-        ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/" + std::to_string(i) + "_event.flv", IOPreset::Event);
+        SharedProcessor sink_event = std::make_shared<MediaSink>("debug_files/" + std::to_string(i) + "_event.flv", IOPreset::Event);
         if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
             static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
         }
@@ -219,21 +219,21 @@ void route_simplify_debug() {
 void memory_leak_test() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-    ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:admin@192.168.10.3:554");
+    SharedProcessor source = std::make_shared<MediaSource>("rtsp://admin:admin@192.168.10.3:554");
 //    source->setCloseOnDisconnect(false);
 
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-//    ProcessorPointer sink_timelapse = std::make_shared<MediaSink>("group_video/timelapse.flv", IOPreset::Timelapse);
+//    SharedProcessor sink_timelapse = std::make_shared<MediaSink>("group_video/timelapse.flv", IOPreset::Timelapse);
 //    if (auto ret = pipeline->addElement(sink_timelapse); ret != fpp::Code::OK) {
 //        static_log_error("main", "Pipeline add sink_timelapse failed: " << ret << " - " << utils::code_to_string(ret));
 //    }
 
     int counter = 0;
     while (true) {
-        ProcessorPointer sink_event = std::make_shared<MediaSink>("group_video/" + std::to_string(counter++) + "_event.flv", IOPreset::Event);
+        SharedProcessor sink_event = std::make_shared<MediaSink>("group_video/" + std::to_string(counter++) + "_event.flv", IOPreset::Event);
         if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
             static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
         }
@@ -246,12 +246,12 @@ void memory_leak_test() {
 void write_video_from_camera() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-    ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554");
+    SharedProcessor source = std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554");
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOPreset::Event);
+    SharedProcessor sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOPreset::Event);
     if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
     }
@@ -272,13 +272,13 @@ void timer_debug() {
 void lavfi_debug() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-    ProcessorPointer silence = std::make_shared<MediaSource>(SINE(1000), IOPreset::Virtual);
+    SharedProcessor silence = std::make_shared<MediaSource>(SINE(1000), IOPreset::Virtual);
 
     if (auto ret = pipeline->addElement(silence); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOPreset::Event);
+    SharedProcessor sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOPreset::Event);
     if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
     }
@@ -289,18 +289,18 @@ void lavfi_debug() {
 void silence_mux_debug() {
     PipelinePointer pipeline = std::make_shared<Pipeline>();
 
-//    ProcessorPointer silence = std::make_shared<MediaSource>(SINE(100), IOPreset::Virtual);
-    ProcessorPointer silence = std::make_shared<MediaSource>(SILENCE, IOPreset::Virtual);
+//    SharedProcessor silence = std::make_shared<MediaSource>(SINE(100), IOPreset::Virtual);
+    SharedProcessor silence = std::make_shared<MediaSource>(SILENCE, IOPreset::Virtual);
     if (auto ret = pipeline->addElement(silence, SourceType::Backup); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer source = std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554");
+    SharedProcessor source = std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554");
     if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
     }
 
-    ProcessorPointer sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOPreset::Event);
+    SharedProcessor sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOPreset::Event);
     if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
         static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
     }

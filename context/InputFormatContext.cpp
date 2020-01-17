@@ -52,7 +52,7 @@ namespace fpp {
         case SeekPrecision::Precisely:
             return Code::NOT_IMPLEMENTED;
         }
-        auto ret = av_seek_frame(mediaFormatContext(), int(stream_index), timestamp, flags);
+        auto ret = av_seek_frame(formatContext().get(), int(stream_index), timestamp, flags);
         return_error_if(ret != 0
                         , "Failed to seek timestamp " << utils::time_to_string(timestamp, DEFAULT_TIME_BASE) << " in stream " << stream_index
                         , Code::FFMPEG_ERROR);
@@ -61,7 +61,7 @@ namespace fpp {
     }
 
     Code InputFormatContext::read(Packet& packet, ReadWriteMode read_mode) {
-        int ret = av_read_frame(mediaFormatContext(), &packet.raw());
+        int ret = av_read_frame(formatContext().get(), &packet.raw());
 
         return_info_if(ret == AVERROR_EOF
                        , "Reading completed"
@@ -79,13 +79,10 @@ namespace fpp {
     }
 
     Code fpp::InputFormatContext::createContext() {
-        return_error_if(inited_ptr(mediaFormatContext())
-                        , "Context already created!"
-                        , Code::INVALID_CALL_ORDER);
-        try_to(setMediaFormatContext(avformat_alloc_context()));
-        return_error_if(not_inited_ptr(mediaFormatContext())
-                        , "Failed to alloc input context."
-                        , Code::ERR);
+        setFormatContext(SharedAVFormatContext {
+                             avformat_alloc_context()
+                             , [](auto*& fmt_ctx){ /*if (fmt_ctx) { avformat_free_context(fmt_ctx); }*/ }
+                         });
         return Code::OK;
     }
 
@@ -96,11 +93,12 @@ namespace fpp {
             guessInputFromat();
         }
         return_if(mediaResourceLocator().empty(), Code::INVALID_INPUT);
-        if (avformat_open_input(mediaFormatContext2(), mediaResourceLocator().c_str(), _input_format, nullptr) < 0) {
+        auto todo_ptr = formatContext().get();
+        if (avformat_open_input(&todo_ptr, mediaResourceLocator().c_str(), _input_format, nullptr) < 0) {
             log_error("Failed to open input context.");
             return Code::INVALID_INPUT;
         }
-        if (avformat_find_stream_info(mediaFormatContext(), nullptr) < 0) {
+        if (avformat_find_stream_info(formatContext().get(), nullptr) < 0) {
             log_error("Failed to retrieve input video stream information.");
             return Code::ERR;
         }
@@ -112,14 +110,16 @@ namespace fpp {
 
     Code InputFormatContext::closeContext() {
         return_if(closed(), Code::OK);
-        avformat_close_input(mediaFormatContext2());
+        auto todo_ptr = formatContext().get();
+        avformat_close_input(&todo_ptr);
+        formatContext().reset();
         return Code::OK;
     }
 
     StreamVector InputFormatContext::parseFormatContext() {
         StreamVector result;
-        for (unsigned i = 0; i < mediaFormatContext()->nb_streams; ++i) {
-            result.push_back(std::make_shared<Stream>(mediaFormatContext()->streams[i], ParamsType::Input));
+        for (unsigned i = 0; i < formatContext()->nb_streams; ++i) {
+            result.push_back(std::make_shared<Stream>(formatContext()->streams[i], ParamsType::Input));
         }
         return result;
     }

@@ -23,7 +23,7 @@ namespace fpp {
 
     Code Concatenator::run() {
         return Code::NOT_IMPLEMENTED;
-//        ProcessorPointer output_file = std::make_shared<MediaSink>(_output_file_name, IOPreset::Event); /* crutch: preset */
+//        SharedProcessor output_file = std::make_shared<MediaSink>(_output_file_name, IOPreset::Event); /* crutch: preset */
 //        try_to(output_file->init());
 
 ////        output_file->stream(0)->setStampType(StampType::Append);

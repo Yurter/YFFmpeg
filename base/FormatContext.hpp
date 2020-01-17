@@ -9,6 +9,8 @@ namespace fpp {
         Interleaved,
     };
 
+    using SharedAVFormatContext = std::shared_ptr<AVFormatContext>;
+
     class FormatContext : public Object {
 
     public:
@@ -25,14 +27,13 @@ namespace fpp {
         bool                opened() const;
         bool                closed() const;
 
-        std::string         mediaResourceLocator()  const;  ///< Функция возвращает mrl.
-        AVFormatContext*    mediaFormatContext()    const;  ///< Функция возвращает ffmpeg медиа-контекст.
 
-        AVFormatContext**   mediaFormatContext2(); // TODO 14.01
+        std::string         mediaResourceLocator()  const;  ///< Функция возвращает mrl.
+        SharedAVFormatContext   formatContext()    const;  ///< Функция возвращает ffmpeg медиа-контекст.
 
         void                setStreams(StreamVector stream_list);
         StreamVector        streams();
-        const AVStream*     stream(int64_t index);          ///< Функция возвращает указатель на поток с заданным индексом; nullptr, если невалидный индекс.
+        const AVStream* stream(int64_t index);          ///< Функция возвращает указатель на поток с заданным индексом; nullptr, если невалидный индекс.
         int64_t             numberStream()  const;          ///< Функция возвращает количество потоков в текущем котексте.
         AVInputFormat*      inputFormat()   const;          ///< Функция ...
         AVOutputFormat*     outputFormat()  const;          ///< Функция ...
@@ -59,7 +60,7 @@ namespace fpp {
         virtual Code        openContext()   = 0;
         virtual Code        closeContext()  = 0;
 
-        Code                setMediaFormatContext(AVFormatContext* value);
+        void                setFormatContext(SharedAVFormatContext format_context);
 
     private:
 
@@ -70,13 +71,13 @@ namespace fpp {
 
     private:
 
-        AVFormatContext*	_format_context; //TODO убрать голый указатель 15.01
-        const std::string   _media_resource_locator;
-        const IOPreset      _preset;
-        bool                _opened;
-        StreamVector        _streams;
-        int64_t             _artificial_delay;
-        Interrupter         _current_interrupter;
+        SharedAVFormatContext   _format_context;
+        const std::string       _media_resource_locator;
+        const IOPreset          _preset;
+        bool                    _opened;
+        StreamVector            _streams;
+        int64_t                 _artificial_delay;
+        Interrupter             _current_interrupter;
 
     };
 

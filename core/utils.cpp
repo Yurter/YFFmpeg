@@ -530,7 +530,7 @@ namespace fpp {
         return false;
     }
 
-    StreamPointer utils::find_best_stream(const StreamVector& stream_list) {
+    SharedStream utils::find_best_stream(const StreamVector& stream_list) {
         auto best_stream_it = std::max_element(std::begin(stream_list), std::end(stream_list)
             , [](const auto& lhs, const auto& rhs) {
             return lhs->params->betterThen(rhs->params);

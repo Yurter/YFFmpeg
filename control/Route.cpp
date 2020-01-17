@@ -28,7 +28,7 @@ namespace fpp {
         if (inited()) {
             return Code::INVALID_CALL_ORDER;
         }
-        _sequence.for_each([uid = _input_stream_uid](ProcessorPointer& current, ProcessorPointer& next) {
+        _sequence.for_each([uid = _input_stream_uid](SharedProcessor& current, SharedProcessor& next) {
             try_throw_static(current->connectTo(uid, next));
         });
         setInited(true);
@@ -50,7 +50,7 @@ namespace fpp {
         return str;
     }
 
-    Code Route::append(ProcessorPointer processor) {
+    Code Route::append(SharedProcessor processor) {
         return_if(not_inited_ptr(processor), Code::INVALID_INPUT);
         _sequence.push_back(processor);
         return Code::OK;

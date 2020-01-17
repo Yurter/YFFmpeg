@@ -39,7 +39,7 @@ namespace fpp {
         return _streams;
     }
 
-    StreamPointer Processor::bestStream(MediaType type) const {
+    SharedStream Processor::bestStream(MediaType type) const {
         StreamVector candidate_list;
         for (auto& stream : _streams) {
             if (stream->typeIs(type)) {
@@ -48,7 +48,7 @@ namespace fpp {
         }
         return utils::find_best_stream(candidate_list);
     }
-//    StreamPointer Processor::bestStream(MediaType type) const {
+//    SharedStream Processor::bestStream(MediaType type) const {
 //        StreamVector candidate_list;
 //        std::copy_if(std::begin(_streams), std::end(_streams)
 //                     , std::begin(candidate_list)
@@ -58,7 +58,7 @@ namespace fpp {
 //        return utils::find_best_stream(candidate_list);
 //    }
 
-    StreamPointer Processor::stream(int64_t index) const {
+    SharedStream Processor::stream(int64_t index) const {
         if (size_t(index) < _streams.size()) {
             return _streams[size_t(index)];
         } else {
@@ -83,14 +83,14 @@ namespace fpp {
         _opened = opened;
     }
 
-    Code fpp::Processor::connectTo(UID stream_id, ProcessorPointer other) {
+    Code fpp::Processor::connectTo(UID stream_id, SharedProcessor other) {
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
         _stream_map[stream_id].push_back(other);
         log_debug("Connected " << stream_id << " stream to " << other->name());
         return Code::OK;
     }
 
-    Code Processor::disconnectFrom(const ProcessorPointer other) { //TODO нет проверок на ошибки 10.01
+    Code Processor::disconnectFrom(const SharedProcessor other) { //TODO нет проверок на ошибки 10.01
         return_if(not_inited_ptr(other), Code::INVALID_INPUT);
         for (auto [stream_id, proc_list] : _stream_map) {
             proc_list.remove_if([&other](const auto& proc) {
@@ -101,7 +101,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    bool Processor::equalTo([[maybe_unused]] const ProcessorPointer other) const {
+    bool Processor::equalTo([[maybe_unused]] const SharedProcessor other) const {
         log_warning("Method equalTo() was not implemented");
         return false;
     }
