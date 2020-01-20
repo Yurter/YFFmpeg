@@ -11,27 +11,48 @@ namespace fpp {
         try_throw(stop());
     }
 
-    Code Pipeline::addElement(SharedProcessor processor, SourceType priority) { //TODO каша из кода
+//    Code Pipeline::addElement(SharedProcessor processor, SourceType priority) { //TODO каша из кода
+//        switch (processor->type()) {
+//        case ProcessorType::Input:
+//            try_to(processor->init());
+//            try_to(processor->open());
+//            if (priority == SourceType::Mandatory) {
+//                _data_sources.push_back(processor);
+//            } else {
+//                _data_backup_sources.push_back(processor);
+//            }
+//            return Code::OK;
+//        case ProcessorType::Output:
+//            _data_sinks.push_back(processor);
+//            try_to(processor->init());
+//            try_to(determineSequence(processor));
+//            return Code::OK;
+//        case ProcessorType::Process:
+//        case ProcessorType::Unknown:
+//            return Code::INVALID_INPUT;
+//        }
+//        return Code::ERR;
+//    }
+    void Pipeline::addElement(SharedProcessor processor, SourceType priority) { //TODO каша из кода
         switch (processor->type()) {
         case ProcessorType::Input:
-            try_to(processor->init());
-            try_to(processor->open());
+            processor->init();
+            processor->open();
             if (priority == SourceType::Mandatory) {
                 _data_sources.push_back(processor);
             } else {
                 _data_backup_sources.push_back(processor);
             }
-            return Code::OK;
+            return;
         case ProcessorType::Output:
             _data_sinks.push_back(processor);
-            try_to(processor->init());
-            try_to(determineSequence(processor));
-            return Code::OK;
+            processor->init();
+            determineSequence(processor);
+            return;
         case ProcessorType::Process:
         case ProcessorType::Unknown:
-            return Code::INVALID_INPUT;
+            return;
         }
-        return Code::ERR;
     }
 
     void Pipeline::remElement(SharedProcessor processor) {

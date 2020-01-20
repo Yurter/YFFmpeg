@@ -31,7 +31,8 @@ namespace fpp {
         Pipeline();
         virtual ~Pipeline() override;
 
-        Code                addElement(SharedProcessor processor, SourceType priority = SourceType::Mandatory); //TODO refactoring priority 13.01
+        void                addElement(SharedProcessor processor, SourceType priority = SourceType::Mandatory); //TODO refactoring priority 13.01
+//        Code                addElement(SharedProcessor processor, SourceType priority = SourceType::Mandatory); //TODO refactoring priority 13.01
                                                                                                                     // перенести свойство в процессор
         void                remElement(SharedProcessor processor);
         void                remElement(int64_t uid);

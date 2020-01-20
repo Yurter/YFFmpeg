@@ -20,6 +20,8 @@ namespace fpp {
         using ProcessFunction = std::function<Code(outType&)>;
         using DataVerification = std::function<Code(const inType&)>;
 
+//        static const ProcessFunction NoProcess = [](outType&) { return Code::OK; }; //TODO 20.01
+
         TemplateProcessor()
             : _input_queue(50 MEGABYTES,  [](const inType& input_data)   { return input_data.size();  })
             , _output_queue(50 MEGABYTES, [](const outType& output_data) { return output_data.size(); }) {

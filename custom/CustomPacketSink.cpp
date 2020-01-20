@@ -2,10 +2,10 @@
 
 namespace fpp {
 
-    CustomPacketSink::CustomPacketSink(std::string sink_name
+    CustomPacketSink::CustomPacketSink(const std::string& sink_name
                                        , StreamVector streams
-                                       , WriteFunction write_func
-                                       , ProcessFunction process_func)
+                                       , const WriteFunction write_func
+                                       , const ProcessFunction process_func)
         : _sink_name(sink_name)
         , _write_func(write_func)
         , _process_func(process_func) {

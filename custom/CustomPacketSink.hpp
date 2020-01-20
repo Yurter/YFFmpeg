@@ -7,10 +7,10 @@ namespace fpp {
 
     public:
 
-        CustomPacketSink(std::string sink_name
+        CustomPacketSink(const std::string& sink_name
                            , StreamVector streams
-                           , WriteFunction write_func
-                           , ProcessFunction process_func);
+                           , const WriteFunction write_func
+                           , const ProcessFunction process_func = [](Packet&) { return Code::OK; });
         virtual ~CustomPacketSink() override;
 
         virtual Code        init() override;
@@ -25,9 +25,9 @@ namespace fpp {
 
     private:
 
-        std::string         _sink_name;
-        WriteFunction       _write_func;
-        ProcessFunction     _process_func;
+        const std::string       _sink_name;
+        const WriteFunction     _write_func;
+        const ProcessFunction   _process_func;
 
     };
 

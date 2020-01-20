@@ -2,10 +2,10 @@
 
 namespace fpp {
 
-    CustomPacketSource::CustomPacketSource(std::string source_name
+    CustomPacketSource::CustomPacketSource(const std::string& source_name
                                            , StreamVector streams
-                                           , ReadFunction read_func
-                                           , ProcessFunction process_func)
+                                           , const ReadFunction read_func
+                                           , const ProcessFunction process_func)
         : _source_name(source_name)
         , _read_func(read_func)
         , _process_func(process_func) {

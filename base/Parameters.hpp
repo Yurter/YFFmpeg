@@ -3,8 +3,6 @@
 
 namespace fpp {
 
-//    using Parameters = std::shared_ptr<_Parameters>; //TODO
-
     class Parameters;
     using SharedParameters = std::shared_ptr<Parameters>;
     using IOParams = struct { SharedParameters in; SharedParameters out; };

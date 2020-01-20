@@ -7,10 +7,10 @@ namespace fpp {
 
     public:
 
-        CustomPacketSource(std::string source_name
+        CustomPacketSource(const std::string& source_name
                            , StreamVector streams
-                           , ReadFunction read_func
-                           , ProcessFunction process_func);
+                           , const ReadFunction read_func
+                           , const ProcessFunction process_func = [](Packet&) { return Code::OK; });
         virtual ~CustomPacketSource() override;
 
         virtual Code        init() override;
@@ -23,9 +23,9 @@ namespace fpp {
         virtual Code        readInputData(Packet& input_data) override;
         virtual Code        processInputData(Packet input_data) override;
 
-        std::string         _source_name;
-        ReadFunction        _read_func;
-        ProcessFunction     _process_func;
+        const std::string       _source_name;
+        const ReadFunction      _read_func;
+        const ProcessFunction   _process_func;
 
     };
 
