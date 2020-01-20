@@ -35,7 +35,7 @@ namespace fpp {
         void                setStreams(StreamVector stream_list);
         StreamVector        streams();
         const StreamVector  streams() const;
-        const AVStream* stream(int64_t index);          ///< Функция возвращает указатель на поток с заданным индексом; nullptr, если невалидный индекс.
+        const AVStream* stream(int64_t index);          ///< Функция возвращает указатель на поток с заданным индексом; nullptr, если невалидный индекс. //TODO переделать AVStream на Stream 20.01
         int64_t             numberStream()  const;          ///< Функция возвращает количество потоков в текущем котексте.
         AVInputFormat*      inputFormat()   const;          ///< Функция ...
         AVOutputFormat*     outputFormat()  const;          ///< Функция ...

@@ -82,7 +82,7 @@ namespace fpp {
 
     Code MediaSource::processInputData(Packet input_data) {
         if (stream(input_data.streamIndex())->packetIndex() == 0) { //TODO костыль? каждый раз проверяет.. -> перенести в онСтарт - раз прочитать пакеты из каждого потока
-            stream(input_data.streamIndex())->determineStampType(input_data);
+            determineStampType(input_data);
         }
 
         auto data_stream = stream(input_data.streamIndex());
@@ -97,6 +97,19 @@ namespace fpp {
         }
 
         return sendOutputData(input_data, data_stream->params->streamUid());
+    }
+
+    void MediaSource::determineStampType(const Packet& packet) {
+        auto input_stream = stream(packet.streamIndex());
+        if (packet.pts() != 0) { /* Требуется перештамповывать пакеты */
+            if (input_stream->startTimePoint() == FROM_START) { /* Чтение из источника, передающего пакеты не с начала */
+                input_stream->setStampType(StampType::Realtime);
+            } else {
+                input_stream->setStampType(StampType::Offset); /* Происходит чтение не с начала файла */
+            }
+        } else {
+            input_stream->setStampType(StampType::Copy);
+        }
     }
 
 } // namespace fpp

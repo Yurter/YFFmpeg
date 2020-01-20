@@ -141,10 +141,4 @@ namespace fpp {
         return _format_context->oformat;
     }
 
-//    Code FormatContext::setMediaFormatContext(AVFormatContext* value) {
-//        return_if(not_inited_ptr(value), Code::INVALID_INPUT);
-//        _format_context = value;
-//        return Code::OK;
-//    }
-
 } // namespace fpp

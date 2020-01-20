@@ -23,8 +23,7 @@ namespace fpp {
 
         virtual Code        readInputData(Packet& input_data) override;
         virtual Code        processInputData(Packet input_data) override;
-
-//        void                determineStampType(const Packet& packet); //TODO забрать метод у потока 17.01
+        void                determineStampType(const Packet& packet);
 
     private:
 

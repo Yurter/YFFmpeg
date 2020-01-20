@@ -17,15 +17,14 @@ namespace fpp {
     public:
 
         Stream(const AVStream* avstream, SharedParameters parameters);
-        Stream(const AVStream* avstream, ParamsType type);   // Создание реального потока
-        Stream(SharedParameters params);   // Создание виртуального потока
+        Stream(const AVStream* avstream, ParamsType type);      // Создание реального потока
+        Stream(SharedParameters params);                        // Создание виртуального потока
         Stream(const Stream& other)  = delete;
         virtual ~Stream() override = default;
 
         virtual Code        init() override;
         virtual std::string toString() const override final;
 
-        void                determineStampType(const Packet& packet);
         Code                stampPacket(Packet& packet);
         bool                timeIsOver() const;
 

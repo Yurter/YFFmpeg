@@ -51,18 +51,6 @@ namespace fpp {
                 + (used() ? params->toString() : "not used");
     }
 
-    void Stream::determineStampType(const Packet& packet) { //TODO: перенести в сорс, т.к. только в нем изменяется дефолтный тип штампа
-        if (packet.pts() != 0) { /* Требуется перештамповывать пакеты */
-            if (_start_time_point == FROM_START) { /* Чтение из источника, передающего пакеты не с начала */
-                setStampType(StampType::Realtime);
-            } else {
-                setStampType(StampType::Offset); /* Происходит чтение не с начала файла */
-            }
-        } else {
-            setStampType(StampType::Copy);
-        }
-    }
-
     Code Stream::stampPacket(Packet& packet) { // TODO refactoring 14.01
         switch (_stamp_type) {
         case StampType::Copy:
