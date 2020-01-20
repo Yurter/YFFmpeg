@@ -30,8 +30,8 @@ namespace fpp {
     protected:
 
         virtual Code        run();
-        virtual Code        onStart();
-        virtual Code        onStop();
+        virtual void        onStart();
+        virtual void        onStop();
 
     private:
 

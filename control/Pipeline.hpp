@@ -42,8 +42,7 @@ namespace fpp {
 
         virtual Code        init()      override;
         virtual Code        run()       override;
-        virtual Code        onStart()   override;
-        virtual Code        onStop()    override;
+        virtual void        onStop()    override;
 
         Code                determineSequence(const SharedProcessor output_processor);
         Code                createSequence(Route& route);

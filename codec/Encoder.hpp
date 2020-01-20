@@ -21,7 +21,7 @@ namespace fpp {
 
     private:
 
-        virtual Code        onStop() override;
+        virtual void        onStop() override;
 
     private:
 

@@ -8,19 +8,9 @@ namespace fpp {
         setName("Resampler");
     }
 
-    Resampler::~Resampler() {
-        if (_resampler_context != nullptr) {
-//            swr_free(&_resampler_context);
-        }
-    }
-
     Code Resampler::init() {
         return_if(inited(), Code::INVALID_CALL_ORDER);
-    //    return_if_not(_io_streams.first->inited(), Code::INVALID_INPUT); //TODO
-    //    return_if_not(_io_streams.second->inited(), Code::INVALID_INPUT);
 
-    //    auto in_param = dynamic_cast<AudioStream*>(_io_streams.first)->parameters; //TODO
-    //    auto out_param = dynamic_cast<AudioStream*>(_io_streams.second)->parameters;
         auto in_param = dynamic_cast<const AudioParameters * const>(params.in.get());
         auto out_param = dynamic_cast<const AudioParameters * const>(params.out.get());
 
@@ -38,23 +28,12 @@ namespace fpp {
                 , [](SwrContext*& ctx) { swr_free(&ctx); }
         };
 
-//        _resampler_context = swr_alloc_set_opts(
-//            nullptr,
-//            av_get_default_channel_layout(int(out_param->channels())),
-//            out_param->sampleFormat(),
-//            int(out_param->sampleRate()),
-//            av_get_default_channel_layout(int(in_param->channels())),
-//            in_param->sampleFormat(),
-//            int(in_param->sampleRate()),
-//            0, nullptr
-//        );
         if (_resampler_context == nullptr) {
             log_error("Could not allocate resampler context");
             return Code::ERR;
         }
         if (swr_init(_resampler_context.get()) < 0) {
             log_error("Could not open resample context");
-//            swr_free(&_resampler_context); ??TODO !!!
             return Code::ERR;
         }
         setInited(true);
@@ -92,44 +71,14 @@ namespace fpp {
                 return Code::ERR;
             }
             resampled_frame.setType(params.in->type());
-//            resampled_frame.setTimeBase(params.in->timeBase());
             resampled_frame.setPts(input_data.pts());
 
-//            log_warning("RESAMPLED: " << resampled_frame);
             try_to(sendOutputData(resampled_frame));
         } while (swr_get_out_samples(_resampler_context.get(), 0) >= audio_params->frameSize());
 
         return Code::OK;
     }
 
-//    bool Resampler::initOutputFrame(AVFrame** frame, int frame_size) {
-//        frame_size = 1024; //TODO critical!
-//        auto in_param = dynamic_cast<const AudioParameters * const>(params.in);
-//        auto out_param = dynamic_cast<const AudioParameters * const>(params.out);
-//        /* Create a new frame to store the audio samples. */
-//        if (!(*frame = av_frame_alloc())) {
-//            log_error("Could not allocate output frame");
-//            return false;
-//        }
-//        /* Set the frame's parameters, especially its size and format.
-//         * av_frame_get_buffer needs this to allocate memory for the
-//         * audio samples of the frame.
-//         * Default channel layouts based on the number of channels
-//         * are assumed for simplicity. */
-//        (*frame)->nb_samples     = frame_size;
-//        (*frame)->channel_layout = out_param->channelLayout();
-//        (*frame)->format         = out_param->sampleFormat();
-//        (*frame)->sample_rate    = int(out_param->sampleRate());
-//        /* Allocate the samples of the created frame. This call will make
-//         * sure that the audio frame can hold as many samples as specified. */
-//        if (av_frame_get_buffer(*frame, 0) < 0) {
-//            log_error("Could not allocate output frame samples");
-//            av_frame_free(frame);
-//            return false;
-//        }
-//        return true;
-//    }
-    // ПЕРЕДЕЛКИ С УКАЗАТЕЛЯ
     bool Resampler::initOutputFrame(Frame& frame, int64_t frame_size) {
         frame_size = 1024; //TODO critical!
         auto in_param = dynamic_cast<const AudioParameters * const>(params.in.get());

@@ -77,7 +77,7 @@ namespace fpp {
     Code fpp::InputFormatContext::createContext() {
         setFormatContext(SharedAVFormatContext {
                              avformat_alloc_context()
-                             , [](auto*& fmt_ctx){ /*if (fmt_ctx) { avformat_free_context(fmt_ctx); }*/ }
+                             , [](auto*& fmt_ctx) { /*avformat_free_context(fmt_ctx);*/ }
                          });
         return Code::OK;
     }
@@ -106,8 +106,9 @@ namespace fpp {
 
     Code InputFormatContext::closeContext() {
         return_if(closed(), Code::OK);
-        auto todo_ptr = formatContext().get();
-        avformat_close_input(&todo_ptr);
+        auto fmt_ctx = formatContext().get();
+        avformat_close_input(&fmt_ctx);
+        log_error("after: " << fmt_ctx << " " << formatContext().get());
 //        formatContext().reset();
         return Code::OK;
     }

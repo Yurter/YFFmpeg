@@ -97,17 +97,12 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code Pipeline::onStart() { // TODO
-        return Code::OK;
-    }
-
-    Code Pipeline::onStop() {
+    void Pipeline::onStop() {
         log_info("Stopping...");
         _data_sources.for_each([](auto& source){
             try_throw_static(source->stop());
         });
         log_info("Processing finished");
-        return Code::OK;
     }
 
     Code Pipeline::createSequence(Route& route) {

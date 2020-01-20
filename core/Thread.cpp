@@ -61,8 +61,8 @@ namespace fpp {
                     _exit_code = _loop_function();
                 } while_not (utils::exit_code(_exit_code));
 
-                std::string log_message = utils::error_code(_exit_code)
-                        ? "Thread finished with code: "
+                const std::string log_message = utils::error_code(_exit_code)
+                        ? "Thread finished with error code: "
                         : "Thread correctly finished with code: ";
                 log_debug(log_message << _exit_code << " - " << utils::code_to_string(_exit_code));
             } CATCH
@@ -102,12 +102,10 @@ namespace fpp {
         return Code::NOT_IMPLEMENTED;
     }
 
-    Code Thread::onStart() {
-        return Code::OK;
+    void Thread::onStart() {
     }
 
-    Code Thread::onStop() {
-        return Code::OK;
+    void Thread::onStop() {
     }
 
 } // namespace fpp

@@ -1,14 +1,14 @@
 #pragma once
-#include "Object.hpp"
 #include <exception>
+#include <string>
 
 namespace fpp {
 
-    class Exception : public Object, public std::exception { //TODO
+    class Exception : public std::exception {
 
     public:
 
-        Exception(std::string error_message);
+        Exception(const std::string& error_message);
 
 };
 

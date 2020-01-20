@@ -10,10 +10,10 @@ namespace fpp {
     public:
 
         Resampler(IOParams params);
-        virtual ~Resampler() override;
+        virtual ~Resampler() override = default;
 
-        virtual Code        init() override;
-        virtual Code        open() override;
+        virtual Code        init()  override;
+        virtual Code        open()  override;
         virtual Code        close() override;
 
         const IOParams      params;

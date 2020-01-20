@@ -71,10 +71,4 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code CustomPacketSink::onStop() {
-        log_debug("onStop");
-        try_to(close());
-        return Code::OK;
-    }
-
 } // namespace fpp

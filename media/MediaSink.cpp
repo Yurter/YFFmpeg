@@ -93,10 +93,4 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code MediaSink::onStop() { //TODO убрать, если не используется 14.01
-        log_debug("onStop");
-//        try_to(close());
-        return Code::OK;
-    }
-
 } // namespace fpp

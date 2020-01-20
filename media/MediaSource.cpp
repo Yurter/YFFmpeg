@@ -99,10 +99,4 @@ namespace fpp {
         return sendOutputData(input_data, data_stream->params->streamUid());
     }
 
-    Code MediaSource::onStop() {
-        log_debug("onStop");
-//        try_to(close());
-        return Code::OK;
-    }
-
 } // namespace fpp

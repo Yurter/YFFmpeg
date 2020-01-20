@@ -310,16 +310,6 @@ void silence_mux_debug() {
 
 int main() {
 
-    std::shared_ptr d = std::make_shared<int>(5);
-    std::cout<< *d << std::endl;
-
-    int* p = d.get();
-    int** b = &p;
-
-    *b = new int(42);
-
-    std::cout<< *d << std::endl;
-
     // video=HP Wide Vision FHD Camera
     // video=Webcam C170
     // video=USB2.0 PC CAMERA

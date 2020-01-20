@@ -24,7 +24,6 @@ namespace fpp {
 
         virtual Code        processInputData(Packet input_data) override;
         virtual Code        writeOutputData(Packet output_data) override;
-        virtual Code        onStop() override;
 
     private:
 

@@ -62,11 +62,10 @@ namespace fpp {
         return &_encoder_context;
     }
 
-    Code Encoder::onStop() {
+    void Encoder::onStop() {
         log_debug("onStop");
-        try_to(_encoder_context.flush(nullptr));
+        _encoder_context.flush(nullptr);
         stopWait();
-        return Code::OK;
     }
 
 } // namespace fpp

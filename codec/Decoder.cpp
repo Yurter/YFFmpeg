@@ -60,11 +60,10 @@ namespace fpp {
         return &_decoder_context;
     }
 
-    Code Decoder::onStop() {
+    void Decoder::onStop() {
         log_debug("onStop");
-        try_to(_decoder_context.flush(nullptr));
+        _decoder_context.flush(nullptr);
         stopWait();
-        return Code::OK;
     }
 
 } // namespace fpp

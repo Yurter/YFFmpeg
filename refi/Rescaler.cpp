@@ -17,12 +17,12 @@ namespace fpp {
         auto input_params = dynamic_cast<const VideoParameters * const>(params.in.get());
         auto output_params = dynamic_cast<const VideoParameters * const>(params.out.get());
         _rescaler_context = SharedSwsContext {
-                sws_getContext(
-                    int(input_params->width()), int(input_params->height()), input_params->pixelFormat()
-                    , int(output_params->width()), int(output_params->height()), output_params->pixelFormat()
-                    , SWS_BICUBIC, nullptr, nullptr, nullptr
-                )
-                , [](SwsContext*& ctx) { sws_freeContext(ctx); }
+            sws_getContext(
+                int(input_params->width()), int(input_params->height()), input_params->pixelFormat()
+                , int(output_params->width()), int(output_params->height()), output_params->pixelFormat()
+                , SWS_BICUBIC, nullptr, nullptr, nullptr
+            )
+            , [](SwsContext*& ctx) { sws_freeContext(ctx); }
         };
         return_if(not_inited_ptr(_rescaler_context), Code::ERR);
         log_info("Inited from"
@@ -79,11 +79,6 @@ namespace fpp {
                   != other_rescaler->params.in->streamUid(), false);
 
         return true;
-    }
-
-    Code Rescaler::onStop() { //TODO убрать ? 17.01
-        log_debug("onStop");
-        return Code::OK;
     }
 
 } // namespace fpp

@@ -54,9 +54,4 @@ namespace fpp {
         return ret;
     }
 
-    Code CustomPacketSource::onStop() {
-        try_to(close());
-        return Code::OK;
-    }
-
 } // namespace fpp
