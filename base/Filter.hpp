@@ -7,7 +7,7 @@ namespace fpp {
 
     public:
 
-        Filter(IOParams params, std::string filters_descr);
+        Filter(IOParams params, const std::string& filters_descr);
         virtual ~Filter() override;
 
         virtual Code        init() override;
@@ -31,7 +31,7 @@ namespace fpp {
 
     private:
 
-        std::string         _filters_descr;
+        const std::string   _filters_descr;
         AVFilterGraph*      _filter_graph;      //TODO убрать голый указатель 15.01
         AVFilterContext*    _buffersrc_ctx;     //TODO убрать голый указатель 15.01
         AVFilterContext*    _buffersink_ctx;    //TODO убрать голый указатель 15.01

@@ -2,10 +2,9 @@
 
 namespace fpp {
 
-    Filter::Filter(IOParams params, std::string filters_descr) :
-        params(params)
-      , _filters_descr(filters_descr)
-    {
+    Filter::Filter(IOParams params, const std::string& filters_descr)
+        : params(params)
+        , _filters_descr(filters_descr) {
         setName("Filter");
     }
 
@@ -14,15 +13,15 @@ namespace fpp {
     }
 
     Code Filter::init() {
-        return_if(inited(), Code::INVALID_CALL_ORDER);
+        return_if(inited(), Code::OK);
         auto out_params = dynamic_cast<const VideoParameters*>(params.out.get()); //TODO решить использовать входные или выходные параметры
 
         char args[512];
         int ret = 0;
-        const AVFilter *buffersrc  = avfilter_get_by_name("buffer");
-        const AVFilter *buffersink = avfilter_get_by_name("buffersink");
-        AVFilterInOut *outputs = avfilter_inout_alloc();
-        AVFilterInOut *inputs  = avfilter_inout_alloc();
+        const AVFilter* buffersrc  = avfilter_get_by_name("buffer");
+        const AVFilter* buffersink = avfilter_get_by_name("buffersink");
+        AVFilterInOut* outputs = avfilter_inout_alloc(); //TODO убрать голый указатель 20.01
+        AVFilterInOut* inputs  = avfilter_inout_alloc(); //TODO убрать голый указатель 20.01
         AVRational time_base = out_params->timeBase();
 //        enum AVPixelFormat pix_fmts[] = { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE };
         enum AVPixelFormat pix_fmts[] = { out_params->pixelFormat(), AV_PIX_FMT_NONE };
@@ -107,7 +106,6 @@ namespace fpp {
         avfilter_inout_free(&inputs);
         avfilter_inout_free(&outputs);
 
-        //return ret;
         setInited(true);
         return Code::OK;
     }

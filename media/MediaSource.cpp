@@ -73,9 +73,7 @@ namespace fpp {
                 try_to(_input_format_context.seek(stream->index(), stream->startTimePoint()));
             }
         }
-//        try_to(_input_format_context.read(input_data));
         try_to(_input_format_context.read(input_data, _input_format_context.presetIs(IOPreset::Virtual) ? ReadWriteMode::Interleaved : ReadWriteMode::Instant)); //TODO refactoring 13.01
-//        if (input_data.isAudio()) log_warning("1] READ: " << input_data);
         return_if(stream(input_data.streamIndex())->timeIsOver(), Code::END_OF_FILE); //TODO перенести
         return Code::OK;
     }
