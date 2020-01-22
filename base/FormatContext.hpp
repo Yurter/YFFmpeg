@@ -2,6 +2,11 @@
 #include "core/utils.hpp"
 #include "core/time/Chronometer.hpp"
 
+extern "C" {
+    #include <libavformat/avformat.h>
+    #include <libavdevice/avdevice.h>
+}
+
 namespace fpp {
 
     enum class ReadWriteMode {

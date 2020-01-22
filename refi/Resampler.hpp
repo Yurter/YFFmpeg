@@ -1,6 +1,10 @@
 #pragma once
 #include "inout/FrameProcessor.hpp"
 
+extern "C" {
+    #include <libswresample/swresample.h>
+}
+
 namespace fpp {
 
     using SharedSwrContext = std::shared_ptr<SwrContext>;

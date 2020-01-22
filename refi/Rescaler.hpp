@@ -1,6 +1,10 @@
 #pragma once
 #include "inout/FrameProcessor.hpp"
 
+extern "C" {
+    #include <libswscale/swscale.h>
+}
+
 namespace fpp {
 
     using SharedSwsContext = std::shared_ptr<SwsContext>;

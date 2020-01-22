@@ -1,6 +1,13 @@
 #pragma once
 #include "inout/FrameProcessor.hpp"
 
+extern "C" {
+    #include <libavfilter/avfilter.h>
+    #include <libavfilter/buffersink.h> //TODO перенести в cpp 22.01
+    #include <libavfilter/buffersrc.h>  //TODO перенести в cpp 22.01
+    #include <libavutil/opt.h>          //TODO перенести в cpp 22.01
+}
+
 namespace fpp {
 
     class Filter : public FrameProcessor { //TODO определиться: фильтровать по выходным параметрам или входным, или настраивать? от этого зависит порядко на пайплайне

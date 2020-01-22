@@ -1,6 +1,10 @@
 #pragma once
 #include "Data.hpp"
 
+extern "C" {
+    #include <libavutil/frame.h>
+}
+
 namespace fpp {
 
     class Frame : public Data<AVFrame> {

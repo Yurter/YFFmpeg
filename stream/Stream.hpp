@@ -5,6 +5,11 @@
 #include <vector>
 #include <list>
 
+extern "C" {
+    #include <libavformat/avformat.h>
+    #include <libavutil/mathematics.h>
+}
+
 namespace fpp {
 
     class Stream;

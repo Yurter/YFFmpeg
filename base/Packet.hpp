@@ -1,6 +1,10 @@
 #pragma once
 #include "Data.hpp"
 
+extern "C" {
+    #include <libavcodec/avcodec.h>
+}
+
 namespace fpp {
 
     class Packet : public Data<AVPacket> {
