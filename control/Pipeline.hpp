@@ -17,7 +17,7 @@
 namespace fpp {
 
     class Pipeline;
-    using PipelinePointer = std::shared_ptr<Pipeline>;
+    using SharedPipeline = std::shared_ptr<Pipeline>;
 
     enum class SourceType {
         Mandatory,

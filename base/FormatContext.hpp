@@ -16,7 +16,7 @@ namespace fpp {
     public:
 
         FormatContext(const std::string& mrl, IOPreset preset = IOPreset::Auto); ///< mrl - media resource locator.
-        FormatContext(const FormatContext& other)  = delete;
+        FormatContext(const FormatContext& other) = delete;
         virtual ~FormatContext() override;
 
         IOPreset            preset() const;

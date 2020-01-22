@@ -243,21 +243,17 @@ void concatenator_debug() {
 //    }
 //}
 
-//void write_video_from_camera() {
-//    PipelinePointer pipeline = std::make_shared<Pipeline>();
+void write_video_from_camera() {
 
-//    SharedProcessor source = std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554");
-//    if (auto ret = pipeline->addElement(source); ret != fpp::Code::OK) {
-//        static_log_error("main", "Pipeline add source failed: " << ret << " - " << utils::code_to_string(ret));
-//    }
+    SharedPipeline pipeline = std::make_shared<Pipeline>();
 
-//    SharedProcessor sink_event = std::make_shared<MediaSink>("debug_files/event.flv", IOPreset::Event);
-//    if (auto ret = pipeline->addElement(sink_event); ret != fpp::Code::OK) {
-//        static_log_error("main", "Pipeline add sink_event failed: " << ret << " - " << utils::code_to_string(ret));
-//    }
+//    pipeline->addElement(std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554"));
+    pipeline->addElement(std::make_shared<MediaSource>("rtsp://b1.dnsdojo.com:1935/live/sys3.stream"));
+    pipeline->addElement(std::make_shared<MediaSink>("debug_files/event.flv", IOPreset::Event));
 
-//    utils::sleep_for_sec(10);
-//}
+    utils::sleep_for_sec(10);
+
+}
 
 #include "core/time/Timer.hpp"
 void timer_debug() {
@@ -313,7 +309,7 @@ void dec_enc(std::vector<IOParams> io_params
                   , PacketSink::WriteFunction  packet_producer_foo) {
 
     /* Создание управляющего класса */
-    PipelinePointer pipeline = std::make_shared<Pipeline>();
+    SharedPipeline pipeline = std::make_shared<Pipeline>();
 
     /* Создание потоков на основе полученных параметров */
     StreamVector input_streams;
@@ -339,6 +335,7 @@ int main() {
     // rtsp://admin:admin@192.168.10.189:554/ch01.264
     // rtsp://admin:Admin2019@192.168.10.12:554
     // rtsp://admin:admin@192.168.10.3:554
+    // rtsp://b1.dnsdojo.com:1935/live/sys3.stream
 
     static_log_info("main", "Program started...");
     avdevice_register_all(); //TODO вызов необходим для работы USB-камер, перенести
@@ -372,11 +369,11 @@ int main() {
 //        return 0;
 //    }
 
-//    {
-//        set_log_level(LogLevel::Debug);
-//        write_video_from_camera();
-//        return 0;
-//    }
+    {
+        set_log_level(LogLevel::Debug);
+        write_video_from_camera();
+        return 0;
+    }
 
 //    {
 //        set_log_level(LogLevel::Debug);
