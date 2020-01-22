@@ -9,7 +9,7 @@ namespace fpp {
 
         Packet();
         Packet(const Packet& other);
-        Packet(const AVPacket& avpacket, MediaType type);
+        Packet(const AVPacket& avpacket, AVRational time_base, MediaType type);
         virtual ~Packet() override;
 
         Packet& operator=(const Packet& other);
@@ -35,7 +35,7 @@ namespace fpp {
     private:
 
         void                copy(const Packet& other);
-        void                copy(const AVPacket& other, MediaType type);
+        void                copy(const AVPacket& other, AVRational time_base, MediaType type);
 
     private:
 

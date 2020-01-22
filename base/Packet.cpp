@@ -15,9 +15,9 @@ namespace fpp {
         copy(other);
     }
 
-    Packet::Packet(const AVPacket& avpacket, MediaType type)
+    Packet::Packet(const AVPacket& avpacket, AVRational time_base, MediaType type)
         : Packet() {
-        copy(avpacket, type);
+        copy(avpacket, time_base, type);
     }
 
     Packet::~Packet() {
@@ -111,11 +111,12 @@ namespace fpp {
         }
     }
 
-    void Packet::copy(const AVPacket& other, MediaType type) {
+    void Packet::copy(const AVPacket& other, AVRational time_base, MediaType type) {
         setType(type);
         setPts(other.pts);
         setDts(other.dts);
         setDuration(other.duration);
+        setTimeBase(time_base);
         setPos(other.pos);
         setStreamIndex(other.stream_index);
         if (av_packet_ref(&_data, &other) != 0) {
