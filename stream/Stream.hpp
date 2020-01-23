@@ -1,29 +1,38 @@
 #pragma once
-#include "base/Parameters.hpp"
-#include "core/time/Chronometer.hpp"
-#include "base/Packet.hpp"
+#include <base/Parameters.hpp>
+#include <core/time/Chronometer.hpp>
+#include <base/Packet.hpp>
 #include <vector>
-#include <list>
 
-extern "C" {
+namespace ffmpeg { extern "C" {
     #include <libavformat/avformat.h>
     #include <libavutil/mathematics.h>
-}
+} } // namespace ffmpeg
 
 namespace fpp {
+
+    /* ? */
+    enum class StampType {
+        /* Штампы сорса */
+        Copy,
+        Realtime,
+        Offset,
+        /* Штампы синка */
+        Rescale,
+    };
 
     class Stream;
     using SharedStream = std::shared_ptr<Stream>;
     using StreamVector = std::vector<SharedStream>;
 
-    class Stream : public Data<const AVStream*> {
+    class Stream : public Data<const ffmpeg::AVStream*> {
 
 
     public:
 
-        Stream(const AVStream* avstream, SharedParameters parameters);
-        Stream(const AVStream* avstream, ParamsType type);      // Создание реального потока
-        Stream(SharedParameters params);                        // Создание виртуального потока
+        Stream(const ffmpeg::AVStream* avstream, SharedParameters parameters); //TODO сделать приватным 23.01
+        Stream(const ffmpeg::AVStream* avstream, ParamsType type);  // Создание реального потока
+        Stream(SharedParameters params);                    // Создание виртуального потока
         Stream(const Stream& other)  = delete;
         virtual ~Stream() override = default;
 
@@ -45,7 +54,7 @@ namespace fpp {
         int64_t             endTimePoint()      const;
         int64_t             packetIndex()       const;
 
-        AVCodecParameters*  codecParameters();
+        ffmpeg::AVCodecParameters*  codecParameters();
 
     public:
 

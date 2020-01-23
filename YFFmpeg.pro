@@ -68,6 +68,7 @@ SOURCES += \
 
 HEADERS += \
     base/CodecContext.hpp \
+    codec.hpp \
     control/Route.hpp \
     codec/Decoder.hpp \
     codec/DecoderContext.hpp \
@@ -79,6 +80,7 @@ HEADERS += \
     core/async/AsyncVector.hpp \
     core/time/Chronometer.hpp \
     core/time/Timer.hpp \
+    custom.hpp \
     custom/CustomFrameSink.hpp \
     custom/CustomFrameSource.hpp \
     custom/CustomPacketSink.hpp \
@@ -99,6 +101,9 @@ HEADERS += \
     base/MediaData.hpp \
     core/Object.hpp \
     base/Processor.hpp \
+    media.hpp \
+    refi.hpp \
+    stream.hpp \
     stream/Stream.hpp \
     core/Thread.hpp \
     core/utils.hpp \

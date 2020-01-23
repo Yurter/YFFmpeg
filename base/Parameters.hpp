@@ -1,12 +1,25 @@
 #pragma once
-#include "MediaData.hpp"
+#include <base/MediaData.hpp>
 
-extern "C" {
-    #include <libavformat/avformat.h>
+#define DEFAULT_TIME_BASE ffmpeg::AVRational { 1, 1000 }
+
+namespace ffmpeg {
+    struct AVStream;
+} // namespace ffmpeg
+
+namespace ffmpeg { extern "C" {
     #include <libavcodec/avcodec.h>
-}
+    #include <libavutil/rational.h>
+} } // namespace ffmpeg
 
 namespace fpp {
+
+    /* ? */
+    enum class CodecType { //TODO конфликт имён
+        Unknown,
+        Decoder,
+        Encoder,
+    };
 
     class Parameters;
     using SharedParameters = std::shared_ptr<Parameters>;
@@ -27,23 +40,23 @@ namespace fpp {
 
         Parameters& operator=(const Parameters&) = default;
 
-        void                setCodec(AVCodecID codec_id);
+        void                setCodec(ffmpeg::AVCodecID codec_id);
         void                setCodec(std::string _codec_short_name);
-        void                setCodec(AVCodec* codec);
+        void                setCodec(ffmpeg::AVCodec* codec);
         void                setBitrate(int64_t bitrate);
         void                setDuration(int64_t duration);
         void                setStreamIndex(uid_t stream_index);
-        void                setTimeBase(AVRational time_base);
+        void                setTimeBase(ffmpeg::AVRational time_base);
         void                setContextUid(uid_t context_uid);
 
-        AVCodecID           codecId()       const;
+        ffmpeg::AVCodecID   codecId()       const;
         std::string         codecName()     const;
-        AVCodec*            codec()         const;
+        ffmpeg::AVCodec*    codec()         const;
         int64_t             bitrate()       const;
         int64_t             duration()      const;
         uid_t               streamIndex()   const;
         uid_t               streamUid()     const;
-        AVRational          timeBase()      const;
+        ffmpeg::AVRational  timeBase()      const;
         int64_t             contextUid()    const;
 
         void                increaseDuration(const int64_t value);
@@ -51,8 +64,8 @@ namespace fpp {
         virtual std::string toString() const override;
 
         virtual void        completeFrom(const SharedParameters other_params);
-        virtual void        parseStream(const AVStream* avstream);
-        virtual void        initStream(AVStream* avstream) const;
+        virtual void        parseStream(const ffmpeg::AVStream* avstream);
+        virtual void        initStream(ffmpeg::AVStream* avstream) const;
         virtual bool        betterThen(const SharedParameters& other);
 
     private:
@@ -62,15 +75,15 @@ namespace fpp {
 
     protected:
 
-        AVCodec*            _codec;
-        AVCodecID           _codec_id;
+        ffmpeg::AVCodec*    _codec;
+        ffmpeg::AVCodecID   _codec_id;
         std::string			_codec_name;
         ParamsType          _io_type;
         int64_t             _bitrate;
         int64_t             _duration;
         uid_t               _stream_index;
         uid_t               _stream_uid;
-        AVRational          _time_base;
+        ffmpeg::AVRational  _time_base;
         int64_t             _context_uid;
 
     };

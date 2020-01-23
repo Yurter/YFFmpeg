@@ -1,5 +1,11 @@
 #include "AudioParameters.hpp"
-#include "core/utils.hpp"
+#include <core/utils.hpp>
+
+#define DEFAULT_SAMPLE_FORMAT   ffmpeg::AV_SAMPLE_FMT_NONE
+#define DEFAULT_CHANEL_LAYOUT   0
+#define DEFAULT_SAMPLE_RATE     44'100
+#define not_inited_smp_fmt(x)   ((x) == DEFAULT_SAMPLE_FORMAT)
+#define not_inited_ch_layout(x) ((x) == DEFAULT_CHANEL_LAYOUT)
 
 namespace fpp {
 
@@ -22,8 +28,8 @@ namespace fpp {
         _sample_rate = sample_rate;
     }
 
-    void AudioParameters::setSampleFormat(AVSampleFormat sample_format) {
-        if (sample_format == AVSampleFormat::AV_SAMPLE_FMT_NONE) {
+    void AudioParameters::setSampleFormat(ffmpeg::AVSampleFormat sample_format) {
+        if (sample_format == ffmpeg::AVSampleFormat::AV_SAMPLE_FMT_NONE) {
             log_warning("Sample format cannot be AV_SAMPLE_FMT_NONE, ignored");
             return;
         }
@@ -62,7 +68,7 @@ namespace fpp {
         return _sample_rate;
     }
 
-    AVSampleFormat AudioParameters::sampleFormat() const {
+    ffmpeg::AVSampleFormat AudioParameters::sampleFormat() const {
         return _sample_format;
     }
 
@@ -95,7 +101,7 @@ namespace fpp {
         if (not_inited_int(channels()))             { setChannels(other_audio_parames->channels());             }
     }
 
-    void AudioParameters::parseStream(const AVStream* avstream) {
+    void AudioParameters::parseStream(const ffmpeg::AVStream* avstream) {
         Parameters::parseStream(avstream);
         setSampleRate(avstream->codecpar->sample_rate);
         setSampleFormat(avstream->codec->sample_fmt);

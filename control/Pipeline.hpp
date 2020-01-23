@@ -1,18 +1,9 @@
 #pragma once
-#include "opencv/OpenCVSink.hpp"
-#include "custom/CustomPacketSource.hpp"
-#include "custom/CustomPacketSink.hpp"
-#include "custom/CustomFrameSource.hpp"
-#include "custom/CustomFrameSink.hpp"
-#include "media/MediaSource.hpp"
-#include "media/MediaSink.hpp"
-#include "codec/Decoder.hpp"
-#include "codec/Encoder.hpp"
-#include "refi/Rescaler.hpp"
-#include "refi/Resampler.hpp"
-#include "refi/VideoFilter.hpp"
-#include "refi/AudioFilter.hpp"
-#include "Route.hpp"
+#include <control/Route.hpp>
+#include <media.hpp>
+#include <codec.hpp>
+#include <refi.hpp>
+#include <custom.hpp>
 
 namespace fpp {
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "base/FormatContext.hpp"
+#include <base/FormatContext.hpp>
 
 namespace fpp {
 
@@ -7,7 +7,7 @@ namespace fpp {
 
     public:
 
-        OutputFormatContext(const std::string& mrl, IOPreset preset = IOPreset::Auto);
+        OutputFormatContext(const std::string& mrl, Preset preset = Preset::Auto);
         virtual ~OutputFormatContext() override;
 
         virtual Code        init()           override;
@@ -27,7 +27,7 @@ namespace fpp {
 
     private:
 
-        AVOutputFormat*     _output_format; //TODO убрать ? 14.01
+        ffmpeg::AVOutputFormat*     _output_format; //TODO убрать ? 14.01
 
     };
 

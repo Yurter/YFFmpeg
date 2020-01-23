@@ -1,12 +1,11 @@
 #pragma once
-#include "inout/FrameProcessor.hpp"
+#include <inout/FrameProcessor.hpp>
 
-extern "C" {
-    #include <libavfilter/avfilter.h>
-    #include <libavfilter/buffersink.h> //TODO перенести в cpp 22.01
-    #include <libavfilter/buffersrc.h>  //TODO перенести в cpp 22.01
-    #include <libavutil/opt.h>          //TODO перенести в cpp 22.01
-}
+namespace ffmpeg {
+    class AVFilterGraph;
+    class AVFilterContext;
+    class AVFilterContext;
+} // namespace ffmpeg
 
 namespace fpp {
 
@@ -39,9 +38,9 @@ namespace fpp {
     private:
 
         const std::string   _filters_descr;
-        AVFilterGraph*      _filter_graph;      //TODO убрать голый указатель 15.01
-        AVFilterContext*    _buffersrc_ctx;     //TODO убрать голый указатель 15.01
-        AVFilterContext*    _buffersink_ctx;    //TODO убрать голый указатель 15.01
+        ffmpeg::AVFilterGraph*      _filter_graph;      //TODO убрать голый указатель 15.01
+        ffmpeg::AVFilterContext*    _buffersrc_ctx;     //TODO убрать голый указатель 15.01
+        ffmpeg::AVFilterContext*    _buffersink_ctx;    //TODO убрать голый указатель 15.01
 
     };
 

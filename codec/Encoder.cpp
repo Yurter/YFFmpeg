@@ -2,9 +2,8 @@
 
 namespace fpp {
 
-    Encoder::Encoder(const IOParams params) :
-        _encoder_context(params)
-    {
+    Encoder::Encoder(const IOParams params)
+        : _encoder_context(params) {
         setName("Encoder");
     }
 

@@ -1,8 +1,10 @@
 #pragma once
-#include "core/utils.hpp"
-#include "core/Thread.hpp"
-#include "core/async/AsyncQueue.hpp"
-#include "Processor.hpp"
+#include <core/utils.hpp>
+#include <core/Thread.hpp>
+#include <core/async/AsyncQueue.hpp>
+#include <base/Processor.hpp>
+
+#define BROADCAST -1
 
 namespace fpp {
 

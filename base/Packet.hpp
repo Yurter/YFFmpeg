@@ -1,19 +1,19 @@
 #pragma once
-#include "Data.hpp"
+#include <base/Data.hpp>
 
-extern "C" {
+namespace ffmpeg { extern "C" {
     #include <libavcodec/avcodec.h>
-}
+} } // namespace ffmpeg
 
 namespace fpp {
 
-    class Packet : public Data<AVPacket> {
+    class Packet : public Data<ffmpeg::AVPacket> {
 
     public:
 
         Packet();
         Packet(const Packet& other);
-        Packet(const AVPacket& avpacket, AVRational time_base, MediaType type);
+        Packet(const ffmpeg::AVPacket& avpacket, ffmpeg::AVRational time_base, MediaType type);
         virtual ~Packet() override;
 
         Packet& operator=(const Packet& other);
@@ -21,14 +21,14 @@ namespace fpp {
         void                setPts(int64_t pts);
         void                setDts(int64_t dts);
         void                setDuration(int64_t duration);
-        void                setTimeBase(AVRational time_base);
+        void                setTimeBase(ffmpeg::AVRational time_base);
         void                setPos(int64_t pos);
         void                setStreamIndex(int64_t stream_index);
 
         int64_t             pts()           const;
         int64_t             dts()           const;
         int64_t             duration()      const;
-        AVRational          timeBase()      const;
+        ffmpeg:: AVRational timeBase()      const;
         int64_t             pos()           const;
         int64_t             streamIndex()   const;
         bool                keyFrame()      const;
@@ -39,11 +39,11 @@ namespace fpp {
     private:
 
         void                copy(const Packet& other);
-        void                copy(const AVPacket& other, AVRational time_base, MediaType type);
+        void                copy(const ffmpeg::AVPacket& other, ffmpeg::AVRational time_base, MediaType type);
 
     private:
 
-        AVRational          _time_base;
+        ffmpeg::AVRational          _time_base;
 
     };
 

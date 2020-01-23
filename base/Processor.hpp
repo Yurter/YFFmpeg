@@ -1,12 +1,20 @@
 #pragma once
-#include "core/async/AsyncList.hpp"
-#include "core/Thread.hpp"
-#include "stream/Stream.hpp"
-#include "base/Frame.hpp"
+#include <core/async/AsyncList.hpp>
+#include <core/Thread.hpp>
+#include <stream/Stream.hpp>
+#include <base/Frame.hpp>
 #include <map>
 #include <variant>
 
 namespace fpp {
+
+
+    enum class ProcessorType { //TODO постараться избавиться от этого енама 15.01
+        Unknown,
+        Process,
+        Output,
+        Input,
+    };
 
     // TODO бардак 17.01
     class Processor;

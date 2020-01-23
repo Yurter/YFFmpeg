@@ -1,11 +1,18 @@
 #pragma once
-#include "media/MediaSource.hpp"
-#include "media/MediaSink.hpp"
+#include <media/MediaSource.hpp>
+#include <media/MediaSink.hpp>
 #include <tuple>
+#include <stdint.h>
+
+#define FROM_START  0
+#define TO_END      LONG_MAX
 
 namespace fpp {
 
-    using ConcatList = std::list<std::tuple<std::string,int64_t,int64_t>>;
+    using TimePoint = int64_t;
+    using FileName = std::string;
+    using FilePart = std::tuple<FileName,TimePoint,TimePoint>;
+    using ConcatList = std::list<FilePart>;
 
     class Concatenator : public Thread {
 

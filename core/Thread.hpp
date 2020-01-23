@@ -2,7 +2,7 @@
 #include <thread>
 #include <functional>
 #include <atomic>
-#include "Object.hpp"
+#include <core/Object.hpp>
 
 namespace fpp {
 

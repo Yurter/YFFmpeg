@@ -1,5 +1,6 @@
 #include "Processor.hpp"
-#include "core/utils.hpp"
+#include <core/utils.hpp>
+#include <algorithm>
 
 namespace fpp {
 

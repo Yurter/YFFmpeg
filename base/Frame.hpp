@@ -1,19 +1,19 @@
 #pragma once
-#include "Data.hpp"
+#include <base/Data.hpp>
 
-extern "C" {
+namespace ffmpeg { extern "C" {
     #include <libavutil/frame.h>
-}
+} } // namespace ffmpeg
 
 namespace fpp {
 
-    class Frame : public Data<AVFrame> {
+    class Frame : public Data<ffmpeg::AVFrame> {
 
     public:
 
         Frame();
         Frame(const Frame& other);
-        Frame(const AVFrame& frame, MediaType type);
+        Frame(const ffmpeg::AVFrame& frame, MediaType type);
         virtual ~Frame() override;
 
         Frame& operator=(const Frame& other);
@@ -29,7 +29,7 @@ namespace fpp {
     private:
 
         void                copy(const Frame& other);
-        void                copy(const AVFrame& other, MediaType type);
+        void                copy(const ffmpeg::AVFrame& other, MediaType type);
 
     };
 

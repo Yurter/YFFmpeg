@@ -1,5 +1,9 @@
 #include "Parameters.hpp"
-#include "core/utils.hpp"
+#include <core/utils.hpp>
+
+#define DEFAULT_CODEC_ID        ffmpeg::AV_CODEC_ID_NONE
+#define inited_codec_id(x)      ((x) != DEFAULT_CODEC_ID)
+#define not_inited_codec_id(x)  ((x) == DEFAULT_CODEC_ID)
 
 namespace fpp {
 
@@ -17,7 +21,7 @@ namespace fpp {
         setName("Parameters");
     }
 
-    void Parameters::setCodec(AVCodecID codec_id) {
+    void Parameters::setCodec(ffmpeg::AVCodecID codec_id) {
         switch (_io_type) {
         case ParamsType::Input:
             setCodec(utils::find_decoder(codec_id));
@@ -39,7 +43,7 @@ namespace fpp {
         }
     }
 
-    void Parameters::setCodec(AVCodec* codec) {
+    void Parameters::setCodec(ffmpeg::AVCodec* codec) {
         if (inited_ptr(codec)) {
             _codec = codec;
             _codec_id = codec->id;
@@ -74,7 +78,7 @@ namespace fpp {
         _stream_uid = value;
     }
 
-    void Parameters::setTimeBase(AVRational time_base) {
+    void Parameters::setTimeBase(ffmpeg::AVRational time_base) {
         _time_base = time_base;
     }
 
@@ -87,7 +91,7 @@ namespace fpp {
         setStreamUid(fpp::utils::gen_stream_uid(_context_uid, _stream_index));//TODO
     }
 
-    AVCodecID Parameters::codecId() const {
+    ffmpeg::AVCodecID Parameters::codecId() const {
         return _codec_id;
     }
 
@@ -95,7 +99,7 @@ namespace fpp {
         return _codec_name;
     }
 
-    AVCodec* Parameters::codec() const {
+    ffmpeg::AVCodec* Parameters::codec() const {
         return _codec;
     }
 
@@ -115,7 +119,7 @@ namespace fpp {
         return _stream_uid;
     }
 
-    AVRational Parameters::timeBase() const {
+    ffmpeg::AVRational Parameters::timeBase() const {
         return _time_base;
     }
 
@@ -141,7 +145,7 @@ namespace fpp {
         if (not_inited_q(timeBase()))       { setTimeBase(other_params->timeBase());    }
     }
 
-    void Parameters::parseStream(const AVStream* avstream) {
+    void Parameters::parseStream(const ffmpeg::AVStream* avstream) {
         setCodec(avstream->codecpar->codec_id);
         setBitrate(avstream->codecpar->bit_rate);
         setDuration(avstream->duration);
@@ -149,7 +153,7 @@ namespace fpp {
         setTimeBase(avstream->time_base);
     }
 
-    void Parameters::initStream(AVStream* avstream) const {
+    void Parameters::initStream(ffmpeg::AVStream* avstream) const {
         avstream->codecpar->codec_id = codecId();
         avstream->codecpar->bit_rate = bitrate();
         avstream->duration = duration();

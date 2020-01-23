@@ -1,4 +1,5 @@
 #include "CodecContext.hpp"
+#include <core/utils.hpp>
 
 namespace fpp {
 
@@ -17,7 +18,7 @@ namespace fpp {
     Code CodecContext::init() {
         return_if(inited(), Code::INVALID_CALL_ORDER);
         log_debug("Initialization");
-        AVCodec* codec = nullptr;
+        ffmpeg::AVCodec* codec = nullptr;
         switch (_type) { //TODO refactoring
         case CodecType::Decoder:
             codec = params.in->codec();
@@ -32,7 +33,7 @@ namespace fpp {
         {
             _codec_context.reset(
                 avcodec_alloc_context3(codec)
-                , [](AVCodecContext*& codec_context) { avcodec_free_context(&codec_context); }
+                , [](ffmpeg::AVCodecContext*& codec_context) { avcodec_free_context(&codec_context); }
             );
             setName(name() + " " + codec->name);
         }
@@ -53,7 +54,7 @@ namespace fpp {
     Code CodecContext::open() {
         return_if(opened(), Code::OK);
         log_debug("Opening");
-        AVCodec* codec = nullptr;
+        ffmpeg::AVCodec* codec = nullptr;
         switch (_type) { //TODO refactoring
         case CodecType::Decoder:
             codec = params.in->codec();

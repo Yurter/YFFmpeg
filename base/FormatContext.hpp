@@ -1,11 +1,15 @@
 #pragma once
-#include "core/utils.hpp"
-#include "core/time/Chronometer.hpp"
+#include <core/Object.hpp>
+#include <core/time/Chronometer.hpp>
+#include <stream.hpp>
+#include <memory>
 
-extern "C" {
-    #include <libavformat/avformat.h>
-    #include <libavdevice/avdevice.h>
-}
+namespace ffmpeg {
+    struct AVFormatContext;
+    struct AVStream;
+    struct AVInputFormat;
+    struct AVOutputFormat;
+} // namespace ffmpeg
 
 namespace fpp {
 
@@ -14,18 +18,32 @@ namespace fpp {
         Interleaved,
     };
 
-    using SharedAVFormatContext = std::shared_ptr<AVFormatContext>;
+    /* Варианты для быстрой преднастройки */
+    /* параметров медиа-контекстов        */
+    enum Preset {
+        Auto,
+        Raw,
+        /* Input */
+        Virtual,
+        /* Output */
+        Event,
+        OpenCV,
+        YouTube,
+        Timelapse,
+    };
+
+    using SharedAVFormatContext = std::shared_ptr<ffmpeg::AVFormatContext>;
 
     class FormatContext : public Object {
 
     public:
 
-        FormatContext(const std::string& mrl, IOPreset preset = IOPreset::Auto); ///< mrl - media resource locator.
+        FormatContext(const std::string& mrl, Preset preset); ///< mrl - media resource locator.
         FormatContext(const FormatContext& other) = delete;
         virtual ~FormatContext() override;
 
-        IOPreset            preset() const;
-        bool                presetIs(IOPreset value) const;
+        Preset              preset() const;
+        bool                presetIs(Preset value) const;
 
         Code                open();
         Code                close();
@@ -40,12 +58,21 @@ namespace fpp {
         void                setStreams(StreamVector stream_list);
         StreamVector        streams();
         const StreamVector  streams() const;
-        const AVStream* stream(int64_t index);          ///< Функция возвращает указатель на поток с заданным индексом; nullptr, если невалидный индекс. //TODO переделать AVStream на Stream 20.01
+        const ffmpeg::AVStream* stream(int64_t index);          ///< Функция возвращает указатель на поток с заданным индексом; nullptr, если невалидный индекс. //TODO переделать AVStream на Stream 20.01
         int64_t             numberStream()  const;          ///< Функция возвращает количество потоков в текущем котексте.
-        AVInputFormat*      inputFormat()   const;          ///< Функция ...
-        AVOutputFormat*     outputFormat()  const;          ///< Функция ...
+        ffmpeg::AVInputFormat*      inputFormat()   const;          ///< Функция ...
+        ffmpeg::AVOutputFormat*     outputFormat()  const;          ///< Функция ...
 
     private:
+
+        /* ? */
+        enum InterruptedProcess {
+            None,
+            Opening,
+            Closing,
+            Reading,
+            Writing,
+        };
 
         class Interrupter {
 
@@ -80,7 +107,7 @@ namespace fpp {
 
         SharedAVFormatContext   _format_context;
         const std::string       _media_resource_locator;
-        const IOPreset          _preset;
+        const Preset            _preset;
         bool                    _opened;
         StreamVector            _streams;
         int64_t                 _artificial_delay;

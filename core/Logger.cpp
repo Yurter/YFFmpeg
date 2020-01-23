@@ -4,7 +4,9 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#ifdef _WIN32
 #include <Windows.h>
+#endif
 #include <ctime>
 #include <filesystem>
 #include <regex>
@@ -23,7 +25,7 @@ namespace fpp {
 
     Logger::~Logger() {
         print(this->name(), CODE_POS, LogLevel::Info, "Logger closed");
-        av_log_set_callback(nullptr);
+        ffmpeg::av_log_set_callback(nullptr);
         closeFile();
     }
 
@@ -140,8 +142,8 @@ namespace fpp {
         static int print_prefix = 1;
 
         va_copy(vl2, vl);
-        av_log_default_callback(ptr, level, fmt, vl);
-        av_log_format_line(ptr, level, fmt, vl2, line, sizeof(line), &print_prefix);
+        ffmpeg::av_log_default_callback(ptr, level, fmt, vl);
+        ffmpeg::av_log_format_line(ptr, level, fmt, vl2, line, sizeof(line), &print_prefix);
         va_end(vl2);
 
         for (auto& symbol : line) {
@@ -227,22 +229,22 @@ namespace fpp {
     void Logger::setFFmpegLogLevel(LogLevel log_level) {
         switch (log_level) {
         case LogLevel::Info:
-            av_log_set_level(AV_LOG_INFO);
+            ffmpeg::av_log_set_level(AV_LOG_INFO);
             break;
         case LogLevel::Warning:
-            av_log_set_level(AV_LOG_WARNING);
+            ffmpeg::av_log_set_level(AV_LOG_WARNING);
             break;
         case LogLevel::Error:
-            av_log_set_level(AV_LOG_ERROR);
+            ffmpeg::av_log_set_level(AV_LOG_ERROR);
             break;
         case LogLevel::Debug:
-            av_log_set_level(AV_LOG_DEBUG);
+            ffmpeg::av_log_set_level(AV_LOG_DEBUG);
             break;
         case LogLevel::Trace:
-            av_log_set_level(AV_LOG_TRACE);
+            ffmpeg::av_log_set_level(AV_LOG_TRACE);
             break;
         case LogLevel::Quiet:
-            av_log_set_level(AV_LOG_QUIET);
+            ffmpeg::av_log_set_level(AV_LOG_QUIET);
             break;
         }
     }

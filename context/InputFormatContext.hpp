@@ -1,19 +1,36 @@
 #pragma once
-#include "base/FormatContext.hpp"
+#include <base/FormatContext.hpp>
 
 namespace fpp {
+
+    /* ? */
+    enum class SeekPrecision {
+        Forward,
+        Backward,
+        Precisely,
+        Any,
+    };
 
     class InputFormatContext : public FormatContext {
 
     public:
 
-        InputFormatContext(const std::string& mrl, IOPreset preset = IOPreset::Auto);
+        InputFormatContext(const std::string& mrl, Preset preset = Preset::Auto);
         virtual ~InputFormatContext() override;
 
         virtual Code        init()           override;
 
         Code                seek(int64_t stream_index, int64_t timestamp, SeekPrecision seek_precision = SeekPrecision::Forward);
         Code                read(Packet& packet, ReadWriteMode read_mode = ReadWriteMode::Instant);
+
+
+        static std::string  silence(int64_t sample_rate) {
+            return "anullsrc=r=" + std::to_string(sample_rate) + ":cl=mono";
+        }
+        static std::string  sine(int64_t frequency, int64_t sample_rate) {
+            return "sine=frequency=" + std::to_string(frequency)
+                    + ":sample_rate=" + std::to_string(sample_rate);
+        }
 
     private:
 
@@ -27,7 +44,7 @@ namespace fpp {
 
     private:
 
-        AVInputFormat*      _input_format; //TODO зачем хранить копию из контекста? 14.01
+        ffmpeg::AVInputFormat*      _input_format; //TODO зачем хранить копию из контекста? 14.01
 
     };
 

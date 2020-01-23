@@ -1,5 +1,13 @@
 #include "Filter.hpp"
 
+namespace ffmpeg { extern "C" {
+    #include <libavfilter/avfilter.h>
+    #include <libavfilter/buffersink.h>
+    #include <libavfilter/buffersrc.h>
+    #include <libavutil/opt.h>
+} } // namespace ffmpeg
+
+
 namespace fpp {
 
     Filter::Filter(IOParams params, const std::string& filters_descr)
@@ -13,6 +21,7 @@ namespace fpp {
     }
 
     Code Filter::init() {
+        using namespace ffmpeg;
         return_if(inited(), Code::OK);
         auto out_params = dynamic_cast<const VideoParameters*>(params.out.get()); //TODO решить использовать входные или выходные параметры
 
@@ -137,14 +146,14 @@ namespace fpp {
     }
 
     Code Filter::processInputData(Frame input_data) { //TODO много параметров захардкожено 14.01
-        if (av_buffersrc_add_frame_flags(_buffersrc_ctx, &input_data.raw(), AV_BUFFERSRC_FLAG_KEEP_REF) < 0) {
+        if (av_buffersrc_add_frame_flags(_buffersrc_ctx, &input_data.raw(), ffmpeg::AV_BUFFERSRC_FLAG_KEEP_REF) < 0) {
             log_error("Error while feeding the filtergraph: " << input_data);
             return Code::FFMPEG_ERROR;
         }
         /* pull filtered frames from the filtergraph */
         while (1) {
             Frame output_data;
-            int ret = av_buffersink_get_frame(_buffersink_ctx, &output_data.raw());
+            int ret = ffmpeg::av_buffersink_get_frame(_buffersink_ctx, &output_data.raw());
             if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
                 return Code::AGAIN;
             if (ret < 0)

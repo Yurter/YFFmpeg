@@ -1,6 +1,6 @@
 #pragma once
-#include "inout/PacketProducer.hpp"
-#include "EncoderContext.hpp"
+#include <inout/PacketProducer.hpp>
+#include <codec/EncoderContext.hpp>
 
 namespace fpp {
 

@@ -15,7 +15,7 @@ namespace fpp {
     Code DecoderContext::decode(Packet input_packet, Frame& decoded_frame) {
         if (int ret = avcodec_send_packet(_codec_context.get(), &input_packet.raw()); ret != 0) {
             char errstr[1024];
-            av_strerror(ret, errstr, 1024);
+            ffmpeg::av_strerror(ret, errstr, 1024); //TODO сделать методом уилит 23.01
             log_error(" Could not send packet to decoder: " << errstr << ". Data: " << input_packet);
             log_error("DecoderContext: " << this->toString());
             return Code::FFMPEG_ERROR;
@@ -54,7 +54,7 @@ namespace fpp {
         return Code::OK;
         if (int ret = avcodec_send_packet(_codec_context.get(), nullptr); ret != 0) {
             char errstr[1024];
-            av_strerror(ret, errstr, 1024);
+            ffmpeg::av_strerror(ret, errstr, 1024); //TODO сделать методом уилит 23.01
             log_error("Failed to flush decoder: " << errstr);
             return Code::FFMPEG_ERROR;
         }

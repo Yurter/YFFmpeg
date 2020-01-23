@@ -1,8 +1,9 @@
 #include "InputFormatContext.hpp"
+#include <core/utils.hpp>
 
 namespace fpp {
 
-    InputFormatContext::InputFormatContext(const std::string& mrl, IOPreset preset)
+    InputFormatContext::InputFormatContext(const std::string& mrl, Preset preset)
         : FormatContext { mrl, preset }
         , _input_format { nullptr } {
         setName("InpFmtCtx");
@@ -17,7 +18,7 @@ namespace fpp {
         case Auto:
             break;
         case Virtual:
-            avdevice_register_all();
+            ffmpeg::avcodec_register_all();
             try_to(guessInputFromat());
 //            _artificial_delay = 1024; //TODO: 1024 для аудио, для видео - ? (1000 / frame_rate)
 //            _media_resource_locator = SINE;
@@ -76,7 +77,7 @@ namespace fpp {
 
     Code fpp::InputFormatContext::createContext() {
         setFormatContext(SharedAVFormatContext {
-                             avformat_alloc_context()
+                             ffmpeg::avformat_alloc_context()
                              , [](auto*& fmt_ctx) { /*avformat_free_context(fmt_ctx);*/ }
                          });
         return Code::OK;
@@ -123,7 +124,7 @@ namespace fpp {
 
     Code InputFormatContext::guessInputFromat() {
         auto short_name = utils::guess_format_short_name(mediaResourceLocator());
-        AVInputFormat* input_format = av_find_input_format(short_name.c_str());
+        auto input_format = ffmpeg::av_find_input_format(short_name.c_str());
         if (input_format == nullptr) {
             log_error("Failed guess input format: " << mediaResourceLocator());
             return Code::INVALID_INPUT;

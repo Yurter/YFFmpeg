@@ -1,9 +1,14 @@
 ﻿#include "FormatContext.hpp"
-#include "core/utils.hpp"
+#include <core/utils.hpp>
+
+namespace ffmpeg { extern "C" {
+    #include <libavformat/avformat.h>
+    #include <libavdevice/avdevice.h>
+} } // namespace ffmpeg
 
 namespace fpp {
 
-    FormatContext::FormatContext(const std::string& mrl, IOPreset preset)
+    FormatContext::FormatContext(const std::string& mrl, Preset preset)
         : _media_resource_locator { mrl }
         , _preset { preset }
         , _opened { false }
@@ -47,11 +52,11 @@ namespace fpp {
         _opened = opened;
     }
 
-    IOPreset FormatContext::preset() const {
+    Preset FormatContext::preset() const {
         return _preset;
     }
 
-    bool FormatContext::presetIs(IOPreset value) const {
+    bool FormatContext::presetIs(Preset value) const {
         return _preset == value;
     }
 
@@ -69,9 +74,9 @@ namespace fpp {
         _current_interrupter.interrupted_process = process;
         _current_interrupter.chronometer.reset_timepoint();
         _format_context->interrupt_callback.callback =
-                &FormatContext::interrupt_callback;
+            &FormatContext::interrupt_callback;
         _format_context->interrupt_callback.opaque =
-                &_current_interrupter;
+            &_current_interrupter;
     }
 
     void FormatContext::resetInteruptCallback() {

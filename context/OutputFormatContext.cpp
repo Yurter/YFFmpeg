@@ -1,8 +1,9 @@
 #include "OutputFormatContext.hpp"
+#include <core/utils.hpp>
 
 namespace fpp {
 
-    OutputFormatContext::OutputFormatContext(const std::string& mrl, IOPreset preset)
+    OutputFormatContext::OutputFormatContext(const std::string& mrl, Preset preset)
         : FormatContext { mrl, preset }
         , _output_format { nullptr } {
         setName("OutFmtCtx");
@@ -16,15 +17,15 @@ namespace fpp {
         return_if(inited(), Code::OK);
         try_to(createContext());
         switch (preset()) {
-        case IOPreset::Auto: {
+        case Preset::Auto: {
             try_to(guessOutputFromat());
             break;
         }
-        case IOPreset::Event: {
+        case Preset::Event: {
             StreamVector stream_list;
             /* Video */
             auto video_params = std::make_shared<VideoParameters>(ParamsType::Output);
-            video_params->setCodec(AVCodecID::AV_CODEC_ID_H264);
+            video_params->setCodec(ffmpeg::AVCodecID::AV_CODEC_ID_H264);
             video_params->setGopSize(2);
             video_params->setTimeBase(DEFAULT_TIME_BASE);
             stream_list.push_back(createStream(video_params));
@@ -37,7 +38,7 @@ namespace fpp {
             setStreams(stream_list);
             break;
         }
-        case IOPreset::YouTube: {
+        case Preset::YouTube: {
             /* Video */
 //            auto video_parameters = std::make_shared<VideoParameters>();
 ////            video_parameters->setWidth(1920);
@@ -67,7 +68,7 @@ namespace fpp {
 //            try_to(createStream(audio_parameters));
             break;
         }
-        case IOPreset::Timelapse: {
+        case Preset::Timelapse: {
             StreamVector stream_list;
             /* Video */
             auto video_parameters = std::make_shared<VideoParameters>(ParamsType::Output);
@@ -131,7 +132,7 @@ namespace fpp {
     Code OutputFormatContext::createContext() {
         std::string format_short_name = utils::guess_format_short_name(mediaResourceLocator());
         const char* format_name = format_short_name.empty() ? nullptr : format_short_name.c_str();
-        AVFormatContext* fmt_ctx = nullptr;
+        ffmpeg::AVFormatContext* fmt_ctx = nullptr;
         if (avformat_alloc_output_context2(&fmt_ctx, nullptr, format_name, mediaResourceLocator().c_str()) < 0) {
             log_error("Failed to alloc output context.");
             return Code::ERR;
@@ -187,7 +188,7 @@ namespace fpp {
     }
 
     Code OutputFormatContext::guessOutputFromat() {// см: _format_context->oformat
-        AVOutputFormat* output_format = av_guess_format(nullptr, mediaResourceLocator().c_str(), nullptr);
+        ffmpeg::AVOutputFormat* output_format = ffmpeg::av_guess_format(nullptr, mediaResourceLocator().c_str(), nullptr);
         if (output_format == nullptr) {
             log_error("Failed guess output format: " << mediaResourceLocator());
             return Code::INVALID_INPUT;

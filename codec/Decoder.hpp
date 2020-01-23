@@ -1,6 +1,6 @@
 #pragma once
-#include "inout/FrameProducer.hpp"
-#include "DecoderContext.hpp"
+#include <inout/FrameProducer.hpp>
+#include <codec/DecoderContext.hpp>
 
 namespace fpp {
 

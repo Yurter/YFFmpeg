@@ -1,6 +1,7 @@
 #include "utils.hpp"
 #include <thread>
 #include <atomic>
+#include <algorithm>
 
 namespace ffmpeg { extern "C" {
     #include <libavutil/imgutils.h>
@@ -30,14 +31,14 @@ namespace fpp {
         return value ? "true" : "false";
     }
 
-    std::string utils::pixel_format_to_string(AVPixelFormat value) {
+    std::string utils::pixel_format_to_string(ffmpeg::AVPixelFormat value) {
         const char* ret = ffmpeg::av_get_pix_fmt_name(value);
         return_if(not_inited_ptr(ret)
                   , "NONE");
         return std::string(ret);
     }
 
-    std::string utils::sample_format_to_string(AVSampleFormat value) {
+    std::string utils::sample_format_to_string(ffmpeg::AVSampleFormat value) {
         const char* ret = av_get_sample_fmt_name(value);
         return_if(not_inited_ptr(ret)
                   , "NONE");
@@ -60,7 +61,7 @@ namespace fpp {
         sleep_for_sec(minutes * 60);
     }
 
-    std::string utils::time_to_string(int64_t time_stamp, AVRational time_base) {
+    std::string utils::time_to_string(int64_t time_stamp, ffmpeg::AVRational time_base) {
         const auto time_ms = av_rescale_q(time_stamp, time_base, DEFAULT_TIME_BASE);
         const int64_t ms = time_ms % 1000;
         const int64_t ss = (time_ms / 1000) % 60;
@@ -98,7 +99,7 @@ namespace fpp {
         if (value == Code::INVALID_INPUT)       { return "Invalid input";           }
         if (value == Code::NOT_IMPLEMENTED)     { return "Method not implemented";  }
         if (value == Code::INVALID_CALL_ORDER)  { return "Invalid call order";      }
-        return "Unknown error code: " + std::to_string(value);
+        return "Unknown error code: " + std::to_string(int(value));
     }
 
     std::string utils::codec_type_to_string(CodecType type) {
@@ -113,7 +114,7 @@ namespace fpp {
         return "Error";
     }
 
-    std::string utils::rational_to_string(AVRational rational) {
+    std::string utils::rational_to_string(ffmpeg::AVRational rational) {
         return std::to_string(rational.num)
                 + "/" +
                 std::to_string(rational.den);
@@ -127,55 +128,55 @@ namespace fpp {
         return std::static_pointer_cast<AudioParameters>(params);
     }
 
-    bool utils::compatible_with_pixel_format(const AVCodec* codec, AVPixelFormat pixel_format) {
+    bool utils::compatible_with_pixel_format(const ffmpeg::AVCodec* codec, ffmpeg::AVPixelFormat pixel_format) {
         if (not_inited_ptr(codec->pix_fmts)) {
             static_log_warning("utils", "compatible_with_pixel_format failed: codec->pix_fmts is NULL");
             return true;
         }
 
         auto pix_fmt = codec->pix_fmts;
-        while (pix_fmt[0] != AV_PIX_FMT_NONE) {
+        while (pix_fmt[0] != ffmpeg::AV_PIX_FMT_NONE) {
             if (pix_fmt[0] == pixel_format) { return true; }
             pix_fmt++;
         }
         return false;
     }
 
-    bool utils::compatible_with_sample_format(const AVCodec* codec, AVSampleFormat sample_format) {
+    bool utils::compatible_with_sample_format(const ffmpeg::AVCodec* codec, ffmpeg::AVSampleFormat sample_format) {
         if (not_inited_ptr(codec->sample_fmts)) {
             static_log_warning("utils", "compatible_with_sample_format failed: codec->sample_fmts is NULL");
             return true;
         }
 
         auto smp_fmt = codec->sample_fmts;
-        while (smp_fmt[0] != AV_SAMPLE_FMT_NONE) {
+        while (smp_fmt[0] != ffmpeg::AV_SAMPLE_FMT_NONE) {
             if (smp_fmt[0] == sample_format) { return true; }
             smp_fmt++;
         }
         return false;
     }
 
-    AVMediaType utils::mediatype_to_avmediatype(MediaType media_type) {
+    ffmpeg::AVMediaType utils::mediatype_to_avmediatype(MediaType media_type) {
         switch (media_type) {
         case MediaType::Unknown:
-            return AVMediaType::AVMEDIA_TYPE_UNKNOWN;
+            return ffmpeg::AVMediaType::AVMEDIA_TYPE_UNKNOWN;
         case MediaType::Video:
-            return AVMediaType::AVMEDIA_TYPE_VIDEO;
+            return ffmpeg::AVMediaType::AVMEDIA_TYPE_VIDEO;
         case MediaType::Audio:
-            return AVMediaType::AVMEDIA_TYPE_AUDIO;
+            return ffmpeg::AVMediaType::AVMEDIA_TYPE_AUDIO;
         case MediaType::EndOF:
-            return AVMEDIA_TYPE_DATA;
+            return ffmpeg::AVMEDIA_TYPE_DATA;
         }
         throw Exception("TODO mediatype_to_avmediatype");
     }
 
-    MediaType utils::avmt_to_mt(AVMediaType avmedia_type) {
+    MediaType utils::avmt_to_mt(ffmpeg::AVMediaType avmedia_type) {
         switch (avmedia_type) {
-        case AVMediaType::AVMEDIA_TYPE_UNKNOWN:
+        case ffmpeg::AVMediaType::AVMEDIA_TYPE_UNKNOWN:
             return MediaType::Unknown;
-        case AVMediaType::AVMEDIA_TYPE_VIDEO:
+        case ffmpeg::AVMediaType::AVMEDIA_TYPE_VIDEO:
             return MediaType::Video;
-        case AVMediaType::AVMEDIA_TYPE_AUDIO:
+        case ffmpeg::AVMediaType::AVMEDIA_TYPE_AUDIO:
             return MediaType::Audio;
         default:
             throw Exception("TODO avmt_to_mt");
@@ -220,19 +221,19 @@ namespace fpp {
         return std::string(); //TODO use fmpeg funtion to get format list, нет нельзя: нужно возвращать пустую строку для логики в месте вызова
     }
 
-    AVCodec* utils::find_decoder(std::string codec_short_name) {
-        return avcodec_find_decoder_by_name(codec_short_name.c_str());
+    ffmpeg::AVCodec* utils::find_decoder(std::string codec_short_name) {
+        return ffmpeg::avcodec_find_decoder_by_name(codec_short_name.c_str());
     }
 
-    AVCodec* utils::find_decoder(AVCodecID codec_id) {
+    ffmpeg::AVCodec* utils::find_decoder(ffmpeg::AVCodecID codec_id) {
         return avcodec_find_decoder(codec_id);
     }
 
-    AVCodec* utils::find_encoder(std::string codec_short_name) {
-        return avcodec_find_encoder_by_name(codec_short_name.c_str());
+    ffmpeg::AVCodec* utils::find_encoder(std::string codec_short_name) {
+        return ffmpeg::avcodec_find_encoder_by_name(codec_short_name.c_str());
     }
 
-    AVCodec* utils::find_encoder(AVCodecID codec_id) {
+    ffmpeg::AVCodec* utils::find_encoder(ffmpeg::AVCodecID codec_id) {
         return avcodec_find_encoder(codec_id);
     }
 
@@ -247,7 +248,7 @@ namespace fpp {
         }
     }
 
-    Code utils::init_codecpar(AVCodecParameters* codecpar, AVCodec* codec) {
+    Code utils::init_codecpar(ffmpeg::AVCodecParameters* codecpar, ffmpeg::AVCodec* codec) {
         auto codec_context = avcodec_alloc_context3(codec);
         return_if(not_inited_ptr(codec_context), Code::ERR);
         return_if(avcodec_parameters_from_context(codecpar, codec_context) < 0, Code::ERR);
@@ -255,7 +256,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    void utils::parameters_to_context(const SharedParameters params, AVCodecContext* codec_context) {
+    void utils::parameters_to_context(const SharedParameters params, ffmpeg::AVCodecContext* codec_context) {
         codec_context->codec_id = params->codecId();
         codec_context->bit_rate = params->bitrate();
 //        codec->time_base = param->timeBase();
@@ -302,13 +303,13 @@ namespace fpp {
     }
 
     //TODO
-    void utils::parameters_to_avcodecpar(const SharedParameters params, AVCodecParameters* codecpar) {
+    void utils::parameters_to_avcodecpar(const SharedParameters params, ffmpeg::AVCodecParameters* codecpar) {
         codecpar->codec_id = params->codecId();
         codecpar->bit_rate = params->bitrate();
 
         switch (params->type()) {
         case MediaType::Video: {
-            codecpar->codec_type = AVMediaType::AVMEDIA_TYPE_VIDEO;
+            codecpar->codec_type = ffmpeg::AVMediaType::AVMEDIA_TYPE_VIDEO;
             auto video_parameters = dynamic_cast<VideoParameters*>(params.get());
             codecpar->width                  = int(video_parameters->width());
             codecpar->height                 = int(video_parameters->height());
@@ -317,7 +318,7 @@ namespace fpp {
             break;
         }
         case MediaType::Audio: {
-            codecpar->codec_type = AVMediaType::AVMEDIA_TYPE_AUDIO;
+            codecpar->codec_type = ffmpeg::AVMediaType::AVMEDIA_TYPE_AUDIO;
             auto audio_parameters = dynamic_cast<AudioParameters*>(params.get());
             codecpar->channel_layout   = audio_parameters->channelLayout();
             codecpar->channels         = int(audio_parameters->channels());
@@ -330,7 +331,7 @@ namespace fpp {
     }
 
     //TODO
-    void utils::parameters_from_avcodecpar(Parameters* parametres, AVCodecParameters* codecpar) {
+    void utils::parameters_from_avcodecpar(Parameters* parametres, ffmpeg::AVCodecParameters* codecpar) {
 //        parametres->setCodec(codecpar->codec_id);
         parametres->setBitrate(codecpar->bit_rate);
 
@@ -478,80 +479,8 @@ namespace fpp {
         return fabs(a - b) < epsilon;
     }
 
-    bool utils::equal_rational(AVRational a, AVRational b) {
+    bool utils::equal_rational(ffmpeg::AVRational a, ffmpeg::AVRational b) {
         return av_cmp_q(a, b) == 0;
-    }
-
-    int utils::save_frame_as_jpeg(AVCodecContext* pCodecCtx, AVFrame* pFrame, int FrameNo) {
-        AVCodec *jpegCodec = avcodec_find_encoder(AV_CODEC_ID_JPEG2000);
-        if (!jpegCodec) {
-            return -1;
-        }
-        AVCodecContext *jpegContext = avcodec_alloc_context3(jpegCodec);
-        if (!jpegContext) {
-            return -1;
-        }
-
-        jpegContext->pix_fmt = pCodecCtx->pix_fmt;
-        jpegContext->height = pFrame->height;
-        jpegContext->width = pFrame->width;
-
-        if (avcodec_open2(jpegContext, jpegCodec, NULL) < 0) {
-            return -1;
-        }
-        FILE *JPEGFile;
-        char JPEGFName[256];
-
-//        AVPacket packet = {.data = NULL, .size = 0};
-        AVPacket packet;
-        packet.data = NULL;
-        packet.size = 0;
-        av_init_packet(&packet);
-        int gotFrame;
-
-        if (avcodec_encode_video2(jpegContext, &packet, pFrame, &gotFrame) < 0) {
-            return -1;
-        }
-
-        sprintf(JPEGFName, "dvr-%06d.jpg", FrameNo);
-        JPEGFile = fopen(JPEGFName, "wb");
-        fwrite(packet.data, 1, packet.size, JPEGFile);
-        fclose(JPEGFile);
-
-        av_free_packet(&packet);
-        avcodec_close(jpegContext);
-        return 0;
-    }
-
-    void utils::SaveAvFrame(AVFrame *avFrame)
-    {
-        static int counter = 0;
-        FILE *fDump = fopen(("debug_frames/" + std::to_string(counter++) + "_frame_yuv").c_str(), "wb");//"ab");
-
-        uint32_t pitchY = avFrame->linesize[0];
-        uint32_t pitchU = avFrame->linesize[1];
-        uint32_t pitchV = avFrame->linesize[2];
-
-        uint8_t *avY = avFrame->data[0];
-        uint8_t *avU = avFrame->data[1];
-        uint8_t *avV = avFrame->data[2];
-
-        for (uint32_t i = 0; i < avFrame->height; i++) {
-            fwrite(avY, avFrame->width, 1, fDump);
-            avY += pitchY;
-        }
-
-        for (uint32_t i = 0; i < avFrame->height/2; i++) {
-            fwrite(avU, avFrame->width/2, 1, fDump);
-            avU += pitchU;
-        }
-
-        for (uint32_t i = 0; i < avFrame->height/2; i++) {
-            fwrite(avV, avFrame->width/2, 1, fDump);
-            avV += pitchV;
-        }
-
-        fclose(fDump);
     }
 
 } // namespace fpp

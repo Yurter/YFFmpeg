@@ -2,9 +2,8 @@
 #include <functional>
 #include <thread>
 #include <chrono>
-#include "core/async/AsyncQueue.hpp"
-
-#include "../utils.hpp"
+#include <core/async/AsyncQueue.hpp>
+#include <core/utils.hpp>
 
 namespace fpp {
 

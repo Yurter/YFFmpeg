@@ -44,6 +44,10 @@ namespace fpp {
     Thread::~Thread() {
         try_throw(stop());
         join();
+//        if (isRunning()) {
+//            quit();
+//            wait();
+//        }
     }
 
     Code Thread::start() {

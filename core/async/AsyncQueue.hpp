@@ -1,10 +1,12 @@
 #pragma once
-#include "AsyncObject.hpp"
+#include <core/async/AsyncObject.hpp>
 #include <queue>
 #include <atomic>
 
-namespace fpp {
+#define KILOBYTES * 1024
+#define MEGABYTES * 1024 * 1024
 
+namespace fpp {
 
     template <class T>
     class AsyncQueue : public AsyncObject<std::queue<T>> {

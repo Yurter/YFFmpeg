@@ -1,10 +1,10 @@
 #include "Packet.hpp"
-#include "core/utils.hpp"
+#include <core/utils.hpp>
 
 namespace fpp {
 
     Packet::Packet()
-        : Data<AVPacket>()
+        : Data<ffmpeg::AVPacket>()
         , _time_base { DEFAULT_RATIONAL } {
         setName("Packet");
     }
@@ -15,7 +15,7 @@ namespace fpp {
         copy(other);
     }
 
-    Packet::Packet(const AVPacket& avpacket, AVRational time_base, MediaType type)
+    Packet::Packet(const ffmpeg::AVPacket& avpacket, ffmpeg::AVRational time_base, MediaType type)
         : Packet() {
         copy(avpacket, time_base, type);
     }
@@ -41,7 +41,7 @@ namespace fpp {
         _data.duration = duration;
     }
 
-    void Packet::setTimeBase(AVRational time_base) {
+    void Packet::setTimeBase(ffmpeg::AVRational time_base) {
         _time_base = time_base;
     }
 
@@ -65,7 +65,7 @@ namespace fpp {
         return _data.duration;
     }
 
-    AVRational Packet::timeBase() const {
+    ffmpeg::AVRational Packet::timeBase() const {
         return _time_base;
     }
 
@@ -111,7 +111,7 @@ namespace fpp {
         }
     }
 
-    void Packet::copy(const AVPacket& other, AVRational time_base, MediaType type) {
+    void Packet::copy(const ffmpeg::AVPacket& other, ffmpeg::AVRational time_base, MediaType type) {
         setType(type);
         setPts(other.pts);
         setDts(other.dts);

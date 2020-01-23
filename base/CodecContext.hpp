@@ -1,10 +1,15 @@
 #pragma once
-#include "TemplateProcessor.hpp"
-#include "stream/Stream.hpp"
+#include <memory>
+#include <core/Object.hpp>
+#include <base/Parameters.hpp>
+
+namespace ffmpeg {
+    struct AVCodecContext;
+} // namespace ffmpeg
 
 namespace fpp {
 
-    using SharedAVCodecContext = std::shared_ptr<AVCodecContext>;
+    using SharedAVCodecContext = std::shared_ptr<ffmpeg::AVCodecContext>;
 
     class CodecContext : public Object {
 
