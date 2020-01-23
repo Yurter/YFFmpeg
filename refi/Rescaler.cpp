@@ -27,14 +27,14 @@ namespace fpp {
         return_if(not_inited_ptr(_rescaler_context), Code::ERR);
         log_info("Inited from"
                  << " [" << input_params->width()
-                 << "x" << input_params->height()
-                 << ", " << av_get_pix_fmt_name(input_params->pixelFormat())
-                 << "(" << input_params->pixelFormat() << ")"
+                 << "x"  << input_params->height()
+                 << ", " << utils::pixel_format_to_string(input_params->pixelFormat())
+                 << "("  << input_params->pixelFormat() << ")"
                  << "] to"
                  << " [" << output_params->width()
-                 << "x" << output_params->height()
-                 << ", " << av_get_pix_fmt_name(output_params->pixelFormat())
-                 << "(" << output_params->pixelFormat() << ")"
+                 << "x"  << output_params->height()
+                 << ", " << utils::pixel_format_to_string(output_params->pixelFormat())
+                 << "("  << output_params->pixelFormat() << ")"
                  << "]"
         );
         setInited(true);

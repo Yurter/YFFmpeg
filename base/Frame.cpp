@@ -1,6 +1,10 @@
 #include "Frame.hpp"
 #include "core/utils.hpp"
 
+extern "C" {
+    #include <libavutil/imgutils.h>
+}
+
 namespace fpp {
 
     Frame::Frame()

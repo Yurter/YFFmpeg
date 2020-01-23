@@ -1,19 +1,6 @@
 #pragma once
 #include <stdint.h>
 
-//namespace ffmpeg { //TODO 17.01
-
-    extern "C" {
-//        #include <libavutil/opt.h>
-//        #include <libavutil/common.h>
-        #include <libavutil/imgutils.h>
-        #include <libavutil/samplefmt.h>
-//        #include <libavutil/audio_fifo.h>
-//        #include <libavutil/channel_layout.h>
-    }
-
-//} // namespace ffmpeg
-
 namespace fpp {
 
     /* Варианты для быстрой преднастройки */

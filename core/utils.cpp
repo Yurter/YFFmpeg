@@ -2,6 +2,10 @@
 #include <thread>
 #include <atomic>
 
+namespace ffmpeg { extern "C" {
+    #include <libavutil/imgutils.h>
+} } // namespace ffmpeg
+
 namespace fpp {
 
     std::string utils::media_type_to_string(MediaType value) {
@@ -27,7 +31,7 @@ namespace fpp {
     }
 
     std::string utils::pixel_format_to_string(AVPixelFormat value) {
-        const char* ret = av_get_pix_fmt_name(value);
+        const char* ret = ffmpeg::av_get_pix_fmt_name(value);
         return_if(not_inited_ptr(ret)
                   , "NONE");
         return std::string(ret);
