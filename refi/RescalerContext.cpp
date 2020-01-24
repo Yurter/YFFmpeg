@@ -21,12 +21,12 @@ namespace fpp {
     }
 
     void RescalerContext::init() {
-        auto input_params = std::dynamic_pointer_cast<VideoParameters>(params.in);
-        auto output_params = std::dynamic_pointer_cast<VideoParameters>(params.out);
+        const auto in_param = std::dynamic_pointer_cast<VideoParameters>(params.in);
+        const auto out_param = std::dynamic_pointer_cast<VideoParameters>(params.out);
         _rescaler_context = SharedSwsContext {
             sws_getContext(
-                int(input_params->width()), int(input_params->height()), input_params->pixelFormat()
-                , int(output_params->width()), int(output_params->height()), output_params->pixelFormat()
+                int(in_param->width()), int(in_param->height()), in_param->pixelFormat()
+                , int(out_param->width()), int(out_param->height()), out_param->pixelFormat()
                 , SWS_BICUBIC, nullptr, nullptr, nullptr
             )
             , [](ffmpeg::SwsContext* ctx) { sws_freeContext(ctx); }
@@ -35,17 +35,15 @@ namespace fpp {
             throw FFmpegException { "sws_getContext failed" };
         }
         log_info("Inited "
-            << "from"
-                << " [" << input_params->width()
-                << "x"  << input_params->height()
-                << ", " << utils::to_string(input_params->pixelFormat())
-                << "("  << input_params->pixelFormat() << ")"
+            << "from "
+                << "[" << in_param->width()
+                << "x"  << in_param->height()
+                << ", " << in_param->pixelFormat()
                 << "] "
-            << "to"
-                << " [" << output_params->width()
-                << "x"  << output_params->height()
-                << ", " << utils::to_string(output_params->pixelFormat())
-                << "("  << output_params->pixelFormat() << ")"
+            << "to "
+                << "[" << out_param->width()
+                << "x"  << out_param->height()
+                << ", " << out_param->pixelFormat()
                 << "]"
         );
     }

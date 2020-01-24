@@ -23,19 +23,16 @@ namespace fpp {
             if (ret != 0) {
                 throw FFmpegException { "swr_convert_frame failed", ret };
             }
-            resampled_frame.setType(params.in->type());
             resampled_frame.setPts(source_frame.pts()); //TODO проверить необходимость ручной установки 24.01
-
             result.push_back(resampled_frame);
         } while (swr_get_out_samples(_resampler_context.get(), 0) >= audio_params->frameSize());
-
         return result;
     }
 
     // TODO https://stackoverflow.com/questions/12831761/how-to-resize-a-picture-using-ffmpegs-sws-scale
     void ResamplerContext::init() {
-        auto in_param = std::static_pointer_cast<const AudioParameters>(params.in);
-        auto out_param = std::static_pointer_cast<const AudioParameters>(params.out);
+        const auto in_param = std::static_pointer_cast<const AudioParameters>(params.in);
+        const auto out_param = std::static_pointer_cast<const AudioParameters>(params.out);
         _resampler_context = SharedSwrContext {
             swr_alloc_set_opts(
                 nullptr
@@ -57,6 +54,18 @@ namespace fpp {
         if (ret < 0) {
             throw FFmpegException { "swr_init failed", ret };
         }
+        log_info("Inited "
+            << "from "
+                << "ch_layout " << in_param->channelLayout()
+                << ", sample_rate " << in_param->sampleFormat()
+                << ", " << in_param->sampleFormat()
+                << "] "
+            << "to "
+                 << "ch_layout " << out_param->channelLayout()
+                 << ", sample_rate " << out_param->sampleFormat()
+                 << ", " << out_param->sampleFormat()
+                 << "] "
+        );
     }
 
     Frame ResamplerContext::createFrame() const {
@@ -77,6 +86,7 @@ namespace fpp {
         if (ret < 0) {
             throw FFmpegException { "av_frame_get_buffer failed", ret };
         }
+        frame.setType(out_param->type());
         return frame;
     }
 
