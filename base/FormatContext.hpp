@@ -41,22 +41,20 @@ namespace fpp {
         const StreamVector      streams()               const;
         StreamVector            streams();
 
-        const ffmpeg::AVInputFormat*    inputFormat()   const; //TODO сеттеры 24.01
-        const ffmpeg::AVOutputFormat*   outputFormat()  const;
-
         Code                open();
         Code                close();
 
         bool                opened() const;
         bool                closed() const;
 
+        SharedStream        stream(int64_t index);
+        int64_t             streamAmount() const;
+        void                setStreams(StreamVector stream_list);
+
         virtual std::string toString() const override final;
 
         //**** refactoring
 
-        void                setStreams(StreamVector stream_list);
-        const ffmpeg::AVStream* stream(int64_t index);    //TODO переделать AVStream на Stream 20.01
-        int64_t             numberStream()  const;
 
         Preset              preset() const;                 //TODO убрать 24.01
         bool                presetIs(Preset value) const;   //TODO убрать 24.01

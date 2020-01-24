@@ -12,11 +12,8 @@ namespace fpp {
     }
 
     void MediaSource::init() {
-//        return_if(inited(), Code::OK);
         log_debug("Initialization");
-//        try_to(_input_format_context.init());
         setInited(true);
-//        return Code::OK;
     }
 
     Code MediaSource::open() {
@@ -70,7 +67,7 @@ namespace fpp {
             }
         }
         try_to(_input_format_context.read(input_data, _input_format_context.presetIs(Preset::Virtual) ? ReadWriteMode::Interleaved : ReadWriteMode::Instant)); //TODO refactoring 13.01
-        return_if(stream(input_data.streamIndex())->timeIsOver(), Code::END_OF_FILE); //TODO перенести
+//        return_if(stream(input_data.streamIndex())->timeIsOver(), Code::END_OF_FILE); //TODO перенести
         return Code::OK;
     }
 

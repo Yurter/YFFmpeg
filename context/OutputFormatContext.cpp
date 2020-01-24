@@ -47,19 +47,17 @@ namespace fpp {
     }
 
     Code OutputFormatContext::write(Packet packet, ReadWriteMode write_mode) {
-        switch (write_mode) {
-        case ReadWriteMode::Instant:
-            if (av_write_frame(context().get(), &packet.raw()) < 0) {
-                log_error("Error muxing: " << packet);
-                return Code::FFMPEG_ERROR;
+        if (write_mode == ReadWriteMode::Instant) {
+            const int ret = av_write_frame(context().get(), &packet.raw());
+            if (ret < 0) {
+                throw FFmpegException { "av_write_frame failed", ret };
             }
-            break;
-        case ReadWriteMode::Interleaved:
-            if (av_interleaved_write_frame(context().get(), &packet.raw()) < 0) {
-                log_error("Error muxing: " << packet);
-                return Code::FFMPEG_ERROR;
+        }
+        else if (write_mode == ReadWriteMode::Interleaved) {
+            const int ret = av_interleaved_write_frame(context().get(), &packet.raw());
+            if (ret < 0) {
+                throw FFmpegException { "av_interleaved_write_frame failed", ret };
             }
-            break;
         }
         return Code::OK;
     }

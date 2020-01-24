@@ -120,6 +120,10 @@ namespace fpp {
         _streams = stream_list;
     }
 
+    int64_t FormatContext::streamAmount() const {
+        return int64_t(_format_context->nb_streams);
+    }
+
     StreamVector FormatContext::streams() {
         return _streams;
     }
@@ -128,20 +132,8 @@ namespace fpp {
         return _streams;
     }
 
-    const ffmpeg::AVStream *FormatContext::stream(int64_t index) {
-       return  _format_context->streams[size_t(index)];
-    }
-
-    int64_t FormatContext::numberStream() const {
-        return int64_t(_format_context->nb_streams);
-    }
-
-    const ffmpeg::AVInputFormat* FormatContext::inputFormat() const {
-        return _format_context->iformat;
-    }
-
-    const ffmpeg::AVOutputFormat* FormatContext::outputFormat() const {
-        return _format_context->oformat;
+    SharedStream FormatContext::stream(int64_t index) {
+       return _streams.at(size_t(index));
     }
 
 } // namespace fpp

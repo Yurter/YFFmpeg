@@ -6,6 +6,7 @@ namespace fpp {
     MediaSink::MediaSink(const std::string& mrl, Preset preset)
         : _output_format_context { mrl, preset } {
         setName("MediaSink");
+        setStreams(_output_format_context.streams());
     }
 
     MediaSink::~MediaSink() {
@@ -13,12 +14,8 @@ namespace fpp {
     }
 
     void MediaSink::init() {
-//        return_if(inited(), Code::OK);
         log_debug("Initialization");
-//        try_to(_output_format_context.init());
-        setStreams(_output_format_context.streams());
         setInited(true);
-//        return Code::OK;
     }
 
     Code MediaSink::open() {
@@ -28,7 +25,6 @@ namespace fpp {
         log_info("'" << _output_format_context.mediaResourceLocator() << "' is opening...");
         try_to(_output_format_context.open());
         log_info("'" <<_output_format_context.mediaResourceLocator() << "' opened");
-//        setStreams(_output_format_context.streams()); //TODO см выше установка потоклв на этапе инициализации, а не после открытия 17.01
         // НЕ УДАЛЯТЬ
 //        _flush_timer.setInterval([&](){
 //            Code ret = _output_format_context.flush();
