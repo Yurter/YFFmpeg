@@ -11,6 +11,7 @@ namespace fpp {
         : FormatContext { mrl, preset }
         , _input_format { nullptr } {
         setName("InpFmtCtx");
+        init();
     }
 
     InputFormatContext::~InputFormatContext() {
@@ -51,7 +52,7 @@ namespace fpp {
         case SeekPrecision::Precisely:
             return Code::NOT_IMPLEMENTED;
         }
-        auto ret = av_seek_frame(formatContext().get(), int(stream_index), timestamp, flags);
+        auto ret = av_seek_frame(context().get(), int(stream_index), timestamp, flags);
         return_error_if(ret != 0
                         , "Failed to seek timestamp " << utils::time_to_string(timestamp, DEFAULT_TIME_BASE) << " in stream " << stream_index
                         , Code::FFMPEG_ERROR);
@@ -60,7 +61,7 @@ namespace fpp {
     }
 
     Code InputFormatContext::read(Packet& packet, ReadWriteMode read_mode) {
-        int ret = av_read_frame(formatContext().get(), &packet.raw());
+        const int ret = av_read_frame(context().get(), &packet.raw());
 
         return_info_if(ret == AVERROR_EOF
                        , "Reading completed"
@@ -78,10 +79,11 @@ namespace fpp {
     }
 
     Code fpp::InputFormatContext::createContext() {
+        auto free_context = [](auto*& fmt_ctx) { /*avformat_free_context(fmt_ctx);*/ };
         setFormatContext(SharedAVFormatContext {
-                             ffmpeg::avformat_alloc_context()
-                             , [](auto*& fmt_ctx) { /*avformat_free_context(fmt_ctx);*/ }
-                         });
+            ffmpeg::avformat_alloc_context()
+            , free_context
+        });
         return Code::OK;
     }
 
@@ -92,12 +94,13 @@ namespace fpp {
             guessInputFromat();
         }
         return_if(mediaResourceLocator().empty(), Code::INVALID_INPUT);
-        auto todo_ptr = formatContext().get();
-        if (avformat_open_input(&todo_ptr, mediaResourceLocator().c_str(), _input_format, nullptr) < 0) {
+        auto todo_ptr = context().get();
+        if (avformat_open_input(&todo_ptr, mediaResourceLocator().c_str(), inputFormat(), nullptr) < 0) {
             log_error("Failed to open input context.");
             return Code::INVALID_INPUT;
         }
-        if (avformat_find_stream_info(formatContext().get(), nullptr) < 0) {
+        setInputFormat(context()->iformat);
+        if (avformat_find_stream_info(context().get(), nullptr) < 0) {
             log_error("Failed to retrieve input video stream information.");
             return Code::ERR;
         }
@@ -109,30 +112,33 @@ namespace fpp {
 
     Code InputFormatContext::closeContext() {
         return_if(closed(), Code::OK);
-        auto fmt_ctx = formatContext().get();
+        auto fmt_ctx = context().get();
         avformat_close_input(&fmt_ctx);
-        log_error("after: " << fmt_ctx << " " << formatContext().get());
+        log_error("after: " << fmt_ctx << " " << context().get());
 //        formatContext().reset();
         return Code::OK;
     }
 
     StreamVector InputFormatContext::parseFormatContext() {
         StreamVector result;
-        for (unsigned i = 0; i < formatContext()->nb_streams; ++i) {
-            result.push_back(std::make_shared<Stream>(formatContext()->streams[i], ParamsType::Input));
+        for (unsigned i = 0; i < context()->nb_streams; ++i) {
+            result.push_back(std::make_shared<Stream>(context()->streams[i], ParamsType::Input));
         }
         return result;
     }
 
     Code InputFormatContext::guessInputFromat() {
         auto short_name = utils::guess_format_short_name(mediaResourceLocator());
-        auto input_format = ffmpeg::av_find_input_format(short_name.c_str());
-        if (input_format == nullptr) {
-            log_error("Failed guess input format: " << mediaResourceLocator());
-            return Code::INVALID_INPUT;
-        }
-        _input_format = input_format;
+        setInputFormat(ffmpeg::av_find_input_format(short_name));
         return Code::OK;
+    }
+
+    ffmpeg::AVInputFormat* InputFormatContext::inputFormat() {
+        return _input_format;
+    }
+
+    void InputFormatContext::setInputFormat(ffmpeg::AVInputFormat* in_fmt) {
+        _input_format = in_fmt;
     }
 
 } // namespace fpp

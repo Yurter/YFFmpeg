@@ -14,7 +14,7 @@ namespace fpp {
     Code MediaSource::init() {
         return_if(inited(), Code::OK);
         log_debug("Initialization");
-        try_to(_input_format_context.init());
+//        try_to(_input_format_context.init());
         setInited(true);
         return Code::OK;
     }
@@ -45,11 +45,7 @@ namespace fpp {
 
     std::string MediaSource::toString() const {
         /* Input #0, rtsp, from 'rtsp://admin:admin@192.168.10.3': */
-        std::string str = "Input #"
-//                + std::to_string(_input_format_context.uid()) + ", "
-                + utils::guess_format_short_name(_input_format_context.mediaResourceLocator()) + ", "
-                + "from '" + _input_format_context.mediaResourceLocator() + "'";
-        return str;
+        return "Input # TODO from '" + _input_format_context.mediaResourceLocator() + "'";
     }
 
     bool MediaSource::equalTo(const SharedProcessor other) const {

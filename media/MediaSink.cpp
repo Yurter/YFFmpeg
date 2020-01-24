@@ -15,7 +15,7 @@ namespace fpp {
     Code MediaSink::init() {
         return_if(inited(), Code::OK);
         log_debug("Initialization");
-        try_to(_output_format_context.init());
+//        try_to(_output_format_context.init());
         setStreams(_output_format_context.streams());
         setInited(true);
         return Code::OK;

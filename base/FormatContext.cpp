@@ -12,8 +12,7 @@ namespace fpp {
         : _media_resource_locator { mrl }
         , _preset { preset }
         , _opened { false }
-        , _artificial_delay { 0 }
-        , _current_interrupter { Interrupter { InterruptedProcess::None, this } } {
+        , _current_interrupter { Interrupter { InterruptedProcess::None } } {
         setName("FormatContext");
     }
 
@@ -62,7 +61,6 @@ namespace fpp {
 
     Code FormatContext::open() {
         return_if(opened(), Code::OK);
-        if_not(inited()) { try_to(init()); } //TODO оставить изменить?
         setInteruptCallback(InterruptedProcess::Opening);
         try_to(openContext());
         resetInteruptCallback();
@@ -114,7 +112,7 @@ namespace fpp {
         return _media_resource_locator;
     }
 
-    SharedAVFormatContext FormatContext::formatContext() const {
+    SharedAVFormatContext FormatContext::context() const {
         return _format_context;
     }
 
@@ -138,11 +136,11 @@ namespace fpp {
         return int64_t(_format_context->nb_streams);
     }
 
-    ffmpeg::AVInputFormat* FormatContext::inputFormat() const {
+    const ffmpeg::AVInputFormat* FormatContext::inputFormat() const {
         return _format_context->iformat;
     }
 
-    ffmpeg::AVOutputFormat* FormatContext::outputFormat() const {
+    const ffmpeg::AVOutputFormat* FormatContext::outputFormat() const {
         return _format_context->oformat;
     }
 

@@ -15,7 +15,7 @@ namespace fpp {
 
     /* Варианты для быстрой преднастройки */
     /* параметров медиа-контекстов        */
-    enum Preset {
+    enum Preset { //TODO заменить на полиморфизм, либо вовсе убрать 24.01
         Auto,
         Raw,
         /* Input */
@@ -33,30 +33,33 @@ namespace fpp {
 
     public:
 
-        FormatContext(const std::string& mrl, Preset preset); ///< mrl - media resource locator.
-        FormatContext(const FormatContext& other) = delete;
+        FormatContext(const std::string& mrl, Preset preset);
         virtual ~FormatContext() override;
 
-        Preset              preset() const;
-        bool                presetIs(Preset value) const;
+        std::string             mediaResourceLocator()  const;
+        SharedAVFormatContext   context()               const;
+        const StreamVector      streams()               const;
+        StreamVector            streams();
+
+        const ffmpeg::AVInputFormat*    inputFormat()   const; //TODO сеттеры 24.01
+        const ffmpeg::AVOutputFormat*   outputFormat()  const;
 
         Code                open();
         Code                close();
+
         bool                opened() const;
         bool                closed() const;
 
         virtual std::string toString() const override final;
 
-        std::string         mediaResourceLocator()  const;  ///< Функция возвращает mrl.
-        SharedAVFormatContext   formatContext()    const;  ///< Функция возвращает ffmpeg медиа-контекст.
+        //**** refactoring
 
         void                setStreams(StreamVector stream_list);
-        StreamVector        streams();
-        const StreamVector  streams() const;
-        const ffmpeg::AVStream* stream(int64_t index);          ///< Функция возвращает указатель на поток с заданным индексом; nullptr, если невалидный индекс. //TODO переделать AVStream на Stream 20.01
-        int64_t             numberStream()  const;          ///< Функция возвращает количество потоков в текущем котексте.
-        ffmpeg::AVInputFormat*      inputFormat()   const;          ///< Функция ...
-        ffmpeg::AVOutputFormat*     outputFormat()  const;          ///< Функция ...
+        const ffmpeg::AVStream* stream(int64_t index);    //TODO переделать AVStream на Stream 20.01
+        int64_t             numberStream()  const;
+
+        Preset              preset() const;                 //TODO убрать 24.01
+        bool                presetIs(Preset value) const;   //TODO убрать 24.01
 
     private:
 
@@ -73,12 +76,11 @@ namespace fpp {
 
         public:
 
-            Interrupter(InterruptedProcess process, FormatContext* caller) :
-                interrupted_process(process)
-              , caller_object(caller) {}
+            Interrupter(InterruptedProcess process)
+                : interrupted_process(process) {
+            }
 
             InterruptedProcess  interrupted_process;
-            FormatContext*      caller_object;
             Chronometer         chronometer;
 
         };
@@ -105,7 +107,6 @@ namespace fpp {
         const Preset            _preset;
         bool                    _opened;
         StreamVector            _streams;
-        int64_t                 _artificial_delay;
         Interrupter             _current_interrupter;
 
     };

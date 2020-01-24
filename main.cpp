@@ -338,7 +338,6 @@ int main() {
     // rtsp://b1.dnsdojo.com:1935/live/sys3.stream
 
     static_log_info("main", "Program started...");
-    ffmpeg::avcodec_register_all(); //TODO вызов необходим для работы USB-камер, перенести
 
 //    {
 //        set_log_level(LogLevel::Debug);

@@ -10,13 +10,12 @@ namespace fpp {
         OutputFormatContext(const std::string& mrl, Preset preset = Preset::Auto);
         virtual ~OutputFormatContext() override;
 
-        virtual Code        init()           override;
-
         Code                write(Packet packet, ReadWriteMode write_mode = ReadWriteMode::Instant);
         Code                flush();
 
     private:
 
+        virtual Code        init()          override;
         virtual Code        createContext() override;
         virtual Code        openContext()   override;
         virtual Code        closeContext()  override;
@@ -27,7 +26,12 @@ namespace fpp {
 
     private:
 
-        ffmpeg::AVOutputFormat*     _output_format; //TODO убрать ? 14.01
+        ffmpeg::AVOutputFormat* outputFormat();
+        void                    setOutputFormat(ffmpeg::AVOutputFormat* out_fmt);
+
+    private:
+
+        ffmpeg::AVOutputFormat* _output_format;
 
     };
 

@@ -11,6 +11,7 @@ namespace fpp {
         : FormatContext { mrl, preset }
         , _output_format { nullptr } {
         setName("OutFmtCtx");
+        try_throw(init());
     }
 
     OutputFormatContext::~OutputFormatContext() {
@@ -33,69 +34,9 @@ namespace fpp {
             video_params->setGopSize(2);
             video_params->setTimeBase(DEFAULT_TIME_BASE);
             stream_list.push_back(createStream(video_params));
-            /* Audio */
-//            auto audio_params = std::make_shared<AudioParameters>(ParamsType::Output);
-//            audio_params->setCodec("libmp3lame");
-//            audio_params->setTimeBase(DEFAULT_TIME_BASE);
-//            audio_params->setSampleRate(DEFAULT_SAMPLE_RATE);
-//            stream_list.push_back(createStream(audio_params));
             setStreams(stream_list);
             break;
         }
-        case Preset::YouTube: {
-            /* Video */
-//            auto video_parameters = std::make_shared<VideoParameters>();
-////            video_parameters->setWidth(1920);
-////            video_parameters->setHeight(1080);
-//            video_parameters->setWidth(1280);
-//            video_parameters->setHeight(720);
-//            video_parameters->setAspectRatio({ 16,9 });
-//            video_parameters->setFrameRate({ 30, 1 });
-//            video_parameters->setBitrate(400'000);
-//            video_parameters->setCodec("libx264", CodecType::Encoder);
-//            video_parameters->setTimeBase(DEFAULT_TIME_BASE);
-//            video_parameters->setPixelFormat(AV_PIX_FMT_YUV420P);
-//            try_to(createStream(video_parameters));
-//            /* Audio */
-//            auto audio_parameters = new AudioParameters; //TODO memory leak 14.01
-//            audio_parameters->setSampleRate(44'100);
-//    //        audio_parameters->setSampleFormat(AV_SAMPLE_FMT_FLTP);
-//            audio_parameters->setSampleFormat(AV_SAMPLE_FMT_FLTP);
-//            audio_parameters->setBitrate(128'000);
-//            audio_parameters->setChannelLayout(AV_CH_LAYOUT_STEREO);
-//            audio_parameters->setChannels(2);
-//            audio_parameters->setCodec("aac", CodecType::Encoder);
-//    //        audio_parameters->setChannelLayout(AV_CH_LAYOUT_MONO);
-//    //        audio_parameters->setChannels(1);
-//    //        audio_parameters->setCodec("aac");
-//            audio_parameters->setContextUid(uid());
-//            try_to(createStream(audio_parameters));
-            break;
-        }
-        case Preset::Timelapse: {
-            StreamVector stream_list;
-            /* Video */
-            auto video_parameters = std::make_shared<VideoParameters>(ParamsType::Output);
-            video_parameters->setCodec("libx264");
-            video_parameters->setTimeBase(DEFAULT_TIME_BASE);
-			video_parameters->setGopSize(2);
-            stream_list.push_back(createStream(video_parameters));
-            setStreams(stream_list);
-            break;
-        }
-//        case IOPreset::OpenCV: {
-//            /* Video */
-//            auto video_parameters = new VideoParameters;
-//            video_parameters->setWidth(1920);
-//            video_parameters->setHeight(1080);
-//            video_parameters->setAspectRatio({ 16, 9 });
-//            video_parameters->setFrameRate({ 22, 1 }); //TODO
-//            video_parameters->setTimeBase({ 1, 1000 });
-//            video_parameters->setPixelFormat(AV_PIX_FMT_BGR24);
-//            video_parameters->setContextUid(uid());
-//            try_to(createStream(video_parameters));
-//            break;
-//        }
         default:
             log_error("Invalid preset");
             break;
@@ -108,13 +49,13 @@ namespace fpp {
     Code OutputFormatContext::write(Packet packet, ReadWriteMode write_mode) {
         switch (write_mode) {
         case ReadWriteMode::Instant:
-            if (av_write_frame(formatContext().get(), &packet.raw()) < 0) {
+            if (av_write_frame(context().get(), &packet.raw()) < 0) {
                 log_error("Error muxing: " << packet);
                 return Code::FFMPEG_ERROR;
             }
             break;
         case ReadWriteMode::Interleaved:
-            if (av_interleaved_write_frame(formatContext().get(), &packet.raw()) < 0) {
+            if (av_interleaved_write_frame(context().get(), &packet.raw()) < 0) {
                 log_error("Error muxing: " << packet);
                 return Code::FFMPEG_ERROR;
             }
@@ -123,21 +64,20 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code OutputFormatContext::flush() { //TODO не потокобезопасный метод - заменить на добавление пустого пакета? тип пакета FLUSH ? для кодеков и фильтров тоже
-        return_error_if(closed()
-                        , "Failed to flush closed output context"
-                        , Code::INVALID_CALL_ORDER);
-        return_error_if(av_write_frame(formatContext().get(), nullptr) < 0
-                        , "Flush failed"
-                        , Code::FFMPEG_ERROR);
+    Code OutputFormatContext::flush() {
+        if (closed()) {
+            throw Exception("Flush failed: OutputFormatContext closed");
+        }
+        if (av_write_frame(context().get(), nullptr) < 0) {
+            return Code::FFMPEG_ERROR;
+        }
         return Code::OK;
     }
 
     Code OutputFormatContext::createContext() {
-        std::string format_short_name = utils::guess_format_short_name(mediaResourceLocator());
-        const char* format_name = format_short_name.empty() ? nullptr : format_short_name.c_str();
+        auto format_short_name = utils::guess_format_short_name(mediaResourceLocator());
         ffmpeg::AVFormatContext* fmt_ctx = nullptr;
-        if (avformat_alloc_output_context2(&fmt_ctx, nullptr, format_name, mediaResourceLocator().c_str()) < 0) {
+        if (avformat_alloc_output_context2(&fmt_ctx, nullptr, format_short_name, mediaResourceLocator().c_str()) < 0) {
             log_error("Failed to alloc output context.");
             return Code::ERR;
         }
@@ -148,28 +88,14 @@ namespace fpp {
     Code OutputFormatContext::openContext() {
         return_if(opened(), Code::OK);
         return_if_not(inited(), Code::NOT_INITED);
-//        return_error_if(streams().empty() //TODO убедиться в необходимости этого кода 16.01
-//                        , "No streams to mux were specified: " << mediaResourceLocator()
-//                        , Code::NOT_INITED);
-//        for (auto&& avstream : streams()) { //TODO refactoring
-//            if (not_inited_codec_id(avstream->raw()->codecpar->codec_id)) {
-//                utils::parameters_to_avcodecpar(avstream->params, avstream->raw()->codecpar);
-//            }
-//            try_to(avstream->init());
-//        }
-//        log_error(">> " << mediaFormatContext()->streams[0]->codecpar->codec_id << " " << mediaFormatContext()->streams[1]->codecpar->codec_id);
-        if (!(formatContext()->flags & AVFMT_NOFILE)) {
-            if (auto ret = avio_open(&formatContext()->pb, mediaResourceLocator().c_str(), AVIO_FLAG_WRITE); ret < 0) {
+        if (!(context()->flags & AVFMT_NOFILE)) {
+            if (avio_open(&context()->pb, mediaResourceLocator().c_str(), AVIO_FLAG_WRITE) < 0) {
                 log_error("Could not open output: " << mediaResourceLocator());
                 return Code::INVALID_INPUT;
             }
-//            if (avio_open(&mediaFormatContext()->pb, mediaResourceLocator().c_str(), AVIO_FLAG_WRITE) < 0) {
-//                log_error("Could not open output: " << mediaResourceLocator());
-//                return Code::INVALID_INPUT;
-//            }
         }
-        if (auto ret = avformat_write_header(formatContext().get(), nullptr); ret < 0) { //TODO unesed result 14.01
-            log_error("Error occurred when opening output: " << mediaResourceLocator() << ", " << ret);
+        if (avformat_write_header(context().get(), nullptr) < 0) {
+            log_error("avformat_write_header failed: " << mediaResourceLocator());
             return Code::ERR;
         }
         return Code::OK;
@@ -177,27 +103,23 @@ namespace fpp {
 
     Code OutputFormatContext::closeContext() {
         return_if(closed(), Code::OK);
-        if (av_write_trailer(formatContext().get()) != 0) {
+        if (av_write_trailer(context().get()) != 0) {
             log_error("Failed to write the stream trailer to an output media file");
             return Code::ERR;
         }
-        avio_close(formatContext()->pb);
+        avio_close(context()->pb);
         return Code::OK;
     }
 
     SharedStream OutputFormatContext::createStream(SharedParameters params) {
-        auto avstream = avformat_new_stream(formatContext().get(), params->codec()); //TODO все где get() перенести в методы форматконтекста 17.01
+        auto avstream = avformat_new_stream(context().get(), params->codec()); //TODO все где get() перенести в методы форматконтекста 17.01
         params->setStreamIndex(avstream->index);
         return std::make_shared<Stream>(avstream, params);
     }
 
-    Code OutputFormatContext::guessOutputFromat() {// см: _format_context->oformat
-        ffmpeg::AVOutputFormat* output_format = ffmpeg::av_guess_format(nullptr, mediaResourceLocator().c_str(), nullptr);
-        if (output_format == nullptr) {
-            log_error("Failed guess output format: " << mediaResourceLocator());
-            return Code::INVALID_INPUT;
-        }
-        _output_format = output_format;
+    Code OutputFormatContext::guessOutputFromat() {
+        auto out_fmt = ffmpeg::av_guess_format(nullptr, mediaResourceLocator().c_str(), nullptr);
+        setOutputFormat(out_fmt);
         return Code::OK;
     }
 
@@ -217,7 +139,15 @@ namespace fpp {
 //                try_to(createStream(utils::default_audio_parameters(audio_codec_id)));
 //            }
 //        }
-//        return Code::OK;
+        //        return Code::OK;
+    }
+
+    ffmpeg::AVOutputFormat* OutputFormatContext::outputFormat() {
+        return _output_format;
+    }
+
+    void OutputFormatContext::setOutputFormat(ffmpeg::AVOutputFormat* out_fmt) {
+        _output_format = out_fmt;
     }
 
 } // namespace fpp

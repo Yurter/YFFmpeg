@@ -196,29 +196,29 @@ namespace fpp {
         return stream_uid / 100;
     }
 
-    std::string utils::guess_format_short_name(std::string media_resurs_locator) {
+    const char* utils::guess_format_short_name(std::string media_resurs_locator) {
         if (media_resurs_locator.find("rtsp://") != std::string::npos) {
-            return std::string("rtsp");
+            return "rtsp";
         }
         if (media_resurs_locator.find("rtmp://") != std::string::npos) {
-            return std::string("flv");
+            return "flv";
         }
-        if (media_resurs_locator.find("aevalsrc") != std::string::npos) {
-            return std::string("lavfi");
+        if (media_resurs_locator.find("aevalsrc=") != std::string::npos) {
+            return "lavfi";
         }
         if (media_resurs_locator.find("anullsrc=") != std::string::npos) {  /* Silence              */
-            return std::string("lavfi");
+            return "lavfi";
         }
         if (media_resurs_locator.find("sine=") != std::string::npos) {      /* Гул\писк             */
-            return std::string("lavfi");
+            return "lavfi";
         }
         if (media_resurs_locator.find("video=") != std::string::npos) {     /* USB camera's video   */
-            return std::string("dshow");
+            return "dshow";
         }
         if (media_resurs_locator.find("audio=") != std::string::npos) {     /* USB micro's audio    */
-            return std::string("TODO 13.01");
+            return "TODO 13.01";
         }
-        return std::string(); //TODO use fmpeg funtion to get format list, нет нельзя: нужно возвращать пустую строку для логики в месте вызова
+        return nullptr;
     }
 
     ffmpeg::AVCodec* utils::find_decoder(std::string codec_short_name) {

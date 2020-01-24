@@ -60,6 +60,7 @@ namespace fpp {
 
         static SharedStream find_best_stream(const StreamVector& stream_list);
 
+        static const char*  guess_format_short_name(std::string media_resurs_locator);
 
         /* ---- R E F A C T O R I N G ---- */
 
@@ -71,7 +72,6 @@ namespace fpp {
 
         static ffmpeg::AVMediaType  mediatype_to_avmediatype(MediaType media_type);
         static MediaType    avmt_to_mt(ffmpeg::AVMediaType avmedia_type);
-        static std::string  guess_format_short_name(std::string media_resurs_locator);
 
 
         static SharedParameters createParams(MediaType type, ParamsType par_type);
