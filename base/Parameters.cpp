@@ -1,6 +1,10 @@
 #include "Parameters.hpp"
 #include <core/utils.hpp>
 
+namespace ffmpeg { extern "C" {
+    #include <libavformat/avformat.h>
+} } // namespace ffmpeg
+
 #define DEFAULT_CODEC_ID        ffmpeg::AV_CODEC_ID_NONE
 #define inited_codec_id(x)      ((x) != DEFAULT_CODEC_ID)
 #define not_inited_codec_id(x)  ((x) == DEFAULT_CODEC_ID)

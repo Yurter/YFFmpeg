@@ -1,6 +1,10 @@
 #include "VideoParameters.hpp"
 #include <core/utils.hpp>
 
+namespace ffmpeg { extern "C" {
+    #include <libavformat/avformat.h>
+} } // namespace ffmpeg
+
 #define DEFAULT_PIXEL_FORMAT    ffmpeg::AV_PIX_FMT_NONE
 #define not_inited_pix_fmt(x)   ((x) == DEFAULT_PIXEL_FORMAT)
 

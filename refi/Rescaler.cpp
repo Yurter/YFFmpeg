@@ -22,7 +22,7 @@ namespace fpp {
                 , int(output_params->width()), int(output_params->height()), output_params->pixelFormat()
                 , SWS_BICUBIC, nullptr, nullptr, nullptr
             )
-            , [](SwsContext*& ctx) { sws_freeContext(ctx); }
+            , [](ffmpeg::SwsContext*& ctx) { sws_freeContext(ctx); }
         };
         return_if(not_inited_ptr(_rescaler_context), Code::ERR);
         log_info("Inited from"

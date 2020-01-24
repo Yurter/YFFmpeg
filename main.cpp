@@ -249,7 +249,7 @@ void write_video_from_camera() {
 
 //    pipeline->addElement(std::make_shared<MediaSource>("rtsp://admin:Admin2019@192.168.10.12:554"));
     pipeline->addElement(std::make_shared<MediaSource>("rtsp://b1.dnsdojo.com:1935/live/sys3.stream"));
-    pipeline->addElement(std::make_shared<MediaSink>("debug_files/event.flv", IOPreset::Event));
+    pipeline->addElement(std::make_shared<MediaSink>("debug_files/event.flv", Preset::Event));
 
     utils::sleep_for_sec(10);
 
@@ -338,7 +338,7 @@ int main() {
     // rtsp://b1.dnsdojo.com:1935/live/sys3.stream
 
     static_log_info("main", "Program started...");
-    avdevice_register_all(); //TODO вызов необходим для работы USB-камер, перенести
+    ffmpeg::avcodec_register_all(); //TODO вызов необходим для работы USB-камер, перенести
 
 //    {
 //        set_log_level(LogLevel::Debug);

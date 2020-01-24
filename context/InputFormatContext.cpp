@@ -1,6 +1,10 @@
 #include "InputFormatContext.hpp"
 #include <core/utils.hpp>
 
+namespace ffmpeg { extern "C" {
+    #include <libavformat/avformat.h>
+} } // namespace ffmpeg
+
 namespace fpp {
 
     InputFormatContext::InputFormatContext(const std::string& mrl, Preset preset)

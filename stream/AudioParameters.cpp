@@ -1,6 +1,10 @@
 #include "AudioParameters.hpp"
 #include <core/utils.hpp>
 
+namespace ffmpeg { extern "C" {
+    #include <libavformat/avformat.h>
+} } // namespace ffmpeg
+
 #define DEFAULT_SAMPLE_FORMAT   ffmpeg::AV_SAMPLE_FMT_NONE
 #define DEFAULT_CHANEL_LAYOUT   0
 #define DEFAULT_SAMPLE_RATE     44'100

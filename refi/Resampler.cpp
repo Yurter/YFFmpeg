@@ -15,17 +15,17 @@ namespace fpp {
         auto out_param = dynamic_cast<const AudioParameters * const>(params.out.get());
 
         _resampler_context = SharedSwrContext {
-                swr_alloc_set_opts(
-                            nullptr,
-                            av_get_default_channel_layout(int(out_param->channels())),
-                            out_param->sampleFormat(),
-                            int(out_param->sampleRate()),
-                            av_get_default_channel_layout(int(in_param->channels())),
-                            in_param->sampleFormat(),
-                            int(in_param->sampleRate()),
-                            0, nullptr
-                        )
-                , [](SwrContext*& ctx) { swr_free(&ctx); }
+            swr_alloc_set_opts(
+                nullptr,
+                ffmpeg::av_get_default_channel_layout(int(out_param->channels())),
+                out_param->sampleFormat(),
+                int(out_param->sampleRate()),
+                ffmpeg::av_get_default_channel_layout(int(in_param->channels())),
+                in_param->sampleFormat(),
+                int(in_param->sampleRate()),
+                0, nullptr
+            )
+            , [](ffmpeg::SwrContext*& ctx) { swr_free(&ctx); }
         };
 
         if (_resampler_context == nullptr) {
@@ -102,7 +102,7 @@ namespace fpp {
     }
 
     //bool Resampler::configChanged(const AVFrame *in, const AVFrame *out)
-    bool Resampler::configChanged(AVFrame* in, AVFrame* out) {
+    bool Resampler::configChanged(ffmpeg::AVFrame* in, ffmpeg::AVFrame* out) {
         auto in_param = dynamic_cast<const AudioParameters * const>(params.in.get()); //TODO убрать динамичный каст
         auto out_param = dynamic_cast<const AudioParameters * const>(params.out.get());
 
