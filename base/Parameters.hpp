@@ -9,7 +9,6 @@ namespace ffmpeg {
 
 namespace ffmpeg { extern "C" {
     #include <libavcodec/avcodec.h>
-    #include <libavutil/rational.h>
 } } // namespace ffmpeg
 
 namespace fpp {

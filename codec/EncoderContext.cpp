@@ -1,4 +1,6 @@
 #include "EncoderContext.hpp"
+#include <core/Logger.hpp>
+#include <core/utils.hpp>
 
 namespace fpp {
 

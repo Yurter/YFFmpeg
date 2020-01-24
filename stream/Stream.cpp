@@ -1,9 +1,13 @@
 #include "Stream.hpp"
-#include "core/utils.hpp"
+#include <core/utils.hpp>
+
+namespace ffmpeg { extern "C" {
+    #include <libavformat/avformat.h>
+} } // namespace ffmpeg
 
 namespace fpp {
 
-    Stream::Stream(const AVStream* avstream, SharedParameters parameters)
+    Stream::Stream(const ffmpeg::AVStream* avstream, SharedParameters parameters)
         : Data(avstream, parameters->type())
         , params { parameters }
         , _used { false }
@@ -21,7 +25,7 @@ namespace fpp {
         setName(utils::media_type_to_string(type()) + " stream");
     }
 
-    Stream::Stream(const AVStream* avstream, ParamsType type)
+    Stream::Stream(const ffmpeg::AVStream* avstream, ParamsType type)
         : Stream(avstream, utils::createParams(utils::avmt_to_mt(avstream->codecpar->codec_type), type)) { //TODO refactoring params creation 15.01
         params->parseStream(avstream);
     }
@@ -61,7 +65,7 @@ namespace fpp {
                 _chronometer.reset_timepoint();
             }
 
-            const AVRational chronometer_timebase = DEFAULT_TIME_BASE;
+            const ffmpeg::AVRational chronometer_timebase = DEFAULT_TIME_BASE;
             _packet_duration = av_rescale_q(_chronometer.elapsed_milliseconds(), chronometer_timebase, params->timeBase());
 
             _chronometer.reset_timepoint();
@@ -226,7 +230,7 @@ namespace fpp {
         return _packet_index;
     }
 
-    AVCodecParameters* Stream::codecParameters() {
+    ffmpeg::AVCodecParameters* Stream::codecParameters() {
         return_if(not_inited_ptr(_data), nullptr);
         return _data->codecpar;
     }

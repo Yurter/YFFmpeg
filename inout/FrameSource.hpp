@@ -1,5 +1,5 @@
 #pragma once
-#include "FrameProcessor.hpp"
+#include <inout/FrameProcessor.hpp>
 
 namespace fpp {
 
@@ -10,8 +10,6 @@ namespace fpp {
         FrameSource();
 
     };
-
-    using FrameSourcePtr = std::unique_ptr<FrameSource>;
 
 } // namespace fpp
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "FrameProcessor.hpp"
+#include <inout/FrameProcessor.hpp>
 
 namespace fpp {
 
@@ -15,7 +15,5 @@ namespace fpp {
         Code                writeFrame();
 
     };
-
-    using FrameSinkPtr = std::unique_ptr<FrameSink>;
 
 } // namespace fpp

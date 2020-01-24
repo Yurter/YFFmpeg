@@ -4,10 +4,8 @@
 #include <base/Packet.hpp>
 #include <vector>
 
-namespace ffmpeg { extern "C" {
-    #include <libavformat/avformat.h>
-    #include <libavutil/mathematics.h>
-} } // namespace ffmpeg
+#define FROM_START  0
+#define TO_END      LONG_MAX
 
 namespace fpp {
 

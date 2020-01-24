@@ -1,7 +1,7 @@
 #pragma once
-#include "base/TemplateProcessor.hpp"
-#include "base/Packet.hpp"
-#include "base/Frame.hpp"
+#include <base/TemplateProcessor.hpp>
+#include <base/Packet.hpp>
+#include <base/Frame.hpp>
 
 namespace fpp {
 
@@ -10,8 +10,6 @@ namespace fpp {
     public:
 
         PacketProducer();
-
-        using PacketProducerList = std::list<PacketProducer*>;
 
     };
 

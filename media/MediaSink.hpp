@@ -1,7 +1,7 @@
 #pragma once
-#include "inout/PacketSink.hpp"
-#include "context/OutputFormatContext.hpp"
-#include "core/time/Timer.hpp"
+#include <context/OutputFormatContext.hpp>
+#include <inout/PacketSink.hpp>
+#include <core/time/Timer.hpp>
 
 namespace fpp {
 
@@ -9,7 +9,7 @@ namespace fpp {
 
     public:
 
-        MediaSink(const std::string& mrl, IOPreset preset = IOPreset::Auto);
+        MediaSink(const std::string& mrl, Preset preset = Preset::Auto);
         virtual ~MediaSink() override;
 
         virtual Code        init()  override;

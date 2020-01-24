@@ -1,9 +1,9 @@
 #include "MediaSink.hpp"
-#include <exception>
+//#include <exception>
 
 namespace fpp {
 
-    MediaSink::MediaSink(const std::string& mrl, IOPreset preset)
+    MediaSink::MediaSink(const std::string& mrl, Preset preset)
         : _output_format_context { mrl, preset } {
         setName("MediaSink");
     }

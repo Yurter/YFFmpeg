@@ -20,28 +20,28 @@ namespace fpp {
         void                setPixelFormat(ffmpeg::AVPixelFormat pixel_format);
         void                setGopSize(int64_t value);
 
-        int64_t             width()         const;
-        int64_t             height()        const;
-        ffmpeg::AVRational          aspectRatio()   const;
-        ffmpeg::AVRational          frameRate()     const;
-        ffmpeg::AVPixelFormat       pixelFormat()   const;
-        int64_t             gopSize()       const;
+        int64_t                 width()         const;
+        int64_t                 height()        const;
+        ffmpeg::AVRational      aspectRatio()   const;
+        ffmpeg::AVRational      frameRate()     const;
+        ffmpeg::AVPixelFormat   pixelFormat()   const;
+        int64_t                 gopSize()       const;
 
         virtual std::string toString() const override;
 
         virtual void        completeFrom(const SharedParameters other_params)   override;
-        virtual void        parseStream(const ffmpeg::AVStream* avstream)               override;
-        virtual void        initStream(ffmpeg::AVStream* avstream) const                override;
+        virtual void        parseStream(const ffmpeg::AVStream* avstream)       override;
+        virtual void        initStream(ffmpeg::AVStream* avstream) const        override;
         virtual bool        betterThen(const SharedParameters& other)           override;
 
     private:
 
-        int64_t             _width;
-        int64_t             _height;
-        ffmpeg::AVRational          _aspect_ratio;
-        ffmpeg::AVRational          _frame_rate;
-        ffmpeg::AVPixelFormat       _pixel_format;
-        int64_t             _gop_size;
+        int64_t                 _width;
+        int64_t                 _height;
+        ffmpeg::AVRational      _aspect_ratio;
+        ffmpeg::AVRational      _frame_rate;
+        ffmpeg::AVPixelFormat   _pixel_format;
+        int64_t                 _gop_size;
 
     };
 

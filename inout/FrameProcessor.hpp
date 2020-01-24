@@ -1,6 +1,6 @@
 #pragma once
-#include "base/TemplateProcessor.hpp"
-#include "base/Frame.hpp"
+#include <base/TemplateProcessor.hpp>
+#include <base/Frame.hpp>
 
 namespace fpp {
 
@@ -11,7 +11,5 @@ namespace fpp {
         FrameProcessor();
 
     };
-
-    using FrameProcessorList = std::list<FrameProcessor*>;
 
 } // namespace fpp

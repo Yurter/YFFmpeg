@@ -4,9 +4,6 @@
 #include <tuple>
 #include <stdint.h>
 
-#define FROM_START  0
-#define TO_END      LONG_MAX
-
 namespace fpp {
 
     using TimePoint = int64_t;

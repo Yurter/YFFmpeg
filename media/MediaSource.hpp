@@ -1,6 +1,6 @@
 #pragma once
-#include "inout/PacketSource.hpp"
-#include "context/InputFormatContext.hpp"
+#include <context/InputFormatContext.hpp>
+#include <inout/PacketSource.hpp>
 
 namespace fpp {
 
@@ -8,7 +8,7 @@ namespace fpp {
 
     public:
 
-        MediaSource(const std::string& mrl, IOPreset preset = IOPreset::Auto);
+        MediaSource(const std::string& mrl, Preset preset = Preset::Auto);
         virtual ~MediaSource() override;
 
         virtual Code        init() override;

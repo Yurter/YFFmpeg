@@ -1,5 +1,5 @@
 #pragma once
-#include "PacketProcessor.hpp"
+#include <inout/PacketProcessor.hpp>
 
 namespace fpp {
 
@@ -15,7 +15,5 @@ namespace fpp {
         Code                readPacket();
 
     };
-
-    using PacketSourcePtr = std::unique_ptr<PacketSource>;
 
 } // namespace fpp

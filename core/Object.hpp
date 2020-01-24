@@ -2,9 +2,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
-#include <core/Logger.hpp>
-
-#include "ffmpeg.hpp"
+#include <core/ffmpeg.hpp>
 
 #define INVALID_INT             -1
 #define DEFAULT_INT             0

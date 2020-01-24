@@ -1,13 +1,13 @@
 #pragma once
-#include "inout/FrameProcessor.hpp"
+#include <inout/FrameProcessor.hpp>
 
-extern "C" {
+namespace ffmpeg { extern "C" {
     #include <libswscale/swscale.h>
-}
+} } // namespace ffmpeg
 
 namespace fpp {
 
-    using SharedSwsContext = std::shared_ptr<SwsContext>;
+    using SharedSwsContext = std::shared_ptr<ffmpeg::SwsContext>;
 
     class Rescaler : public FrameProcessor { //TODO определиться: фильтровать по выходным параметрам или входным, или настраивать?
 

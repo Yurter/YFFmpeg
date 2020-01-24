@@ -1,5 +1,5 @@
 #pragma once
-#include "inout/PacketSource.hpp"
+#include <inout/PacketSource.hpp>
 
 namespace fpp {
 

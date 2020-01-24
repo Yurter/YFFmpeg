@@ -1,6 +1,6 @@
 #pragma once
-#include "base/TemplateProcessor.hpp"
-#include "base/Packet.hpp"
+#include <base/TemplateProcessor.hpp>
+#include <base/Packet.hpp>
 
 namespace fpp {
 

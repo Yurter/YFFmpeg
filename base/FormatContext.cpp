@@ -130,7 +130,7 @@ namespace fpp {
         return _streams;
     }
 
-    const AVStream *FormatContext::stream(int64_t index) {
+    const ffmpeg::AVStream *FormatContext::stream(int64_t index) {
        return  _format_context->streams[size_t(index)];
     }
 
@@ -138,11 +138,11 @@ namespace fpp {
         return int64_t(_format_context->nb_streams);
     }
 
-    AVInputFormat* FormatContext::inputFormat() const {
+    ffmpeg::AVInputFormat* FormatContext::inputFormat() const {
         return _format_context->iformat;
     }
 
-    AVOutputFormat* FormatContext::outputFormat() const{
+    ffmpeg::AVOutputFormat* FormatContext::outputFormat() const {
         return _format_context->oformat;
     }
 
