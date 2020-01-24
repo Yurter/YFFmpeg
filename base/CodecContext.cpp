@@ -4,44 +4,33 @@
 namespace fpp {
 
     CodecContext::CodecContext(const IOParams params, CodecType type)
-        : params(params)
-        , _codec_context(nullptr)
-        , _type(type)
-        , _opened(false) {
+        : params { params }
+        , _codec_context { nullptr }
+        , _type { type }
+        , _opened { false } {
         setName("CodecContext");
+        open();
     }
 
     CodecContext::~CodecContext() {
-        try_throw(close());
+        close();
     }
 
     Code CodecContext::init() {
         return_if(inited(), Code::INVALID_CALL_ORDER);
         log_debug("Initialization");
-        ffmpeg::AVCodec* codec = nullptr;
-        switch (_type) { //TODO refactoring
-        case CodecType::Decoder:
-            codec = params.in->codec();
-            break;
-        case CodecType::Encoder:
-            codec = params.out->codec();
-            break;
-        default:
-            codec = nullptr;
+        _codec_context.reset(
+            avcodec_alloc_context3(codec())
+            , [](ffmpeg::AVCodecContext*& codec_context) { avcodec_free_context(&codec_context); }
+        );
+        if (!_codec_context) {
+            throw Exception("Failed to alloc codec context");
         }
-        return_if(not_inited_ptr(codec), Code::INVALID_INPUT);
-        {
-            _codec_context.reset(
-                avcodec_alloc_context3(codec)
-                , [](ffmpeg::AVCodecContext*& codec_context) { avcodec_free_context(&codec_context); }
-            );
-            setName(name() + " " + codec->name);
+        setName(name() + " " + codec()->name);
+        utils::parameters_to_context(parameters(), _codec_context.get());
+        if (true) { // TODO костыль
+            _codec_context->time_base = params.in->timeBase();
         }
-        if (not_inited_ptr(_codec_context)) {
-            log_error("Failed to alloc context");
-            return Code::ERR;
-        }
-        try_to(initParams());
         try_to(open());
         setInited(true);
         return Code::OK;
@@ -54,20 +43,9 @@ namespace fpp {
     Code CodecContext::open() {
         return_if(opened(), Code::OK);
         log_debug("Opening");
-        ffmpeg::AVCodec* codec = nullptr;
-        switch (_type) { //TODO refactoring
-        case CodecType::Decoder:
-            codec = params.in->codec();
-            break;
-        case CodecType::Encoder:
-            codec = params.out->codec();
-            break;
-        default:
-            codec = nullptr;
-        }
-        if (int ret = avcodec_open2(_codec_context.get(), codec, nullptr); ret != 0) {
-            const std::string codec_type = av_codec_is_decoder(codec) ? "decoder" : "encoder";
-            log_error("Cannot open codec: " << ret << ", "<< codec->name << ", " << codec_type);
+        if (int ret = avcodec_open2(_codec_context.get(), codec(), nullptr); ret != 0) {
+            const std::string codec_type = av_codec_is_decoder(codec()) ? "decoder" : "encoder";
+            log_error("Cannot open codec: " << ret << ", "<< codec()->name << ", " << codec_type);
             return Code::ERR;
         }
         try_to(onOpen());
@@ -101,7 +79,7 @@ namespace fpp {
         return str;
     }
 
-    SharedAVCodecContext CodecContext::codecContext() {
+    SharedAVCodecContext CodecContext::context() {
         return _codec_context;
     }
 

@@ -38,11 +38,6 @@ namespace fpp {
         }
     }
 
-    Code DecoderContext::initParams() {
-        utils::parameters_to_context(params.in, _codec_context.get());
-        return Code::OK;
-    }
-
     Code DecoderContext::flush(Object* data) { //TODO
         return Code::OK;
         log_error("FLUSH");
@@ -80,6 +75,14 @@ namespace fpp {
         default:
             return Code::ERR;
         }
+    }
+
+    const ffmpeg::AVCodec* DecoderContext::codec() {
+        return params.in->codec();
+    }
+
+    SharedParameters DecoderContext::parameters() {
+        return params.in;
     }
 
 } // namespace fpp

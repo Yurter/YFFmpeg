@@ -22,7 +22,7 @@ namespace fpp {
     Code Encoder::open() {
         return_if(opened(), Code::INVALID_CALL_ORDER);
         log_debug("Opening");
-        try_to(_encoder_context.open());
+//        try_to(_encoder_context.open());
         setOpened(true);
         return Code::OK;
     }
@@ -30,7 +30,7 @@ namespace fpp {
     Code Encoder::close() {
         return_if(closed(), Code::INVALID_CALL_ORDER);
         log_debug("Closing");
-        try_to(_encoder_context.close());
+//        try_to(_encoder_context.close());
         setOpened(false);
         return Code::OK;
     }

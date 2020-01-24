@@ -33,12 +33,6 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code EncoderContext::initParams() {
-        utils::parameters_to_context(params.out, _codec_context.get());
-        _codec_context->time_base = params.in->timeBase(); //TODO костыль
-        return Code::OK;
-    }
-
     Code EncoderContext::flush(Object *data) {
         return Code::OK;
         log_error("FLUSH");
@@ -71,6 +65,14 @@ namespace fpp {
             static_cast<AudioParameters * const>(params.out.get())->setFrameSize(_codec_context->frame_size); //TODO не надежно: нет гарантий, что кодек откроется раньше, чем рескейлер начнет работу
         }
         return Code::OK;
+    }
+
+    const ffmpeg::AVCodec* EncoderContext::codec() {
+        return params.out->codec();
+    }
+
+    SharedParameters EncoderContext::parameters() {
+        return params.out;
     }
 
 } // namespace fpp

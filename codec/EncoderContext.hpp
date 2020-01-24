@@ -16,9 +16,8 @@ namespace fpp {
         virtual Code        flush(Object* data) override;
         virtual Code        onOpen()            override;
 
-    private:
-
-        virtual Code        initParams()    override;
+        virtual const ffmpeg::AVCodec*  codec()         override;
+        virtual SharedParameters        parameters()    override;
 
     };
 

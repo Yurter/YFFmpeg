@@ -24,14 +24,14 @@ namespace fpp {
 
     Code Decoder::open() {
         log_debug("Opening");
-        try_to(_decoder_context.open());
+//        try_to(_decoder_context.open());
         setOpened(true);
         return Code::OK;
     }
 
     Code Decoder::close() {
         log_debug("Closing");
-        try_to(_decoder_context.close());
+//        try_to(_decoder_context.close());
         setOpened(false);
         return Code::OK;
     }
