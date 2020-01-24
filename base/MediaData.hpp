@@ -4,11 +4,11 @@
 namespace fpp {
 
     /* Медиа тип потока/пакета/фрейма */
-    enum class MediaType { //TODO убрать инициализацию полей и методы дискад и игнорм (этот функционал переходит под ответственность потоков) 14.01
-        Unknown = 0x0001,
-        Video   = 0x0002,
-        Audio   = 0x0004,
-        EndOF   = 0x0008,
+    enum class MediaType {
+        Unknown,
+        Video,
+        Audio,
+        EndOF,
     };
 
     class MediaData : public Object {

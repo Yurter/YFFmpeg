@@ -30,7 +30,7 @@ namespace fpp {
 
         Stream(const ffmpeg::AVStream* avstream, SharedParameters parameters); //TODO сделать приватным 23.01
         Stream(const ffmpeg::AVStream* avstream, ParamsType type);  // Создание реального потока
-        Stream(SharedParameters params);                    // Создание виртуального потока
+        Stream(SharedParameters params);                    // Создание виртуального потока    //TODO не используется 24.01
         Stream(const Stream& other)  = delete;
         virtual ~Stream() override = default;
 
