@@ -1,6 +1,4 @@
 #pragma once
-#include <memory>
-#include <core/Object.hpp>
 #include <base/Parameters.hpp>
 
 namespace ffmpeg {
@@ -19,7 +17,7 @@ namespace fpp {
         virtual ~CodecContext() override;
 
         virtual Code        flush(Object* data) = 0; //TODO (отправлять кодеку NULL)
-        virtual Code        init() override;
+        virtual void        init() override;
         std::string         toString() const override final;
 
         bool                opened() const;

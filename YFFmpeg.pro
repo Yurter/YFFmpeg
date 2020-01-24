@@ -27,13 +27,14 @@ SOURCES += \
     codec/Encoder.cpp \
     codec/EncoderContext.cpp \
     control/Concatenator.cpp \
+    core/FFmpegException.cpp \
+    core/Utils.cpp \
     custom/CustomFrameSink.cpp \
     custom/CustomFrameSource.cpp \
     custom/CustomPacketSink.cpp \
     custom/CustomPacketSource.cpp \
     context/InputFormatContext.cpp \
     context/OutputFormatContext.cpp \
-    core/Exception.cpp \
     inout/FrameProducer.cpp \
     inout/FrameSink.cpp \
     inout/PacketProcessor.cpp \
@@ -51,6 +52,8 @@ SOURCES += \
     inout/PacketSink.cpp \
     inout/PacketSource.cpp \
     opencv/OpenCVSink.cpp \
+    refi/ResamplerContext.cpp \
+    refi/RescalerContext.cpp \
     stream/AudioParameters.cpp \
     control/Pipeline.cpp \
     stream/VideoParameters.cpp \
@@ -58,7 +61,6 @@ SOURCES += \
     refi/AudioFilter.cpp \
     refi/Resampler.cpp \
     stream/Stream.cpp \
-    core/utils.cpp \
     main.cpp \
     base/Frame.cpp \
     base/Packet.cpp \
@@ -75,6 +77,8 @@ HEADERS += \
     codec/Encoder.hpp \
     codec/EncoderContext.hpp \
     control/Concatenator.hpp \
+    core/FFmpegException.hpp \
+    core/Utils.hpp \
     core/async/AsyncList.hpp \
     core/async/AsyncObject.hpp \
     core/async/AsyncVector.hpp \
@@ -92,7 +96,6 @@ HEADERS += \
     base/FormatContext.hpp \
     base/TemplateProcessor.hpp \
     base/TemplateProcessor.hpp \
-    core/Exception.hpp \
     inout/FrameProducer.hpp \
     inout/PacketProcessor.hpp \
     base/Filter.hpp \
@@ -103,10 +106,11 @@ HEADERS += \
     base/Processor.hpp \
     media.hpp \
     refi.hpp \
+    refi/ResamplerContext.hpp \
+    refi/RescalerContext.hpp \
     stream.hpp \
     stream/Stream.hpp \
     core/Thread.hpp \
-    core/utils.hpp \
     inout/FrameSource.hpp \
     inout/PacketProducer.hpp \
     media/MediaSink.hpp \

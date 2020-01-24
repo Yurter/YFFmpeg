@@ -20,9 +20,9 @@ namespace fpp {
         try_throw(stop());
     }
 
-    Code Filter::init() {
+    void Filter::init() {
         using namespace ffmpeg;
-        return_if(inited(), Code::OK);
+//        return_if(inited(), Code::OK);
         auto out_params = dynamic_cast<const VideoParameters*>(params.out.get()); //TODO решить использовать входные или выходные параметры
 
         char args[512];
@@ -38,7 +38,7 @@ namespace fpp {
         _filter_graph = avfilter_graph_alloc();
         if (!outputs || !inputs || !_filter_graph) {
             ret = AVERROR(ENOMEM);
-            return Code::FFMPEG_ERROR;
+//            return Code::FFMPEG_ERROR;
         }
 
         /* buffer video source: the decoded frames from the decoder will be inserted here. */
@@ -52,7 +52,7 @@ namespace fpp {
                                            args, nullptr, _filter_graph);
         if (ret < 0) {
             av_log(nullptr, AV_LOG_ERROR, "Cannot create buffer source\n");
-            return Code::FFMPEG_ERROR;
+//            return Code::FFMPEG_ERROR;
         }
 
         log_info("Filter in inited with args: " << args);
@@ -62,7 +62,7 @@ namespace fpp {
                                            nullptr, nullptr, _filter_graph);
         if (ret < 0) {
             av_log(nullptr, AV_LOG_ERROR, "Cannot create buffer sink\n");
-            return Code::FFMPEG_ERROR;
+//            return Code::FFMPEG_ERROR;
         }
 
         snprintf(args, sizeof(args), "NULL");
@@ -72,7 +72,7 @@ namespace fpp {
                                   AV_PIX_FMT_NONE, AV_OPT_SEARCH_CHILDREN);
         if (ret < 0) {
             av_log(nullptr, AV_LOG_ERROR, "Cannot set output pixel format\n");
-            return Code::FFMPEG_ERROR;
+//            return Code::FFMPEG_ERROR;
         }
 
         /*
@@ -104,19 +104,20 @@ namespace fpp {
 
         if ((ret = avfilter_graph_parse_ptr(_filter_graph, _filters_descr.c_str(),
                                             &inputs, &outputs, nullptr)) < 0) {
-            return Code::FFMPEG_ERROR;
+//            return Code::FFMPEG_ERROR;
         }
 
         log_info("Filter description: " << _filters_descr);
 
-        if ((ret = avfilter_graph_config(_filter_graph, nullptr)) < 0)
-            return Code::FFMPEG_ERROR;
+        if ((ret = avfilter_graph_config(_filter_graph, nullptr)) < 0) {
+//            return Code::FFMPEG_ERROR;
+        }
 
         avfilter_inout_free(&inputs);
         avfilter_inout_free(&outputs);
 
         setInited(true);
-        return Code::OK;
+//        return Code::OK;
     }
 
     Code Filter::open() {

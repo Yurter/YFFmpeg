@@ -1,4 +1,4 @@
-#include "utils.hpp"
+#include "Utils.hpp"
 #include <thread>
 #include <atomic>
 #include <algorithm>
@@ -179,7 +179,7 @@ namespace fpp {
         case ffmpeg::AVMediaType::AVMEDIA_TYPE_AUDIO:
             return MediaType::Audio;
         default:
-            throw Exception("TODO avmt_to_mt");
+            throw FFmpegException("TODO avmt_to_mt");
         }
     }
 

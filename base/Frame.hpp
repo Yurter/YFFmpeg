@@ -1,5 +1,6 @@
 #pragma once
 #include <base/Data.hpp>
+#include <list>
 
 namespace ffmpeg { extern "C" {
     #include <libavutil/frame.h>
@@ -32,5 +33,7 @@ namespace fpp {
         void                copy(const ffmpeg::AVFrame& other, MediaType type);
 
     };
+
+    using FrameList = std::list<Frame>;
 
 } // namespace fpp

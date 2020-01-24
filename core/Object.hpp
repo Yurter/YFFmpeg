@@ -47,7 +47,7 @@ namespace fpp {
         std::string         name()          const;
         bool                is(const std::string& name) const;
 
-        virtual Code        init(); //TODO убрать 24.01
+        virtual void        init(); //TODO убрать 24.01
         void                setInited(bool inited);
         bool                inited() const;
 

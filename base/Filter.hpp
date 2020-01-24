@@ -16,7 +16,7 @@ namespace fpp {
         Filter(IOParams params, const std::string& filters_descr);
         virtual ~Filter() override;
 
-        virtual Code        init() override;
+        virtual void        init() override;
         virtual Code        open() override;
         virtual Code        close() override;
         virtual bool        equalTo(const SharedProcessor other) const override final;

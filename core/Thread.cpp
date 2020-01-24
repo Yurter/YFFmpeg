@@ -1,5 +1,5 @@
 #include "Thread.hpp"
-#include "utils.hpp"
+#include "Utils.hpp"
 #include "time/Chronometer.hpp"
 #include <exception>
 

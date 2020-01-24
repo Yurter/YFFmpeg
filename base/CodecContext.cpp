@@ -1,5 +1,5 @@
 #include "CodecContext.hpp"
-#include <core/utils.hpp>
+#include <core/Utils.hpp>
 
 namespace fpp {
 
@@ -15,7 +15,7 @@ namespace fpp {
         close();
     }
 
-    Code CodecContext::init() {
+    void CodecContext::init() {
         return_if(inited(), Code::INVALID_CALL_ORDER);
         log_debug("Initialization");
         _codec_context.reset(

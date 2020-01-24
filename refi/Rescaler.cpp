@@ -13,7 +13,7 @@ namespace fpp {
     }
 
     // TODO https://stackoverflow.com/questions/12831761/how-to-resize-a-picture-using-ffmpegs-sws-scale
-    Code Rescaler::init() {
+    void Rescaler::init() {
         auto input_params = dynamic_cast<const VideoParameters * const>(params.in.get());
         auto output_params = dynamic_cast<const VideoParameters * const>(params.out.get());
         _rescaler_context = SharedSwsContext {
@@ -24,7 +24,7 @@ namespace fpp {
             )
             , [](ffmpeg::SwsContext*& ctx) { sws_freeContext(ctx); }
         };
-        return_if(not_inited_ptr(_rescaler_context), Code::ERR);
+//        return_if(not_inited_ptr(_rescaler_context), Code::ERR);
         log_info("Inited from"
                  << " [" << input_params->width()
                  << "x"  << input_params->height()
@@ -38,7 +38,7 @@ namespace fpp {
                  << "]"
         );
         setInited(true);
-        return Code::OK;
+//        return Code::OK;
     }
 
     Code Rescaler::open() {

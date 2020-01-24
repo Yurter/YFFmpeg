@@ -8,8 +8,8 @@ namespace fpp {
         setName("Resampler");
     }
 
-    Code Resampler::init() {
-        return_if(inited(), Code::INVALID_CALL_ORDER);
+    void Resampler::init() {
+//        return_if(inited(), Code::INVALID_CALL_ORDER);
 
         auto in_param = dynamic_cast<const AudioParameters * const>(params.in.get());
         auto out_param = dynamic_cast<const AudioParameters * const>(params.out.get());
@@ -30,14 +30,14 @@ namespace fpp {
 
         if (_resampler_context == nullptr) {
             log_error("Could not allocate resampler context");
-            return Code::ERR;
+//            return Code::ERR;
         }
         if (swr_init(_resampler_context.get()) < 0) {
             log_error("Could not open resample context");
-            return Code::ERR;
+//            return Code::ERR;
         }
         setInited(true);
-        return Code::OK;
+//        return Code::OK;
     }
 
     Code Resampler::open() { //TODO перенести пустую реализацию в базовое определение метода

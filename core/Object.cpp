@@ -26,8 +26,7 @@ namespace fpp {
         return _name == name;
     }
 
-    Code Object::init() {
-        return Code::NOT_IMPLEMENTED;
+    void Object::init() {
     }
 
     void Object::setInited(bool inited) {

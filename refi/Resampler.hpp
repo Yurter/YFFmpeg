@@ -16,7 +16,7 @@ namespace fpp {
         Resampler(IOParams params);
         virtual ~Resampler() override = default;
 
-        virtual Code        init()  override;
+        virtual void        init()  override;
         virtual Code        open()  override;
         virtual Code        close() override;
 

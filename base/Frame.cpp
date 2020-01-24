@@ -1,5 +1,5 @@
 #include "Frame.hpp"
-#include "core/utils.hpp"
+#include "core/Utils.hpp"
 
 namespace ffmpeg { extern "C" {
     #include <libavutil/imgutils.h>

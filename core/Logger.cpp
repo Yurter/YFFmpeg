@@ -1,5 +1,5 @@
 #include "Logger.hpp"
-#include "utils.hpp"
+#include "Utils.hpp"
 #include <iostream>
 #include <iomanip>
 #include <sstream>

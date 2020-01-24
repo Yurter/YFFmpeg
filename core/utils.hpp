@@ -1,7 +1,7 @@
 #pragma once
 #include "ffmpeg.hpp"
 #include <core/Logger.hpp>
-#include <core/Exception.hpp>
+#include <core/FFmpegException.hpp>
 #include <stream.hpp>
 #include <sstream>
 
