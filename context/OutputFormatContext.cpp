@@ -47,6 +47,7 @@ namespace fpp {
     }
 
     Code OutputFormatContext::write(Packet packet, ReadWriteMode write_mode) {
+        stampPacket(packet);
         if (write_mode == ReadWriteMode::Instant) {
             const int ret = av_write_frame(context().get(), &packet.raw());
             if (ret < 0) {

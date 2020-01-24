@@ -55,7 +55,7 @@ namespace fpp {
                 + (used() ? params->toString() : "not used");
     }
 
-    Code Stream::stampPacket(Packet& packet) { // TODO refactoring 14.01
+    void Stream::stampPacket(Packet& packet) { // TODO refactoring 14.01
         switch (_stamp_type) {
         case StampType::Copy:
             _packet_duration = packet.pts() - _prev_pts;
@@ -154,7 +154,6 @@ namespace fpp {
         _prev_dts = packet.dts();
         _prev_pts = packet.pts();
         _packet_index++;
-        return Code::OK;
     }
 
     bool Stream::timeIsOver() const {

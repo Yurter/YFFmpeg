@@ -37,7 +37,7 @@ namespace fpp {
         virtual void        init() override;
         virtual std::string toString() const override final;
 
-        Code                stampPacket(Packet& packet);
+        void                stampPacket(Packet& packet);
         bool                timeIsOver() const;
 
         void                setUsed(bool value);

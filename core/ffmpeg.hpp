@@ -64,6 +64,13 @@
                                     } while(false)
 
 /* ? */
+#define throw_if(cond,exc)  do {\
+                                if (cond) {\
+                                    throw exc;\
+                                }\
+                            } while(false)
+
+/* ? */
 #define return_if_not(cond,ret_value)   do {\
                                             if (!(cond)) {\
                                                 return ret_value;\

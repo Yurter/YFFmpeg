@@ -62,19 +62,17 @@ namespace fpp {
 
     Code InputFormatContext::read(Packet& packet, ReadWriteMode read_mode) {
         const int ret = av_read_frame(context().get(), &packet.raw());
-        if (ret == AVERROR_EOF) {
-            return Code::END_OF_FILE;
-        }
+        return_if(ret == AVERROR_EOF, Code::END_OF_FILE);
         if (ret < 0) {
             throw FFmpegException { "Cannot read source: \'" + mediaResourceLocator() + "\'", ret };
         }
         if (read_mode == ReadWriteMode::Instant) {
-            //
+            // do nothing
         }
         else if (read_mode == ReadWriteMode::Interleaved) {
             utils::sleep_for_ms(23); //TODO сделать задержку (1024мс в tb{1,1000}) 13.01
         }
-
+        stampPacket(packet);
         return_if(stream(packet.streamIndex())->timeIsOver(), Code::END_OF_FILE);
         return Code::OK;
     }

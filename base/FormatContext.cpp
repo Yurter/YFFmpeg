@@ -120,6 +120,11 @@ namespace fpp {
         _streams = stream_list;
     }
 
+    void FormatContext::stampPacket(Packet& packet) {
+        auto data_stream = stream(packet.streamIndex());
+        data_stream->stampPacket(packet);
+    }
+
     int64_t FormatContext::streamAmount() const {
         return int64_t(_format_context->nb_streams);
     }

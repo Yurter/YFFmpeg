@@ -67,7 +67,6 @@ namespace fpp {
             }
         }
         try_to(_input_format_context.read(input_data, _input_format_context.presetIs(Preset::Virtual) ? ReadWriteMode::Interleaved : ReadWriteMode::Instant)); //TODO refactoring 13.01
-//        return_if(stream(input_data.streamIndex())->timeIsOver(), Code::END_OF_FILE); //TODO перенести
         return Code::OK;
     }
 
@@ -77,7 +76,7 @@ namespace fpp {
         }
 
         auto data_stream = stream(input_data.streamIndex());
-        try_to(stream(input_data.streamIndex())->stampPacket(input_data));
+//        try_to(stream(input_data.streamIndex())->stampPacket(input_data));
 
         if (inputDataCount() == 0) { //TODO нуженл ли этот лог?
             log_debug("Read from "
@@ -92,13 +91,17 @@ namespace fpp {
 
     void MediaSource::determineStampType(const Packet& packet) {
         auto input_stream = stream(packet.streamIndex());
-        if (packet.pts() != 0) { /* Требуется перештамповывать пакеты */
-            if (input_stream->startTimePoint() == FROM_START) { /* Чтение из источника, передающего пакеты не с начала */
+        if (packet.pts() != 0) {
+            /* Требуется перештамповывать пакеты */
+            if (input_stream->startTimePoint() == FROM_START) {
+                /* Чтение из источника, передающего пакеты не с начала */
                 input_stream->setStampType(StampType::Realtime);
             } else {
-                input_stream->setStampType(StampType::Offset); /* Происходит чтение не с начала файла */
+                /* Чтение не с начала файла */
+                input_stream->setStampType(StampType::Offset);
             }
         } else {
+            /* Не требуется перештамповывать пакеты */
             input_stream->setStampType(StampType::Copy);
         }
     }

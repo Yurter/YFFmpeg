@@ -51,6 +51,8 @@ namespace fpp {
         int64_t             streamAmount() const;
         void                setStreams(StreamVector stream_list);
 
+        void                stampPacket(Packet& packet);
+
         virtual std::string toString() const override final;
 
         //**** refactoring
