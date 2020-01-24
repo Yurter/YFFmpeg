@@ -13,11 +13,6 @@ namespace ffmpeg {
 
 namespace fpp {
 
-    enum class ReadWriteMode {
-        Instant,
-        Interleaved,
-    };
-
     /* Варианты для быстрой преднастройки */
     /* параметров медиа-контекстов        */
     enum Preset {
@@ -113,6 +108,11 @@ namespace fpp {
         int64_t                 _artificial_delay;
         Interrupter             _current_interrupter;
 
+    };
+
+    enum class ReadWriteMode {
+        Instant,
+        Interleaved,
     };
 
 } // namespace fpp

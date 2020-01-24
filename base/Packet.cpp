@@ -88,13 +88,13 @@ namespace fpp {
     std::string Packet::toString() const {
         /* Video packet: [I], 1516 bytes, dts 1709, pts 1709, duration 29, time_base 1/90000, stream index 0    */
         /* Audio packet: [I], 1045 bytes, dts 392, pts 392, duration 26, time_base 1/44100, stream index 1      */
-        return utils::media_type_to_string(type()) + " packet: "
+        return utils::to_string(type()) + " packet: "
                 + (keyFrame() ? "[I]" : "[_]") + ", "
                 + std::to_string(_data.size) + " bytes, "
                 + "dts " + utils::pts_to_string(_data.dts) + ", "
                 + "pts " + utils::pts_to_string(_data.pts) + ", "
                 + "duration " + std::to_string(_data.duration) + ", "
-                + "time_base " + utils::rational_to_string(_time_base) + ", "
+                + "time_base " + utils::to_string(_time_base) + ", "
                 + "stream index " + std::to_string(_data.stream_index);
     }
 

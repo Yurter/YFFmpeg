@@ -18,7 +18,7 @@
                             if (utils::error_code(ret)) {\
                                 log_error("Function " << (#x)\
                                 << " failed with code: " << ret\
-                                << " - " << utils::code_to_string(ret));\
+                                << " - " << utils::to_string(ret));\
                             }\
                             return ret;\
                         }\
@@ -29,7 +29,7 @@
                             if (utils::exit_code(ret)) {\
                                 log_error("Function " << (#x)\
                                 << " failed with code: " << ret\
-                                << " - " << utils::code_to_string(ret));\
+                                << " - " << utils::to_string(ret));\
                             }\
                         } while (false)
 
@@ -38,7 +38,7 @@
                                 if (utils::exit_code(ret)) {\
                                     static_log_error("TODO", "Function " << (#x)\
                                     << " failed with code: " << ret\
-                                    << " - " << utils::code_to_string(ret));\
+                                    << " - " << utils::to_string(ret));\
                                 }\
                             } while (false)
 

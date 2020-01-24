@@ -61,15 +61,15 @@ namespace fpp {
     std::string CodecContext::toString() const {
         std::string str;
         const std::string delimeter = ", ";
-        str += "Codec name: "   + std::string(_codec_context->codec->name) + delimeter;
-        str += "codec id: "     + std::to_string(_codec_context->codec->id) + delimeter;
-        str += "codec type: "   + std::string(av_get_media_type_string(_codec_context->codec_type)) + delimeter;
-        str += "width: "        + std::to_string(_codec_context->width) + delimeter;
-        str += "height: "       + std::to_string(_codec_context->height) + delimeter;
-        str += "coded_width: "  + std::to_string(_codec_context->coded_width) + delimeter;
-        str += "coded_height: " + std::to_string(_codec_context->coded_height) + delimeter;
-        str += "time_base: "    + utils::rational_to_string(_codec_context->time_base) + delimeter;
-        str += "pix_fmt: "      + utils::pixel_format_to_string(_codec_context->pix_fmt) + delimeter;
+        str += "Codec name: "   + std::string(_codec_context->codec->name)      + delimeter;
+        str += "codec id: "     + std::to_string(_codec_context->codec->id)     + delimeter;
+        str += "codec type: "   + utils::to_string(_codec_context->codec_type)  + delimeter;
+        str += "width: "        + std::to_string(_codec_context->width)         + delimeter;
+        str += "height: "       + std::to_string(_codec_context->height)        + delimeter;
+        str += "coded_width: "  + std::to_string(_codec_context->coded_width)   + delimeter;
+        str += "coded_height: " + std::to_string(_codec_context->coded_height)  + delimeter;
+        str += "time_base: "    + utils::to_string(_codec_context->time_base)   + delimeter;
+        str += "pix_fmt: "      + utils::to_string(_codec_context->pix_fmt)     + delimeter;
         str.erase(str.size() - delimeter.size(), delimeter.size());
         return str;
     }

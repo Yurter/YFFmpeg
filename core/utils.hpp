@@ -20,15 +20,15 @@ namespace fpp {
         static uid_t        get_context_uid(uid_t stream_uid);
 
         //TODO сделать перегрузку одного метода utils::to_string(...) 24.01
-        static std::string  media_type_to_string(MediaType value);
+        static std::string  to_string(MediaType value);
         static std::string  pts_to_string(int64_t pts);
-        static std::string  bool_to_string(bool value);
-        static std::string  pixel_format_to_string(ffmpeg::AVPixelFormat value);
-        static std::string  sample_format_to_string(ffmpeg::AVSampleFormat value);
+        static std::string  to_string(bool value);
+        static std::string  to_string(ffmpeg::AVPixelFormat value);
+        static std::string  to_string(ffmpeg::AVSampleFormat value);
+        static std::string  to_string(Code value);
+        static std::string  to_string(CodecType type);
+        static std::string  to_string(ffmpeg::AVRational rational);
         static std::string  time_to_string(int64_t time_stamp, ffmpeg::AVRational time_base);
-        static std::string  code_to_string(Code value);
-        static std::string  codec_type_to_string(CodecType type);
-        static std::string  rational_to_string(ffmpeg::AVRational rational);
 
         static auto         makeVideoParams(SharedParameters params) -> SharedVideoParameters;
         static auto         makeAudioParams(SharedParameters params) -> SharedAudioParameters;
@@ -94,17 +94,17 @@ namespace fpp {
     }
 
     inline std::ostream& operator<<(std::ostream& os, const ffmpeg::AVRational rational) {
-        os << utils::rational_to_string(rational);
+        os << utils::to_string(rational);
         return os;
     }
 
     inline std::ostream& operator<<(std::ostream& os, const ffmpeg::AVPixelFormat pix_fmt) {
-        os << utils::pixel_format_to_string(pix_fmt);
+        os << utils::to_string(pix_fmt);
         return os;
     }
 
     inline std::ostream& operator<<(std::ostream& os, const ffmpeg::AVSampleFormat smpl_fmt) {
-        os << utils::sample_format_to_string(smpl_fmt);
+        os << utils::to_string(smpl_fmt);
         return os;
     }
 
@@ -114,12 +114,12 @@ namespace fpp {
     }
 
     inline std::ostream& operator<<(std::ostream& os, const MediaType type) {
-        os << utils::media_type_to_string(type);
+        os << utils::to_string(type);
         return os;
     }
 
     inline std::ostream& operator<<(std::ostream& os, const Code code) {
-        os << utils::code_to_string(code);
+        os << utils::to_string(code);
         return os;
     }
 

@@ -36,9 +36,9 @@ namespace fpp {
 
     void VideoParameters::setFrameRate(ffmpeg::AVRational frame_rate) {
         if ((frame_rate.num * frame_rate.den) == 0) {
-            log_error("setFrameRate failed: " << utils::rational_to_string(frame_rate));
+            log_error("setFrameRate failed: " << frame_rate);
             ffmpeg::AVRational default_framerate = { 16, 1 };
-            log_error("seted default value: " << utils::rational_to_string(default_framerate));
+            log_error("seted default value: " << default_framerate);
             _frame_rate = default_framerate;
             return;
         }
@@ -92,9 +92,9 @@ namespace fpp {
     std::string VideoParameters::toString() const {
         return Parameters::toString() + "; "
             + std::to_string(width()) + "x" + std::to_string(height()) + ", "
-            + utils::rational_to_string(aspectRatio()) + ", "
-            + utils::rational_to_string(frameRate()) + " fps" + ", "
-            + utils::pixel_format_to_string(pixelFormat());
+            + utils::to_string(aspectRatio()) + ", "
+            + utils::to_string(frameRate()) + " fps" + ", "
+            + utils::to_string(pixelFormat());
     }
 
     void VideoParameters::completeFrom(const SharedParameters other_params) {

@@ -61,14 +61,14 @@ namespace fpp {
 
     std::string Frame::toString() const {
         /* Video frame: 460800 bytes, pts 1016370, key_frame false, width 640, height 480, yuv420p */
-        std::string str = utils::media_type_to_string(type()) + " frame: ";
+        std::string str = utils::to_string(type()) + " frame: ";
         if (isVideo()) {
             str += std::to_string(size()) + " bytes, "
                     + (keyFrame() ? "[I]" : "[_]") + ", "
                     + "pts " + utils::pts_to_string(_data.pts) + ", "
                     + "width " + std::to_string(_data.width) + ", "
                     + "height " + std::to_string(_data.height) + ", "
-                    + std::string(av_get_pix_fmt_name(ffmpeg::AVPixelFormat(_data.format)));
+                    + utils::to_string(ffmpeg::AVPixelFormat(_data.format));
             return str;
         }
         /* Audio frame: 1024 bytes, pts 425984, nb_samples 1024, channel_layout 4, sample_rate 44100 */

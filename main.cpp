@@ -22,7 +22,7 @@ void concatenator_debug_simple() {
     });
 
     if (auto ret = concatenator.start(); ret != Code::OK) {
-        static_log_error("main", "Concatenator start failed: " << ret << " - " << utils::code_to_string(ret));
+        static_log_error("main", "Concatenator start failed: " << ret);
     }
     concatenator.join();
 }
@@ -54,7 +54,7 @@ void concatenator_debug_timlapse_event() {
 //    });
 
     if (auto ret = concatenator.start(); ret != Code::OK) {
-        static_log_error("main", "Concatenator start failed: " << ret << " - " << utils::code_to_string(ret));
+        static_log_error("main", "Concatenator start failed: " << ret);
     }
     concatenator.join();
 }
@@ -80,7 +80,7 @@ void concatenator_kostya() {
     });
 
     if (auto ret = concatenator.start(); ret != Code::OK) {
-        static_log_error("main", "Concatenator start failed: " << ret << " - " << utils::code_to_string(ret));
+        static_log_error("main", "Concatenator start failed: " << ret);
     }
     concatenator.join();
 }
@@ -155,7 +155,7 @@ void concatenator_debug() {
         });
 
         if (auto ret = concatenator.start(); ret != Code::OK) {
-            static_log_error("main", "Concatenator start failed: " << ret << " - " << utils::code_to_string(ret));
+            static_log_error("main", "Concatenator start failed: " << ret);
         }
         concatenator.join();
     }

@@ -24,8 +24,6 @@ namespace fpp {
         case Virtual:
             ffmpeg::avcodec_register_all();
             try_to(guessInputFromat());
-//            _artificial_delay = 1024; //TODO: 1024 для аудио, для видео - ? (1000 / frame_rate)
-//            _media_resource_locator = SINE;
             break;
         default:
             log_error("Invalid preset");

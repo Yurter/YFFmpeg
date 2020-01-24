@@ -91,7 +91,7 @@ namespace fpp {
     std::string AudioParameters::toString() const {
         return Parameters::toString() + "; "
             + "sample_rate: " + std::to_string(sampleRate()) + ", "
-            + utils::sample_format_to_string(sampleFormat()) + ", "
+            + utils::to_string(sampleFormat()) + ", "
             + "channel_layout: " + std::to_string(channelLayout()) + ", "
             + "channels: " + std::to_string(channels());
     }

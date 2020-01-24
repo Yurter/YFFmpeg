@@ -140,7 +140,7 @@ namespace fpp {
 //        str += utils::codec_type_to_string(codecType()) + ", ";
         + "bit/s " + std::to_string(bitrate()) + ", "
         + "dur " + std::to_string(duration()) + ", "
-        + "tb " + utils::rational_to_string(timeBase());
+        + "tb " + utils::to_string(timeBase());
     }
 
     void Parameters::completeFrom(const SharedParameters other_params) {

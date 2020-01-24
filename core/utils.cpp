@@ -9,7 +9,7 @@ namespace ffmpeg { extern "C" {
 
 namespace fpp {
 
-    std::string utils::media_type_to_string(MediaType value) {
+    std::string utils::to_string(MediaType value) {
         switch (value) {
         case MediaType::Unknown:
             return "Unknown";
@@ -27,18 +27,18 @@ namespace fpp {
         return pts == AV_NOPTS_VALUE ? "NOPTS" : std::to_string(pts);
     }
 
-    std::string utils::bool_to_string(bool value) {
+    std::string utils::to_string(bool value) {
         return value ? "true" : "false";
     }
 
-    std::string utils::pixel_format_to_string(ffmpeg::AVPixelFormat value) {
+    std::string utils::to_string(ffmpeg::AVPixelFormat value) {
         const char* ret = ffmpeg::av_get_pix_fmt_name(value);
         return_if(not_inited_ptr(ret)
                   , "NONE");
         return std::string(ret);
     }
 
-    std::string utils::sample_format_to_string(ffmpeg::AVSampleFormat value) {
+    std::string utils::to_string(ffmpeg::AVSampleFormat value) {
         const char* ret = av_get_sample_fmt_name(value);
         return_if(not_inited_ptr(ret)
                   , "NONE");
@@ -88,7 +88,7 @@ namespace fpp {
         return false;
     }
 
-    std::string utils::code_to_string(Code value) {
+    std::string utils::to_string(Code value) {
         if (value == Code::OK)                  { return "OK";                      }
         if (value == Code::ERR)                 { return "Error";                   }
         if (value == Code::EXIT)                { return "Exit";                    }
@@ -102,7 +102,7 @@ namespace fpp {
         return "Unknown error code: " + std::to_string(int(value));
     }
 
-    std::string utils::codec_type_to_string(CodecType type) {
+    std::string utils::to_string(CodecType type) {
         switch (type) {
         case CodecType::Unknown:
             return "Unknown";
@@ -114,7 +114,7 @@ namespace fpp {
         return "Error";
     }
 
-    std::string utils::rational_to_string(ffmpeg::AVRational rational) {
+    std::string utils::to_string(ffmpeg::AVRational rational) {
         return std::to_string(rational.num)
                 + "/" +
                 std::to_string(rational.den);
@@ -435,9 +435,9 @@ namespace fpp {
 //        if (av_cmp_q(in->frameRate(), out->frameRate()) != 0) {
         if (in->frameRate() != out->frameRate()) {
             static_log_warning("utils", "Video filter required: framerate mismatch "
-                                           << rational_to_string(in->frameRate())
+                                           << to_string(in->frameRate())
                                            << " != "
-                                           << rational_to_string(out->frameRate())
+                                           << to_string(out->frameRate())
             );
             return true;
         }

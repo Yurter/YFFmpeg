@@ -22,7 +22,7 @@ namespace fpp {
         , _dts_offset { 0 }
         , _start_time_point { FROM_START }
         , _end_time_point { TO_END } {
-        setName(utils::media_type_to_string(type()) + " stream");
+        setName(utils::to_string(type()) + " stream");
     }
 
     Stream::Stream(const ffmpeg::AVStream* avstream, ParamsType type)
@@ -51,7 +51,7 @@ namespace fpp {
 
         return "[" + std::to_string(params->contextUid())
                 + ":" + std::to_string(params->streamIndex()) + "] "
-                + utils::media_type_to_string(type()) + " stream: "
+                + utils::to_string(type()) + " stream: "
                 + (used() ? params->toString() : "not used");
     }
 

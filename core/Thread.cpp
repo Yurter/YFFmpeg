@@ -68,7 +68,7 @@ namespace fpp {
                 const std::string log_message = utils::error_code(_exit_code)
                         ? "Thread finished with error code: "
                         : "Thread correctly finished with code: ";
-                log_debug(log_message << _exit_code << " - " << utils::code_to_string(_exit_code));
+                log_debug(log_message << _exit_code);
             } CATCH
 
             TRY {

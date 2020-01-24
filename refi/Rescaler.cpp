@@ -28,12 +28,12 @@ namespace fpp {
         log_info("Inited from"
                  << " [" << input_params->width()
                  << "x"  << input_params->height()
-                 << ", " << utils::pixel_format_to_string(input_params->pixelFormat())
+                 << ", " << utils::to_string(input_params->pixelFormat())
                  << "("  << input_params->pixelFormat() << ")"
                  << "] to"
                  << " [" << output_params->width()
                  << "x"  << output_params->height()
-                 << ", " << utils::pixel_format_to_string(output_params->pixelFormat())
+                 << ", " << utils::to_string(output_params->pixelFormat())
                  << "("  << output_params->pixelFormat() << ")"
                  << "]"
         );

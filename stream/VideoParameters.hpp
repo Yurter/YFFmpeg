@@ -34,6 +34,10 @@ namespace fpp {
         virtual void        initStream(ffmpeg::AVStream* avstream) const        override;
         virtual bool        betterThen(const SharedParameters& other)           override;
 
+//        friend SharedVideoParameters make_shared_video_params() {
+//            return std::make_shared<VideoParameters>();
+//        }
+
     private:
 
         int64_t                 _width;

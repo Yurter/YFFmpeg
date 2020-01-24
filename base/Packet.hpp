@@ -28,7 +28,7 @@ namespace fpp {
         int64_t             pts()           const;
         int64_t             dts()           const;
         int64_t             duration()      const;
-        ffmpeg:: AVRational timeBase()      const;
+        ffmpeg::AVRational  timeBase()      const;
         int64_t             pos()           const;
         int64_t             streamIndex()   const;
         bool                keyFrame()      const;
@@ -43,7 +43,7 @@ namespace fpp {
 
     private:
 
-        ffmpeg::AVRational          _time_base;
+        ffmpeg::AVRational  _time_base;
 
     };
 

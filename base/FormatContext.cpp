@@ -82,7 +82,7 @@ namespace fpp {
     void FormatContext::resetInteruptCallback() {
         _current_interrupter.interrupted_process = InterruptedProcess::None;
         _format_context->interrupt_callback.callback = nullptr; /* Бессмысленно :( */
-        _format_context->interrupt_callback.opaque = nullptr;   /* Бессмысленно :( */
+        _format_context->interrupt_callback.opaque   = nullptr; /* Бессмысленно :( */
     }
 
     int FormatContext::interrupt_callback(void* opaque) {
@@ -91,7 +91,7 @@ namespace fpp {
         case InterruptedProcess::None:
             return 0;
         case InterruptedProcess::Opening: {
-            const int64_t opening_timeout_ms = 5000;
+            const int64_t opening_timeout_ms = 10'000;
             if (interrupter->chronometer.elapsed_milliseconds() > opening_timeout_ms) {
                 static_log_error("interrupt_callback", "Opening timed out: " << opening_timeout_ms);
                 return 1;
