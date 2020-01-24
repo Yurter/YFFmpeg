@@ -7,7 +7,7 @@ namespace fpp {
 
     public:
 
-        AudioParameters(ParamsType type);
+        AudioParameters();
         virtual ~AudioParameters() override = default;
 
         void                setSampleRate(int64_t sample_rate);
@@ -25,7 +25,7 @@ namespace fpp {
         std::string         toString() const override;
 
         virtual void        completeFrom(const SharedParameters other_params)   override;
-        virtual void        parseStream(const ffmpeg::AVStream* avstream)       override;
+        virtual void        parseStream(const ffmpeg::AVStream* avstream, ParamsType type)       override;
         virtual bool        betterThen(const SharedParameters& other)           override;
 
     private:

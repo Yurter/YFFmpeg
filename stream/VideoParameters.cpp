@@ -10,9 +10,8 @@ namespace ffmpeg { extern "C" {
 
 namespace fpp {
 
-    VideoParameters::VideoParameters(ParamsType type)
-        : Parameters(type)
-        , _width { 0 }
+    VideoParameters::VideoParameters()
+        : _width { 0 }
         , _height { 0 }
         , _aspect_ratio { DEFAULT_RATIONAL }
         , _frame_rate { DEFAULT_RATIONAL }
@@ -107,13 +106,13 @@ namespace fpp {
         if (not_inited_pix_fmt(pixelFormat()))  { setPixelFormat(other_video_parames->pixelFormat());   }
     }
 
-    void VideoParameters::parseStream(const ffmpeg::AVStream* avstream) {
-        Parameters::parseStream(avstream);
+    void VideoParameters::parseStream(const ffmpeg::AVStream* avstream, ParamsType type) {
+        Parameters::parseStream(avstream, type);
         setWidth(avstream->codecpar->width);
         setHeight(avstream->codecpar->height);
         setAspectRatio(avstream->codecpar->sample_aspect_ratio);
         setFrameRate(avstream->avg_frame_rate);
-        setPixelFormat(avstream->codec->pix_fmt);
+        setPixelFormat(ffmpeg::AVPixelFormat(avstream->codecpar->format));
         setGopSize(avstream->codec->gop_size);
     }
 

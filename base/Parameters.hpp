@@ -33,15 +33,15 @@ namespace fpp {
 
     public:
 
-        Parameters(ParamsType type);
+        Parameters();
         Parameters(const Parameters&) = default;
         virtual ~Parameters() override = default;
 
         Parameters& operator=(const Parameters&) = default;
 
-        void                setCodec(ffmpeg::AVCodecID codec_id);
-        void                setCodec(std::string _codec_short_name);
-        void                setCodec(ffmpeg::AVCodec* codec);
+        void                setDecoder(ffmpeg::AVCodecID codec_id);
+        void                setEncoder(ffmpeg::AVCodecID codec_id);
+
         void                setBitrate(int64_t bitrate);
         void                setDuration(int64_t duration);
         void                setStreamIndex(uid_t stream_index);
@@ -63,21 +63,18 @@ namespace fpp {
         virtual std::string toString() const override;
 
         virtual void        completeFrom(const SharedParameters other_params);
-        virtual void        parseStream(const ffmpeg::AVStream* avstream);
+        virtual void        parseStream(const ffmpeg::AVStream* avstream, ParamsType type);
         virtual void        initStream(ffmpeg::AVStream* avstream) const;
         virtual bool        betterThen(const SharedParameters& other);
 
     private:
 
+        void                setCodec(ffmpeg::AVCodec* codec);
         void                setStreamUid(uid_t value);
-        void                setCodecType(CodecType value);
 
     protected:
 
         ffmpeg::AVCodec*    _codec;
-        ffmpeg::AVCodecID   _codec_id;
-        std::string			_codec_name;
-        ParamsType          _io_type;
         int64_t             _bitrate;
         int64_t             _duration;
         uid_t               _stream_index;

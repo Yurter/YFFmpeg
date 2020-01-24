@@ -30,7 +30,7 @@ namespace fpp {
             StreamVector stream_list;
             /* Video */
             auto video_params = std::make_shared<VideoParameters>(ParamsType::Output);
-            video_params->setCodec(ffmpeg::AVCodecID::AV_CODEC_ID_H264);
+            video_params->setEncoder(ffmpeg::AVCodecID::AV_CODEC_ID_H264);
             video_params->setGopSize(2);
             video_params->setTimeBase(DEFAULT_TIME_BASE);
             stream_list.push_back(createStream(video_params));

@@ -13,9 +13,8 @@ namespace ffmpeg { extern "C" {
 
 namespace fpp {
 
-    AudioParameters::AudioParameters(ParamsType type)
-        : Parameters(type)
-        , _sample_rate { 0 }
+    AudioParameters::AudioParameters()
+        : _sample_rate { 0 }
         , _sample_format { DEFAULT_SAMPLE_FORMAT }
         , _channel_layout { DEFAULT_CHANEL_LAYOUT }
         , _channels { 0 }
@@ -105,10 +104,10 @@ namespace fpp {
         if (not_inited_int(channels()))             { setChannels(other_audio_parames->channels());             }
     }
 
-    void AudioParameters::parseStream(const ffmpeg::AVStream* avstream) {
-        Parameters::parseStream(avstream);
+    void AudioParameters::parseStream(const ffmpeg::AVStream* avstream, ParamsType type) {
+        Parameters::parseStream(avstream, type);
         setSampleRate(avstream->codecpar->sample_rate);
-        setSampleFormat(avstream->codec->sample_fmt);
+        setSampleFormat(ffmpeg::AVSampleFormat(avstream->codecpar->format));
         setChannelLayout(avstream->codecpar->channel_layout);
         setChannels(avstream->codecpar->channels);
         setFrameSize(avstream->codecpar->frame_size);

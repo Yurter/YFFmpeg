@@ -10,7 +10,7 @@ namespace fpp {
 
     public:
 
-        VideoParameters(ParamsType type);
+        VideoParameters();
         virtual ~VideoParameters() override = default;
 
         void                setWidth(int64_t width);
@@ -30,7 +30,7 @@ namespace fpp {
         virtual std::string toString() const override;
 
         virtual void        completeFrom(const SharedParameters other_params)   override;
-        virtual void        parseStream(const ffmpeg::AVStream* avstream)       override;
+        virtual void        parseStream(const ffmpeg::AVStream* avstream, ParamsType type)       override;
         virtual void        initStream(ffmpeg::AVStream* avstream) const        override;
         virtual bool        betterThen(const SharedParameters& other)           override;
 

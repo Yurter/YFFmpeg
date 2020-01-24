@@ -11,11 +11,8 @@ namespace ffmpeg { extern "C" {
 
 namespace fpp {
 
-    Parameters::Parameters(ParamsType io_type)
+    Parameters::Parameters()
         : _codec { nullptr }
-        , _codec_id { DEFAULT_CODEC_ID }
-        , _codec_name { DEFAULT_STRING }
-        , _io_type { io_type }
         , _bitrate { 0 }
         , _duration { 0 }
         , _stream_index { INVALID_INT }
@@ -25,33 +22,17 @@ namespace fpp {
         setName("Parameters");
     }
 
-    void Parameters::setCodec(ffmpeg::AVCodecID codec_id) {
-        switch (_io_type) {
-        case ParamsType::Input:
-            setCodec(utils::find_decoder(codec_id));
-            return;
-        case ParamsType::Output:
-            setCodec(utils::find_encoder(codec_id));
-            return;
-        }
+    void Parameters::setDecoder(ffmpeg::AVCodecID codec_id) {
+        setCodec(avcodec_find_encoder(codec_id));
     }
 
-    void Parameters::setCodec(std::string codec_short_name) {
-        switch (_io_type) {
-        case ParamsType::Input:
-            setCodec(utils::find_decoder(codec_short_name));
-            return;
-        case ParamsType::Output:
-            setCodec(utils::find_encoder(codec_short_name));
-            return;
-        }
+    void Parameters::setEncoder(ffmpeg::AVCodecID codec_id) {
+        setCodec(avcodec_find_decoder(codec_id));
     }
 
     void Parameters::setCodec(ffmpeg::AVCodec* codec) {
         if (inited_ptr(codec)) {
             _codec = codec;
-            _codec_id = codec->id;
-            _codec_name = codec->name;
         } else {
             log_error("Cannot set nullptr as a codec");
         }
@@ -96,11 +77,11 @@ namespace fpp {
     }
 
     ffmpeg::AVCodecID Parameters::codecId() const {
-        return _codec_id;
+        return _codec->id;
     }
 
     std::string Parameters::codecName() const {
-        return _codec_name;
+        return _codec->name;
     }
 
     ffmpeg::AVCodec* Parameters::codec() const {
@@ -149,8 +130,13 @@ namespace fpp {
         if (not_inited_q(timeBase()))       { setTimeBase(other_params->timeBase());    }
     }
 
-    void Parameters::parseStream(const ffmpeg::AVStream* avstream) {
-        setCodec(avstream->codecpar->codec_id);
+    void Parameters::parseStream(const ffmpeg::AVStream* avstream, ParamsType type) {
+        if (type == ParamsType::Input) {
+            setDecoder(avstream->codecpar->codec_id);
+        }
+        else if (type == ParamsType::Output) {
+            setEncoder(avstream->codecpar->codec_id);
+        }
         setBitrate(avstream->codecpar->bit_rate);
         setDuration(avstream->duration);
         setStreamIndex(avstream->index);
