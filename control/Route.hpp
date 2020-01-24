@@ -13,7 +13,7 @@ namespace fpp {
         Route();
         virtual ~Route() override;
 
-        virtual Code        init() override;
+        virtual void        init() override;
         virtual std::string toString() const override;
 
         Code                append(SharedProcessor processor);

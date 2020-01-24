@@ -17,9 +17,9 @@ namespace fpp {
         try_throw(close());
     }
 
-    Code CustomPacketSource::init() {
+    void CustomPacketSource::init() {
         setInited(true);
-        return Code::OK;
+//        return Code::OK;
     }
 
     Code CustomPacketSource::open() {

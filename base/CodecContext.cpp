@@ -16,23 +16,23 @@ namespace fpp {
     }
 
     void CodecContext::init() {
-        return_if(inited(), Code::INVALID_CALL_ORDER);
+//        return_if(inited(), Code::INVALID_CALL_ORDER);
         log_debug("Initialization");
         _codec_context.reset(
             avcodec_alloc_context3(codec())
             , [](ffmpeg::AVCodecContext*& codec_context) { avcodec_free_context(&codec_context); }
         );
         if (!_codec_context) {
-            throw Exception("Failed to alloc codec context");
+            throw FFmpegException("avcodec_alloc_context3 failed");
         }
         setName(name() + " " + codec()->name);
         utils::parameters_to_context(parameters(), _codec_context.get());
         if (true) { // TODO костыль
             _codec_context->time_base = params.in->timeBase();
         }
-        try_to(open());
+        /*try_to(*/open()/*)*/;
         setInited(true);
-        return Code::OK;
+//        return Code::OK;
     }
 
     Code CodecContext::open() {

@@ -17,7 +17,7 @@ namespace fpp {
         try_throw(close());
     }
 
-    Code CustomPacketSink::init() {
+    void CustomPacketSink::init() {
         for (auto&& stream : streams()) {
 //            auto avstream = avformat_new_stream(nullptr, stream->parameters->codec());
 //            return_if(not_inited_ptr(avstream), Code::ERR);
@@ -27,7 +27,7 @@ namespace fpp {
 //            stream->setContext(this); //TODO
         }
         setInited(true);
-        return Code::OK;
+//        return Code::OK;
     }
 
     Code CustomPacketSink::open() {

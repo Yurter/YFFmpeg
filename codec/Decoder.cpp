@@ -15,11 +15,11 @@ namespace fpp {
         try_throw(stop());
     }
 
-    Code Decoder::init() {
+    void Decoder::init() {
         log_debug("Initialization");
-        try_to(_decoder_context.init());
+        /*try_to*/(_decoder_context.init());
         setInited(true);
-        return Code::OK;
+//        return Code::OK;
     }
 
     Code Decoder::open() {

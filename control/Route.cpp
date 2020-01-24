@@ -21,18 +21,18 @@ namespace fpp {
 //        }
     }
 
-    Code Route::init() {
+    void Route::init() {
         if (_sequence.size() < 2) {
-            return Code::INVALID_INPUT;
+//            return Code::INVALID_INPUT;
         }
         if (inited()) {
-            return Code::INVALID_CALL_ORDER;
+//            return Code::INVALID_CALL_ORDER;
         }
         _sequence.for_each([uid = _input_stream_uid](SharedProcessor& current, SharedProcessor& next) {
             try_throw_static(current->connectTo(uid, next));
         });
         setInited(true);
-        return Code::OK;
+//        return Code::OK;
     }
 
     std::string Route::toString() const {

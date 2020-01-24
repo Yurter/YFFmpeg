@@ -12,13 +12,13 @@ namespace fpp {
         try_throw(close());
     }
 
-    Code MediaSink::init() {
-        return_if(inited(), Code::OK);
+    void MediaSink::init() {
+//        return_if(inited(), Code::OK);
         log_debug("Initialization");
 //        try_to(_output_format_context.init());
         setStreams(_output_format_context.streams());
         setInited(true);
-        return Code::OK;
+//        return Code::OK;
     }
 
     Code MediaSink::open() {

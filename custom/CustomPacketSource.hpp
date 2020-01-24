@@ -13,7 +13,7 @@ namespace fpp {
                            , const ProcessFunction process_func = [](Packet&) { return Code::OK; });
         virtual ~CustomPacketSource() override;
 
-        virtual Code        init() override;
+        virtual void        init() override;
         virtual Code        open() override;
         virtual Code        close() override;
         virtual std::string toString() const override;

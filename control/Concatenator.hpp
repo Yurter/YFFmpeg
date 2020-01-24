@@ -20,7 +20,7 @@ namespace fpp {
 
     private:
 
-        virtual Code        init()  override;
+        virtual void        init()  override;
         virtual Code        run()   override;
 
     private:

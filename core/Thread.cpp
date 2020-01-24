@@ -4,8 +4,8 @@
 #include <exception>
 
 #define TRY     try
-#define CATCH   catch (const Exception& e) {\
-                    log_error("fpp::exception: " << e.what());\
+#define CATCH   catch (const FFmpegException& e) {\
+                    log_error("ffmpeg's exception: " << e.what());\
                     _exit_code = Code::EXCEPTION;\
                     _exit_message = e.what();\
                 }\
@@ -53,7 +53,7 @@ namespace fpp {
     Code Thread::start() {
         return_if(running(), Code::OK);
         _stop_flag = false;
-        if_not(inited()) { try_to(init()); }
+        if_not(inited()) { /*try_to*/(init()); }
         _running = true;
         _thread = std::thread([this]() {
             TRY {

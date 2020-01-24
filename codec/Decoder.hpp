@@ -11,7 +11,7 @@ namespace fpp {
         Decoder(const IOParams params);
         virtual ~Decoder() override;
 
-        virtual Code        init() override;
+        virtual void        init() override;
         virtual Code        open() override;
         virtual Code        close() override;
         virtual Code        processInputData(Packet input_data) override;

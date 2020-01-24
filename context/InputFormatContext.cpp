@@ -18,21 +18,21 @@ namespace fpp {
         try_throw(close());
     }
 
-    Code InputFormatContext::init() { //TODO refactoring 14.01
+    void InputFormatContext::init() { //TODO refactoring 14.01
         switch (preset()) {
         case Auto:
             break;
         case Virtual:
             ffmpeg::avcodec_register_all();
-            try_to(guessInputFromat());
+            /*try_to(*/guessInputFromat()/*)*/;
             break;
         default:
             log_error("Invalid preset");
             break;
         }
-        try_to(createContext());
+        /*try_to(*/createContext()/*)*/;
         setInited(true);
-        return Code::OK;
+//        return Code::OK;
     }
 
     Code InputFormatContext::seek(int64_t stream_index, int64_t timestamp, SeekPrecision seek_precision) {

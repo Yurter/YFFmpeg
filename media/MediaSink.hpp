@@ -12,7 +12,7 @@ namespace fpp {
         MediaSink(const std::string& mrl, Preset preset = Preset::Auto);
         virtual ~MediaSink() override;
 
-        virtual Code        init()  override;
+        virtual void        init()  override;
         virtual Code        open()  override;
         virtual Code        close() override;
         virtual std::string toString() const override;

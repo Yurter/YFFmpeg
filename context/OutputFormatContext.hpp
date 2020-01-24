@@ -15,7 +15,7 @@ namespace fpp {
 
     private:
 
-        virtual Code        init()          override;
+        virtual void        init()          override;
         virtual Code        createContext() override;
         virtual Code        openContext()   override;
         virtual Code        closeContext()  override;

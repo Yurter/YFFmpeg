@@ -14,11 +14,11 @@ namespace fpp {
         try_throw(stop());
     }
 
-    Code Concatenator::init() {
-        return_error_if(_concat_list.size() < 1
-                        , "concat list can't be empty"
-                        , Code::INVALID_INPUT);
-        return Code::OK;
+    void Concatenator::init() {
+//        return_error_if(_concat_list.size() < 1
+//                        , "concat list can't be empty"
+//                        , Code::INVALID_INPUT);
+//        return Code::OK;
     }
 
     Code Concatenator::run() {

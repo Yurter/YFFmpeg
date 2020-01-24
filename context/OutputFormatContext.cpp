@@ -11,19 +11,19 @@ namespace fpp {
         : FormatContext { mrl, preset }
         , _output_format { nullptr } {
         setName("OutFmtCtx");
-        try_throw(init());
+        /*try_throw*/(init());
     }
 
     OutputFormatContext::~OutputFormatContext() {
         try_throw(close());
     }
 
-    Code OutputFormatContext::init() { //TODO refactoring 14.01
-        return_if(inited(), Code::OK);
-        try_to(createContext());
+    void OutputFormatContext::init() { //TODO refactoring 14.01
+//        return_if(inited(), Code::OK);
+        /*try_to*/(createContext());
         switch (preset()) {
         case Preset::Auto: {
-            try_to(guessOutputFromat());
+            /*try_to*/(guessOutputFromat());
             break;
         }
         case Preset::Event: {
@@ -43,7 +43,7 @@ namespace fpp {
         }
         log_debug("Created");
         setInited(true);
-        return Code::OK;
+//        return Code::OK;
     }
 
     Code OutputFormatContext::write(Packet packet, ReadWriteMode write_mode) {
@@ -66,7 +66,7 @@ namespace fpp {
 
     Code OutputFormatContext::flush() {
         if (closed()) {
-            throw Exception("Flush failed: OutputFormatContext closed");
+            throw std::logic_error("Flush failed: OutputFormatContext closed");
         }
         if (av_write_frame(context().get(), nullptr) < 0) {
             return Code::FFMPEG_ERROR;

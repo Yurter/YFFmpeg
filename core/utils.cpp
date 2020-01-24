@@ -167,7 +167,7 @@ namespace fpp {
         case MediaType::EndOF:
             return ffmpeg::AVMEDIA_TYPE_DATA;
         }
-        throw Exception("TODO mediatype_to_avmediatype");
+        throw std::invalid_argument("mediatype_to_avmediatype failed: " + std::to_string(int(media_type)));
     }
 
     MediaType utils::avmt_to_mt(ffmpeg::AVMediaType avmedia_type) {
@@ -244,7 +244,7 @@ namespace fpp {
         case MediaType::Audio:
             return std::make_shared<AudioParameters>(par_type);
         default:
-            throw Exception("TODO createParams");
+            throw std::invalid_argument("createParams failed");
         }
     }
 

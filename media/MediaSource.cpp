@@ -11,12 +11,12 @@ namespace fpp {
         try_throw(close());
     }
 
-    Code MediaSource::init() {
-        return_if(inited(), Code::OK);
+    void MediaSource::init() {
+//        return_if(inited(), Code::OK);
         log_debug("Initialization");
 //        try_to(_input_format_context.init());
         setInited(true);
-        return Code::OK;
+//        return Code::OK;
     }
 
     Code MediaSource::open() {

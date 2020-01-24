@@ -72,7 +72,7 @@ namespace fpp {
         std::for_each(_streams.begin(), _streams.end()
             , [this_context_uid = uid()](auto& stream) {
             stream->params->setContextUid(this_context_uid);
-            try_throw_static(stream->init());
+            stream->init();
         });
     }
 

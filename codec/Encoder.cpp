@@ -11,12 +11,12 @@ namespace fpp {
         try_throw(stop());
     }
 
-    Code Encoder::init() {
-        return_if(inited(), Code::INVALID_CALL_ORDER);
+    void Encoder::init() {
+//        return_if(inited(), Code::INVALID_CALL_ORDER);
         log_debug("Initialization");
-        try_to(_encoder_context.init());
+        /*try_to*/(_encoder_context.init());
         setInited(true);
-        return Code::OK;
+//        return Code::OK;
     }
 
     Code Encoder::open() {

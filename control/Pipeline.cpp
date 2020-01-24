@@ -79,11 +79,11 @@ namespace fpp {
         log_info(toString());
     }
 
-    Code Pipeline::init() { //TODO если инициализации нет, убрать реализацию метода 15.01
+    void Pipeline::init() { //TODO если инициализации нет, убрать реализацию метода 15.01
         log_info("Initialization started...");
         setInited(true);
         log_info("Processing started...");
-        return Code::OK;
+//        return Code::OK;
     }
 
     Code Pipeline::run() { //TODO
@@ -203,7 +203,7 @@ namespace fpp {
 
         _route_list.push_back(route);
 //        try_to(simplifyRoutes()); //TODO вернуть вызов метода
-        try_to(route.init());
+        /*try_to*/(route.init());
 
         log_debug("Created route: " << route);
         output_stream->init();

@@ -11,7 +11,7 @@ namespace fpp {
         Encoder(const IOParams params);
         virtual ~Encoder() override;
 
-        virtual Code        init() override;
+        virtual void        init() override;
         virtual Code        open() override;
         virtual Code        close() override;
         virtual Code        processInputData(Frame input_data) override;
