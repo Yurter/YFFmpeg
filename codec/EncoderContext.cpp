@@ -5,7 +5,7 @@
 namespace fpp {
 
     EncoderContext::EncoderContext(const IOParams params)
-        : CodecContext(params, CodecType::Encoder) {
+        : CodecContext(params) {
         setName("EncCtx");
     }
 
@@ -17,13 +17,13 @@ namespace fpp {
     Code EncoderContext::encode(Frame input_frame, Packet& encoded_packet) {
         log_trace("Frame for encoding: " << input_frame);
         int ret;
-        if ((ret = avcodec_send_frame(_codec_context.get(), &input_frame.raw())) != 0) {
+        if ((ret = avcodec_send_frame(context().get(), &input_frame.raw())) != 0) {
             log_error(input_frame);
-            log_error("Pxl_fmt: " << input_frame.raw().format << " cc: " << _codec_context->pix_fmt);
+            log_error("Pxl_fmt: " << input_frame.raw().format << " cc: " << context()->pix_fmt);
             log_error("Could not send frame " << ret);
             return Code::ERR;
         }
-        if ((ret = avcodec_receive_packet(_codec_context.get(), &encoded_packet.raw())) != 0) {
+        if ((ret = avcodec_receive_packet(context().get(), &encoded_packet.raw())) != 0) {
 //            log_warning("avcodec_receive_packet failed");
             return Code::AGAIN;
         }
@@ -36,9 +36,9 @@ namespace fpp {
     Code EncoderContext::flush(Object *data) {
         return Code::OK;
         log_error("FLUSH");
-        while (avcodec_send_frame(_codec_context.get(), nullptr) != 0) {
+        while (avcodec_send_frame(context().get(), nullptr) != 0) {
             Packet output_packet;
-            while (avcodec_receive_packet(_codec_context.get(), &output_packet.raw()) != 0) {
+            while (avcodec_receive_packet(context().get(), &output_packet.raw()) != 0) {
                 log_error("Flushed success");
             }
         }
@@ -47,11 +47,11 @@ namespace fpp {
         Packet output_packet;
         output_packet.setType(params.out->type());
         int ret;
-        if ((ret = avcodec_send_frame(_codec_context.get(), nullptr)) != 0) {
+        if ((ret = avcodec_send_frame(context().get(), nullptr)) != 0) {
             log_error("failed to flush encoder " << ret);
             return Code::ERR;
         }
-        if ((ret = avcodec_receive_packet(_codec_context.get(), &output_packet.raw())) != 0) {
+        if ((ret = avcodec_receive_packet(context().get(), &output_packet.raw())) != 0) {
 //            log_warning("avcodec_receive_packet failed");
             return Code::AGAIN;
         }
@@ -62,7 +62,7 @@ namespace fpp {
 
     Code EncoderContext::onOpen() {
         if (params.out->typeIs(MediaType::Audio)) {
-            static_cast<AudioParameters * const>(params.out.get())->setFrameSize(_codec_context->frame_size); //TODO не надежно: нет гарантий, что кодек откроется раньше, чем рескейлер начнет работу
+            static_cast<AudioParameters * const>(params.out.get())->setFrameSize(context()->frame_size); //TODO не надежно: нет гарантий, что кодек откроется раньше, чем рескейлер начнет работу
         }
         return Code::OK;
     }

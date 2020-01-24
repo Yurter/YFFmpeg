@@ -15,7 +15,7 @@ namespace fpp {
 
     public:
 
-        CodecContext(const IOParams params, CodecType type); //TODO оставить только один из параметров, зачем оба ? 24.01
+        CodecContext(const IOParams params); //TODO оставить только один из IOParams, зачем оба ? 24.01
         virtual ~CodecContext() override;
 
         virtual Code        flush(Object* data) = 0; //TODO (отправлять кодеку NULL)
@@ -28,6 +28,7 @@ namespace fpp {
         SharedAVCodecContext            context();
         virtual const ffmpeg::AVCodec*  codec() = 0;
         virtual SharedParameters        parameters() = 0;
+        virtual Code        onOpen() { return Code::OK; } //TODO убрать 24.01
 
         const IOParams      params;
 
@@ -37,13 +38,9 @@ namespace fpp {
         Code                close();
         void                setOpened(bool value);
 
-    protected:
-
-        SharedAVCodecContext    _codec_context;
-
     private:
 
-        CodecType               _type;
+        SharedAVCodecContext    _codec_context;
         bool                    _opened;
 
     };

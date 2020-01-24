@@ -3,10 +3,9 @@
 
 namespace fpp {
 
-    CodecContext::CodecContext(const IOParams params, CodecType type)
+    CodecContext::CodecContext(const IOParams params)
         : params { params }
         , _codec_context { nullptr }
-        , _type { type }
         , _opened { false } {
         setName("CodecContext");
         open();
@@ -33,10 +32,6 @@ namespace fpp {
         }
         try_to(open());
         setInited(true);
-        return Code::OK;
-    }
-
-    Code CodecContext::onOpen() { //TODO убрть? 17.01
         return Code::OK;
     }
 

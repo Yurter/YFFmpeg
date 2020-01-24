@@ -4,8 +4,8 @@
 
 namespace fpp {
 
-    DecoderContext::DecoderContext(const IOParams params) :
-        CodecContext(params, CodecType::Decoder) {
+    DecoderContext::DecoderContext(const IOParams params)
+        : CodecContext(params) {
         setName("DecCtx");
     }
 
@@ -15,14 +15,14 @@ namespace fpp {
     }
 
     Code DecoderContext::decode(Packet input_packet, Frame& decoded_frame) {
-        if (int ret = avcodec_send_packet(_codec_context.get(), &input_packet.raw()); ret != 0) {
+        if (int ret = avcodec_send_packet(context().get(), &input_packet.raw()); ret != 0) {
             char errstr[1024];
             ffmpeg::av_strerror(ret, errstr, 1024); //TODO сделать методом уилит 23.01
             log_error(" Could not send packet to decoder: " << errstr << ". Data: " << input_packet);
             log_error("DecoderContext: " << this->toString());
             return Code::FFMPEG_ERROR;
         }
-        int ret = avcodec_receive_frame(_codec_context.get(), &decoded_frame.raw());
+        int ret = avcodec_receive_frame(context().get(), &decoded_frame.raw());
         switch (ret) { //TODO убрать свич ?
         case 0:
             decoded_frame.setType(params.in->type());
@@ -41,22 +41,22 @@ namespace fpp {
     Code DecoderContext::flush(Object* data) { //TODO
         return Code::OK;
         log_error("FLUSH");
-        while (avcodec_send_packet(_codec_context.get(), nullptr) != 0) {
+        while (avcodec_send_packet(context().get(), nullptr) != 0) {
             Frame output_frame;
-            while (avcodec_receive_frame(_codec_context.get(), &output_frame.raw()) != 0) {
+            while (avcodec_receive_frame(context().get(), &output_frame.raw()) != 0) {
                 log_error("Flushed success");
             }
         }
         log_error("FLUSH finished");
         return Code::OK;
-        if (int ret = avcodec_send_packet(_codec_context.get(), nullptr); ret != 0) {
+        if (int ret = avcodec_send_packet(context().get(), nullptr); ret != 0) {
             char errstr[1024];
             ffmpeg::av_strerror(ret, errstr, 1024); //TODO сделать методом уилит 23.01
             log_error("Failed to flush decoder: " << errstr);
             return Code::FFMPEG_ERROR;
         }
         Frame output_frame;
-        int ret = avcodec_receive_frame(_codec_context.get(), &output_frame.raw());
+        int ret = avcodec_receive_frame(context().get(), &output_frame.raw());
         switch (ret) {
         case 0:
             output_frame.setType(MediaType::Video); //TODO
