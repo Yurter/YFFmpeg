@@ -72,12 +72,12 @@ namespace fpp {
 
     protected:
 
-        AVCodec*    _codec;
+        AVCodec*            _codec;
         int64_t             _bitrate;
         int64_t             _duration;
         uid_t               _stream_index;
         uid_t               _stream_uid;
-        AVRational  _time_base;
+        AVRational          _time_base;
         int64_t             _context_uid;
 
     };

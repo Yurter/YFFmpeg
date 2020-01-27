@@ -80,7 +80,11 @@ namespace fpp {
             log_error("Failed to alloc output context.");
             return Code::ERR;
         }
-        setFormatContext(SharedAVFormatContext { fmt_ctx, [](auto*& fmt_ctx) { avformat_free_context(fmt_ctx); } }); //TODO переделать в кастомный аллакатор 17.01
+        setFormatContext(SharedAVFormatContext {
+                             fmt_ctx
+                             , [](auto* fmt_ctx) { avformat_free_context(fmt_ctx); }
+                         }
+        ); //TODO переделать в кастомный аллакатор 17.01
         return Code::OK;
     }
 

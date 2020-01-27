@@ -40,12 +40,12 @@ namespace fpp {
 
     private:
 
-        int64_t                 _width;
-        int64_t                 _height;
-        AVRational      _aspect_ratio;
-        AVRational      _frame_rate;
-        AVPixelFormat   _pixel_format;
-        int64_t                 _gop_size;
+        int64_t             _width;
+        int64_t             _height;
+        AVRational          _aspect_ratio;
+        AVRational          _frame_rate;
+        AVPixelFormat       _pixel_format;
+        int64_t             _gop_size;
 
     };
 
