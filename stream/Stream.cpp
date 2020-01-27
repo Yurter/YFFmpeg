@@ -26,7 +26,7 @@ namespace fpp {
     }
 
     Stream::Stream(const ffmpeg::AVStream* avstream)
-        : Stream(avstream, utils::createParams(utils::avmt_to_mt(avstream->codecpar->codec_type), type)) { //TODO refactoring params creation 15.01
+        : Stream(avstream, utils::createParams(utils::avmt_to_mt(avstream->codecpar->codec_type))) {
         params->parseStream(avstream);
     }
 

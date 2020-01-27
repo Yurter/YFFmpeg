@@ -121,7 +121,7 @@ namespace fpp {
     StreamVector InputFormatContext::parseFormatContext() {
         StreamVector result;
         for (unsigned i = 0; i < context()->nb_streams; ++i) {
-            result.push_back(std::make_shared<Stream>(context()->streams[i], ParamsType::Input));
+            result.push_back(make_input_stream(context()->streams[i]));
         }
         return result;
     }

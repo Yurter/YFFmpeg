@@ -125,18 +125,13 @@ namespace fpp {
     }
 
     void Parameters::completeFrom(const SharedParameters other_params) {
-        if (not_inited_codec_id(codecId())) { setCodec(other_params->codecId());        }
+        if (not_inited_codec_id(codecId())) { setEncoder(other_params->codecId());      }
         if (not_inited_int(bitrate()))      { setBitrate(other_params->bitrate());      }
         if (not_inited_q(timeBase()))       { setTimeBase(other_params->timeBase());    }
     }
 
-    void Parameters::parseStream(const ffmpeg::AVStream* avstream, ParamsType type) {
-        if (type == ParamsType::Input) {
-            setDecoder(avstream->codecpar->codec_id);
-        }
-        else if (type == ParamsType::Output) {
-            setEncoder(avstream->codecpar->codec_id);
-        }
+    void Parameters::parseStream(const ffmpeg::AVStream* avstream) {
+        setDecoder(avstream->codecpar->codec_id);
         setBitrate(avstream->codecpar->bit_rate);
         setDuration(avstream->duration);
         setStreamIndex(avstream->index);

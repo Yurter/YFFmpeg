@@ -74,7 +74,7 @@ namespace fpp {
         static MediaType    avmt_to_mt(ffmpeg::AVMediaType avmedia_type);
 
 
-        static SharedParameters createParams(MediaType type, ParamsType par_type);
+        static SharedParameters createParams(MediaType type);
 
         static Code         init_codecpar(ffmpeg::AVCodecParameters* codecpar, ffmpeg::AVCodec* codec);
         static void         parameters_to_context(const SharedParameters params, ffmpeg::AVCodecContext* codec_context); //TODO перенести внутрь кодекконтекста 17.01

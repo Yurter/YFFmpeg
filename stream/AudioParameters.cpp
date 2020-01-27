@@ -104,8 +104,8 @@ namespace fpp {
         if (not_inited_int(channels()))             { setChannels(other_audio_parames->channels());             }
     }
 
-    void AudioParameters::parseStream(const ffmpeg::AVStream* avstream, ParamsType type) {
-        Parameters::parseStream(avstream, type);
+    void AudioParameters::parseStream(const ffmpeg::AVStream* avstream) {
+        Parameters::parseStream(avstream);
         setSampleRate(avstream->codecpar->sample_rate);
         setSampleFormat(ffmpeg::AVSampleFormat(avstream->codecpar->format));
         setChannelLayout(avstream->codecpar->channel_layout);

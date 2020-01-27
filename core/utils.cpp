@@ -237,12 +237,12 @@ namespace fpp {
         return avcodec_find_encoder(codec_id);
     }
 
-    SharedParameters utils::createParams(MediaType type, ParamsType par_type) {
+    SharedParameters utils::createParams(MediaType type) {
         switch (type) {
         case MediaType::Video:
-            return std::make_shared<VideoParameters>(par_type);
+            return std::make_shared<VideoParameters>();
         case MediaType::Audio:
-            return std::make_shared<AudioParameters>(par_type);
+            return std::make_shared<AudioParameters>();
         default:
             throw std::invalid_argument("createParams failed");
         }
