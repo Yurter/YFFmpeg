@@ -18,9 +18,9 @@ namespace fpp {
     private:
 
         virtual void        init()          override;
-        virtual Code        createContext() override;
-        virtual Code        openContext()   override;
-        virtual Code        closeContext()  override;
+        virtual void        createContext() override;
+        virtual void        openContext()   override;
+        virtual void        closeContext()  override;
 
         Code                guessOutputFromat();
         Code                parseOutputFormat();

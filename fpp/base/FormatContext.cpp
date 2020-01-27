@@ -17,14 +17,15 @@ namespace fpp {
     }
 
     FormatContext::~FormatContext() {
-        try_throw(close());
+        close();
     }
 
-    Code FormatContext::close() {
-        return_if(closed(), Code::OK);
-        try_to(closeContext());
+    void FormatContext::close() {
+        if (closed()) {
+            return;
+        }
+        closeContext();
         setOpened(false);
-        return Code::OK;
     }
 
     bool FormatContext::opened() const {
@@ -59,13 +60,14 @@ namespace fpp {
         return _preset == value;
     }
 
-    Code FormatContext::open() {
-        return_if(opened(), Code::OK);
+    void FormatContext::open() {
+        if (opened()) {
+            throw std::logic_error { "context already opened" };
+        }
         setInteruptCallback(InterruptedProcess::Opening);
-        try_to(openContext());
+        openContext();
         resetInteruptCallback();
         setOpened(true);
-        return Code::OK;
     }
 
     void FormatContext::setInteruptCallback(InterruptedProcess process) {

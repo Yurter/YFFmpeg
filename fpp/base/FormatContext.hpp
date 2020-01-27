@@ -39,8 +39,8 @@ namespace fpp {
         const StreamVector      streams()               const;
         StreamVector            streams();
 
-        Code                open();
-        Code                close();
+        void                open();
+        void                close();
 
         bool                opened() const;
         bool                closed() const;
@@ -85,9 +85,9 @@ namespace fpp {
 
     protected:
 
-        virtual Code        createContext() = 0;
-        virtual Code        openContext()   = 0;
-        virtual Code        closeContext()  = 0;
+        virtual void        createContext() = 0;
+        virtual void        openContext()   = 0;
+        virtual void        closeContext()  = 0;
 
         void                setFormatContext(SharedAVFormatContext format_context);
 

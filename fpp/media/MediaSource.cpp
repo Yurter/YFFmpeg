@@ -20,7 +20,7 @@ namespace fpp {
         return_if(opened(), Code::OK);
         log_debug("Opening");
         log_info("'" << _input_format_context.mediaResourceLocator() << "' is opening...");
-        try_to(_input_format_context.open());
+        (_input_format_context.open());
         log_info("'" << _input_format_context.mediaResourceLocator() << "' opened");
         setStreams(_input_format_context.streams());
         setOpened(true);
@@ -33,7 +33,7 @@ namespace fpp {
         try_to(sendEof()); //TODO костыль?
         try_to(stop());
         stopWait(); //TODO костыль?
-        try_to(_input_format_context.close());
+        (_input_format_context.close());
         log_info("Source '" << _input_format_context.mediaResourceLocator() << "' closed, "
                  << utils::time_to_string(stream(0)->params->duration(), stream(0)->params->timeBase())); //TODO индекс нулевой закардкожен - брать блиьельность из контекста, а в нем максимальную по потокам 13.01
         setOpened(false);

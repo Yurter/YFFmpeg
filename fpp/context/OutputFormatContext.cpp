@@ -11,11 +11,11 @@ namespace fpp {
         : FormatContext { mrl, preset }
         , _output_format { nullptr } {
         setName("OutFmtCtx");
-        /*try_throw*/(init());
+        init();
     }
 
     OutputFormatContext::~OutputFormatContext() {
-        try_throw(close());
+        close();
     }
 
     void OutputFormatContext::init() { //TODO refactoring 14.01
@@ -73,45 +73,49 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code OutputFormatContext::createContext() {
+    void OutputFormatContext::createContext() {
         auto format_short_name = utils::guess_format_short_name(mediaResourceLocator());
         AVFormatContext* fmt_ctx = nullptr;
         if (avformat_alloc_output_context2(&fmt_ctx, nullptr, format_short_name, mediaResourceLocator().c_str()) < 0) {
-            log_error("Failed to alloc output context.");
-            return Code::ERR;
+//            log_error("Failed to alloc output context.");
+//            return Code::ERR;
+            throw FFmpegException { "avformat_alloc_output_context2 failed" };
         }
         setFormatContext(SharedAVFormatContext {
                              fmt_ctx
                              , [](auto* fmt_ctx) { avformat_free_context(fmt_ctx); }
                          }
         ); //TODO переделать в кастомный аллакатор 17.01
-        return Code::OK;
+//        return Code::OK;
     }
 
-    Code OutputFormatContext::openContext() {
-        return_if(opened(), Code::OK);
-        return_if_not(inited(), Code::NOT_INITED);
+    void OutputFormatContext::openContext() {
+//        return_if(opened(), Code::OK);
+//        return_if_not(inited(), Code::NOT_INITED);
         if (!(context()->flags & AVFMT_NOFILE)) {
             if (avio_open(&context()->pb, mediaResourceLocator().c_str(), AVIO_FLAG_WRITE) < 0) {
-                log_error("Could not open output: " << mediaResourceLocator());
-                return Code::INVALID_INPUT;
+//                log_error("Could not open output: " << mediaResourceLocator());
+//                return Code::INVALID_INPUT;
+                throw FFmpegException { "avio_open failed" };
             }
         }
         if (avformat_write_header(context().get(), nullptr) < 0) {
-            log_error("avformat_write_header failed: " << mediaResourceLocator());
-            return Code::ERR;
+//            log_error("avformat_write_header failed: " << mediaResourceLocator());
+//            return Code::ERR;
+            throw FFmpegException { "avformat_write_header failed" };
         }
-        return Code::OK;
+//        return Code::OK;
     }
 
-    Code OutputFormatContext::closeContext() {
-        return_if(closed(), Code::OK);
+    void OutputFormatContext::closeContext() {
+//        return_if(closed(), Code::OK);
         if (av_write_trailer(context().get()) != 0) {
-            log_error("Failed to write the stream trailer to an output media file");
-            return Code::ERR;
+//            log_error("Failed to write the stream trailer to an output media file");
+//            return Code::ERR;
+            throw FFmpegException { "av_write_trailer failed" };
         }
         avio_close(context()->pb);
-        return Code::OK;
+//        return Code::OK;
     }
 
     SharedStream OutputFormatContext::createStream(SharedParameters params) {

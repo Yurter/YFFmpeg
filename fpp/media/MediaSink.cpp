@@ -23,7 +23,7 @@ namespace fpp {
         return_if_not(inited(), Code::NOT_INITED);
         log_debug("Opening");
         log_info("'" << _output_format_context.mediaResourceLocator() << "' is opening...");
-        try_to(_output_format_context.open());
+        _output_format_context.open();
         log_info("'" <<_output_format_context.mediaResourceLocator() << "' opened");
         // НЕ УДАЛЯТЬ
 //        _flush_timer.setInterval([&](){
@@ -43,7 +43,7 @@ namespace fpp {
         log_debug("Closing");
         stopWait();
         try_to(stop());
-        try_to(_output_format_context.close());
+        _output_format_context.close();
         log_info("Destination '" << _output_format_context.mediaResourceLocator() << "' closed, " //TODO метод отрабатывает дважды: из деструктора и из онСтоп
                  << utils::time_to_string(stream(0)->params->duration(), stream(0)->params->timeBase()));
         for (auto stream : streams()) { //Debug log

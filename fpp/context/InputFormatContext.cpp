@@ -15,7 +15,7 @@ namespace fpp {
     }
 
     InputFormatContext::~InputFormatContext() {
-        try_throw(close());
+        close();
     }
 
     void InputFormatContext::init() { //TODO refactoring 14.01
@@ -77,45 +77,50 @@ namespace fpp {
         return Code::OK;
     }
 
-    Code fpp::InputFormatContext::createContext() {
+    void fpp::InputFormatContext::createContext() {
         auto free_context = [](auto*& fmt_ctx) { /*avformat_free_context(fmt_ctx);*/ };
         setFormatContext(SharedAVFormatContext {
             ::avformat_alloc_context()
             , free_context
         });
-        return Code::OK;
+        if (!context()) {
+            throw FFmpegException { "avformat_alloc_context failed" };
+        }
+//        return Code::OK;
     }
 
-    Code InputFormatContext::openContext() {
-        return_if(opened(), Code::OK);
-        return_if_not(inited(), Code::INVALID_CALL_ORDER);
+    void InputFormatContext::openContext() {
+//        return_if(opened(), Code::OK);
+//        return_if_not(inited(), Code::INVALID_CALL_ORDER);
         if (mediaResourceLocator().find("video=") != std::string::npos) { //TODO костыль
             guessInputFromat();
         }
-        return_if(mediaResourceLocator().empty(), Code::INVALID_INPUT);
+//        return_if(mediaResourceLocator().empty(), Code::INVALID_INPUT);
         auto todo_ptr = context().get();
         if (avformat_open_input(&todo_ptr, mediaResourceLocator().c_str(), inputFormat(), nullptr) < 0) {
-            log_error("Failed to open input context.");
-            return Code::INVALID_INPUT;
+//            log_error("Failed to open input context.");
+//            return Code::INVALID_INPUT;
+            throw FFmpegException { "avformat_open_input failed" };
         }
         setInputFormat(context()->iformat);
         if (avformat_find_stream_info(context().get(), nullptr) < 0) {
-            log_error("Failed to retrieve input video stream information.");
-            return Code::ERR;
+//            log_error("Failed to retrieve input video stream information.");
+//            return Code::ERR;
+            throw FFmpegException { "avformat_find_stream_info failed" };
         }
         {
             setStreams(parseFormatContext());
-            return Code::OK;
+//            return Code::OK;
         }
     }
 
-    Code InputFormatContext::closeContext() {
-        return_if(closed(), Code::OK);
+    void InputFormatContext::closeContext() {
+//        return_if(closed(), Code::OK);
         auto fmt_ctx = context().get();
         avformat_close_input(&fmt_ctx);
-        log_error("after: " << fmt_ctx << " " << context().get());
+//        log_error("after: " << fmt_ctx << " " << context().get());
 //        formatContext().reset();
-        return Code::OK;
+//        return Code::OK;
     }
 
     StreamVector InputFormatContext::parseFormatContext() {
