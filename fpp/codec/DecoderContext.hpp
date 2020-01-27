@@ -9,14 +9,11 @@ namespace fpp {
 
     public:
 
-        DecoderContext(const IOParams params);
+        DecoderContext(const SharedParameters parameters);
         virtual ~DecoderContext() override;
 
         FrameList           decode(Packet input_packet);
         virtual Code        flush(Object* data)         override;
-
-        virtual const AVCodec*  codec()         override;
-        virtual SharedParameters        parameters()    override;
 
     };
 

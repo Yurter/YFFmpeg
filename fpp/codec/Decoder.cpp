@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    Decoder::Decoder(const IOParams params)
-        : _decoder_context(params) {
+    Decoder::Decoder(const SharedParameters parameters)
+        : _decoder_context(parameters) {
         setName("Decoder");
         try_throw(setStartDataPred([](const auto& packet){
             return_if_not(packet.keyFrame(), Code::AGAIN);
@@ -51,8 +51,8 @@ namespace fpp {
         auto other_decoder = dynamic_cast<const Decoder * const>(other.get());
         return_if(not_inited_ptr(other_decoder), false);
 
-        return_if(this->decoderContext()->params.in->streamUid()
-                  != other_decoder->decoderContext()->params.in->streamUid(), false);
+        return_if(this->decoderContext()->params->streamUid()
+                  != other_decoder->decoderContext()->params->streamUid(), false);
 
         return true;
     }

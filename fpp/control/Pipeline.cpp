@@ -174,7 +174,7 @@ namespace fpp {
                                 || audio_filter_required;
 
         if (decoding_required) {
-            try_to(route.append(std::make_shared<Decoder>(params)));
+            try_to(route.append(std::make_shared<Decoder>(params.in)));
         }
 
         if (rescaling_required) {
@@ -196,7 +196,7 @@ namespace fpp {
         }
 
         if (encoding_required) {
-            try_to(route.append(std::make_shared<Encoder>(params)));
+            try_to(route.append(std::make_shared<Encoder>(params.out)));
         }
 
         try_to(route.append(findProcessor(params.out->contextUid())));

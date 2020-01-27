@@ -8,7 +8,7 @@ namespace fpp {
 
     public:
 
-        Decoder(const IOParams params);
+        Decoder(const SharedParameters parameters);
         virtual ~Decoder() override;
 
         virtual void        init() override;

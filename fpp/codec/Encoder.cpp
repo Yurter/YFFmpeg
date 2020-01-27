@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    Encoder::Encoder(const IOParams params)
-        : _encoder_context(params) {
+    Encoder::Encoder(const SharedParameters parameters)
+        : _encoder_context(parameters) {
         setName("Encoder");
     }
 
@@ -51,8 +51,8 @@ namespace fpp {
         auto other_encoder = dynamic_cast<const Encoder * const>(other.get());
         return_if(not_inited_ptr(other_encoder), false);
 
-        return_if(this->encoderContext()->params.in->streamUid()
-                  != other_encoder->encoderContext()->params.in->streamUid(), false);
+        return_if(this->encoderContext()->params->streamUid()
+                  != other_encoder->encoderContext()->params->streamUid(), false);
 
         return true;
     }

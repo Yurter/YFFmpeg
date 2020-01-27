@@ -4,8 +4,8 @@
 
 namespace fpp {
 
-    EncoderContext::EncoderContext(const IOParams params)
-        : CodecContext(params) {
+    EncoderContext::EncoderContext(const SharedParameters parameters)
+        : CodecContext(parameters) {
         setName("EncCtx");
     }
 
@@ -27,9 +27,9 @@ namespace fpp {
 //            log_warning("avcodec_receive_packet failed");
             return Code::AGAIN;
         }
-        encoded_packet.setType(params.in->type());
-        encoded_packet.setTimeBase(params.in->timeBase());
-        encoded_packet.setStreamIndex(params.out->streamIndex());
+        encoded_packet.setType(params->type());
+        encoded_packet.setTimeBase(params->timeBase());
+        encoded_packet.setStreamIndex(params->streamIndex());
         return Code::OK;
     }
 
@@ -45,7 +45,7 @@ namespace fpp {
         log_error("FLUSH finished");
         return Code::OK;
         Packet output_packet;
-        output_packet.setType(params.out->type());
+        output_packet.setType(params->type());
         int ret;
         if ((ret = avcodec_send_frame(context().get(), nullptr)) != 0) {
             log_error("failed to flush encoder " << ret);
@@ -56,23 +56,15 @@ namespace fpp {
             return Code::AGAIN;
         }
         log_error("Flushed success");
-        output_packet.setStreamIndex(params.out->streamIndex());
+        output_packet.setStreamIndex(params->streamIndex());
         return Code::OK;
     }
 
     Code EncoderContext::onOpen() {
-        if (params.out->typeIs(MediaType::Audio)) {
-            static_cast<AudioParameters * const>(params.out.get())->setFrameSize(context()->frame_size); //TODO не надежно: нет гарантий, что кодек откроется раньше, чем рескейлер начнет работу
+        if (params->typeIs(MediaType::Audio)) {
+            static_cast<AudioParameters * const>(params.get())->setFrameSize(context()->frame_size); //TODO не надежно: нет гарантий, что кодек откроется раньше, чем рескейлер начнет работу
         }
         return Code::OK;
-    }
-
-    const AVCodec* EncoderContext::codec() {
-        return params.out->codec();
-    }
-
-    SharedParameters EncoderContext::parameters() {
-        return params.out;
     }
 
 } // namespace fpp

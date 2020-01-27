@@ -11,7 +11,7 @@ namespace fpp {
 
     public:
 
-        CodecContext(const IOParams params); //TODO оставить только один из IOParams, зачем оба ? 24.01
+        CodecContext(const SharedParameters parameters);
         virtual ~CodecContext() override;
 
         virtual Code        flush(Object* data) = 0; //TODO (отправлять кодеку NULL)
@@ -21,12 +21,12 @@ namespace fpp {
         bool                opened() const;
         bool                closed() const;
 
-        SharedAVCodecContext            context();
-        virtual const AVCodec*  codec() = 0;
-        virtual SharedParameters        parameters() = 0;
+        SharedAVCodecContext    context();
+        const AVCodec*          codec();
         virtual Code        onOpen() { return Code::OK; } //TODO убрать 24.01
 
-        const IOParams      params;
+//        const IOParams      params;
+        const SharedParameters  params;
 
     private:
 

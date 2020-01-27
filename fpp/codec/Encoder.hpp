@@ -8,7 +8,7 @@ namespace fpp {
 
     public:
 
-        Encoder(const IOParams params);
+        Encoder(const SharedParameters parameters);
         virtual ~Encoder() override;
 
         virtual void        init() override;

@@ -5,8 +5,8 @@
 
 namespace fpp {
 
-    DecoderContext::DecoderContext(const IOParams params)
-        : CodecContext(params) {
+    DecoderContext::DecoderContext(const SharedParameters parameters)
+        : CodecContext(parameters) {
         setName("DecCtx");
     }
 
@@ -28,7 +28,7 @@ namespace fpp {
             if (ret < 0) {
                 throw FFmpegException { "av_buffersink_get_frame failed" };
             }
-            output_frame.setType(params.in->type());
+            output_frame.setType(params->type());
             decoded_frames.push_back(output_frame);
         }
     }
@@ -70,14 +70,6 @@ namespace fpp {
         default:
             return Code::ERR;
         }
-    }
-
-    const AVCodec* DecoderContext::codec() {
-        return params.in->codec();
-    }
-
-    SharedParameters DecoderContext::parameters() {
-        return params.in;
     }
 
 } // namespace fpp

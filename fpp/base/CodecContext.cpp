@@ -3,8 +3,8 @@
 
 namespace fpp {
 
-    CodecContext::CodecContext(const IOParams params)
-        : params { params }
+    CodecContext::CodecContext(const SharedParameters parameters)
+        : params { parameters }
         , _codec_context { nullptr }
         , _opened { false } {
         setName("CodecContext");
@@ -26,9 +26,9 @@ namespace fpp {
             throw FFmpegException("avcodec_alloc_context3 failed");
         }
         setName(name() + " " + codec()->name);
-        utils::parameters_to_context(parameters(), _codec_context.get());
+        utils::parameters_to_context(params, _codec_context.get());
         if (true) { // TODO костыль
-            _codec_context->time_base = params.in->timeBase();
+            _codec_context->time_base = params->timeBase();
         }
         /*try_to(*/open()/*)*/;
         setInited(true);
@@ -76,6 +76,10 @@ namespace fpp {
 
     SharedAVCodecContext CodecContext::context() {
         return _codec_context;
+    }
+
+    const AVCodec* CodecContext::codec() {
+        return params->codec();
     }
 
     bool CodecContext::opened() const {
