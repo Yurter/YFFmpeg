@@ -7,6 +7,7 @@ namespace fpp {
     EncoderContext::EncoderContext(const SharedParameters parameters)
         : CodecContext(parameters) {
         setName("EncCtx");
+        init();
     }
 
     EncoderContext::~EncoderContext() {

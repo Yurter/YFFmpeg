@@ -15,7 +15,6 @@ namespace fpp {
         virtual ~CodecContext() override;
 
         virtual Code        flush(Object* data) = 0; //TODO (отправлять кодеку NULL)
-        virtual void        init() override;
         std::string         toString() const override final;
 
         bool                opened() const;
@@ -27,6 +26,10 @@ namespace fpp {
 
 //        const IOParams      params;
         const SharedParameters  params;
+
+    protected:
+
+        virtual void        init() override;
 
     private:
 

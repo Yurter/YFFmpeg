@@ -8,6 +8,7 @@ namespace fpp {
     DecoderContext::DecoderContext(const SharedParameters parameters)
         : CodecContext(parameters) {
         setName("DecCtx");
+        init();
     }
 
     DecoderContext::~DecoderContext() {

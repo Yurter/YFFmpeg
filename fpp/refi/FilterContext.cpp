@@ -15,6 +15,7 @@ namespace fpp {
         : params(parameters)
         , _filters_descr(filters_descr) {
         setName("Filter");
+        init();
     }
 
     FrameList FilterContext::filter(Frame frame) {  //TODO много параметров захардкожено 14.01
