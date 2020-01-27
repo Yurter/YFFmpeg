@@ -2,8 +2,8 @@
 
 namespace fpp {
 
-    VideoFilter::VideoFilter(IOParams params, std::string filters_descr) :
-        Filter(params, filters_descr)
+    VideoFilter::VideoFilter(SharedParameters parameters, std::string filters_descr) :
+        Filter(parameters, filters_descr)
     {
         setName("VideoFilter");
     }

@@ -2,7 +2,7 @@
 
 namespace fpp {
 
-    AudioFilter::AudioFilter(IOParams params, std::string filters_descr) :
+    AudioFilter::AudioFilter(SharedParameters parameters, std::string filters_descr) :
         Filter(params, filters_descr)
     {
         setName("AudioFilter");

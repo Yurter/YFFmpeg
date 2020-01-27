@@ -52,6 +52,7 @@ SOURCES += \
     inout/PacketSink.cpp \
     inout/PacketSource.cpp \
     opencv/OpenCVSink.cpp \
+    refi/FilterContext.cpp \
     refi/ResamplerContext.cpp \
     refi/RescalerContext.cpp \
     stream/AudioParameters.cpp \
@@ -106,6 +107,7 @@ HEADERS += \
     base/Processor.hpp \
     media.hpp \
     refi.hpp \
+    refi/FilterContext.hpp \
     refi/ResamplerContext.hpp \
     refi/RescalerContext.hpp \
     stream.hpp \

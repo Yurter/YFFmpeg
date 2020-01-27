@@ -1,5 +1,6 @@
 #pragma once
-#include <inout/FrameProcessor.hpp>
+#include <base/Frame.hpp>
+#include <stream/VideoParameters.hpp>
 
 namespace ffmpeg {
     class AVFilterGraph;
@@ -9,18 +10,14 @@ namespace ffmpeg {
 
 namespace fpp {
 
-    class Filter : public FrameProcessor { //TODO определиться: фильтровать по выходным параметрам или входным, или настраивать? от этого зависит порядко на пайплайне
+    class FilterContext : public Object {
 
     public:
 
-        Filter(SharedParameters parameters, const std::string& filters_descr);
-        virtual ~Filter() override;
+        FilterContext(SharedParameters parameters, const std::string& filters_descr);
+        virtual ~FilterContext() override = default;
 
-        virtual void        init() override;
-        virtual Code        open() override;
-        virtual Code        close() override;
-        virtual bool        equalTo(const SharedProcessor other) const override final;
-
+        FrameList           filter(Frame frame);
         std::string         description() const;
 
         const SharedParameters params;
@@ -33,7 +30,7 @@ namespace fpp {
 
     private:
 
-        virtual Code        processInputData(Frame input_data) override;
+        virtual void        init() override;
 
     private:
 

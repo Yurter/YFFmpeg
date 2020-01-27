@@ -10,8 +10,8 @@ namespace ffmpeg { extern "C" {
 
 namespace fpp {
 
-    Filter::Filter(IOParams params, const std::string& filters_descr)
-        : params(params)
+    Filter::Filter(SharedParameters parameters, const std::string& filters_descr)
+        : params(parameters)
         , _filters_descr(filters_descr) {
         setName("Filter");
     }
@@ -23,7 +23,7 @@ namespace fpp {
     void Filter::init() {
         using namespace ffmpeg;
 //        return_if(inited(), Code::OK);
-        auto out_params = dynamic_cast<const VideoParameters*>(params.out.get()); //TODO решить использовать входные или выходные параметры
+        auto video_params = std::static_pointer_cast<const VideoParameters>(params);
 
         char args[512];
         int ret = 0;
@@ -31,9 +31,8 @@ namespace fpp {
         const AVFilter* buffersink = avfilter_get_by_name("buffersink");
         AVFilterInOut* outputs = avfilter_inout_alloc(); //TODO убрать голый указатель 20.01
         AVFilterInOut* inputs  = avfilter_inout_alloc(); //TODO убрать голый указатель 20.01
-        AVRational time_base = out_params->timeBase();
-//        enum AVPixelFormat pix_fmts[] = { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE };
-        enum AVPixelFormat pix_fmts[] = { out_params->pixelFormat(), AV_PIX_FMT_NONE };
+        AVRational time_base = video_params->timeBase();
+        enum AVPixelFormat pix_fmts[] = { video_params->pixelFormat(), AV_PIX_FMT_NONE };
 
         _filter_graph = avfilter_graph_alloc();
         if (!outputs || !inputs || !_filter_graph) {
@@ -44,9 +43,9 @@ namespace fpp {
         /* buffer video source: the decoded frames from the decoder will be inserted here. */
         snprintf(args, sizeof(args),
                 "video_size=%dx%d:pix_fmt=%d:time_base=%d/%d:pixel_aspect=%d/%d",
-                int(out_params->width()), int(out_params->height()), out_params->pixelFormat(),
+                int(video_params->width()), int(video_params->height()), video_params->pixelFormat(),
                 time_base.num, time_base.den,
-                out_params->aspectRatio().num, out_params->aspectRatio().den);
+                video_params->aspectRatio().num, video_params->aspectRatio().den);
 
         ret = avfilter_graph_create_filter(&_buffersrc_ctx, buffersrc, "in",
                                            args, nullptr, _filter_graph);
@@ -136,8 +135,8 @@ namespace fpp {
 
         return_if(this->description()
                   != other_filter->description(), false);
-        return_if(this->params.out->streamUid()
-                  != other_filter->params.out->streamUid(), false);
+        return_if(this->params->streamUid()
+                  != other_filter->params->streamUid(), false);
 
         return true;
     }

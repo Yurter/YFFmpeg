@@ -11,22 +11,23 @@ namespace fpp {
     }
 
     FrameList ResamplerContext::resample(Frame source_frame) {
-        const int ret = swr_convert_frame(_resampler_context.get(), nullptr, &source_frame.raw());
-        if (ret != 0) {
-            throw FFmpegException { "swr_convert_frame failed", ret };
+        if (swr_convert_frame(_resampler_context.get(), nullptr, &source_frame.raw()) != 0) {
+            throw FFmpegException { "swr_convert_frame failed" };
         }
         const auto audio_params = std::static_pointer_cast<const AudioParameters>(params.out);
-        FrameList result;
-        do {
-            Frame resampled_frame = createFrame();
-            const int ret = swr_convert_frame(_resampler_context.get(), &resampled_frame.raw(), nullptr);
-            if (ret != 0) {
-                throw FFmpegException { "swr_convert_frame failed", ret };
+        FrameList resampled_frames;
+        while (swr_get_out_samples(_resampler_context.get(), 0) >= audio_params->frameSize()) { // TODO сравнить AVERROR(EAGAIN) и swr_get_out_samples,
+            Frame output_frame = createFrame();                                                 // заменить на while (true) 27.01
+            int ret = ffmpeg::swr_convert_frame(_resampler_context.get(), &output_frame.raw(), nullptr);
+            if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+                return resampled_frames;
+            if (ret < 0) {
+                throw FFmpegException { "swr_convert_frame failed" };
             }
-            resampled_frame.setPts(source_frame.pts()); //TODO проверить необходимость ручной установки 24.01
-            result.push_back(resampled_frame);
-        } while (swr_get_out_samples(_resampler_context.get(), 0) >= audio_params->frameSize());
-        return result;
+            output_frame.setPts(source_frame.pts()); //TODO проверить необходимость ручной установки 24.01
+            resampled_frames.push_back(output_frame);
+        }
+        return resampled_frames;
     }
 
     // TODO https://stackoverflow.com/questions/12831761/how-to-resize-a-picture-using-ffmpegs-sws-scale

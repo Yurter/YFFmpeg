@@ -184,7 +184,7 @@ namespace fpp {
         if (video_filter_required) { //TODO не универсальный код 15.01
             const int X = 4; //TODO "магическое" число
             std::string filters_descr = Filter::keep_every_frame(X) + Filter::Separator + Filter::set_pts(1.f / X);
-            try_to(route.append(std::make_shared<VideoFilter>(params, filters_descr)));
+            try_to(route.append(std::make_shared<VideoFilter>(params.out, filters_descr)));
         }
 
         if (audio_filter_required) {

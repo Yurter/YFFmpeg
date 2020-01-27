@@ -7,7 +7,7 @@ namespace fpp {
 
     public:
 
-        AudioFilter(IOParams params, std::string filters_descr);
+        AudioFilter(SharedParameters parameters, std::string filters_descr);
 
     private:
 
