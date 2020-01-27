@@ -2,7 +2,7 @@
 #include "ffmpeg.hpp"
 #include <core/Logger.hpp>
 #include <core/FFmpegException.hpp>
-#include <stream.hpp>
+#include <streamHeader.hpp>
 #include <sstream>
 
 namespace ffmpeg { extern "C" {

@@ -1,7 +1,7 @@
 #pragma once
 #include <core/Object.hpp>
 #include <core/time/Chronometer.hpp>
-#include <stream.hpp>
+#include <streamHeader.hpp>
 #include <memory>
 
 namespace ffmpeg {

@@ -110,7 +110,6 @@ HEADERS += \
     refi/FilterContext.hpp \
     refi/ResamplerContext.hpp \
     refi/RescalerContext.hpp \
-    stream.hpp \
     stream/Stream.hpp \
     core/Thread.hpp \
     inout/FrameSource.hpp \
@@ -133,7 +132,8 @@ HEADERS += \
     base/Packet.hpp \
     base/Parameters.hpp \
     refi/Rescaler.hpp \
-    refi/VideoFilter.hpp
+    refi/VideoFilter.hpp \
+    streamHeader.hpp
 
 #FFmpeg
 INCLUDEPATH += D:\dev\00_ffmpeg\ffmpeg-4.1.3-win64-dev\include
