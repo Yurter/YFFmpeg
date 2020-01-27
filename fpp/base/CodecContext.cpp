@@ -8,11 +8,10 @@ namespace fpp {
         , _codec_context { nullptr }
         , _opened { false } {
         setName("CodecContext");
-        open();
     }
 
     CodecContext::~CodecContext() {
-        close();
+//        close();
     }
 
     void CodecContext::init() {
