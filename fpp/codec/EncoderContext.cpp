@@ -67,7 +67,7 @@ namespace fpp {
         return Code::OK;
     }
 
-    const ffmpeg::AVCodec* EncoderContext::codec() {
+    const AVCodec* EncoderContext::codec() {
         return params.out->codec();
     }
 

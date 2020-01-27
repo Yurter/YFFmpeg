@@ -7,7 +7,7 @@
 #define INVALID_INT             -1
 #define DEFAULT_INT             0
 #define DEFAULT_STRING          "none"
-#define DEFAULT_RATIONAL        ffmpeg::AVRational { 0, 1 }
+#define DEFAULT_RATIONAL        AVRational { 0, 1 }
 
 #define inited_int(x)           ((x) != DEFAULT_INT)
 #define inited_ptr(x)           ((x) != nullptr)

@@ -2,11 +2,9 @@
 #include <fpp/base/Frame.hpp>
 #include <fpp/stream/VideoParameters.hpp>
 
-namespace ffmpeg {
-    class AVFilterGraph;
-    class AVFilterContext;
-    class AVFilterContext;
-} // namespace ffmpeg
+class AVFilterGraph;
+class AVFilterContext;
+class AVFilterContext;
 
 namespace fpp {
 
@@ -35,9 +33,9 @@ namespace fpp {
     private:
 
         const std::string   _filters_descr;
-        ffmpeg::AVFilterGraph*      _filter_graph;      //TODO убрать голый указатель 15.01
-        ffmpeg::AVFilterContext*    _buffersrc_ctx;     //TODO убрать голый указатель 15.01
-        ffmpeg::AVFilterContext*    _buffersink_ctx;    //TODO убрать голый указатель 15.01
+        AVFilterGraph*      _filter_graph;      //TODO убрать голый указатель 15.01
+        AVFilterContext*    _buffersrc_ctx;     //TODO убрать голый указатель 15.01
+        AVFilterContext*    _buffersink_ctx;    //TODO убрать голый указатель 15.01
 
     };
 

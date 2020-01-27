@@ -11,14 +11,14 @@ namespace fpp {
     }
 
     FrameList ResamplerContext::resample(Frame source_frame) {
-        if (swr_convert_frame(_resampler_context.get(), nullptr, &source_frame.raw()) != 0) {
+        if (::swr_convert_frame(_resampler_context.get(), nullptr, &source_frame.raw()) != 0) {
             throw FFmpegException { "swr_convert_frame failed" };
         }
         const auto audio_params = std::static_pointer_cast<const AudioParameters>(params.out);
         FrameList resampled_frames;
-        while (swr_get_out_samples(_resampler_context.get(), 0) >= audio_params->frameSize()) { // TODO сравнить AVERROR(EAGAIN) и swr_get_out_samples,
+        while (::swr_get_out_samples(_resampler_context.get(), 0) >= audio_params->frameSize()) { // TODO сравнить AVERROR(EAGAIN) и swr_get_out_samples,
             Frame output_frame = createFrame();                                                 // заменить на while (true) 27.01
-            int ret = ffmpeg::swr_convert_frame(_resampler_context.get(), &output_frame.raw(), nullptr);
+            int ret = ::swr_convert_frame(_resampler_context.get(), &output_frame.raw(), nullptr);
             if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
                 return resampled_frames;
             if (ret < 0) {
@@ -35,18 +35,18 @@ namespace fpp {
         const auto in_param = std::static_pointer_cast<const AudioParameters>(params.in);
         const auto out_param = std::static_pointer_cast<const AudioParameters>(params.out);
         _resampler_context = SharedSwrContext {
-            swr_alloc_set_opts(
+            ::swr_alloc_set_opts(
                 nullptr
-                , ffmpeg::av_get_default_channel_layout(int(out_param->channels())) //TODO юзать метод setChannelLayout() 24.01
+                , ::av_get_default_channel_layout(int(out_param->channels())) //TODO юзать метод setChannelLayout() 24.01
                 , out_param->sampleFormat()
                 , int(out_param->sampleRate())
-                , ffmpeg::av_get_default_channel_layout(int(in_param->channels()))  //TODO юзать метод setChannelLayout() 24.01
+                , ::av_get_default_channel_layout(int(in_param->channels()))  //TODO юзать метод setChannelLayout() 24.01
                 , in_param->sampleFormat()
                 , int(in_param->sampleRate())
                 , 0
                 , nullptr
             )
-            , [](ffmpeg::SwrContext* ctx) { swr_free(&ctx); }
+            , [](SwrContext* ctx) { swr_free(&ctx); }
         };
         if (!_resampler_context) {
             throw FFmpegException { "swr_alloc_set_opts failed" };

@@ -4,12 +4,10 @@
 #include <fpp/streamHeader.hpp>
 #include <memory>
 
-namespace ffmpeg {
-    struct AVFormatContext;
-    struct AVStream;
-    struct AVInputFormat;
-    struct AVOutputFormat;
-} // namespace ffmpeg
+struct AVFormatContext;
+struct AVStream;
+struct AVInputFormat;
+struct AVOutputFormat;
 
 namespace fpp {
 
@@ -27,7 +25,7 @@ namespace fpp {
         Timelapse,
     };
 
-    using SharedAVFormatContext = std::shared_ptr<ffmpeg::AVFormatContext>;
+    using SharedAVFormatContext = std::shared_ptr<AVFormatContext>;
 
     class FormatContext : public Object {
 

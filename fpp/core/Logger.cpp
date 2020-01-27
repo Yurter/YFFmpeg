@@ -25,7 +25,7 @@ namespace fpp {
 
     Logger::~Logger() {
         print(this->name(), CODE_POS, LogLevel::Info, "Logger closed");
-        ffmpeg::av_log_set_callback(nullptr);
+        ::av_log_set_callback(nullptr);
         closeFile();
     }
 
@@ -142,8 +142,8 @@ namespace fpp {
         static int print_prefix = 1;
 
         va_copy(vl2, vl);
-        ffmpeg::av_log_default_callback(ptr, level, fmt, vl);
-        ffmpeg::av_log_format_line(ptr, level, fmt, vl2, line, sizeof(line), &print_prefix);
+        ::av_log_default_callback(ptr, level, fmt, vl);
+        ::av_log_format_line(ptr, level, fmt, vl2, line, sizeof(line), &print_prefix);
         va_end(vl2);
 
         for (auto& symbol : line) {
@@ -229,22 +229,22 @@ namespace fpp {
     void Logger::setFFmpegLogLevel(LogLevel log_level) {
         switch (log_level) {
         case LogLevel::Info:
-            ffmpeg::av_log_set_level(AV_LOG_INFO);
+            ::av_log_set_level(AV_LOG_INFO);
             break;
         case LogLevel::Warning:
-            ffmpeg::av_log_set_level(AV_LOG_WARNING);
+            ::av_log_set_level(AV_LOG_WARNING);
             break;
         case LogLevel::Error:
-            ffmpeg::av_log_set_level(AV_LOG_ERROR);
+            ::av_log_set_level(AV_LOG_ERROR);
             break;
         case LogLevel::Debug:
-            ffmpeg::av_log_set_level(AV_LOG_DEBUG);
+            ::av_log_set_level(AV_LOG_DEBUG);
             break;
         case LogLevel::Trace:
-            ffmpeg::av_log_set_level(AV_LOG_TRACE);
+            ::av_log_set_level(AV_LOG_TRACE);
             break;
         case LogLevel::Quiet:
-            ffmpeg::av_log_set_level(AV_LOG_QUIET);
+            ::av_log_set_level(AV_LOG_QUIET);
             break;
         }
     }

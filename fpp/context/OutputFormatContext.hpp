@@ -26,12 +26,12 @@ namespace fpp {
 
     private:
 
-        ffmpeg::AVOutputFormat* outputFormat();
-        void                    setOutputFormat(ffmpeg::AVOutputFormat* out_fmt);
+        AVOutputFormat* outputFormat();
+        void                    setOutputFormat(AVOutputFormat* out_fmt);
 
     private:
 
-        ffmpeg::AVOutputFormat* _output_format;
+        AVOutputFormat* _output_format;
 
     };
 

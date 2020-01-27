@@ -1,11 +1,11 @@
 #include "VideoParameters.hpp"
 #include <fpp/core/Utils.hpp>
 
-namespace ffmpeg { extern "C" {
+extern "C" {
     #include <libavformat/avformat.h>
-} } // namespace ffmpeg
+}
 
-#define DEFAULT_PIXEL_FORMAT    ffmpeg::AV_PIX_FMT_NONE
+#define DEFAULT_PIXEL_FORMAT    AV_PIX_FMT_NONE
 #define not_inited_pix_fmt(x)   ((x) == DEFAULT_PIXEL_FORMAT)
 
 namespace fpp {
@@ -29,14 +29,14 @@ namespace fpp {
         _height = height - (height % 2);
     }
 
-    void VideoParameters::setAspectRatio(ffmpeg::AVRational aspect_ratio) {
+    void VideoParameters::setAspectRatio(AVRational aspect_ratio) {
         _aspect_ratio = aspect_ratio;
     }
 
-    void VideoParameters::setFrameRate(ffmpeg::AVRational frame_rate) {
+    void VideoParameters::setFrameRate(AVRational frame_rate) {
         if ((frame_rate.num * frame_rate.den) == 0) {
             log_error("setFrameRate failed: " << frame_rate);
-            ffmpeg::AVRational default_framerate = { 16, 1 };
+            AVRational default_framerate = { 16, 1 };
             log_error("seted default value: " << default_framerate);
             _frame_rate = default_framerate;
             return;
@@ -44,13 +44,13 @@ namespace fpp {
         _frame_rate = frame_rate;
     }
 
-    void VideoParameters::setPixelFormat(ffmpeg::AVPixelFormat pixel_format) {
+    void VideoParameters::setPixelFormat(AVPixelFormat pixel_format) {
         if (not_inited_ptr(_codec)) {
             log_error("Cannot set pixel format before codec");
             return;
         }
         if_not(utils::compatible_with_pixel_format(_codec, pixel_format)) { //TODO ? почему формат захардкожен? _codec->pix_fmts[0] ? 14.01
-            const auto defailt_h264_pixel_format = ffmpeg::AV_PIX_FMT_YUV420P;
+            const auto defailt_h264_pixel_format = AV_PIX_FMT_YUV420P;
             log_warning("Cannot set pixel format: " << pixel_format
                         << " - " << _codec->name << " doesn't compatible with it, "
                         << "setting default: " << defailt_h264_pixel_format);
@@ -72,15 +72,15 @@ namespace fpp {
         return _height;
     }
 
-    ffmpeg::AVRational VideoParameters::aspectRatio() const {
+    AVRational VideoParameters::aspectRatio() const {
         return _aspect_ratio;
     }
 
-    ffmpeg::AVRational VideoParameters::frameRate() const {
+    AVRational VideoParameters::frameRate() const {
         return _frame_rate;
     }
 
-    ffmpeg::AVPixelFormat VideoParameters::pixelFormat() const {
+    AVPixelFormat VideoParameters::pixelFormat() const {
         return _pixel_format;
     }
 
@@ -106,17 +106,17 @@ namespace fpp {
         if (not_inited_pix_fmt(pixelFormat()))  { setPixelFormat(other_video_parames->pixelFormat());   }
     }
 
-    void VideoParameters::parseStream(const ffmpeg::AVStream* avstream) {
+    void VideoParameters::parseStream(const AVStream* avstream) {
         Parameters::parseStream(avstream);
         setWidth(avstream->codecpar->width);
         setHeight(avstream->codecpar->height);
         setAspectRatio(avstream->codecpar->sample_aspect_ratio);
         setFrameRate(avstream->avg_frame_rate);
-        setPixelFormat(ffmpeg::AVPixelFormat(avstream->codecpar->format));
+        setPixelFormat(AVPixelFormat(avstream->codecpar->format));
         setGopSize(avstream->codec->gop_size);
     }
 
-    void VideoParameters::initStream(ffmpeg::AVStream* avstream) const {
+    void VideoParameters::initStream(AVStream* avstream) const {
         Parameters::initStream(avstream);
         avstream->codecpar->width = int(width());
         avstream->codecpar->height = int(height());

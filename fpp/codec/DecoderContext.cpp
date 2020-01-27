@@ -46,7 +46,7 @@ namespace fpp {
         return Code::OK;
         if (int ret = avcodec_send_packet(context().get(), nullptr); ret != 0) {
             char errstr[1024];
-            ffmpeg::av_strerror(ret, errstr, 1024); //TODO сделать методом уилит 23.01
+            ::av_strerror(ret, errstr, 1024); //TODO сделать методом уилит 23.01
             log_error("Failed to flush decoder: " << errstr);
             return Code::FFMPEG_ERROR;
         }
@@ -72,7 +72,7 @@ namespace fpp {
         }
     }
 
-    const ffmpeg::AVCodec* DecoderContext::codec() {
+    const AVCodec* DecoderContext::codec() {
         return params.in->codec();
     }
 

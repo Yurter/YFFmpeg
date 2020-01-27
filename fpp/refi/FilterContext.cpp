@@ -2,12 +2,12 @@
 #include <fpp/core/Logger.hpp>
 #include <fpp/core/FFmpegException.hpp>
 
-namespace ffmpeg { extern "C" {
+extern "C" {
     #include <libavfilter/avfilter.h>
     #include <libavfilter/buffersink.h>
     #include <libavfilter/buffersrc.h>
     #include <libavutil/opt.h>
-} } // namespace ffmpeg
+}
 
 namespace fpp {
 
@@ -18,14 +18,14 @@ namespace fpp {
     }
 
     FrameList FilterContext::filter(Frame frame) {  //TODO много параметров захардкожено 14.01
-        if (av_buffersrc_add_frame_flags(_buffersrc_ctx, &frame.raw(), ffmpeg::AV_BUFFERSRC_FLAG_KEEP_REF) < 0) {
+        if (av_buffersrc_add_frame_flags(_buffersrc_ctx, &frame.raw(), AV_BUFFERSRC_FLAG_KEEP_REF) < 0) {
             throw FFmpegException { "av_buffersrc_add_frame_flags failed" };
         }
         FrameList filtered_frames;
         /* pull filtered frames from the filtergraph */
         while (true) {
             Frame output_frame;
-            const int ret = ffmpeg::av_buffersink_get_frame(_buffersink_ctx, &output_frame.raw());
+            const int ret = ::av_buffersink_get_frame(_buffersink_ctx, &output_frame.raw());
             if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
                 return filtered_frames;
             if (ret < 0) {
@@ -48,13 +48,13 @@ namespace fpp {
 
         char args[512];
         int ret = 0;
-        const ffmpeg::AVFilter* buffersrc = ffmpeg::avfilter_get_by_name("buffer");
-        const ffmpeg::AVFilter* buffersink = ffmpeg::avfilter_get_by_name("buffersink");
-        ffmpeg::AVFilterInOut* outputs = ffmpeg::avfilter_inout_alloc(); //TODO убрать голый указатель 20.01
-        ffmpeg::AVFilterInOut* inputs  = ffmpeg::avfilter_inout_alloc(); //TODO убрать голый указатель 20.01
-        enum ffmpeg::AVPixelFormat pix_fmts[] = { video_params->pixelFormat(), ffmpeg::AV_PIX_FMT_NONE };
+        const AVFilter* buffersrc = ::avfilter_get_by_name("buffer");
+        const AVFilter* buffersink = ::avfilter_get_by_name("buffersink");
+        AVFilterInOut* outputs = ::avfilter_inout_alloc(); //TODO убрать голый указатель 20.01
+        AVFilterInOut* inputs  = ::avfilter_inout_alloc(); //TODO убрать голый указатель 20.01
+        enum AVPixelFormat pix_fmts[] = { video_params->pixelFormat(), AV_PIX_FMT_NONE };
 
-        _filter_graph = ffmpeg::avfilter_graph_alloc();
+        _filter_graph = ::avfilter_graph_alloc();
         if (!outputs || !inputs || !_filter_graph) {
             ret = AVERROR(ENOMEM);
             throw FFmpegException { "avfilter_graph_alloc failed", ret };
@@ -86,7 +86,7 @@ namespace fpp {
         log_info("Filter out inited with args: " << args);
 
         ret = av_opt_set_int_list(_buffersink_ctx, "pix_fmts", pix_fmts,
-                                  ffmpeg::AV_PIX_FMT_NONE, AV_OPT_SEARCH_CHILDREN);
+                                  AV_PIX_FMT_NONE, AV_OPT_SEARCH_CHILDREN);
         if (ret < 0) {
             throw FFmpegException { "av_opt_set_int_list failed", ret };
         }
@@ -102,7 +102,7 @@ namespace fpp {
          * filter input label is not specified, it is set to "in" by
          * default.
          */
-        outputs->name       = ffmpeg::av_strdup("in");
+        outputs->name       = ::av_strdup("in");
         outputs->filter_ctx = _buffersrc_ctx;
         outputs->pad_idx    = 0;
         outputs->next       = nullptr;
@@ -113,7 +113,7 @@ namespace fpp {
          * filter output label is not specified, it is set to "out" by
          * default.
          */
-        inputs->name       = ffmpeg::av_strdup("out");
+        inputs->name       = ::av_strdup("out");
         inputs->filter_ctx = _buffersink_ctx;
         inputs->pad_idx    = 0;
         inputs->next       = nullptr;

@@ -24,12 +24,12 @@ namespace fpp {
         const auto in_param = std::dynamic_pointer_cast<VideoParameters>(params.in);
         const auto out_param = std::dynamic_pointer_cast<VideoParameters>(params.out);
         _rescaler_context = SharedSwsContext {
-            sws_getContext(
+            ::sws_getContext(
                 int(in_param->width()), int(in_param->height()), in_param->pixelFormat()
                 , int(out_param->width()), int(out_param->height()), out_param->pixelFormat()
                 , SWS_BICUBIC, nullptr, nullptr, nullptr
             )
-            , [](ffmpeg::SwsContext* ctx) { sws_freeContext(ctx); }
+            , [](SwsContext* ctx) { sws_freeContext(ctx); }
         };
         if (!_rescaler_context) {
             throw FFmpegException { "sws_getContext failed" };
@@ -55,7 +55,7 @@ namespace fpp {
         frame.raw().width  = int(output_params->width());
         frame.raw().height = int(output_params->height());
         frame.setType(output_params->type());
-        const int ret = av_frame_get_buffer(&frame.raw(), 32);
+        const int ret = ::av_frame_get_buffer(&frame.raw(), 32);
         if (ret < 0) {
             throw FFmpegException { "av_frame_get_buffer failed", ret };
         }

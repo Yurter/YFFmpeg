@@ -1,10 +1,10 @@
 ﻿#include "FormatContext.hpp"
 #include <fpp/core/Utils.hpp>
 
-namespace ffmpeg { extern "C" {
+extern "C" {
     #include <libavformat/avformat.h>
     #include <libavdevice/avdevice.h>
-} } // namespace ffmpeg
+}
 
 namespace fpp {
 

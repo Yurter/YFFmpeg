@@ -1,9 +1,9 @@
 #include "InputFormatContext.hpp"
 #include <fpp/core/Utils.hpp>
 
-namespace ffmpeg { extern "C" {
+extern "C" {
     #include <libavformat/avformat.h>
-} } // namespace ffmpeg
+}
 
 namespace fpp {
 
@@ -23,7 +23,7 @@ namespace fpp {
         case Auto:
             break;
         case Virtual:
-            ffmpeg::avcodec_register_all();
+            ::avcodec_register_all();
             /*try_to(*/guessInputFromat()/*)*/;
             break;
         default:
@@ -80,7 +80,7 @@ namespace fpp {
     Code fpp::InputFormatContext::createContext() {
         auto free_context = [](auto*& fmt_ctx) { /*avformat_free_context(fmt_ctx);*/ };
         setFormatContext(SharedAVFormatContext {
-            ffmpeg::avformat_alloc_context()
+            ::avformat_alloc_context()
             , free_context
         });
         return Code::OK;
@@ -128,15 +128,15 @@ namespace fpp {
 
     Code InputFormatContext::guessInputFromat() {
         auto short_name = utils::guess_format_short_name(mediaResourceLocator());
-        setInputFormat(ffmpeg::av_find_input_format(short_name));
+        setInputFormat(::av_find_input_format(short_name));
         return Code::OK;
     }
 
-    ffmpeg::AVInputFormat* InputFormatContext::inputFormat() {
+    AVInputFormat* InputFormatContext::inputFormat() {
         return _input_format;
     }
 
-    void InputFormatContext::setInputFormat(ffmpeg::AVInputFormat* in_fmt) {
+    void InputFormatContext::setInputFormat(AVInputFormat* in_fmt) {
         _input_format = in_fmt;
     }
 

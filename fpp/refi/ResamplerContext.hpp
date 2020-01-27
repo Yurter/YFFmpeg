@@ -2,13 +2,13 @@
 #include <fpp/base/Frame.hpp>
 #include <fpp/stream/AudioParameters.hpp>
 
-namespace ffmpeg { extern "C" {
+extern "C" {
     #include <libswresample/swresample.h>
-} } // namespace ffmpeg
+}
 
 namespace fpp {
 
-    using SharedSwrContext = std::shared_ptr<ffmpeg::SwrContext>;
+    using SharedSwrContext = std::shared_ptr<SwrContext>;
 
     class ResamplerContext : public Object {
 

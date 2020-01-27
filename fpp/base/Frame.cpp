@@ -1,14 +1,14 @@
 #include "Frame.hpp"
 #include <fpp/core/Utils.hpp>
 
-namespace ffmpeg { extern "C" {
+extern "C" {
     #include <libavutil/imgutils.h>
-} } // namespace ffmpeg
+}
 
 namespace fpp {
 
     Frame::Frame()
-        : Data<ffmpeg::AVFrame>() {
+        : Data<AVFrame>() {
         setName("Frame");
     }
 
@@ -17,7 +17,7 @@ namespace fpp {
         copy(other);
     }
 
-    Frame::Frame(const ffmpeg::AVFrame& frame, MediaType type)
+    Frame::Frame(const AVFrame& frame, MediaType type)
         : Frame() {
         copy(frame, type);
     }
@@ -45,14 +45,14 @@ namespace fpp {
 
     uint64_t Frame::size() const {
         if (isVideo()) {
-            return uint64_t(ffmpeg::av_image_get_buffer_size(ffmpeg::AVPixelFormat(_data.format), _data.width, _data.height, 32));
+            return uint64_t(::av_image_get_buffer_size(AVPixelFormat(_data.format), _data.width, _data.height, 32));
         }
         if (isAudio()) {
-            auto channels = ffmpeg::av_get_channel_layout_nb_channels(_data.channel_layout);
-            auto bufer_size = ffmpeg::av_samples_get_buffer_size(nullptr
+            auto channels = ::av_get_channel_layout_nb_channels(_data.channel_layout);
+            auto bufer_size = ::av_samples_get_buffer_size(nullptr
                                                          , channels
                                                          , _data.nb_samples
-                                                         , ffmpeg::AVSampleFormat(_data.format)
+                                                         , AVSampleFormat(_data.format)
                                                          , 32);
             return uint64_t(bufer_size);
         }
@@ -68,7 +68,7 @@ namespace fpp {
                     + "pts " + utils::pts_to_string(_data.pts) + ", "
                     + "width " + std::to_string(_data.width) + ", "
                     + "height " + std::to_string(_data.height) + ", "
-                    + utils::to_string(ffmpeg::AVPixelFormat(_data.format));
+                    + utils::to_string(AVPixelFormat(_data.format));
             return str;
         }
         /* Audio frame: 1024 bytes, pts 425984, nb_samples 1024, channel_layout 4, sample_rate 44100 */
@@ -94,7 +94,7 @@ namespace fpp {
         setInited(true);
     }
 
-    void Frame::copy(const ffmpeg::AVFrame& other, MediaType type) {
+    void Frame::copy(const AVFrame& other, MediaType type) {
         av_frame_ref(&_data, &other);
         setType(type);
         setInited(true);

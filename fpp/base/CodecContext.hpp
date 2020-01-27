@@ -1,13 +1,11 @@
 #pragma once
 #include <fpp/base/Parameters.hpp>
 
-namespace ffmpeg {
-    struct AVCodecContext;
-} // namespace ffmpeg
+struct AVCodecContext;
 
 namespace fpp {
 
-    using SharedAVCodecContext = std::shared_ptr<ffmpeg::AVCodecContext>;
+    using SharedAVCodecContext = std::shared_ptr<AVCodecContext>;
 
     class CodecContext : public Object {
 
@@ -24,7 +22,7 @@ namespace fpp {
         bool                closed() const;
 
         SharedAVCodecContext            context();
-        virtual const ffmpeg::AVCodec*  codec() = 0;
+        virtual const AVCodec*  codec() = 0;
         virtual SharedParameters        parameters() = 0;
         virtual Code        onOpen() { return Code::OK; } //TODO убрать 24.01
 

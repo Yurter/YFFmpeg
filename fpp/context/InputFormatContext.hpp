@@ -43,12 +43,12 @@ namespace fpp {
         StreamVector        parseFormatContext();
         Code                guessInputFromat();
 
-        ffmpeg::AVInputFormat*  inputFormat();
-        void                    setInputFormat(ffmpeg::AVInputFormat* in_fmt);
+        AVInputFormat*  inputFormat();
+        void                    setInputFormat(AVInputFormat* in_fmt);
 
     private:
 
-        ffmpeg::AVInputFormat*  _input_format;
+        AVInputFormat*  _input_format;
 
     };
 

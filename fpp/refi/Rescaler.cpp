@@ -17,12 +17,12 @@ namespace fpp {
         auto input_params = dynamic_cast<const VideoParameters * const>(params.in.get());
         auto output_params = dynamic_cast<const VideoParameters * const>(params.out.get());
         _rescaler_context = SharedSwsContext {
-            sws_getContext(
+            ::sws_getContext(
                 int(input_params->width()), int(input_params->height()), input_params->pixelFormat()
                 , int(output_params->width()), int(output_params->height()), output_params->pixelFormat()
                 , SWS_BICUBIC, nullptr, nullptr, nullptr
             )
-            , [](ffmpeg::SwsContext*& ctx) { sws_freeContext(ctx); }
+            , [](SwsContext* ctx) { ::sws_freeContext(ctx); }
         };
 //        return_if(not_inited_ptr(_rescaler_context), Code::ERR);
         log_info("Inited from"

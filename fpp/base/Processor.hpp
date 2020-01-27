@@ -8,7 +8,6 @@
 
 namespace fpp {
 
-
     enum class ProcessorType { //TODO постараться избавиться от этого енама 15.01
         Unknown,
         Process,

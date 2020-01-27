@@ -1,9 +1,9 @@
 #include "OutputFormatContext.hpp"
 #include <fpp/core/Utils.hpp>
 
-namespace ffmpeg { extern "C" {
+extern "C" {
     #include <libavformat/avformat.h>
-} } // namespace ffmpeg
+}
 
 namespace fpp {
 
@@ -30,7 +30,7 @@ namespace fpp {
             StreamVector stream_list;
             /* Video */
             auto video_params = std::make_shared<VideoParameters>();
-            video_params->setEncoder(ffmpeg::AVCodecID::AV_CODEC_ID_H264);
+            video_params->setEncoder(AVCodecID::AV_CODEC_ID_H264);
             video_params->setGopSize(2);
             video_params->setTimeBase(DEFAULT_TIME_BASE);
             stream_list.push_back(createStream(video_params));
@@ -75,7 +75,7 @@ namespace fpp {
 
     Code OutputFormatContext::createContext() {
         auto format_short_name = utils::guess_format_short_name(mediaResourceLocator());
-        ffmpeg::AVFormatContext* fmt_ctx = nullptr;
+        AVFormatContext* fmt_ctx = nullptr;
         if (avformat_alloc_output_context2(&fmt_ctx, nullptr, format_short_name, mediaResourceLocator().c_str()) < 0) {
             log_error("Failed to alloc output context.");
             return Code::ERR;
@@ -117,7 +117,7 @@ namespace fpp {
     }
 
     Code OutputFormatContext::guessOutputFromat() {
-        auto out_fmt = ffmpeg::av_guess_format(nullptr, mediaResourceLocator().c_str(), nullptr);
+        auto out_fmt = ::av_guess_format(nullptr, mediaResourceLocator().c_str(), nullptr);
         setOutputFormat(out_fmt);
         return Code::OK;
     }
@@ -141,11 +141,11 @@ namespace fpp {
         //        return Code::OK;
     }
 
-    ffmpeg::AVOutputFormat* OutputFormatContext::outputFormat() {
+    AVOutputFormat* OutputFormatContext::outputFormat() {
         return _output_format;
     }
 
-    void OutputFormatContext::setOutputFormat(ffmpeg::AVOutputFormat* out_fmt) {
+    void OutputFormatContext::setOutputFormat(AVOutputFormat* out_fmt) {
         _output_format = out_fmt;
     }
 

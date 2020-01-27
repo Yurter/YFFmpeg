@@ -1,13 +1,13 @@
 #include "Stream.hpp"
 #include <fpp/core/Utils.hpp>
 
-namespace ffmpeg { extern "C" {
+extern "C" {
     #include <libavformat/avformat.h>
-} } // namespace ffmpeg
+}
 
 namespace fpp {
 
-    Stream::Stream(const ffmpeg::AVStream* avstream, SharedParameters parameters)
+    Stream::Stream(const AVStream* avstream, SharedParameters parameters)
         : Data(avstream, parameters->type())
         , params { parameters }
         , _used { false }
@@ -25,7 +25,7 @@ namespace fpp {
         setName(utils::to_string(type()) + " stream");
     }
 
-    Stream::Stream(const ffmpeg::AVStream* avstream)
+    Stream::Stream(const AVStream* avstream)
         : Stream(avstream, utils::createParams(utils::avmt_to_mt(avstream->codecpar->codec_type))) {
         params->parseStream(avstream);
     }
@@ -65,14 +65,14 @@ namespace fpp {
                 _chronometer.reset_timepoint();
             }
 
-            const ffmpeg::AVRational chronometer_timebase = DEFAULT_TIME_BASE;
-            _packet_duration = av_rescale_q(_chronometer.elapsed_milliseconds(), chronometer_timebase, params->timeBase());
+            const AVRational chronometer_timebase = DEFAULT_TIME_BASE;
+            _packet_duration = ::av_rescale_q(_chronometer.elapsed_milliseconds(), chronometer_timebase, params->timeBase());
 
             _chronometer.reset_timepoint();
 
             if (_packet_duration < 16) { //TODO костыль: ффмпег отдает первый кадров 10 мгновенно
                 const int64_t duration_ms = int64_t(1000 / av_q2d(static_cast<VideoParameters*>(params.get())->frameRate()));
-                _packet_duration = av_rescale_q(duration_ms, DEFAULT_TIME_BASE, params->timeBase());
+                _packet_duration = ::av_rescale_q(duration_ms, DEFAULT_TIME_BASE, params->timeBase());
             }
 
             if (_packet_index == 0) { //TODO костыль
@@ -91,8 +91,8 @@ namespace fpp {
         case StampType::Rescale: {
             auto debug_value_00 = packet.pts();
             /* Рескеил в таймбейс потока без изменений */
-            packet.setDts(av_rescale_q(packet.dts(), packet.timeBase(), params->timeBase()));
-            packet.setPts(av_rescale_q(packet.pts(), packet.timeBase(), params->timeBase()));
+            packet.setDts(::av_rescale_q(packet.dts(), packet.timeBase(), params->timeBase()));
+            packet.setPts(::av_rescale_q(packet.pts(), packet.timeBase(), params->timeBase()));
             auto debug_value_01 = packet.pts();
 
             if (packetIndex() == 0) {
@@ -229,7 +229,7 @@ namespace fpp {
         return _packet_index;
     }
 
-    ffmpeg::AVCodecParameters* Stream::codecParameters() {
+    AVCodecParameters* Stream::codecParameters() {
         return_if(not_inited_ptr(_data), nullptr);
         return _data->codecpar;
     }

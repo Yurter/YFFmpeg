@@ -2,19 +2,19 @@
 #include <fpp/base/Data.hpp>
 #include <list>
 
-namespace ffmpeg { extern "C" {
+extern "C" {
     #include <libavutil/frame.h>
-} } // namespace ffmpeg
+}
 
 namespace fpp {
 
-    class Frame : public Data<ffmpeg::AVFrame> {
+    class Frame : public Data<AVFrame> {
 
     public:
 
         Frame();
         Frame(const Frame& other);
-        Frame(const ffmpeg::AVFrame& frame, MediaType type);
+        Frame(const AVFrame& frame, MediaType type);
         virtual ~Frame() override;
 
         Frame& operator=(const Frame& other);
@@ -30,7 +30,7 @@ namespace fpp {
     private:
 
         void                copy(const Frame& other);
-        void                copy(const ffmpeg::AVFrame& other, MediaType type);
+        void                copy(const AVFrame& other, MediaType type);
 
     };
 

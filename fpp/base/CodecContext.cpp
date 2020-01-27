@@ -20,7 +20,7 @@ namespace fpp {
         log_debug("Initialization");
         _codec_context.reset(
             avcodec_alloc_context3(codec())
-            , [](ffmpeg::AVCodecContext*& codec_context) { avcodec_free_context(&codec_context); }
+            , [](AVCodecContext* codec_context) { avcodec_free_context(&codec_context); }
         );
         if (!_codec_context) {
             throw FFmpegException("avcodec_alloc_context3 failed");

@@ -31,13 +31,13 @@ namespace fpp {
 //        return std::make_shared<Stream>(avstream);
 //    }
 
-    class Stream : public Data<const ffmpeg::AVStream*> {
+    class Stream : public Data<const AVStream*> {
 
 
     public:
 
-        Stream(const ffmpeg::AVStream* avstream, SharedParameters parameters); //TODO сделать приватным 23.01 (используется в OutputContext)
-        Stream(const ffmpeg::AVStream* avstream);  // Создание реального потока
+        Stream(const AVStream* avstream, SharedParameters parameters); //TODO сделать приватным 23.01 (используется в OutputContext)
+        Stream(const AVStream* avstream);  // Создание реального потока
         Stream(SharedParameters params);                            // Создание виртуального потока    //TODO не используется 24.01
         Stream(const Stream& other)  = delete;
         virtual ~Stream() override = default;
@@ -60,7 +60,7 @@ namespace fpp {
         int64_t             endTimePoint()      const;
         int64_t             packetIndex()       const;
 
-        ffmpeg::AVCodecParameters*  codecParameters();
+        AVCodecParameters*  codecParameters();
 
     public:
 
@@ -88,7 +88,7 @@ namespace fpp {
 
     };
 
-    inline SharedStream make_input_stream(const ffmpeg::AVStream* avstream) {
+    inline SharedStream make_input_stream(const AVStream* avstream) {
         return std::make_shared<Stream>(avstream);
     }
 
