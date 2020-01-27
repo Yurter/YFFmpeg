@@ -46,7 +46,7 @@ namespace fpp {
 //        return Code::OK;
     }
 
-    Code OutputFormatContext::write(Packet packet, ReadWriteMode write_mode) {
+    void OutputFormatContext::write(Packet packet, ReadWriteMode write_mode) {
         stampPacket(packet);
         if (write_mode == ReadWriteMode::Instant) {
             const int ret = av_write_frame(context().get(), &packet.raw());
@@ -60,17 +60,15 @@ namespace fpp {
                 throw FFmpegException { "av_interleaved_write_frame failed", ret };
             }
         }
-        return Code::OK;
     }
 
-    Code OutputFormatContext::flush() {
+    void OutputFormatContext::flush() {
         if (closed()) {
             throw std::logic_error("Flush failed: OutputFormatContext closed");
         }
         if (av_write_frame(context().get(), nullptr) < 0) {
-            return Code::FFMPEG_ERROR;
+//            return Code::FFMPEG_ERROR;
         }
-        return Code::OK;
     }
 
     void OutputFormatContext::createContext() {

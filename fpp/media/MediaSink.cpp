@@ -82,7 +82,7 @@ namespace fpp {
     }
 
     Code MediaSink::writeOutputData(Packet output_data) {
-        try_to(_output_format_context.write(output_data));
+        (_output_format_context.write(output_data));
         return Code::OK;
     }
 

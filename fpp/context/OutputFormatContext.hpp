@@ -12,8 +12,8 @@ namespace fpp {
 
         SharedStream        createStream(SharedParameters params);
 
-        Code                write(Packet packet, ReadWriteMode write_mode = ReadWriteMode::Instant);
-        Code                flush();
+        void                write(Packet packet, ReadWriteMode write_mode = ReadWriteMode::Instant);
+        void                flush();
 
     private:
 
