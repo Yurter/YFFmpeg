@@ -10,6 +10,8 @@ namespace fpp {
         OutputFormatContext(const std::string& mrl, Preset preset = Preset::Auto);
         virtual ~OutputFormatContext() override;
 
+        SharedStream        createStream(SharedParameters params);
+
         Code                write(Packet packet, ReadWriteMode write_mode = ReadWriteMode::Instant);
         Code                flush();
 
@@ -20,7 +22,6 @@ namespace fpp {
         virtual Code        openContext()   override;
         virtual Code        closeContext()  override;
 
-        SharedStream        createStream(SharedParameters params);
         Code                guessOutputFromat();
         Code                parseOutputFormat();
 
