@@ -12,7 +12,7 @@ namespace fpp {
         EncoderContext(const SharedParameters parameters);
         virtual ~EncoderContext() override;
 
-        Code                encode(Frame input_frame, Packet& encoded_packet);
+        PacketList          encode(Frame input_frame);
         virtual Code        flush(Object* data) override;
         virtual Code        onOpen()            override;
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <fpp/base/Data.hpp>
+#include <list>
 
 extern "C" {
     #include <libavcodec/avcodec.h>
@@ -46,5 +47,7 @@ namespace fpp {
         AVRational          _time_base;
 
     };
+
+    using PacketList = std::list<Packet>;
 
 } // namespace fpp

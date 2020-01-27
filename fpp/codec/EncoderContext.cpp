@@ -14,24 +14,44 @@ namespace fpp {
         flush(nullptr);
     }
 
-    Code EncoderContext::encode(Frame input_frame, Packet& encoded_packet) {
-        log_trace("Frame for encoding: " << input_frame);
-        int ret;
-        if ((ret = avcodec_send_frame(context().get(), &input_frame.raw())) != 0) {
-            log_error(input_frame);
-            log_error("Pxl_fmt: " << input_frame.raw().format << " cc: " << context()->pix_fmt);
-            log_error("Could not send frame " << ret);
-            return Code::ERR;
+    PacketList EncoderContext::encode(Frame input_frame) {
+        if (::avcodec_send_frame(context().get(), &input_frame.raw()) != 0) {
+            throw FFmpegException { "avcodec_send_frame failed" };
         }
-        if ((ret = avcodec_receive_packet(context().get(), &encoded_packet.raw())) != 0) {
-//            log_warning("avcodec_receive_packet failed");
-            return Code::AGAIN;
+        PacketList encoded_packets;
+        while (true) {
+            Packet output_packet;
+            const int ret = avcodec_receive_packet(context().get(), &output_packet.raw());
+            if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+                return encoded_packets;
+            if (ret < 0) {
+                throw FFmpegException { "av_buffersink_get_frame failed" };
+            }
+            output_packet.setType(params->type());
+            output_packet.setTimeBase(params->timeBase());
+            output_packet.setStreamIndex(params->streamIndex());
+            output_packet.setDts(output_packet.pts()); //TODO костыль, разобраться, почему смещение во времени (0, -45)
+            encoded_packets.push_back(output_packet);
         }
-        encoded_packet.setType(params->type());
-        encoded_packet.setTimeBase(params->timeBase());
-        encoded_packet.setStreamIndex(params->streamIndex());
-        return Code::OK;
     }
+//    Code EncoderContext::encode(Frame input_frame, Packet& encoded_packet) {
+//        log_trace("Frame for encoding: " << input_frame);
+//        int ret;
+//        if ((ret = avcodec_send_frame(context().get(), &input_frame.raw())) != 0) {
+//            log_error(input_frame);
+//            log_error("Pxl_fmt: " << input_frame.raw().format << " cc: " << context()->pix_fmt);
+//            log_error("Could not send frame " << ret);
+//            return Code::ERR;
+//        }
+//        if ((ret = avcodec_receive_packet(context().get(), &encoded_packet.raw())) != 0) {
+////            log_warning("avcodec_receive_packet failed");
+//            return Code::AGAIN;
+//        }
+//        encoded_packet.setType(params->type());
+//        encoded_packet.setTimeBase(params->timeBase());
+//        encoded_packet.setStreamIndex(params->streamIndex());
+//        return Code::OK;
+//    }
 
     Code EncoderContext::flush(Object *data) {
         return Code::OK;

@@ -37,14 +37,15 @@ namespace fpp {
 
     Code Encoder::processInputData(Frame input_data) {
         Packet encoded_packet;
-        Code ret = _encoder_context.encode(input_data, encoded_packet);
-        return_if(utils::exit_code(ret), ret);
-        if (ret == Code::OK) {
-            encoded_packet.setDts(encoded_packet.pts()); //TODO костыль, разобраться, почему смещение во времени (0, -45)
-//            if (encoded_packet.isAudio()) log_warning("encoded audio: " << encoded_packet << " : " << _encoder_context.codecContext()->time_base);
-            try_to(sendOutputData(encoded_packet));
-        }
-        return ret;
+        return Code::NOT_IMPLEMENTED;
+//        Code ret = _encoder_context.encode(input_data, encoded_packet);
+//        return_if(utils::exit_code(ret), ret);
+//        if (ret == Code::OK) {
+//            encoded_packet.setDts(encoded_packet.pts()); //TODO костыль, разобраться, почему смещение во времени (0, -45)
+////            if (encoded_packet.isAudio()) log_warning("encoded audio: " << encoded_packet << " : " << _encoder_context.codecContext()->time_base);
+//            try_to(sendOutputData(encoded_packet));
+//        }
+//        return ret;
     }
 
     bool Encoder::equalTo(const SharedProcessor other) const {
