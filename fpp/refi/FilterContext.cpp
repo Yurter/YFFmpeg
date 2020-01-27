@@ -25,7 +25,7 @@ namespace fpp {
         /* pull filtered frames from the filtergraph */
         while (true) {
             Frame output_frame;
-            int ret = ffmpeg::av_buffersink_get_frame(_buffersink_ctx, &output_frame.raw());
+            const int ret = ffmpeg::av_buffersink_get_frame(_buffersink_ctx, &output_frame.raw());
             if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
                 return filtered_frames;
             if (ret < 0) {

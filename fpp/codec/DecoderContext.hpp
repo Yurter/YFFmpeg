@@ -12,7 +12,7 @@ namespace fpp {
         DecoderContext(const IOParams params);
         virtual ~DecoderContext() override;
 
-        Code                decode(Packet input_packet, Frame& decoded_frame);
+        FrameList           decode(Packet input_packet);
         virtual Code        flush(Object* data)         override;
 
         virtual const ffmpeg::AVCodec*  codec()         override;

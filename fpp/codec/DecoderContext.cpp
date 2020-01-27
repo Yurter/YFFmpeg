@@ -1,6 +1,7 @@
 #include "DecoderContext.hpp"
 #include <fpp/core/Logger.hpp>
 #include <fpp/core/Utils.hpp>
+#include <fpp/core/FFmpegException.hpp>
 
 namespace fpp {
 
@@ -14,27 +15,21 @@ namespace fpp {
         flush(nullptr);
     }
 
-    Code DecoderContext::decode(Packet input_packet, Frame& decoded_frame) {
-        if (int ret = avcodec_send_packet(context().get(), &input_packet.raw()); ret != 0) {
-            char errstr[1024];
-            ffmpeg::av_strerror(ret, errstr, 1024); //TODO сделать методом уилит 23.01
-            log_error(" Could not send packet to decoder: " << errstr << ". Data: " << input_packet);
-            log_error("DecoderContext: " << this->toString());
-            return Code::FFMPEG_ERROR;
+    FrameList DecoderContext::decode(Packet input_packet) {
+        if (avcodec_send_packet(context().get(), &input_packet.raw()) != 0) {
+            throw FFmpegException { "avcodec_send_packet failed" };
         }
-        int ret = avcodec_receive_frame(context().get(), &decoded_frame.raw());
-        switch (ret) { //TODO убрать свич ?
-        case 0:
-            decoded_frame.setType(params.in->type());
-            return Code::OK;
-        case AVERROR(EAGAIN):
-            return Code::AGAIN;
-        case AVERROR_EOF:
-            return Code::END_OF_FILE;
-        case AVERROR(EINVAL):
-            return Code::INVALID_INPUT;
-        default:
-            return Code::FFMPEG_ERROR;
+        FrameList decoded_frames;
+        while (true) {
+            Frame output_frame;
+            const int ret = avcodec_receive_frame(context().get(), &output_frame.raw());
+            if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+                return decoded_frames;
+            if (ret < 0) {
+                throw FFmpegException { "av_buffersink_get_frame failed" };
+            }
+            output_frame.setType(params.in->type());
+            decoded_frames.push_back(output_frame);
         }
     }
 
