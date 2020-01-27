@@ -14,7 +14,7 @@ namespace fpp {
     void Encoder::init() {
 //        return_if(inited(), Code::INVALID_CALL_ORDER);
         log_debug("Initialization");
-        /*try_to*/(_encoder_context.init());
+//        /*try_to*/(_encoder_context.init());
         setInited(true);
 //        return Code::OK;
     }
