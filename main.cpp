@@ -1,4 +1,4 @@
-#include "fpp.hpp"
+#include <fpp/fpp.hpp>
 
 using namespace fpp;
 
@@ -255,7 +255,7 @@ void write_video_from_camera() {
 
 }
 
-#include "core/time/Timer.hpp"
+#include <fpp/core/time/Timer.hpp>
 void timer_debug() {
     Timer timer;
 //    timer.setTimeout([](){ static_log_info("Timer", "Hello world 1"); }, 2000);
