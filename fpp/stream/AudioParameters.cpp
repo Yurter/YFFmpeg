@@ -95,9 +95,9 @@ namespace fpp {
             + "channels: " + std::to_string(channels());
     }
 
-    void AudioParameters::completeFrom(const SharedParameters other_params) {
-        Parameters::completeFrom(other_params);
-        auto other_audio_parames = utils::makeAudioParams(other_params);
+    void AudioParameters::completeFrom(const SharedParameters other) {
+        Parameters::completeFrom(other);
+        const auto other_audio_parames = std::static_pointer_cast<AudioParameters>(other);
         if (not_inited_int(sampleRate()))           { setSampleRate(other_audio_parames->sampleRate());         }
         if (not_inited_smp_fmt(sampleFormat()))     { setSampleFormat(other_audio_parames->sampleFormat());     }
         if (not_inited_ch_layout(channelLayout()))  { setChannelLayout(other_audio_parames->channelLayout());   }
@@ -114,9 +114,9 @@ namespace fpp {
     }
 
     bool AudioParameters::betterThen(const SharedParameters& other) {
-        auto other_aparams = utils::makeAudioParams(other);
-        auto this_sound_quality = sampleRate() * channels();
-        auto other_sound_quality = other_aparams->sampleRate() * other_aparams->channels();
+        const auto other_aparams = std::static_pointer_cast<const AudioParameters>(other);
+        const auto this_sound_quality = sampleRate() * channels();
+        const auto other_sound_quality = other_aparams->sampleRate() * other_aparams->channels();
         return this_sound_quality > other_sound_quality;
     }
 

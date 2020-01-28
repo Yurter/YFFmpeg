@@ -26,7 +26,7 @@ namespace fpp {
     }
 
     Stream::Stream(const AVStream* avstream)
-        : Stream(avstream, utils::createParams(utils::avmt_to_mt(avstream->codecpar->codec_type))) {
+        : Stream(avstream, utils::create_params(utils::avmt_to_mt(avstream->codecpar->codec_type))) {
         params->parseStream(avstream);
     }
 

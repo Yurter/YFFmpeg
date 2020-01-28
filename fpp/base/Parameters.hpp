@@ -22,11 +22,6 @@ namespace fpp {
     using SharedParameters = std::shared_ptr<Parameters>;
     using IOParams = struct { SharedParameters in; SharedParameters out; };
 
-//    enum StreamType {
-//        Input,
-//        Output,
-//    };
-
     class Parameters : public MediaData {
 
     public:
@@ -60,7 +55,7 @@ namespace fpp {
 
         virtual std::string toString() const override;
 
-        virtual void        completeFrom(const SharedParameters other_params);
+        virtual void        completeFrom(const SharedParameters other);
         virtual void        parseStream(const AVStream* avstream);
         virtual void        initStream(AVStream* avstream) const;
         virtual bool        betterThen(const SharedParameters& other);

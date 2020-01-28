@@ -1,6 +1,6 @@
 #include "Thread.hpp"
-#include "Utils.hpp"
-#include "time/Chronometer.hpp"
+#include <fpp/core/Utils.hpp>
+#include <fpp/core/time/Chronometer.hpp>
 #include <exception>
 
 #define TRY     try

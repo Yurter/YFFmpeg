@@ -120,14 +120,6 @@ namespace fpp {
                 std::to_string(rational.den);
     }
 
-    SharedVideoParameters utils::makeVideoParams(SharedParameters params) {
-        return std::static_pointer_cast<VideoParameters>(params);
-    }
-
-    SharedAudioParameters utils::makeAudioParams(SharedParameters params) {
-        return std::static_pointer_cast<AudioParameters>(params);
-    }
-
     bool utils::compatible_with_pixel_format(const AVCodec* codec, AVPixelFormat pixel_format) {
         if (not_inited_ptr(codec->pix_fmts)) {
             static_log_warning("utils", "compatible_with_pixel_format failed: codec->pix_fmts is NULL");
@@ -237,12 +229,12 @@ namespace fpp {
         return avcodec_find_encoder(codec_id);
     }
 
-    SharedParameters utils::createParams(MediaType type) {
+    SharedParameters utils::create_params(MediaType type) {
         switch (type) {
         case MediaType::Video:
-            return std::make_shared<VideoParameters>();
+            return VideoParameters::make_shared();
         case MediaType::Audio:
-            return std::make_shared<AudioParameters>();
+            return AudioParameters::make_shared();
         default:
             throw std::invalid_argument("createParams failed");
         }
@@ -472,15 +464,6 @@ namespace fpp {
         });
         return_if(best_stream_it == stream_list.end(), nullptr);
         return *best_stream_it;
-    }
-
-    bool utils::compare_float(float a, float b) {
-        const float epsilon = 0.0001f;
-        return fabs(a - b) < epsilon;
-    }
-
-    bool utils::equal_rational(AVRational a, AVRational b) {
-        return av_cmp_q(a, b) == 0;
     }
 
 } // namespace fpp

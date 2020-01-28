@@ -124,10 +124,10 @@ namespace fpp {
         + "tb " + utils::to_string(timeBase());
     }
 
-    void Parameters::completeFrom(const SharedParameters other_params) {
-        if (not_inited_codec_id(codecId())) { setEncoder(other_params->codecId());      }
-        if (not_inited_int(bitrate()))      { setBitrate(other_params->bitrate());      }
-        if (not_inited_q(timeBase()))       { setTimeBase(other_params->timeBase());    }
+    void Parameters::completeFrom(const SharedParameters other) {
+        if (not_inited_codec_id(codecId())) { setEncoder(other->codecId());     }
+        if (not_inited_int(bitrate()))      { setBitrate(other->bitrate());     }
+        if (not_inited_q(timeBase()))       { setTimeBase(other->timeBase());   }
     }
 
     void Parameters::parseStream(const AVStream* avstream) {

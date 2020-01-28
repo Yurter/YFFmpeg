@@ -29,7 +29,8 @@ namespace fpp {
         case Preset::Event: {
             StreamVector stream_list;
             /* Video */
-            auto video_params = std::make_shared<VideoParameters>();
+//            auto video_params = std::make_shared<VideoParameters>();
+            auto video_params = VideoParameters::make_shared();
             video_params->setEncoder(AVCodecID::AV_CODEC_ID_H264);
             video_params->setGopSize(2);
             video_params->setTimeBase(DEFAULT_TIME_BASE);
