@@ -1,5 +1,7 @@
 #pragma once
 
+#include <thread>
+
 /* Функция возвращает id потока, в котором вызвана */
 #define current_thread_id() std::this_thread::get_id()
 

@@ -23,7 +23,7 @@ namespace fpp {
     public:
 
         static const char   Separator = ',';
-        static std::string  set_pts(float coef) { return "setpts=" + std::to_string(1.f / coef) + "*PTS"; }
+        static std::string  set_pts(float coef) { return "setpts=" + std::to_string(coef) + "*PTS"; }
         static std::string  keep_every_frame(int n) { return "select='not(mod(n," + std::to_string(n) + "))'"; }
 
     private:

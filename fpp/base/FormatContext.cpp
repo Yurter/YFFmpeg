@@ -64,6 +64,9 @@ namespace fpp {
         if (opened()) {
             throw std::logic_error { "context already opened" };
         }
+        if (streamAmount() == 0) {
+            throw std::logic_error { "can't open context without streams" };
+        }
         setInteruptCallback(InterruptedProcess::Opening);
         openContext();
         resetInteruptCallback();

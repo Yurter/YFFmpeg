@@ -19,18 +19,18 @@ namespace fpp {
     }
 
     FrameList FilterContext::filter(Frame frame) {  //TODO много параметров захардкожено 14.01
-        if (av_buffersrc_add_frame_flags(_buffersrc_ctx, &frame.raw(), AV_BUFFERSRC_FLAG_KEEP_REF) < 0) {
-            throw FFmpegException { "av_buffersrc_add_frame_flags failed" };
+        if (const auto ret = ::av_buffersrc_add_frame_flags(_buffersrc_ctx, &frame.raw(), AV_BUFFERSRC_FLAG_KEEP_REF); ret < 0) {
+            throw FFmpegException { "av_buffersrc_add_frame_flags failed", ret };
         }
         FrameList filtered_frames;
         /* pull filtered frames from the filtergraph */
         while (true) {
             Frame output_frame;
-            const int ret = ::av_buffersink_get_frame(_buffersink_ctx, &output_frame.raw());
+            const auto ret = ::av_buffersink_get_frame(_buffersink_ctx, &output_frame.raw());
             if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
                 return filtered_frames;
             if (ret < 0) {
-                throw FFmpegException { "av_buffersink_get_frame failed" };
+                throw FFmpegException { "av_buffersink_get_frame failed", ret };
             }
             output_frame.setType(MediaType::Video);
             output_frame.raw().linesize[0] = frame.raw().linesize[0]; //TODO убрать?
