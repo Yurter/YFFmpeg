@@ -26,7 +26,7 @@ namespace fpp {
     }
 
     Stream::Stream(const AVStream* avstream)
-        : Stream(avstream, utils::create_params(utils::avmt_to_mt(avstream->codecpar->codec_type))) {
+        : Stream(avstream, utils::createParams(utils::avmt_to_mt(avstream->codecpar->codec_type))) {
         params->parseStream(avstream);
     }
 
@@ -90,6 +90,10 @@ namespace fpp {
         }
         case StampType::Rescale: {
             auto debug_value_00 = packet.pts();
+            if (packet.isVideo() && (packet.dts() == AV_NOPTS_VALUE)) {
+                packet.setDts(0);
+                packet.setPts(0);
+            }
             /* Рескеил в таймбейс потока без изменений */
             packet.setDts(::av_rescale_q(packet.dts(), packet.timeBase(), params->timeBase()));
             packet.setPts(::av_rescale_q(packet.pts(), packet.timeBase(), params->timeBase()));
