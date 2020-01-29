@@ -12,8 +12,8 @@ namespace fpp {
         DecoderContext(const SharedParameters parameters);
         virtual ~DecoderContext() override;
 
-        FrameList           decode(Packet input_packet);
-        virtual Code        flush(Object* data)         override;
+        FrameList           decode(const Packet& input_packet);
+        virtual Code        flush(Object* data) override;
 
     };
 

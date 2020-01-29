@@ -3,7 +3,7 @@
 namespace fpp {
 
     Encoder::Encoder(const SharedParameters parameters)
-        : _encoder_context(parameters) {
+        : _encoder_context(parameters, DEFAULT_TIME_BASE) { //TODO 28.01
         setName("Encoder");
     }
 

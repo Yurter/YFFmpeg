@@ -16,22 +16,24 @@ namespace fpp {
         flush(nullptr);
     }
 
-    FrameList DecoderContext::decode(Packet input_packet) {
-        if (avcodec_send_packet(context().get(), &input_packet.raw()) != 0) {
-            throw FFmpegException { "avcodec_send_packet failed" };
+    FrameList DecoderContext::decode(const Packet& input_packet) {
+        if (const auto ret = ::avcodec_send_packet(context().get(), &input_packet.raw()); ret != 0) {
+            throw FFmpegException { utils::send_packet_error_to_string(ret), ret };
         }
         FrameList decoded_frames;
-        while (true) {
+        int ret { 0 };
+        while (ret == 0) {
             Frame output_frame;
-            const int ret = avcodec_receive_frame(context().get(), &output_frame.raw());
+            ret = ::avcodec_receive_frame(context().get(), &output_frame.raw());
             if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
-                return decoded_frames;
+                break;
             if (ret < 0) {
-                throw FFmpegException { "av_buffersink_get_frame failed" };
+                throw FFmpegException { utils::receive_frame_error_to_string(ret), ret };
             }
             output_frame.setType(params->type());
             decoded_frames.push_back(output_frame);
         }
+        return decoded_frames;
     }
 
     Code DecoderContext::flush(Object* data) { //TODO

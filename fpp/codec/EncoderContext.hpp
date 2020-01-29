@@ -9,12 +9,16 @@ namespace fpp {
 
     public:
 
-        EncoderContext(const SharedParameters parameters);
+        EncoderContext(const SharedParameters parameters, AVRational source_time_base);
         virtual ~EncoderContext() override;
 
         PacketList          encode(Frame input_frame);
         virtual Code        flush(Object* data) override;
         virtual Code        onOpen()            override;
+
+    private:
+
+        AVRational          _source_time_base;
 
     };
 
