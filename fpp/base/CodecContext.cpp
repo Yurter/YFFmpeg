@@ -34,27 +34,30 @@ namespace fpp {
 //        return Code::OK;
     }
 
-    Code CodecContext::open() {
-        return_if(opened(), Code::OK);
-        log_debug("Opening");
-        if (int ret = avcodec_open2(_codec_context.get(), codec(), nullptr); ret != 0) {
-            const std::string codec_type = av_codec_is_decoder(codec()) ? "decoder" : "encoder";
-            log_error("Cannot open codec: " << ret << ", "<< codec()->name << ", " << codec_type);
-            return Code::ERR;
+    void CodecContext::open() {
+        if (opened()) {
+            throw std::logic_error { "codec already opened" };
         }
-        try_to(onOpen());
+        log_debug("Opening");
+        if (const auto ret = avcodec_open2(_codec_context.get(), codec(), nullptr); ret != 0) {
+            const std::string codec_type = av_codec_is_decoder(codec()) ? "decoder" : "encoder";
+            throw FFmpegException { "Cannot open codec " + std::string(codec()->name) + ", " + codec_type, ret };
+        }
+        (onOpen());
         setOpened(true);
-        return Code::OK;
+//        return Code::OK;
     }
 
-    Code CodecContext::close() {
-        return_if(closed(), Code::OK);
+    void CodecContext::close() {
+        if (closed()) {
+            return;
+        }
         log_debug("Closing");
         if (inited_ptr(_codec_context)) {
             avcodec_close(_codec_context.get());
         }
         setOpened(false);
-        return Code::OK;
+//        return Code::OK;
     }
 
     std::string CodecContext::toString() const {

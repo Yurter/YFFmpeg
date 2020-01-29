@@ -24,7 +24,6 @@ namespace fpp {
         const AVCodec*          codec();
         virtual Code        onOpen() { return Code::OK; } //TODO убрать 24.01
 
-//        const IOParams      params;
         const SharedParameters  params;
 
     protected:
@@ -33,8 +32,8 @@ namespace fpp {
 
     private:
 
-        Code                open();
-        Code                close();
+        void                open();
+        void                close();
         void                setOpened(bool value);
 
     private:
