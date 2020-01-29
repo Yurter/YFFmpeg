@@ -24,6 +24,7 @@ namespace fpp {
 
         void                setRaw(Type data) { _data = data; }
         Type&               raw() { return _data; }
+        const Type&         raw() const { return _data; }
         bool                empty() const { return size() == 0; }
 
     protected:
