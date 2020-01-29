@@ -213,28 +213,106 @@ namespace fpp {
         return nullptr;
     }
 
-    AVCodec* utils::find_decoder(std::string codec_short_name) {
-        return avcodec_find_decoder_by_name(codec_short_name.c_str());
+    std::string utils::send_packet_error_to_string(int ret) {
+        if (AVERROR(EAGAIN) == ret) {
+            return "avcodec_send_packet failed: input is not accepted \
+                    in the current state - user must read output with \
+                    avcodec_receive_frame()";
+        }
+        if (AVERROR_EOF == ret) {
+            return "avcodec_send_packet failed: the decoder has been \
+                    flushed, and no new packets can be sent to it";
+        }
+        if (AVERROR(EINVAL) == ret) {
+            return "avcodec_send_packet failed: codec not opened, \
+                    it is an encoder, or requires flush";
+        }
+        if (AVERROR(ENOMEM) == ret) {
+            return "avcodec_send_packet failed: failed to add packet \
+                    to internal queue, or similar other errors: \
+                    legitimate decoding errors";
+        }
+        return "avcodec_send_packet failed: unknown code: " + std::to_string(ret);
     }
 
-    AVCodec* utils::find_decoder(AVCodecID codec_id) {
-        return avcodec_find_decoder(codec_id);
+    std::string utils::receive_frame_error_to_string(int ret) {
+        if (AVERROR(EAGAIN) == ret) {
+            return "avcodec_receive_frame failed: output is not available \
+                    in this state - user must try to send new input";
+        }
+        if (AVERROR_EOF == ret) {
+            return "avcodec_receive_frame failed: the decoder has been fully \
+                    flushed, and there will be no more output frames";
+        }
+        if (AVERROR(EINVAL) == ret) {
+            return "avcodec_receive_frame failed: codec not opened, or it \
+                    is an encoder other negative values: \
+                    legitimate decoding errors";
+        }
+        return "avcodec_receive_frame failed: unknown code: " + std::to_string(ret);
     }
 
-    AVCodec* utils::find_encoder(std::string codec_short_name) {
-        return avcodec_find_encoder_by_name(codec_short_name.c_str());
+    std::string utils::send_frame_error_to_string(int ret) {
+        if (AVERROR(EAGAIN) == ret) {
+            return "avcodec_receive_frame failed: input is not accepted in \
+                    the current state - user must read output \
+                    with avcodec_receive_packet()";
+        }
+        if (AVERROR_EOF == ret) {
+            return "avcodec_receive_frame failed: the encoder has been flushed, \
+                    and no new frames can be sent to it";
+        }
+        if (AVERROR(EINVAL) == ret) {
+            return "avcodec_receive_frame failed: codec not opened, \
+                    refcounted_frames not set, it is a decoder, or requires flush";
+        }
+        if (AVERROR(ENOMEM) == ret) {
+            return "avcodec_receive_frame failed: failed to add packet \
+                    to internal queue, or similar other errors: \
+                    legitimate decoding errors";
+        }
+        return "avcodec_send_frame failed: unknown code: " + std::to_string(ret);
     }
 
-    AVCodec* utils::find_encoder(AVCodecID codec_id) {
-        return avcodec_find_encoder(codec_id);
+    std::string utils::receive_packet_error_to_string(int ret) {
+        if (AVERROR(EAGAIN) == ret) {
+            return "avcodec_receive_frame failed: output is not available \
+                    in the current state - user must try to send input";
+        }
+        if (AVERROR_EOF == ret) {
+            return "avcodec_receive_frame failed: the encoder has been \
+                    fully flushed, and there will be no more output packets";
+        }
+        if (AVERROR(EAGAIN) == ret) {
+            return "avcodec_receive_frame failed: codec not opened, \
+                    or it is an encoder other errors: \
+                    legitimate decoding errors";
+        }
+        return "avcodec_receive_packet failed: unknown code: " + std::to_string(ret);
     }
 
-    SharedParameters utils::create_params(MediaType type) {
+//    AVCodec* utils::find_decoder(std::string codec_short_name) {
+//        return avcodec_find_decoder_by_name(codec_short_name.c_str());
+//    }
+
+//    AVCodec* utils::find_decoder(AVCodecID codec_id) {
+//        return avcodec_find_decoder(codec_id);
+//    }
+
+//    AVCodec* utils::find_encoder(std::string codec_short_name) {
+//        return avcodec_find_encoder_by_name(codec_short_name.c_str());
+//    }
+
+//    AVCodec* utils::find_encoder(AVCodecID codec_id) {
+//        return avcodec_find_encoder(codec_id);
+//    }
+
+    SharedParameters utils::createParams(MediaType type) {
         switch (type) {
         case MediaType::Video:
-            return VideoParameters::make_shared();
+            return std::make_shared<VideoParameters>();
         case MediaType::Audio:
-            return AudioParameters::make_shared();
+            return std::make_shared<AudioParameters>();
         default:
             throw std::invalid_argument("createParams failed");
         }
@@ -356,7 +434,7 @@ namespace fpp {
         case MediaType::Audio:
             return MediaType::Video;
         default:
-            throw std::exception("Bad media type - antitype()");
+            throw std::invalid_argument { "Bad media type - antitype()" };
         }
     }
 
@@ -464,6 +542,15 @@ namespace fpp {
         });
         return_if(best_stream_it == stream_list.end(), nullptr);
         return *best_stream_it;
+    }
+
+    bool utils::compare_float(float a, float b) {
+        const float epsilon = 0.0001f;
+        return fabs(a - b) < epsilon;
+    }
+
+    bool utils::equal_rational(AVRational a, AVRational b) {
+        return av_cmp_q(a, b) == 0;
     }
 
 } // namespace fpp
