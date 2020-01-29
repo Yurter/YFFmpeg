@@ -43,7 +43,7 @@ namespace fpp {
         return _data.key_frame == 1;
     }
 
-    uint64_t Frame::size() const {
+    size_t Frame::size() const {
         if (isVideo()) {
             return uint64_t(::av_image_get_buffer_size(AVPixelFormat(_data.format), _data.width, _data.height, 32));
         }
