@@ -20,13 +20,13 @@ namespace fpp {
         static uid_t        get_context_uid(uid_t stream_uid);
 
         static std::string  to_string(MediaType value);
+        static std::string  pts_to_string(int64_t pts);
         static std::string  to_string(bool value);
         static std::string  to_string(AVPixelFormat value);
         static std::string  to_string(AVSampleFormat value);
         static std::string  to_string(Code value);
         static std::string  to_string(CodecType type);
         static std::string  to_string(AVRational rational);
-        static std::string  pts_to_string(int64_t pts);
         static std::string  time_to_string(int64_t time_stamp, AVRational time_base);
 
         static void         sleep_for(int64_t milliseconds);
@@ -34,10 +34,10 @@ namespace fpp {
         static void         sleep_for_sec(int64_t seconds);
         static void         sleep_for_min(int64_t minutes);
 
-        static AVCodec*     find_decoder(std::string codec_short_name);
-        static AVCodec*     find_encoder(std::string codec_short_name);
-        static AVCodec*     find_decoder(AVCodecID codec_id);
-        static AVCodec*     find_encoder(AVCodecID codec_id);
+//        static AVCodec*     find_decoder(std::string codec_short_name);
+//        static AVCodec*     find_encoder(std::string codec_short_name);
+//        static AVCodec*     find_decoder(AVCodecID codec_id);
+//        static AVCodec*     find_encoder(AVCodecID codec_id);
 
         static bool         rescaling_required(const IOParams params);
         static bool         resampling_required(const IOParams params);
@@ -54,6 +54,12 @@ namespace fpp {
         static SharedStream find_best_stream(const StreamVector& stream_list);
 
         static const char*  guess_format_short_name(std::string media_resurs_locator);
+
+        static std::string  send_packet_error_to_string(int ret);
+        static std::string  receive_frame_error_to_string(int ret);
+
+        static std::string  send_frame_error_to_string(int ret);
+        static std::string  receive_packet_error_to_string(int ret);
 
         /* ---- R E F A C T O R I N G ---- */
 
