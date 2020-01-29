@@ -23,11 +23,11 @@ namespace fpp {
     }
 
     void Parameters::setDecoder(AVCodecID codec_id) {
-        setCodec(avcodec_find_encoder(codec_id));
+        setCodec(avcodec_find_decoder(codec_id));
     }
 
     void Parameters::setEncoder(AVCodecID codec_id) {
-        setCodec(avcodec_find_decoder(codec_id));
+        setCodec(avcodec_find_encoder(codec_id));
     }
 
     void Parameters::setCodec(AVCodec* codec) {
@@ -77,7 +77,7 @@ namespace fpp {
     }
 
     AVCodecID Parameters::codecId() const {
-        return _codec->id;
+        return not_inited_ptr(_codec) ? DEFAULT_CODEC_ID : _codec->id;
     }
 
     std::string Parameters::codecName() const {
@@ -124,10 +124,10 @@ namespace fpp {
         + "tb " + utils::to_string(timeBase());
     }
 
-    void Parameters::completeFrom(const SharedParameters other) {
-        if (not_inited_codec_id(codecId())) { setEncoder(other->codecId());     }
-        if (not_inited_int(bitrate()))      { setBitrate(other->bitrate());     }
-        if (not_inited_q(timeBase()))       { setTimeBase(other->timeBase());   }
+    void Parameters::completeFrom(const SharedParameters other_params) {
+        if (not_inited_codec_id(codecId())) { setEncoder(other_params->codecId());      }
+        if (not_inited_int(bitrate()))      { setBitrate(other_params->bitrate());      }
+        if (not_inited_q(timeBase()))       { setTimeBase(other_params->timeBase());    }
     }
 
     void Parameters::parseStream(const AVStream* avstream) {
