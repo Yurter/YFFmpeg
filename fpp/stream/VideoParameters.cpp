@@ -93,6 +93,7 @@ namespace fpp {
             + std::to_string(width()) + "x" + std::to_string(height()) + ", "
             + utils::to_string(aspectRatio()) + ", "
             + utils::to_string(frameRate()) + " fps" + ", "
+            + utils::to_string(gopSize()) + " gop" + ", "
             + utils::to_string(pixelFormat());
     }
 
